@@ -46,7 +46,7 @@ branches:
 clone_depth: 5
 
 build_script:
-  - travis-tool.sh r_github_packages s-u/fastshp PredictiveEcology/reproducible PredictiveEcology/quickPlot
+  - travis-tool.sh r_github_packages PredictiveEcology/reproducible PredictiveEcology/quickPlot
   - travis-tool.sh install_deps
 
 test_script:

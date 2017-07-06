@@ -1,11 +1,15 @@
-#' Display a simple, interactive shiny app of the simList
+if (getRversion() >= "3.1.0") {
+  utils::globalVariables(c("."))
+}
+
+#' Display a simple, interactive shiny app of the \code{simList}
 #'
 #' Currently, this is quite simple. It creates a side bar with the simulation
 #' times, plus a set of tabs, one for each module, with numeric sliders.
-#' Currently, this does not treat NAs correctly. Also, it is slow (shiny is not
-#' built to be fast out of the box).
-#' There are two buttons, one to run the entire spades call, the other to do
-#' just one time step at a time. It can be repeatedly pressed.
+#' Currently, this does not treat \code{NA} correctly.
+#' Also, it is slow (shiny is not built to be fast out of the box).
+#' There are two buttons, one to run the entire \code{spades} call, the other to
+#' do just one time step at a time. It can be repeatedly pressed.
 #'
 #' @note Many module parameters are only accessed by modules at the start of a
 #'   model run. So, even if the user changes them mid run, there won't be an
@@ -14,20 +18,31 @@
 #'
 #' @note \code{.plotInterval} changes will only affect plots that are the base
 #'   layer of a given plot image. If there are layers on top of a base layer
-#'   (e.g., an agent on top of a raster layer), the .plotInterval of the
-#'   overlayed layers is ignored.
+#'   (e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
+#'   overlaid layers is ignored.
 #'
-#' @param sim a simList object
+#' @param sim   A \code{simList} object.
+#'
 #' @param title character string. The title of the shiny page.
-#' @param debug Logical. If TRUE, then will show spades event debugger in
-#'   console.
-#' @param filesOnly Logical. If TRUE, then the server.R, ui.R files will be written
-#'                  to a temp location, with a message indicating where they are.
+#'
+#' @param debug Logical. If \code{TRUE}, then will show \code{spades} event debugger
+#'              in the console.
+#'
+#' @param filesOnly Logical. If \code{TRUE}, then the \file{server.R}, \file{ui.R} files
+#'                  will be written to a temporary location, with a message indicating
+#'                  where they are.
 #'                  Publishing this to \url{https://shinyapps.io} is currently very buggy,
 #'                  and will likely not work as desired.
+#'
 #' @param ... additional arguments. Currently not used
 #'
 #' @export
+#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
+#' @importFrom DT renderDataTable dataTableOutput
+#' @importFrom grDevices dev.cur
+#' @importFrom magrittr %>%
+#' @importFrom quickPlot clearPlot rePlot
+#' @importFrom reproducible checkPath
 #' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
 #' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
 #' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
@@ -35,10 +50,11 @@
 #' @importFrom shiny selectInput sliderInput sidebarLayout sidebarPanel
 #' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
 #' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
-#' @importFrom DT renderDataTable dataTableOutput
-#' @importFrom grDevices dev.cur
-#' @importFrom quickPlot clearPlot rePlot
+#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
+#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
+#' @importFrom SpaDES.core spades start time time<-
+#' @importFrom utils browseURL
+#' @include environment.R
 #' @examples
 #' \dontrun{
 #'  mySim <- simInit(
@@ -106,8 +122,8 @@ setMethod(
   server <- function(input, output, session) {
     # Some cases there may be an error due to a previous plot still existing - this should clear
     curDev <- dev.cur()
-    if (exists(".spadesEnv"))
-      alreadyPlotted <- grepl(ls(.spadesEnv), pattern = paste0("spadesPlot", curDev))
+    if (exists(".pkgEnv"))
+      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
     else
       alreadyPlotted <- FALSE
 
@@ -243,8 +259,8 @@ setMethod(
     # Main plot
     output$spadesPlot <- renderPlot({
       curDev <- dev.cur()
-      alreadyPlotted <- if (exists(".spadesEnv")) {
-        grepl(ls(.spadesEnv), pattern = paste0("spadesPlot", curDev))
+      alreadyPlotted <- if (exists(".pkgEnv")) {
+        grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
       } else {
         FALSE
       }

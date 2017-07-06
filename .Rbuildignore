@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^appveyor\.yml$
+^\.lintr$
+^\.travis\.yml$
+^CONTRIBUTING\.md$
+^LICENSE$

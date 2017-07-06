@@ -40,7 +40,6 @@ matrix:
     before_install:
       - export DISPLAY=:99.0
       - sh -e /etc/init.d/xvfb start
-      - chmod 755 ./_push_vignettes.sh
       - Rscript -e 'install.packages("dplyr", dependencies = TRUE)'
     after_success:
       - ./_push_vignettes.sh
