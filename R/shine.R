@@ -86,7 +86,7 @@ setMethod(
   definition = function(sim, title, debug, filesOnly, ...) {
 
   # Keep a copy of input simList so Reset button works
-  simOrig_ <- as(sim, "simList_") # convert objects first
+  simOrig1 <- as(sim, "simList_") # convert objects first
   simOrig <- sim # Not enough because objects are in an environment, so they both change
 
   endTime <- end(sim)
@@ -97,7 +97,7 @@ setMethod(
       sidebarPanel(
         actionButton("fullSpaDESButton", "Run model"),
         actionButton("stopButton", "Stop"),
-        actionButton("oneTimestepSpaDESButton", label = textOutput("StepActionButton")),
+        actionButton("oneTimestepSpaDESButton", label = textOutput("stepActionButton")),
         numericInput("Steps", "Step size", 1, width = "100px"),
         actionButton("resetSimInit", "Reset"),
         downloadButton("downloadData", "Download"),
@@ -147,10 +147,12 @@ setMethod(
         # local is needed because it must force evaluation, avoid lazy evaluation
         kLocal <- k
         output[[kLocal]] <- renderUI({
-          Params <- params(sim)[[kLocal]]
-          lapply(names(Params), function(i) {
-            moduleParams <- sim@depends@dependencies[[kLocal]]@parameters[sim@depends@dependencies[[kLocal]]@parameters[, "paramName"] == i, ]
-            if (i %in% c(".plotInitialTime", ".saveInitialTime", ".plotInterval", ".saveInterval")) {
+          params1 <- params(sim)[[kLocal]]
+          lapply(names(params1), function(i) {
+            moduleParams <- sim@depends@dependencies[[kLocal]]@parameters[
+              sim@depends@dependencies[[kLocal]]@parameters[, "paramName"] == i, ]
+            if (i %in% c(".plotInitialTime", ".saveInitialTime",
+                         ".plotInterval", ".saveInterval")) {
               if (!is.na(params(sim)[[kLocal]][[i]])) {
                 sliderInput(
                   inputId = paste0(kLocal, "$", i),
@@ -159,10 +161,10 @@ setMethod(
                   max = min(endTime, end(sim)) -
                     ifelse(i %in% c(".plotInterval", ".saveInterval"), start(sim), 0),
                   value = params(sim)[[kLocal]][[i]],
-                  step = ((min(endTime, end(sim)) - start(sim)) / 10) %>% as.numeric(),
+                  step = ((min(endTime, end(sim)) - start(sim)) / 10) %>% as.numeric(), # nolint
                   sep = "")
               }
-            } else if (is.numeric(Params[[i]])) {
+            } else if (is.numeric(params1[[i]])) {
               sliderInput(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
@@ -171,12 +173,12 @@ setMethod(
                 value = params(sim)[[kLocal]][[i]],
                 step = (moduleParams[["max"]][[1]] - moduleParams[["min"]][[1]]) / 10,
                 sep = "")
-            } else if (is.logical(Params[[i]])) {
+            } else if (is.logical(params1[[i]])) {
               checkboxInput(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
                 value = params(sim)[[kLocal]][[i]])
-            } else if (is.character(Params[[i]])) {
+            } else if (is.character(params1[[i]])) {
               selectInput(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
@@ -201,7 +203,9 @@ setMethod(
       }
       end(sim) <- pmin(endTime, time(sim, sim@simtimes[["timeunit"]]) + 1)
       if (is.null(v$stop)) v$stop <- "go"
-      if ((time(sim, sim@simtimes[["timeunit"]]) < endTime) & (v$stop != "stop")) invalidateLater(0)
+      if ((time(sim, sim@simtimes[["timeunit"]]) < endTime) & (v$stop != "stop")) { # nolint
+        invalidateLater(0)
+      }
       sim <<- spades(sim, debug = debug) # Run spades
     }
 
@@ -225,8 +229,8 @@ setMethod(
       clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
       rm(list = ls(sim), envir = sim@.envir)
       sim <<- simOrig
-      for (i in names(simOrig_@.list)) {
-        sim[[i]]  <<- simOrig_@.list[[i]]
+      for (i in names(simOrig1@.list)) {
+        sim[[i]]  <<- simOrig1@.list[[i]]
       }
     })
 
@@ -268,7 +272,7 @@ setMethod(
       if (any(alreadyPlotted)) {
         rePlot()
       } else {
-        clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
+        clearPlot() # Don't want to use this, but renderPlot will not allow overplotting
       }
       if (is.null(v$data)) return() # catch if no data yet
       if (v$data == "oneTime") {
@@ -355,13 +359,8 @@ setMethod(
       updateSliderInput(session, "simTimes", value = v$time, max = v$end)
     })
 
-    output$StepActionButton <- renderPrint({
-#      if (v$sliderUsed == "Yes") {
-#        cat("Step to time ", input$simTimes, sep = "")
-#      } else {
-        cat("Step ", input$Steps, " timestep", "s"[input$Steps != 1], sep = "")
-#      }
-#      v$sliderUsed <- "Yes"
+    output$stepActionButton <- renderPrint({
+      cat("Step ", input$Steps, " timestep", "s"[input$Steps != 1], sep = "")
     })
 
     output$downloadData <- downloadHandler(
@@ -378,7 +377,6 @@ setMethod(
     con <- file(globalFile, open = "w+b");
     writeLines(paste("debug <-", debug), con = con)
     writeLines("library(DiagrammeR)", con = con)
-    #writeLines("library(igraph)", con = con)
     writeLines("library(DT)", con = con)
     writeLines("library(SpaDES)", con = con)
     pkgs <- unique(unlist(lapply(sim@depends@dependencies,
@@ -386,8 +384,10 @@ setMethod(
     writeLines(paste0(paste0("library(", pkgs, ")"), collapse = "\n"),
                con = con)
     writeLines("sim <- readRDS(file = \"sim.Rdata\")", con = con)
-    writeLines("simOrig_ <- as(sim, \"simList_\")", con = con) # convert objects first
-    writeLines("simOrig <- sim", con = con) # Not enough because objects are in an environment, so they both change
+    writeLines("simOrig1 <- as(sim, \"simList_\")", con = con) # convert objects first
+
+    # Not enough because objects are in an environment, so they both change
+    writeLines("simOrig <- sim", con = con)
 
     writeLines("endTime <- end(sim)", con = con)
     writeLines("startTime <- start(sim)", con = con)
