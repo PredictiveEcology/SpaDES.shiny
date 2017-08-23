@@ -4,4 +4,6 @@
 ^\.lintr$
 ^\.travis\.yml$
 ^CONTRIBUTING\.md$
+^docs$
 ^LICENSE$
+
