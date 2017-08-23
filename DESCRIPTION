@@ -5,12 +5,12 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades.predictiveecology.org,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2017-07-07
+Date: 2017-08-23
 Version: 0.1.0
 Authors@R: c(
-    person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
+    person("Alex M", "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre")),
-    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
+    person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut")),
     person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
     role = "cph")
@@ -36,8 +36,6 @@ Suggests:
     rmarkdown,
     testthat (>= 1.0.2)
 Remotes:
-    PredictiveEcology/reproducible,
-    PredictiveEcology/quickPlot,
     PredictiveEcology/SpaDES.core,
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
