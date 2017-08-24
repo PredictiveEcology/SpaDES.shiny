@@ -1,8 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^appveyor\.yml$
+^_pkgdown\.yml$
 ^\.lintr$
 ^\.travis\.yml$
+^appveyor\.yml$
 ^CONTRIBUTING\.md$
 ^docs$
 ^LICENSE$
