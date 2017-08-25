@@ -4,10 +4,9 @@
 #' @param session  The current session
 #' @param simID    The simulation ID
 #'
-#' @importFrom magrittr %>%
-#' @export
-#'
 #' @author Alex Chubaty
+#' @export
+#' @rdname simLogFile
 simLogFile <- function(config, session, simID) {
   file.path(config$OUTPUT_DIR, simID, "error.log")
 }
@@ -22,8 +21,8 @@ simLogFile <- function(config, session, simID) {
 #'   UI function
 #'
 #' @author Olivia Sung, Alex Chubaty, Alex Tso
-#'
 #' @export
+#' @importFrom shiny NS verbatimTextOutput
 #' @rdname debugging
 debuggingUI <- function(id) {
   ns <- NS(id)
@@ -38,6 +37,7 @@ debuggingUI <- function(id) {
 #' @param simID   The simulation number
 #'
 #' @export
+#' @importFrom shiny reactiveFileReader
 #' @rdname debugging
 debugging <- function(input, output, session, config, simID) {
   output$simLogText <- renderText({

@@ -5,8 +5,9 @@
 #'
 #' @author Olivia Sung, Alex Chubaty, Greyson Wang
 #' @export
-#' @importFrom shiny fluidRow NS tabBox tabPanel
-#' @rdname resultsSummary
+#' @importFrom shiny fluidRow NS tabPanel
+#' @importFrom shinydashboard tabBox
+#' @rdname simInfo
 simInfoUI <- function(id) {
   ns <- NS(id)
 
@@ -27,6 +28,7 @@ simInfoUI <- function(id) {
 #'
 #' @export
 #' @importFrom shiny callModule
+#' @rdname simInfo
 simInfo <- function(input, output, session, sim) {
   callModule(simModuleDiagram, "moduleDiagram", sim)
   callModule(simObjectDiagram, "objectDiagram", sim)
@@ -83,7 +85,7 @@ simModuleDiagram <- function(input, output, session, sim) {
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
 #' @importFrom DiagrammeR DiagrammeROutput
-#' @importFrom shiny h3 NS p taglist
+#' @importFrom shiny h3 NS p tagList
 #' @rdname simObjectDiagram
 simObjectDiagramUI <- function(id) {
   ns <- NS(id)
@@ -189,8 +191,9 @@ moduleInfoUI <- function(id) {
 #' @param sim      A \code{simList} object
 #'
 #' @export
-#' @importFrom shiny box div fluidRow includeMarkdown p renderUI tagList
+#' @importFrom shiny actionLink div fluidRow includeMarkdown p renderUI tagList
 #' @importFrom shinyBS bsModal
+#' @importFrom shinydashboard box
 #' @importFrom SpaDES.core depends modulePath
 #' @rdname moduleInfo
 moduleInfo <- function(input, output, session, sim) {
@@ -240,7 +243,9 @@ moduleParamsUI <- function(id) {
 #' @param sim      A \code{simList} object
 #'
 #' @export
-#' @importFrom shiny box dataTableOutput fluidRow tagList renderDataTable
+#' @importFrom DT dataTableOutput renderDataTable
+#' @importFrom shiny fluidRow tagList
+#' @importFrom shinydashboard box
 #' @rdname moduleParams
 moduleParams <- function(input, output, session, sim) {
   output$moduleParamValues <- renderUI({
@@ -268,7 +273,8 @@ moduleParams <- function(input, output, session, sim) {
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom shiny box h4 p
+#' @importFrom shiny fluidRow h4 NS p tags
+#' @importFrom shinydashboard box
 #' @rdname dataInfo
 dataInfoUI <- function(id) {
   ns <- NS(id)
@@ -286,13 +292,13 @@ dataInfoUI <- function(id) {
         p("BioSim was used to generate the maps (see Bentz et al. 2010; Logan et al. 2003; Safranyik et al. 2010)."),
 
         h4("References"),
-        p("Bentz, B J, J Régnière, C J Fettig, E M Hansen, J L Hayes, J A Hicke, R. G. Kelsey, J. F. Negrón, and S. J. Seybold. 2010. \"Climate Change and Bark Beetles of the Western United States and Canada: Direct and Indirect Effects.\" BioScience 60 (8): 602–13. doi:10.1525/bio.2010.60.8.6."),
-        p("Logan, Jesse A, Jacques Régnière, and James A Powell. 2003. \"Assessing the impacts of global warming on forest pest dynamics.\" Frontiers in Ecology and the Environment 1 (3): 130–37. doi:10.1890/1540-9295(2003)001[0130:ATIOGW]2.0.CO;2."),
-        p("Nealis, Vince G, and Barry J Cooke. 2014. \"Risk assessment of the threat of mountain pine beetle to Canada’s boreal and eastern pine forests.\" Ottawa, ON: Canadian Council of Forest Ministers. http://cfs.nrcan.gc.ca/publications?id=35406."),
-        p("Nealis, Vince G, and Brian Peter. 2008. \"Risk assessment of the threat of mountain pine beetle to Canada’s boreal and eastern pine forests.\" Infromation Report. Victoria, BC: Natural Resources Canada, Canadian Forest Service, Pacific Forestry Centre."),
-        p("Régnière, Jacques, and Barbara Bentz. 2007. \"Modeling cold tolerance in the mountain pine beetle, Dendroctonus ponderosae.\" Journal of Insect Physiology 53 (6): 559–72. doi:10.1016/j.jinsphys.2007.02.007."),
-        p("Safranyik, Les, Allan L Carroll, Jacques Régnière, David W Langor, William G Riel, Terry L Shore, Brian Peter, Barry J Cooke, Vince G Nealis, and Stephen W Taylor. 2010. \"Potential for range expansion of mountain pine beetle into the boreal forest of North America.\" The Canadian Entomologist 142 (5): 415–42. doi:10.4039/n08-CPA01."),
-        p("Safranyik, L.; Shrimpton, D.M.; Whitney, H.S. 1975. \"An interpretation of the interaction between lodgepole pine, the mountain pine beetle, and its associated blue stain fungi in western Canada.\" In Management of Lodgepole Pine Ecosystems Symposium Proceedings, edited by D M Baumgartner, 406–28. Pullman, WA: Washington State University Coop. Extension Service. http://wfiwc.org/sites/default/files/Safranyik_Shrimpton_Whitney_1975.pdf.")
+        p("Bentz, B J, J R\u00e9gni\u00e8re, C J Fettig, E M Hansen, J L Hayes, J A Hicke, R. G. Kelsey, J. F. Negr\u00f3n, and S. J. Seybold. 2010. \"Climate Change and Bark Beetles of the Western United States and Canada: Direct and Indirect Effects.\" BioScience 60(8):602-13. doi:10.1525/bio.2010.60.8.6."),
+        p("Logan, Jesse A, Jacques R\u00e9gni\u00e8re, and James A Powell. 2003. \"Assessing the impacts of global warming on forest pest dynamics.\" Frontiers in Ecology and the Environment 1(3):130-37. doi:10.1890/1540-9295(2003)001[0130:ATIOGW]2.0.CO;2."),
+        p("Nealis, Vince G, and Barry J Cooke. 2014. \"Risk assessment of the threat of mountain pine beetle to Canada's boreal and eastern pine forests.\" Ottawa, ON: Canadian Council of Forest Ministers. http://cfs.nrcan.gc.ca/publications?id=35406."),
+        p("Nealis, Vince G, and Brian Peter. 2008. \"Risk assessment of the threat of mountain pine beetle to Canada's boreal and eastern pine forests.\" Infromation Report. Victoria, BC: Natural Resources Canada, Canadian Forest Service, Pacific Forestry Centre."),
+        p("R\u00e9gni\u00e8re, Jacques, and Barbara Bentz. 2007. \"Modeling cold tolerance in the mountain pine beetle, Dendroctonus ponderosae.\" Journal of Insect Physiology 53(6): 559-72. doi:10.1016/j.jinsphys.2007.02.007."),
+        p("Safranyik, Les, Allan L Carroll, Jacques R\u00e9gni\u00e8re, David W Langor, William G Riel, Terry L Shore, Brian Peter, Barry J Cooke, Vince G Nealis, and Stephen W Taylor. 2010. \"Potential for range expansion of mountain pine beetle into the boreal forest of North America.\" The Canadian Entomologist 142(5):415-42. doi:10.4039/n08-CPA01."),
+        p("Safranyik, L.; Shrimpton, D.M.; Whitney, H.S. 1975. \"An interpretation of the interaction between lodgepole pine, the mountain pine beetle, and its associated blue stain fungi in western Canada.\" In Management of Lodgepole Pine Ecosystems Symposium Proceedings, edited by D M Baumgartner, 406-28. Pullman, WA: Washington State University Coop. Extension Service. http://wfiwc.org/sites/default/files/Safranyik_Shrimpton_Whitney_1975.pdf.")
     ),
     box(title = "Mountain Pine Beetle Attack", width = 12, status = "success",
         collapsible = TRUE, collapsed = TRUE,
@@ -316,12 +322,18 @@ dataInfoUI <- function(id) {
           "These estimates are used to provide a base map of the proportion pine available to MPB in each pixel."),
 
         h4("References"),
-        p("Beaudoin, A, P Y Bernier, L Guindon, P Villemaire, X J Guo, G Stinson, T Bergeron, S Magnussen, and R J Hall. 2014. \"Mapping attributes of Canada’s forests at moderate resolution through kNN and MODIS imagery.\" Canadian Journal of Forest Research 44: 521–32. doi:10.1139/cjfr-2013-0401.")    )
+        p("Beaudoin, A, P Y Bernier, L Guindon, P Villemaire, X J Guo, G Stinson, T Bergeron, S Magnussen, and R J Hall. 2014. \"Mapping attributes of Canada's forests at moderate resolution through kNN and MODIS imagery.\" Canadian Journal of Forest Research 44: 521-32. doi:10.1139/cjfr-2013-0401.")
+    )
   )
 }
 
+#' @param input    shiny server input object
+#' @param output   shiny server output object
+#' @param session  shiny server session object
+#' @param sim      A \code{simList} object
+#'
 #' @export
 #' @rdname dataInfo
-dataInfo <- function(input, output, session) {
+dataInfo <- function(input, output, session, sim) {
   ##
 }

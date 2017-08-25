@@ -1,4 +1,15 @@
-### simulation outputs (graphs and figures) ------------------------------------
+#' Simulation outputs (graphs and figures) module
+#'
+#' TO DO: needs description
+#'
+#' @param id An ID string that corresponds with the ID used to call the module's
+#'   UI function
+#'
+#' @author Alex Chubaty
+#' @export
+#' @importFrom shiny fluidRow NS tabPanel
+#' @importFrom shinydashboard tabBox
+#' @rdname simOutputs
 simOutputsUI <- function(id) {
   ns <- NS(id)
 
@@ -9,13 +20,32 @@ simOutputsUI <- function(id) {
   )
 }
 
+#' @param input    shiny server input object
+#' @param output   shiny server output object
+#' @param session  shiny server session object
+#' @param sim      A \code{simList} object
+#'
+#' @export
+#' @importFrom graphics plot
+#' @importFrom shiny renderPlot
+#' @rdname simOutputs
 simOutputs <- function(input, output, session, sim) {
   output$growthCurve <- renderPlot({
     plot(sim$mpbRedTopGrowthPlotGG)
   })
 }
 
-### initial map ----------------------------------------------------------------
+#' Initial map module
+#'
+#' TO DO: need description
+#'
+#' @param id An ID string that corresponds with the ID used to call the module's
+#'   UI function
+#'
+#' @author Alex Chubaty
+#' @export
+#' @importFrom shiny fluidRow NS plotOutput
+#' @rdname initialMap
 initialMapUI <- function(id) {
   ns <- NS(id)
 
@@ -24,6 +54,17 @@ initialMapUI <- function(id) {
   )
 }
 
+#' @param input    shiny server input object
+#' @param output   shiny server output object
+#' @param session  shiny server session object
+#' @param sim      A \code{simList} object
+#' @param mapID    Character string indicating the name of the map in the
+#'                 \code{simList} object.
+#'
+#' @export
+#' @importFrom quickPlot clearPlot Plot setColors<-
+#' @importFrom RColorBrewer brewer.pal
+#' @rdname initialMap
 initialMap <- function(input, output, session, sim, mapID) {
   output$map_init <- renderPlot({
     switch(

@@ -7,8 +7,8 @@
 #'   UI function
 #'
 #' @author Alex Chubaty & Alex Tso (module)
-#'
 #' @export
+#' @importFrom shiny NS uiOutput
 #' @rdname copyrightAuthors
 copyrightAuthorsUI <- function(id) {
   ns <- NS(id)
@@ -27,6 +27,8 @@ copyrightAuthorsUI <- function(id) {
 #'                       (default is \file{LICENSE} in your shiny app dir).
 #'
 #' @export
+#' @importFrom shiny a br fluidRow h4 hr HTML p renderUI strong tags verbatimTextOutput wellPanel
+#' @importFrom shinydashboard box
 #' @rdname copyrightAuthors
 copyrightAuthors <- function(input, output, session, appName, authorInfo,
                              copyrightInfo, licenseFile = "LICENSE") {
@@ -35,7 +37,7 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
     if (is.na(appName)) appName <- ""
 
     if (is.null(authorInfo)) authorInfo <- ""
-    authorInfo[ is.na(authorInfo) ] <- ""
+    authorInfo[is.na(authorInfo)] <- ""
 
     if (is.null(copyrightInfo)) copyrightInfo <- ""
     if (is.na(copyrightInfo)) copyrightInfo <- ""

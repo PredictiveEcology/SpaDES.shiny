@@ -5,7 +5,7 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     https://predictiveecology.github.io/SpaDES.shiny/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2017-08-23
+Date: 2017-08-25
 Version: 0.1.0
 Authors@R: c(
     person("Alex M", "Chubaty", email = "alexander.chubaty@canada.ca",
@@ -21,14 +21,20 @@ Depends:
 Imports:
     DiagrammeR (>= 0.8.2),
     DT (>= 0.2),
+    graphics,
     grDevices,
     magrittr,
     methods,
     quickPlot,
+    RColorBrewer,
     reproducible,
     shiny (>= 0.13),
+    shinyBS,
+    shinydashboard,
     SpaDES.core,
     stringi (>= 1.1.3),
+    stringr,
+    tools,
     utils
 Suggests:
     hunspell,
@@ -42,7 +48,14 @@ VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
 Collate: 
+    'adminLogs.R'
+    'copyrightAuthors.R'
+    'debugging.R'
     'environment.R'
+    'footers.R'
+    'pkgInfo.R'
     'shine.R'
+    'simInfo.R'
+    'simOutputs.R'
     'spades-shiny-package.R'
 RoxygenNote: 6.0.1

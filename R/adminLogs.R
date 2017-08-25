@@ -10,8 +10,8 @@
 #'   UI function
 #'
 #' @author Alex Chubaty
-#'
 #' @export
+#' @importFrom shiny column fluidRow h4 NS uiOutput verbatimTextOutput wellPanel
 #' @rdname adminLogs
 adminLogsUI <- function(id) {
   ns <- NS(id)
@@ -34,9 +34,10 @@ adminLogsUI <- function(id) {
 #' @param session  shiny server session object
 #' @param config   inSpaDES app configuration (e.g., from \code{\link{readConfig}})
 #' @param path     file path of the server log files (usually \file{/var/log/shiny-server})
-#' @author Alex Chubaty
 #'
+#' @author Alex Chubaty
 #' @export
+#' @importFrom shiny isolate reactiveFileReader renderText renderUI req selectInput
 #' @rdname adminLogs
 adminLogs <- function(input, output, session, config, path = "/var/log/shiny-server") {
 

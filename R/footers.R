@@ -7,6 +7,7 @@
 #'
 #' @author Alex Chubaty
 #' @export
+#' @importFrom shiny HTML
 #' @rdname footers
 copyrightFooter <- function(copyrightInfo) {
   HTML(paste(
@@ -16,6 +17,7 @@ copyrightFooter <- function(copyrightInfo) {
 
 #' @author Alex Chubaty
 #' @export
+#' @importFrom shiny HTML
 #' @rdname footers
 sidebarFooter <- function() {
   HTML(paste(
