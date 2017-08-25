@@ -46,6 +46,7 @@ Suggests:
     hunspell,
     knitr,
     rmarkdown,
+    Rserve,
     testthat (>= 1.0.2)
 Remotes:
     PredictiveEcology/SpaDES.core,
