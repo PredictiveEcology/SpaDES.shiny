@@ -213,7 +213,8 @@ moduleInfo <- function(input, output, session, sim) {
             ),
             bsModal(module, basename(rmdFile),
                     trigger = paste0(module, "_Rmd"), size = "large",
-                    includeMarkdown(rmdFile))
+                    tryCatch(suppressWarnings(shiny::includeMarkdown(rmdFile)),
+                             error = function(e) "NOTE: no Rmd file supplied for this module."))
         )
       }))
     )
