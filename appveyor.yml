@@ -80,7 +80,7 @@ notifications:
    to:
      - alex.chubaty@gmail.com
    subject: 'SpaDES.shiny: r-appveyor build {{status}}'
-   message: "https://ci.appveyor.com/project/achubaty/SpaDES.shiny"
+   message: "https://ci.appveyor.com/project/achubaty/SpaDES-shiny"
    on_build_success: false
    on_build_failure: false
    on_build_status_changed: true
