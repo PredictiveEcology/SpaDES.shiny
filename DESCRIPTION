@@ -25,7 +25,9 @@ Imports:
     grDevices,
     magrittr,
     methods,
+    packrat,
     quickPlot,
+    R.utils,
     RColorBrewer,
     reproducible,
     shiny (>= 0.13),
@@ -35,7 +37,8 @@ Imports:
     stringi (>= 1.1.3),
     stringr,
     tools,
-    utils
+    utils,
+    yaml
 Suggests:
     hunspell,
     knitr,
@@ -49,10 +52,12 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
 Collate: 
     'adminLogs.R'
+    'config.R'
     'copyrightAuthors.R'
     'debugging.R'
     'environment.R'
     'footers.R'
+    'libInit.R'
     'pkgInfo.R'
     'shine.R'
     'simInfo.R'

@@ -19,14 +19,14 @@ UI function}
 
 \item{session}{shiny server session object}
 
-\item{config}{inSpaDES app configuration (e.g., from \code{\link{readConfig}})}
+\item{config}{\pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})}
 }
 \description{
 Generate Package Dependency Version Information
 }
 \details{
-Generates a box containing a data table with inSpaDES package
-dependency version information (i.e., all the packages required or used by inSpaDES.)
+Generates a box containing a data table with \pkg{SpaDES.shiny} package
+dependency version information (i.e., all the packages required or used by \pkg{SpaDES.shiny}.)
 }
 \author{
 Alex Chubaty

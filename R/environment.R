@@ -1,4 +1,4 @@
-#' The \code{SpaDES.shiny} package environment
+#' The \pkg{SpaDES.shiny} package environment
 #'
 #' Environment used internally to store internal package objects and methods.
 #'

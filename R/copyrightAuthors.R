@@ -58,7 +58,7 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
         p(HTML(paste(copyrightInfo))),
         if (file.exists(licenseFile)) {
           wellPanel(verbatimTextOutput(
-            readLines(licenseFile) %>% paste(., collapse = '\n')
+            readLines(licenseFile) %>% paste(., collapse = "\n")
           ))
         }
       ),

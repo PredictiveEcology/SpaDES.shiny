@@ -1,0 +1,21 @@
+/*a class for purple buttons to match the purple shiny-dashboard theme */
+.btn-purple {
+  background: #7519D1;
+  color: #ffffff;
+}
+
+/* footer */
+footer {
+  position: absolute;
+  bottom: 10px;
+}
+
+footer #copyright {
+  font-size: 12px;
+  padding: 10px 0;
+}
+
+footer #sidebar {
+  font-size: 14px;
+  padding: 10px 20px;
+}

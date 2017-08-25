@@ -23,7 +23,7 @@ adminLogsUI <- function(id) {
         uiOutput(ns("selectAdminLog"))
       )
     ),
-    column(width = 8, div(style = 'overflow-y: scroll'),
+    column(width = 8, div(style = 'overflow-y: scroll'), # nolint
       verbatimTextOutput(ns("adminLogText"))
     )
   )
@@ -32,7 +32,7 @@ adminLogsUI <- function(id) {
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
-#' @param config   inSpaDES app configuration (e.g., from \code{\link{readConfig}})
+#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
 #' @param path     file path of the server log files (usually \file{/var/log/shiny-server})
 #'
 #' @author Alex Chubaty
@@ -62,6 +62,6 @@ adminLogs <- function(input, output, session, config, path = "/var/log/shiny-ser
   output$adminLogText <- renderText({
     f <- adminLogFile(path)
     adminLogFileData <- reactiveFileReader(1000, session, f, readLines)
-    paste(adminLogFileData(), collapse = '\n')
+    paste(adminLogFileData(), collapse = "\n")
   })
 }

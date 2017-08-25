@@ -4,9 +4,9 @@
 \name{SpaDES.shiny-package}
 \alias{SpaDES.shiny}
 \alias{SpaDES.shiny-package}
-\title{The \code{SpaDES.shiny} package}
+\title{The \pkg{SpaDES.shiny} package}
 \description{
-The \code{SpaDES.shiny} package
+The \pkg{SpaDES.shiny} package
 }
 \seealso{
 Useful links:

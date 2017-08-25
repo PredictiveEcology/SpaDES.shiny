@@ -23,7 +23,7 @@ sidebarFooter <- function() {
   HTML(paste(
     "<footer>",
     "<div id=\"sidebar\">",
-    "Powered by <a href=\"http://SpaDES.PredictiveEcology.org\", target=\"_blank\">\u2660 SpaDES</a> ",
+    "Powered by <a href=\"http://SpaDES.PredictiveEcology.org\", target=\"_blank\">\u2660 SpaDES</a> ", # nolint
     "and <a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a>",
     "</div>",
     "</footer>"

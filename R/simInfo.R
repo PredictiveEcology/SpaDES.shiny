@@ -47,19 +47,19 @@ simInfo <- function(input, output, session, sim) {
 simModuleDiagramUI <- function(id) {
   ns <- NS(id)
 
-  ui_output <- tagList()
+  uiOut <- tagList()
 
-  ui_output$diagramTitle <- h3("Dependency graph (simplified)")
+  uiOut$diagramTitle <- h3("Dependency graph (simplified)")
 
-  ui_output$diagramDescription <- p(paste(
+  uiOut$diagramDescription <- p(paste(
     "A network diagram illustrating the simplified module",
     "dependencies of a simulation.",
     "Arrows between modules indicate at least one data object",
     "passed from one module to the other."))
 
-  ui_output$diagram <- imageOutput(ns("modDiag"), height = 750)
+  uiOut$diagram <- imageOutput(ns("modDiag"), height = 750)
 
-  return(ui_output)
+  return(uiOut)
 }
 
 #' @param input    shiny server input object
@@ -90,20 +90,20 @@ simModuleDiagram <- function(input, output, session, sim) {
 simObjectDiagramUI <- function(id) {
   ns <- NS(id)
 
-  ui_output <- tagList()
+  uiOut <- tagList()
 
-  ui_output$title <- h3("Summary of the data objects shared among modules.")
+  uiOut$title <- h3("Summary of the data objects shared among modules.")
 
-  ui_output$description <- p(paste(
+  uiOut$description <- p(paste(
     "A sequence diagram illustrating the data object dependencies",
     "of a simulation.",
     "Arrows between modules indicate at least one data object",
     "passed from one module to the other."
   ))
 
-  ui_output$diagram <- DiagrammeR::DiagrammeROutput(ns("objectDiagram"), height = 1500)
+  uiOut$diagram <- DiagrammeR::DiagrammeROutput(ns("objectDiagram"), height = 1500)
 
-  return(ui_output)
+  return(uiOut)
 }
 
 #' @param input    shiny server input object

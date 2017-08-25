@@ -39,7 +39,7 @@ pkgDeps <- function(x, type = NULL) {
 #' @importFrom magrittr %>%
 #' @importFrom utils packageVersion
 #' @rdname pkgInfoHelpers
-pkgVers <- function(x, lib.loc = NULL) {
+pkgVers <- function(x, lib.loc = NULL) { # nolint
   sapply(x, function(y) {
     tryCatch(packageVersion(y, lib.loc), error = function(e) warning(e)) %>%
       as.character()
@@ -70,8 +70,8 @@ pkgAuthors <- function(x) {
 
 #' Generate Package Dependency Version Information
 #'
-#' @details Generates a box containing a data table with inSpaDES package
-#' dependency version information (i.e., all the packages required or used by inSpaDES.)
+#' @details Generates a box containing a data table with \pkg{SpaDES.shiny} package
+#' dependency version information (i.e., all the packages required or used by \pkg{SpaDES.shiny}.)
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's
 #'   UI function
@@ -90,7 +90,7 @@ pkgInformationUI <- function(id) {
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
-#' @param config   inSpaDES app configuration (e.g., from \code{\link{readConfig}})
+#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
 #'
 #' @export
 #' @importFrom DT dataTableOutput renderDataTable
@@ -104,8 +104,8 @@ pkgInformation <- function(input, output, session, config) {
 
     pkgs <- c("inSpaDES", pkgDeps("inSpaDES"))
     vers <- pkgVers(pkgs)
-    libs <- installed.packages()[, 'Package'] %in% pkgs %>%
-      installed.packages()[., 'LibPath']
+    libs <- installed.packages()[, "Package"] %in% pkgs %>%
+      installed.packages()[., "LibPath"]
 
     box(
       title = "Package Version Information", status = "primary", width = 12,

@@ -1,6 +1,6 @@
 #' Get simulation-specific log filepath
 #'
-#' @param config   inSpaDES app configuration (e.g., from \code{\link{readConfig}})
+#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
 #' @param session  The current session
 #' @param simID    The simulation ID
 #'
@@ -33,7 +33,7 @@ debuggingUI <- function(id) {
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
-#' @param config   inSpaDES app configuration (e.g., from \code{\link{readConfig}})
+#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
 #' @param simID   The simulation number
 #'
 #' @export
@@ -44,7 +44,7 @@ debugging <- function(input, output, session, config, simID) {
     file <- simLogFile(config, session, simID)
     if (file.exists(file)) {
       simLogFileData <- reactiveFileReader(1000, session, file, readLines)
-      paste(simLogFileData(), collapse = '\n')
+      paste(simLogFileData(), collapse = "\n")
     } else {
       paste("You must start a simulation.")
     }

@@ -19,7 +19,7 @@ UI function}
 
 \item{session}{shiny server session object}
 
-\item{config}{inSpaDES app configuration (e.g., from \code{\link{readConfig}})}
+\item{config}{\pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})}
 
 \item{simID}{The simulation number}
 }
