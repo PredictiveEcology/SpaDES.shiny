@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The <span class="pkg">SpaDES.shiny</span> package environment — .pkgEnv • SpaDES.shiny</title>
+<title>Clone an existing <span class="pkg">SpaDES.shiny</span> app to a new directory — cloneApp • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,27 +80,58 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The <span class="pkg">SpaDES.shiny</span> package environment</h1>
+    <h1>Clone an existing <span class="pkg">SpaDES.shiny</span> app to a new directory</h1>
     </div>
 
     
-    <p>Environment used internally to store internal package objects and methods.</p>
+    <p>Setup the necessary directory structure for a new app, if not already present.
+Useful for copying an existing app for development or deployment purposes.</p>
     
 
-    <pre class="usage"><span class='no'>.pkgEnv</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>cloneApp</span>(<span class='no'>from</span>, <span class='no'>to</span>, <span class='kw'>symlinks</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>from</th>
+      <td><p>Directory of the app from which to copy/clone.</p></td>
+    </tr>
+    <tr>
+      <th>to</th>
+      <td><p>New app directory to be created.</p></td>
+    </tr>
+    <tr>
+      <th>symlinks</th>
+      <td><p>Logical indicating whether symlinks should be used for large
+directories, including <code class="file">app_data/</code>, <code class="file">modules/</code>,
+and <code class="file">packrat/</code>. Using symlinks speeds up app cloning.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>environment</code> of length 0.</p>
+    <p>None. Invoked for the side-effect of copyin an existing app.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This does not copy the app <code class="file">cache/</code> nor <code class="file">output/</code> directories.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Alex Chubaty
 
   </div>
 </div>

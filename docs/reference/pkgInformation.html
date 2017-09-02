@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The <span class="pkg">SpaDES.shiny</span> package environment — .pkgEnv • SpaDES.shiny</title>
+<title>Generate Package Dependency Version Information — pkgInformationUI • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,27 +80,61 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The <span class="pkg">SpaDES.shiny</span> package environment</h1>
+    <h1>Generate Package Dependency Version Information</h1>
     </div>
 
     
-    <p>Environment used internally to store internal package objects and methods.</p>
+    <p>Generate Package Dependency Version Information</p>
     
 
-    <pre class="usage"><span class='no'>.pkgEnv</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>pkgInformationUI</span>(<span class='no'>id</span>)
 
-    <p>An object of class <code>environment</code> of length 0.</p>
+<span class='fu'>pkgInformation</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>config</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>id</th>
+      <td><p>An ID string that corresponds with the ID used to call the module's
+UI function</p></td>
+    </tr>
+    <tr>
+      <th>input</th>
+      <td><p>shiny server input object</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>shiny server output object</p></td>
+    </tr>
+    <tr>
+      <th>session</th>
+      <td><p>shiny server session object</p></td>
+    </tr>
+    <tr>
+      <th>config</th>
+      <td><p><span class="pkg">SpaDES.shiny</span> app configuration object (e.g., from <code><a href='readConfig.html'>readConfig</a></code>)</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Generates a box containing a data table with <span class="pkg">SpaDES.shiny</span> package
+dependency version information (i.e., all the packages required or used by <span class="pkg">SpaDES.shiny</span>.)</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#details">Details</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Alex Chubaty
 
   </div>
 </div>

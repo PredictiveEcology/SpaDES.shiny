@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The <span class="pkg">SpaDES.shiny</span> package environment — .pkgEnv • SpaDES.shiny</title>
+<title>Get installed package dependencies — pkgDeps • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,27 +80,67 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The <span class="pkg">SpaDES.shiny</span> package environment</h1>
+    <h1>Get installed package dependencies</h1>
     </div>
 
     
-    <p>Environment used internally to store internal package objects and methods.</p>
+    <p>This is simply a wrapper around <code><a href='http://www.rdocumentation.org/packages/tools/topics/package_dependencies'>tools::package_dependencies</a></code></p>
+<p>This is simply a wrapper around <code><a href='http://www.rdocumentation.org/packages/utils/topics/packageDescription'>utils::packageVersion</a></code> to 1) allow a
+vector of package names to be passed as an argument; 2) to warn instead of error
+when a package is not installed; and 3) return versions as character strings.</p>
+<p>Get authors from a package's DESCRIPTION</p>
     
 
-    <pre class="usage"><span class='no'>.pkgEnv</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <pre class="usage"><span class='fu'>pkgDeps</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-    <p>An object of class <code>environment</code> of length 0.</p>
+<span class='fu'>pkgVers</span>(<span class='no'>x</span>, <span class='kw'>lib.loc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='fu'>pkgAuthors</span>(<span class='no'>x</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An installed package name.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>One of "Depends", "Imports", "LinkingTo", "Suggests", "Enhances",
+or "all". Default is <code>NULL</code>, which returns all.</p></td>
+    </tr>
+    <tr>
+      <th>lib.loc</th>
+      <td><p>a character vector of directory names of R libraries, or NULL.
+The default value of NULL corresponds to all libraries currently known.
+If the default is used, the loaded packages and namespaces are searched
+before the libraries.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A character vector of package dependencies.</p>
+<p>A character vector of package dependencies.</p>
+<p>A person vector of package authors.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Alex Chubaty
+
+Alex Chubaty
+
+Alex Chubaty
 
   </div>
 </div>

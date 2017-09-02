@@ -1,5 +1,5 @@
 urls:
-  reference: https://predictiveecology.github.io/SpaDES.shiny/reference
-  article: https://predictiveecology.github.io/SpaDES.shiny/articles
+  reference: http://spades-shiny.predictiveecology.org/reference
+  article: http://spades-shiny.predictiveecology.org/articles
 articles: {}
 
