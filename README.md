@@ -32,10 +32,6 @@ install_github("PredictiveEcology/SpaDES.shiny", dependencies = TRUE) # stable
 
 ### Development version (unstable)
 
-[![Build Status](https://travis-ci.org/PredictiveEcology/SpaDES.shiny.svg?branch=development)](https://travis-ci.org/PredictiveEcology/SpaDES.shiny)
-[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/2fxqhgk6miv2fytd/branch/development?svg=true)](https://ci.appveyor.com/project/achubaty/spades.shiny/branch/development)
-[![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/SpaDES.shiny/badge.svg?branch=development)](https://coveralls.io/github/PredictiveEcology/SpaDES.shiny?branch=development)
-
 **Install from GitHub:**
 
 ```r
