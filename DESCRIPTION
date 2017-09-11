@@ -60,11 +60,13 @@ Collate:
     'copyrightAuthors.R'
     'debugging.R'
     'environment.R'
+    'export.R'
     'footers.R'
     'libInit.R'
     'pkgInfo.R'
     'shine.R'
     'simInfo.R'
     'simOutputs.R'
+    'slider.R'
     'spades-shiny-package.R'
 RoxygenNote: 6.0.1
