@@ -12,6 +12,16 @@
 sliderUI <- function(id, label = NULL, min, max, value) {
   ns <- NS(id)
   
+  if(missing(min)) {
+    stop(paste("Slider Module requires a minimum value."))
+  }
+  if(missing(max)) {
+    stop(paste("Slider Module requires a maximum value."))
+  }
+  if(missing(value)) {
+    stop(paste("Slider Module requires an initial value."))
+  }
+  
   tagList(
     sliderInput(ns("slider"), label = label, min, max, value)
   )
