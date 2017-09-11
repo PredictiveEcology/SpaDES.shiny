@@ -60,6 +60,7 @@ Collate:
     'copyrightAuthors.R'
     'debugging.R'
     'environment.R'
+    'export.R'
     'footers.R'
     'libInit.R'
     'pkgInfo.R'
