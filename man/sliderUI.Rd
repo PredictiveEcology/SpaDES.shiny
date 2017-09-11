@@ -23,7 +23,7 @@ UI function}
 \item{loop}{Should the animation be a loop. Default is FALSE - no loop.}
 }
 \description{
-Slider Module
+Generates a slider which can animate from minimum to maximum value.
 }
 \author{
 Mateusz Wyszynski

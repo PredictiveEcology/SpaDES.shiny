@@ -1,4 +1,6 @@
 #' Slider Module
+#' 
+#' @description Generates a slider which can animate from minimum to maximum value.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's
 #'   UI function
