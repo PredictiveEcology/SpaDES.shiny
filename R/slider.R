@@ -6,10 +6,12 @@
 #' @param min The minimum value that can be selected
 #' @param max The maximum value that can be selected
 #' @param value The initial value of the slider
+#' @param interval Number specifying how fast animation should progress
+#' @param loop Should the animation be a loop. Default is FALSE - no loop.
 #' 
 #' @author Mateusz Wyszynski
 #' @export
-sliderUI <- function(id, label = NULL, min, max, value) {
+sliderUI <- function(id, label = NULL, min, max, value, interval, loop = FALSE) {
   ns <- NS(id)
   
   if(missing(min)) {
@@ -21,9 +23,12 @@ sliderUI <- function(id, label = NULL, min, max, value) {
   if(missing(value)) {
     stop(paste("Slider Module requires an initial value."))
   }
+  if(missing(interval)){
+    stop("Slider Module requires an interval argument.")
+  }
   
   tagList(
-    sliderInput(ns("slider"), label = label, min, max, value)
+    sliderInput(ns("slider"), label = label, min, max, value, animate = animationOptions(interval = interval, loop = loop))
   )
 }
 
