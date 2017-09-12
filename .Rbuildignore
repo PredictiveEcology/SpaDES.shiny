@@ -1,10 +1,12 @@
 ^.*\.Rproj$
+.*\.tar\.gz$
+.*\.zip$
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^\.lintr$
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^CONTRIBUTING\.md$
+^cran-comments\.md$
 ^docs$
 ^LICENSE$
-
