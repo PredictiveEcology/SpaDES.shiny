@@ -11,7 +11,7 @@ The \pkg{SpaDES.shiny} package
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://spades.shiny.predictiveecology.org/}
+  \item \url{https://predictiveecology.github.io/SpaDES.shiny/}
   \item \url{https://github.com/PredictiveEcology/SpaDES.shiny}
   \item Report bugs at \url{https://github.com/PredictiveEcology/SpaDES.shiny/issues}
 }
