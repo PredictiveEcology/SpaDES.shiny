@@ -26,7 +26,7 @@ renderTemplate <- function(templatePath, data, path) {
 #'
 #' @author Damian Rodziewicz
 generateSpadesShinyUI <- function(appDir, appMetadata) {
-  uiPath <- paste0(appDir, "/", "ui.R")
+  uiPath <- file.path(appDir, "ui.R")
   renderTemplate(uiTemplatePath, appMetadata, uiPath)
 }
 
@@ -39,7 +39,7 @@ generateSpadesShinyUI <- function(appDir, appMetadata) {
 #'
 #' @author Damian Rodziewicz
 generateSpadesShinyServer <- function(appDir, appMetadata) {
-  serverPath <- paste0(appDir, "/", "server.R")
+  serverPath <- file.path(appDir, "server.R")
   renderTemplate(serverTemplatePath, appMetadata, serverPath)
 }
 
