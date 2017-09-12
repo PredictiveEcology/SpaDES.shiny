@@ -41,6 +41,7 @@ Imports:
     stringr,
     tools,
     utils,
+    whisker,
     yaml
 Suggests:
     hunspell,
