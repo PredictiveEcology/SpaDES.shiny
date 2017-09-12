@@ -132,8 +132,8 @@ updateConfig <- function(fileFrom, fileTo) {
 #' @importFrom R.utils isAbsolutePath
 #' @importFrom reproducible checkPath
 #' @importFrom utils install.packages
-#' @rdname newApp
-newApp <- function(APP_DIR, ...) { # nolint
+#' @rdname newAppDeprecated
+newAppDeprecated <- function(APP_DIR, ...) { # nolint
   APP_DIR <- if (isAbsolutePath(APP_DIR)) { # nolint
     APP_DIR
   } else {
