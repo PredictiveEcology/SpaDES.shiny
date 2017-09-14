@@ -1,5 +1,3 @@
-library(leaflet)
-
 #' tilesUpdater Module
 #'
 #' @description This creates a shiny module which uses leaflet proxy (see \code{?leafletProxy}) to update tiles displayed on a leaflet map.
@@ -27,17 +25,3 @@ tilesUpdater <- function(input, output, session, proxy, urlTemplate, tilesGroup,
     do.call(addLayersControl, addLayersControlParametersCombined)
   })
 }
-
-# tilesUpdater <- function(input, output, session, proxy, urlTemplate, tilesGroup, addTilesParameters) {
-#   observeEvent(urlTemplate(), {
-#     proxy %>%
-#       clearGroup(tilesGroup) %>%
-#       addTiles(urlTemplate=urlTemplate(),
-#                group = tilesGroup,
-#                option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)) %>%
-#       addLayersControl(options = layersControlOptions(autoZIndex = TRUE,
-#                                                       collapsed = FALSE),
-#                        baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
-#                        overlayGroups = c("Time since fire", "Fire return interval"))
-#   })
-# }
