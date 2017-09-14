@@ -1,5 +1,6 @@
 uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
 serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
+globalTemplatePath <- system.file(package = "SpaDES.shiny", "templates/global.R.template")
 tabItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/tabItem.template")
 menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuItem.template")
 
@@ -60,6 +61,22 @@ generateSpadesShinyServer <- function(appDir, appMetadata) {
   writeLines(renderedContent, serverPath)
 }
 
+#' Generate and save global.R file.
+#'
+#' @param appDir         The directory path to use for the new app.
+#' @param appMetadata    Application metadata.
+#'
+#' @return None. Invoked for the side-effect of writing generated template to file.
+#'
+#' @author Damian Rodziewicz
+generateSpadesShinyGlobal <- function(appDir, appMetadata) {
+  globalPath <- file.path(appDir, "global.R")
+
+  renderedContent <- renderTemplate(globalTemplatePath, appMetadata)
+  writeLines(renderedContent, globalPath)
+}
+
+
 #' Use an existing shiny module.
 #'
 #' This method creates a metadata object to use in application metadata.
@@ -100,6 +117,7 @@ newApp <- function(appDir, appMetadata) { # nolint
   checkPath(appDir, create = TRUE)
   generateSpadesShinyUI(appDir, appMetadata)
   generateSpadesShinyServer(appDir, appMetadata)
+  generateSpadesShinyGlobal(appDir, appMetadata)
 
   message("New SpaDES.shiny app created!\n",
           "If running on shiny server, please ensure the app directory has the",
