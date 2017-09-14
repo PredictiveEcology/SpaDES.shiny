@@ -1,1 +1,1 @@
-tabItem("{{{tabName}}}", "{{{moduleUI}}}")
+tabItem("{{{tabName}}}", "{{{tabContent}}}")

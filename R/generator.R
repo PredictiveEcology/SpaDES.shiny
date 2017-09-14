@@ -19,7 +19,7 @@ renderTemplate <- function(templatePath, data) {
 }
 
 renderTabItems <- function(appMetadata) {
-  renderTemplate(tabItemTemplatePath, list(tabName = "moduleInfo", moduleUI = "module"))
+  renderTemplate(tabItemTemplatePath, list(tabName = "moduleInfo", tabContent = "module"))
 }
 
 renderMenuItems <- function(appMetadata) {
