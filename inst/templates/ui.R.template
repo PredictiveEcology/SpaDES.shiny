@@ -7,12 +7,14 @@ dashboardPage(skin = "green",
               dashboardSidebar(width = 300,
                                sidebarMenu(id = "wholeThing",
                                            h4(HTML("&nbsp;"), "Maps"),
-                                           menuItem("Module Info", tabName = "moduleInfo", icon = icon("puzzle-piece"))
+                                           menuItem("Module Info", tabName = "moduleInfo", icon = icon("puzzle-piece")),
+                                           {{menu_items}}
                                )
               ),
               dashboardBody(
                 tabItems(
-                  tabItem("moduleInfo", "{{content}}")
+                  tabItem("moduleInfo", "{{content}}"),
+                  {{tab_items}}
                 )
               )
 )

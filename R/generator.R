@@ -1,5 +1,5 @@
-uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.template")
-serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.template")
+uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
+serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
 
 #' Render a template using \pkg{whisker} package and write the result to a file.
 #'
@@ -27,7 +27,7 @@ renderTemplate <- function(templatePath, data, path) {
 #' @author Damian Rodziewicz
 generateSpadesShinyUI <- function(appDir, appMetadata) {
   uiPath <- file.path(appDir, "ui.R")
-  renderTemplate(uiTemplatePath, appMetadata, uiPath)
+  renderTemplate(uiTemplatePath, data, uiPath)
 }
 
 #' Generate and save server.R file.
