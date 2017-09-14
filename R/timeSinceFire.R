@@ -20,10 +20,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber-1)*10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    box(width = 4, solidHeader = TRUE, collapsible = TRUE,
-        h4(paste("Current time since distribution distribution")),
-        withSpinner(plotOutput(ns("timeSinceFire2Hist"), height = 600))
-    )
+    histogramForRasterUI(ns("histogram"))
   )
 }
 
@@ -101,15 +98,9 @@ timeSinceFire <- function(input, output, session, rasters) {
 
   callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire", addTilesParameters, addLayersControlParameters)
 
-  output$timeSinceFire2Hist <- renderPlot({
-    ras1 <- rasterInput()$r
-    Nbreaks <- ceiling(maxValue(ras1)/10)
-    timeSinceFireHist <- hist(ras1[], plot = FALSE, breaks = Nbreaks)
-    barplot(timeSinceFireHist$counts*prod(rasterResolution)/1e4, xlab = "Time since fire \n(Years)",
-            col = timeSinceFirePalette(1:(maxAge/10)), width = 1, space = 0, ylab = "Area (ha)")
-    axis(1, at = timeSinceFireHist$breaks/10, labels = 0:Nbreaks*10)
+  raster <- reactive(rasterInput()$r)
 
-  })
+  callModule(histogramForRaster, "histogram", raster)
 
   rasterInput <- reactive({
     sliderVal <- callModule(slider, "slider")
