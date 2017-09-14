@@ -1,20 +1,28 @@
 uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
 serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
+tabItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/tabItem.template")
+menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuItem.template")
 
-#' Render a template using \pkg{whisker} package and write the result to a file.
+#' Render a template using \pkg{whisker} package.
 #'
 #' @param templatePath     Path to the template file.
 #' @param data             Named list or environment with variables that will be used during rendering.
-#' @param path             Path where the rendered file should be saved.
 #'
-#' @return None. Invoked for the side-effect of writing generated template to file.
+#' @return Rendered template.
 #'
 #' @author Damian Rodziewicz
 #' @importFrom whisker whisker.render
-renderTemplate <- function(templatePath, data, path) {
+renderTemplate <- function(templatePath, data) {
   template <- readLines(templatePath)
-  renderedContent <- whisker.render(template, data)
-  writeLines(renderedContent, path)
+  whisker.render(template, data)
+}
+
+renderTabItems <- function(appMetadata) {
+  renderTemplate(tabItemTemplatePath, list(tabName = "moduleInfo", moduleUI = "module"))
+}
+
+renderMenuItems <- function(appMetadata) {
+  renderTemplate(menuItemTemplatePath, list(menuItemName = "Module Info", tabName = "moduleInfo", icon = "puzzle-piece"))
 }
 
 #' Generate and save ui.R file.
@@ -27,7 +35,14 @@ renderTemplate <- function(templatePath, data, path) {
 #' @author Damian Rodziewicz
 generateSpadesShinyUI <- function(appDir, appMetadata) {
   uiPath <- file.path(appDir, "ui.R")
-  renderTemplate(uiTemplatePath, data, uiPath)
+
+  data <- list(
+    tabItems = renderTabItems(appMetadata),
+    menuItems = renderMenuItems(appMetadata)
+  )
+
+  renderedContent <- renderTemplate(uiTemplatePath, data)
+  writeLines(renderedContent, uiPath)
 }
 
 #' Generate and save server.R file.
@@ -40,7 +55,9 @@ generateSpadesShinyUI <- function(appDir, appMetadata) {
 #' @author Damian Rodziewicz
 generateSpadesShinyServer <- function(appDir, appMetadata) {
   serverPath <- file.path(appDir, "server.R")
-  renderTemplate(serverTemplatePath, appMetadata, serverPath)
+
+  renderedContent <- renderTemplate(serverTemplatePath, appMetadata)
+  writeLines(renderedContent, serverPath)
 }
 
 #' Use an existing shiny module.
