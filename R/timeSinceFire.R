@@ -115,11 +115,8 @@ timeSinceFire <- function(input, output, session, rasters) {
     sliderVal <- callModule(slider, "slider")
     sliderValue <-
       if(is.null(sliderVal())) {
-        print("hello")
         1
       } else {
-        print(sliderVal())
-        print("is it me you're looking for?")
         sliderVal()
       }
     currentRaster <-sliderValue/10 + 1
