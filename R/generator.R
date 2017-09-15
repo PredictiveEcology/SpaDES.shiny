@@ -45,7 +45,7 @@ generateSpadesShinyServer <- function(appDir, appMetadata) {
 
 #' Use an existing shiny module.
 #'
-#' This method creates a metadata object to use in application metadata.
+#' Creates a metadata object to use in application metadata.
 #' Created object describes an existing shiny module.
 #'
 #' @param moduleName     Name of the module to use.
@@ -73,8 +73,8 @@ shinyModule <- function(moduleName) {
 #' @importFrom R.utils isAbsolutePath
 #' @importFrom reproducible checkPath
 #' @rdname newApp
-newApp <- function(appDir, appMetadata) { # nolint
-  appDir <- if (isAbsolutePath(appDir)) { # nolint
+newApp <- function(appDir, appMetadata) {
+  appDir <- if (isAbsolutePath(appDir)) {
     appDir
   } else {
     file.path("/srv/shiny-server", appDir)
