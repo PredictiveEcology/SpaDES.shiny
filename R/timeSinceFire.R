@@ -35,11 +35,13 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
+#' @param leafletZoomInit Initial leaflet zoom
+#' @param studyArea Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"
 #'
 #' @author Mateusz Wyszynski
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters) {
+timeSinceFire <- function(input, output, session, rasters, leafletZoomInit, studyArea) {
 
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
