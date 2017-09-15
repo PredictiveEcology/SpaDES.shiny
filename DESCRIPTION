@@ -72,4 +72,5 @@ Collate:
     'slider.R'
     'spades-shiny-package.R'
     'tilesUpdater.R'
+    'timeSinceFire.R'
 RoxygenNote: 6.0.1
