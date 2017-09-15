@@ -20,7 +20,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber-1)*10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    histogramForRasterUI(ns("histogram"))
+    plotRasterSummaryFunctionUI(ns("histogram"))
   )
 }
 
@@ -100,7 +100,15 @@ timeSinceFire <- function(input, output, session, rasters) {
 
   raster <- reactive(rasterInput()$r)
 
-  callModule(histogramForRaster, "histogram", raster)
+  timeSinceFireHistogram <- function(raster) {
+    numberOfBreaks <- ceiling(maxValue(raster)/10)
+
+    histogram <- hist(raster[], plot = FALSE, breaks = numberOfBreaks)
+    barplot(histogram$counts*prod(rasterResolution)/1e4, xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)), width = 1, space = 0, ylab = "Area (ha)")
+    axis(1, at = histogram$breaks/10, labels = 0:numberOfBreaks*10)
+  }
+
+  callModule(plotRasterSummaryFunction, "histogram", raster, timeSinceFireHistogram)
 
   rasterInput <- reactive({
     sliderVal <- callModule(slider, "slider")

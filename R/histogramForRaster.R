@@ -5,7 +5,7 @@
 #' @param id An ID string that corresponds with the ID used to call the module server function
 #'
 #' @export
-histogramForRasterUI <- function(id) {
+plotRasterSummaryFunctionUI <- function(id) {
   ns <- NS(id)
 
   box(width = 4, solidHeader = TRUE, collapsible = TRUE,
@@ -24,12 +24,10 @@ histogramForRasterUI <- function(id) {
 #' @param raster Reactive value containing raster
 #'
 #' @export
-histogramForRaster <- function(input, output, session, raster) {
+plotRasterSummaryFunction <- function(input, output, session, raster, plotFunction) {
   output$histogram <- renderPlot({
     numberOfBreaks <- ceiling(maxValue(raster())/10)
 
-    histogram <- hist(raster()[], plot = FALSE, breaks = numberOfBreaks)
-    barplot(histogram$counts*prod(rasterResolution)/1e4, xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)), width = 1, space = 0, ylab = "Area (ha)")
-    axis(1, at = histogram$breaks/10, labels = 0:numberOfBreaks*10)
+    plotFunction(raster())
   })
 }
