@@ -3,7 +3,7 @@ Type: Package
 Title: Utilities for building 'shiny' apps for 'SpaDES' simulations
 Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
-    https://predictiveecology.github.io/SpaDES.shiny/,
+    http://spades.shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
 Date: 2017-09.01
 Version: 0.1.0
@@ -20,7 +20,7 @@ Authors@R: c(
     )
 Additional_repositories: http://rforge.net
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.3.3)
 Imports:
     DiagrammeR (>= 0.8.2),
     DT (>= 0.2),
@@ -71,4 +71,6 @@ Collate:
     'simOutputs.R'
     'slider.R'
     'spades-shiny-package.R'
+    'tilesUpdater.R'
+    'timeSinceFire.R'
 RoxygenNote: 6.0.1
