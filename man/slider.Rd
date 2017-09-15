@@ -2,15 +2,24 @@
 % Please edit documentation in R/slider.R
 \name{sliderUI}
 \alias{sliderUI}
+\alias{slider}
 \title{Slider Module}
 \usage{
 sliderUI(id, ...)
+
+slider(input, output, session)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's
 UI function}
 
 \item{...}{sliderInput arguments. See ?sliderInput for reference.}
+
+\item{input}{shiny server input object}
+
+\item{output}{shiny server output object}
+
+\item{session}{shiny server session object}
 }
 \description{
 This creates a slider module UI.
