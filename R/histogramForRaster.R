@@ -4,13 +4,19 @@
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function
 #'
+#' @importFrom shiny NS h4 plotOutput
+#' @importFrom shinydashboard box
+#' @importFrom shinycssloaders withSpinner
+#'
+#' @rdname histogramForRaster
+#'
 #' @export
 histogramForRasterUI <- function(id) {
   ns <- NS(id)
 
   box(width = 4, solidHeader = TRUE, collapsible = TRUE,
       h4(paste("Current time since distribution distribution")),
-      withSpinner(plotOutput(ns("histogram"), height = 600))
+      shinycssloaders::withSpinner(plotOutput(ns("histogram"), height = 600))
   )
 }
 
@@ -22,6 +28,12 @@ histogramForRasterUI <- function(id) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param raster Reactive value containing raster
+#'
+#' @importFrom shiny renderPlot
+#' @importFrom raster maxValue hist
+#' @importFrom graphics axis barplot
+#'
+#' @rdname histogramForRaster
 #'
 #' @export
 histogramForRaster <- function(input, output, session, raster) {
