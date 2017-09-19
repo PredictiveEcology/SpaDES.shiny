@@ -4,7 +4,7 @@
 \alias{timeSinceFireUI}
 \title{Time Since Fire Shiny Module UI}
 \usage{
-timeSinceFireUI(id, rastersNumber)
+timeSinceFireUI(id, rastersNumber, polygonsNumber)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function}
