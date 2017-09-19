@@ -44,7 +44,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @author Mateusz Wyszynski
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters, leafletZoomInit, studyArea) {
+timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, studyArea = "SMALL") {
 
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit

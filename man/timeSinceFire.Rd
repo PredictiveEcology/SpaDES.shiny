@@ -4,7 +4,8 @@
 \alias{timeSinceFire}
 \title{Time Since Fire Shiny Module}
 \usage{
-timeSinceFire(input, output, session, rasters, leafletZoomInit, studyArea)
+timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
+  studyArea = "SMALL")
 }
 \arguments{
 \item{input}{Shiny server input object}
