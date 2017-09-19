@@ -2,7 +2,7 @@
 % Please edit documentation in R/slider.R
 \name{sliderUI}
 \alias{sliderUI}
-\title{Slider Module}
+\title{Slider Module UI}
 \usage{
 sliderUI(id, ...)
 }

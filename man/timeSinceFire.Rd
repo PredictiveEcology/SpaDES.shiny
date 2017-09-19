@@ -4,7 +4,8 @@
 \alias{timeSinceFire}
 \title{Time Since Fire Shiny Module}
 \usage{
-timeSinceFire(input, output, session, rasters)
+timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
+  studyArea = "SMALL")
 }
 \arguments{
 \item{input}{Shiny server input object}
@@ -14,6 +15,10 @@ timeSinceFire(input, output, session, rasters)
 \item{session}{Shiny server session object}
 
 \item{rasters}{Set of rasters to be displayed}
+
+\item{leafletZoomInit}{Initial leaflet zoom}
+
+\item{studyArea}{Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"}
 }
 \description{
 This creates a shiny module which displays rasters changing in time on a predefined map. A slider is also created on which you can choose which raster should be currently displayed. Moreover, a histogram summary for each raster choice is shown.
