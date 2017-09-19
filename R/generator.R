@@ -11,8 +11,9 @@ menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuIte
 #'
 #' @return Rendered template.
 #'
-#' @author Damian Rodziewicz
 #' @importFrom whisker whisker.render
+#'
+#' @author Damian Rodziewicz
 renderTemplate <- function(templatePath, data) {
   template <- readLines(templatePath)
   whisker.render(template, data)
@@ -24,6 +25,8 @@ renderTemplate <- function(templatePath, data) {
 #' @param moduleId       Id of the module to retrieve.
 #'
 #' @return Tibble containing the module if it was found. Empty tibble otherwise.
+#'
+#' @importFrom magrittr %>%
 #'
 #' @author Damian Rodziewicz
 getModuleById <- function(modules, moduleId) {
@@ -67,9 +70,11 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 #'
 #' @return Rendered tab items.
 #'
+#' @importFrom purrr pmap
+#'
 #' @author Damian Rodziewicz
 renderTabItems <- function(layout, modules) {
-  tabItems <- pmap(list(layout$tabName, layout$moduleId, layout$moduleUIParameters), function(tabName, moduleId, moduleUIParameters) {
+  tabItems <- purrr::pmap(list(layout$tabName, layout$moduleId, layout$moduleUIParameters), function(tabName, moduleId, moduleUIParameters) {
     module <- getModuleById(modules, moduleId)
     renderTabItem(tabName, module, moduleUIParameters)
   })
@@ -99,9 +104,11 @@ renderMenuItem <- function(tabName, menuItemName, icon) {
 #'
 #' @return Rendered menu items.
 #'
+#' @importFrom purrr pmap
+#'
 #' @author Damian Rodziewicz
 renderMenuItems <- function(layout, modules) {
-  menuItems <- pmap(list(layout$tabName, layout$menuItemName, layout$icon), renderMenuItem)
+  menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon), renderMenuItem)
 
   return(paste(menuItems, collapse = ",\n"))
 }
@@ -147,13 +154,13 @@ renderCallModuleDirective <- function(name, id, parameters) {
 #'
 #' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
-#' @importFrom purrr pmap
-#'
 #' @return Rendered callModule directives.
+#'
+#' @importFrom purrr pmap
 #'
 #' @author Damian Rodziewicz
 renderCallModuleDirectives <- function(modules) {
-  callModuleDirectives <- pmap(list(modules$name, modules$id, modules$parameters), renderCallModuleDirective)
+  callModuleDirectives <- purrr::pmap(list(modules$name, modules$id, modules$parameters), renderCallModuleDirective)
 
   return(paste(callModuleDirectives, collapse = "\n"))
 }
@@ -184,8 +191,6 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
 #'
 #' @param appDir         The directory path to use for the new app.
 #' @param appMetadata    Application metadata.
-#'
-#' @importFrom purrr map
 #'
 #' @return None. Invoked for the side-effect of writing rendered template to file.
 #'
