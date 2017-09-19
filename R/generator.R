@@ -20,15 +20,15 @@ renderTemplate <- function(templatePath, data) {
 
 #' Retrieve a module metadata from modules tibble.
 #'
-#' @param modules        Tibble with modules meta data. Tibble format: type, name, parameters.
-#' @param moduleName     Name of the module to find.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param moduleId       Id of the module to retrieve.
 #'
 #' @return Tibble containing the module if it was found. Empty tibble otherwise.
 #'
 #' @author Damian Rodziewicz
-getModuleByName <- function(modules, moduleName) {
+getModuleById <- function(modules, moduleId) {
   module <- modules %>%
-    filter(name == moduleName) %>%
+    filter(id == moduleId) %>%
     head()
 
   return(module)
@@ -44,8 +44,9 @@ renderParameters <- function(parameters) {
 
 #' Render a tab item.
 #'
-#' @param tabName          Name of the tab that this item corresponds to.
-#' @param module           Tibble with module metadata. Tibble format: type, name, parameters.
+#' @param tabName            Name of the tab that this item corresponds to.
+#' @param module             Tibble with module metadata. Tibble format: type, name, id, parameters.
+#' @param moduleUIParameters Module UI parameters.
 #'
 #' @return Rendered tab item.
 #'
@@ -53,7 +54,7 @@ renderParameters <- function(parameters) {
 renderTabItem <- function(tabName, module, moduleUIParameters) {
   # TODO: Separate id for each module so that user can have two modules A with different ids.
   parameters <- renderParameters(moduleUIParameters)
-  tabContent <- paste0(module$name, "UI(\"", module$name, "\"", parameters, ")")
+  tabContent <- paste0(module$name, "UI(\"", module$id, "\"", parameters, ")")
   tabItem <- renderTemplate(tabItemTemplatePath, list(tabName = tabName, tabContent = tabContent))
 
   return(tabItem)
@@ -62,14 +63,14 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 #' Render tab items for provided layout and available modules.
 #'
 #' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, serverParameters.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered tab items.
 #'
 #' @author Damian Rodziewicz
 renderTabItems <- function(layout, modules) {
-  tabItems <- pmap(list(layout$tabName, layout$moduleName, layout$moduleUIParameters), function(tabName, moduleName, moduleUIParameters) {
-    module <- getModuleByName(modules, moduleName)
+  tabItems <- pmap(list(layout$tabName, layout$moduleId, layout$moduleUIParameters), function(tabName, moduleId, moduleUIParameters) {
+    module <- getModuleById(modules, moduleId)
     renderTabItem(tabName, module, moduleUIParameters)
   })
 
@@ -94,7 +95,7 @@ renderMenuItem <- function(tabName, menuItemName, icon) {
 #' Render menu items for provided layout and available modules.
 #'
 #' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, parameters.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered menu items.
 #'
@@ -127,23 +128,24 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
 
 #' Render a callModule directive.
 #'
-#' @param name             Module name. It is equal to module id at this point.
+#' @param name             Module name.
+#' @param id               Module id.
 #' @param parameters       Server parameters used when calling the module.
 #'
 #' @return Rendered callModule directive.
 #'
 #' @author Damian Rodziewicz
-renderCallModuleDirective <- function(name, parameters) {
+renderCallModuleDirective <- function(name, id, parameters) {
   # TODO: Separate id for each module so that user can have two modules A with different ids.
   renderedParameters <- renderParameters(parameters)
-  callModuleDirective <- paste0("callModule(", name, ", \"", name, "\"", renderedParameters, ")")
+  callModuleDirective <- paste0("callModule(", name, ", \"", id, "\"", renderedParameters, ")")
 
   return(callModuleDirective)
 }
 
 #' Render callModule directives for provided modules.
 #'
-#' @param modules        Tibble with modules meta data. Tibble format: type, name, parameters.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @importFrom purrr pmap
 #'
@@ -151,9 +153,7 @@ renderCallModuleDirective <- function(name, parameters) {
 #'
 #' @author Damian Rodziewicz
 renderCallModuleDirectives <- function(modules) {
-  callModuleDirectives <- pmap(list(modules$name, modules$parameters), function(name, parameters) {
-    renderCallModuleDirective(name, parameters)
-  })
+  callModuleDirectives <- pmap(list(modules$name, modules$id, modules$parameters), renderCallModuleDirective)
 
   return(paste(callModuleDirectives, collapse = "\n"))
 }
