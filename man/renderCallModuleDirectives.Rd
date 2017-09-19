@@ -7,7 +7,7 @@
 renderCallModuleDirectives(modules)
 }
 \arguments{
-\item{modules}{Tibble with modules meta data. Tibble format: type, name, uiParameters, serverParameters.}
+\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
 }
 \value{
 Rendered callModule directives.

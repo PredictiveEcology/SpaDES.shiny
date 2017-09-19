@@ -9,7 +9,7 @@ renderMenuItems(layout, modules)
 \arguments{
 \item{layout}{Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.}
 
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, uiParameters, serverParameters.}
+\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
 }
 \value{
 Rendered menu items.

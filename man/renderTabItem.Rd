@@ -4,12 +4,14 @@
 \alias{renderTabItem}
 \title{Render a tab item.}
 \usage{
-renderTabItem(tabName, module)
+renderTabItem(tabName, module, moduleUIParameters)
 }
 \arguments{
 \item{tabName}{Name of the tab that this item corresponds to.}
 
-\item{module}{Tibble with one module metadata. Tibble format: type, name, uiParameters, serverParameters.}
+\item{module}{Tibble with module metadata. Tibble format: type, name, id, parameters.}
+
+\item{moduleUIParameters}{Module UI parameters.}
 }
 \value{
 Rendered tab item.

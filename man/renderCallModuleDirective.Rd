@@ -4,12 +4,14 @@
 \alias{renderCallModuleDirective}
 \title{Render a callModule directive.}
 \usage{
-renderCallModuleDirective(name, serverParameters)
+renderCallModuleDirective(name, id, parameters)
 }
 \arguments{
-\item{name}{Module name. It is equal to module id at this point.}
+\item{name}{Module name.}
 
-\item{serverParameters}{Server parameters used when calling the module.}
+\item{id}{Module id.}
+
+\item{parameters}{Server parameters used when calling the module.}
 }
 \value{
 Rendered callModule directive.
