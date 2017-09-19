@@ -42,10 +42,15 @@ getModuleByName <- function(modules, moduleName) {
 #' @return Rendered tab item.
 #'
 #' @author Damian Rodziewicz
-renderTabItem <- function(tabName, module) {
-  # TODO: Render parameters.
+renderTabItem <- function(tabName, module, moduleUIParameters) {
   # TODO: Separate id for each module so that user can have two modules A with different ids.
-  tabContent <- paste0(module$name, "UI(\"", module$name, "\", \"label\", 1, 100, 50, 2)")
+  parameters <- if(length(moduleUIParameters) > 0) {
+    paste(",", paste(moduleUIParameters, collapse = ", "))
+  } else {
+    ""
+  }
+
+  tabContent <- paste0(module$name, "UI(\"", module$name, "\"", parameters, ")")
   tabItem <- renderTemplate(tabItemTemplatePath, list(tabName = tabName, tabContent = tabContent))
 
   return(tabItem)
@@ -60,9 +65,9 @@ renderTabItem <- function(tabName, module) {
 #'
 #' @author Damian Rodziewicz
 renderTabItems <- function(layout, modules) {
-  tabItems <- pmap(list(layout$tabName, layout$moduleName), function(tabName, moduleName) {
+  tabItems <- pmap(list(layout$tabName, layout$moduleName, layout$moduleUIParameters), function(tabName, moduleName, moduleUIParameters) {
     module <- getModuleByName(modules, moduleName)
-    renderTabItem(tabName, module)
+    renderTabItem(tabName, module, moduleUIParameters)
   })
 
   return(paste0(tabItems, collapse = ",\n"))
