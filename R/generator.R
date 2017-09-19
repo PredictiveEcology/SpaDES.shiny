@@ -18,64 +18,176 @@ renderTemplate <- function(templatePath, data) {
   whisker.render(template, data)
 }
 
-renderTabItems <- function(appMetadata) {
-  renderTemplate(tabItemTemplatePath, list(tabName = "moduleInfo", tabContent = "module"))
+#' Retrieve a module metadata from modules tibble.
+#'
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, uiParameters, serverParameters.
+#' @param moduleName     Name of the module to find.
+#'
+#' @return Tibble containing the module if it was found. Empty tibble otherwise.
+#'
+#' @author Damian Rodziewicz
+getModuleByName <- function(modules, moduleName) {
+  module <- modules %>%
+    filter(name == moduleName) %>%
+    head()
+
+  return(module)
 }
 
-renderMenuItems <- function(appMetadata) {
-  renderTemplate(menuItemTemplatePath, list(menuItemName = "Module Info", tabName = "moduleInfo", icon = "puzzle-piece"))
+#' Render a tab item.
+#'
+#' @param tabName          Name of the tab that this item corresponds to.
+#' @param module           Tibble with one module metadata. Tibble format: type, name, uiParameters, serverParameters.
+#'
+#' @return Rendered tab item.
+#'
+#' @author Damian Rodziewicz
+renderTabItem <- function(tabName, module) {
+  # TODO: Render parameters.
+  # TODO: Separate id for each module so that user can have two modules A with different ids.
+  tabContent <- paste0(module$name, "UI(\"", module$name, "\", \"label\", 1, 100, 50, 2)")
+  tabItem <- renderTemplate(tabItemTemplatePath, list(tabName = tabName, tabContent = tabContent))
+
+  return(tabItem)
 }
 
-#' Generate and save ui.R file.
+#' Render tab items for provided layout and available modules.
+#'
+#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, uiParameters, serverParameters.
+#'
+#' @return Rendered tab items.
+#'
+#' @author Damian Rodziewicz
+renderTabItems <- function(layout, modules) {
+  tabItems <- pmap(list(layout$tabName, layout$moduleName), function(tabName, moduleName) {
+    module <- getModuleByName(modules, moduleName)
+    renderTabItem(tabName, module)
+  })
+
+  return(paste0(tabItems, collapse = ",\n"))
+}
+
+#' Render a menu item.
+#'
+#' @param tabName          Name of the tab that this item corresponds to.
+#' @param menuItemName     Name of the menu item to display.
+#' @param icon             Icon to display next to menu item name.
+#'
+#' @return Rendered menu item.
+#'
+#' @author Damian Rodziewicz
+renderMenuItem <- function(tabName, menuItemName, icon) {
+  menuItem <- renderTemplate(menuItemTemplatePath, list(tabName = tabName, menuItemName = menuItemName, icon = icon))
+
+  return(menuItem)
+}
+
+#' Render menu items for provided layout and available modules.
+#'
+#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
+#' @param modules        Tibble with modules metadata. Tibble format: type, name, uiParameters, serverParameters.
+#'
+#' @return Rendered menu items.
+#'
+#' @author Damian Rodziewicz
+renderMenuItems <- function(layout, modules) {
+  menuItems <- pmap(list(layout$tabName, layout$menuItemName, layout$icon), renderMenuItem)
+
+  return(paste(menuItems, collapse = ",\n"))
+}
+
+#' Render and save ui.R file.
 #'
 #' @param appDir         The directory path to use for the new app.
 #' @param appMetadata    Application metadata.
 #'
-#' @return None. Invoked for the side-effect of writing generated template to file.
+#' @return None. Invoked for the side-effect of writing rendered template to file.
 #'
 #' @author Damian Rodziewicz
-generateSpadesShinyUI <- function(appDir, appMetadata) {
+renderSpadesShinyUI <- function(appDir, appMetadata) {
   uiPath <- file.path(appDir, "ui.R")
 
   data <- list(
-    tabItems = renderTabItems(appMetadata),
-    menuItems = renderMenuItems(appMetadata)
+    menuItems = renderMenuItems(appMetadata$layout, appMetadata$modules),
+    tabItems = renderTabItems(appMetadata$layout, appMetadata$modules)
   )
 
   renderedContent <- renderTemplate(uiTemplatePath, data)
   writeLines(renderedContent, uiPath)
 }
 
-#' Generate and save server.R file.
+#' Render a callModule directive.
+#'
+#' @param name             Module name. It is equal to module id at this point.
+#' @param serverParameters Server parameters used when calling the module.
+#'
+#' @return Rendered callModule directive.
+#'
+#' @author Damian Rodziewicz
+renderCallModuleDirective <- function(name, serverParameters) {
+  # TODO: Render params.
+  # TODO: Separate id for each module so that user can have two modules A with different ids.
+  callModuleDirective <- paste0("callModule(", name, ", \"", name, "\")")
+
+  return(callModuleDirective)
+}
+
+#' Render callModule directives for provided modules.
+#'
+#' @param modules        Tibble with modules meta data. Tibble format: type, name, uiParameters, serverParameters.
+#'
+#' @importFrom purrr pmap
+#'
+#' @return Rendered callModule directives.
+#'
+#' @author Damian Rodziewicz
+renderCallModuleDirectives <- function(modules) {
+  callModuleDirectives <- pmap(list(modules$name, modules$serverParameters), function(name, serverParameters) {
+    renderCallModuleDirective(name, serverParameters)
+  })
+
+  return(paste(callModuleDirectives, collapse = "\n"))
+}
+
+#' Render and save server.R file.
 #'
 #' @param appDir         The directory path to use for the new app.
 #' @param appMetadata    Application metadata.
 #'
-#' @return None. Invoked for the side-effect of writing generated template to file.
+#' @return None. Invoked for the side-effect of writing rendered template to file.
 #'
 #' @author Damian Rodziewicz
-generateSpadesShinyServer <- function(appDir, appMetadata) {
+renderSpadesShinyServer <- function(appDir, appMetadata) {
   serverPath <- file.path(appDir, "server.R")
+  modules <- appMetadata$modules
 
-  renderedContent <- renderTemplate(serverTemplatePath, appMetadata)
+  callModuleDirectives <- renderCallModuleDirectives(appMetadata$modules)
+
+  data <- list(
+    callModuleDirectives = callModuleDirectives
+  )
+
+  renderedContent <- renderTemplate(serverTemplatePath, data)
   writeLines(renderedContent, serverPath)
 }
 
-#' Generate and save global.R file.
+#' Render and save global.R file.
 #'
 #' @param appDir         The directory path to use for the new app.
 #' @param appMetadata    Application metadata.
 #'
-#' @return None. Invoked for the side-effect of writing generated template to file.
+#' @importFrom purrr map
+#'
+#' @return None. Invoked for the side-effect of writing rendered template to file.
 #'
 #' @author Damian Rodziewicz
-generateSpadesShinyGlobal <- function(appDir, appMetadata) {
+renderSpadesShinyGlobal <- function(appDir, appMetadata) {
   globalPath <- file.path(appDir, "global.R")
 
   renderedContent <- renderTemplate(globalTemplatePath, appMetadata)
   writeLines(renderedContent, globalPath)
 }
-
 
 #' Use an existing shiny module.
 #'
@@ -102,10 +214,12 @@ shinyModule <- function(moduleName) {
 #' @return None. Invoked for the side-effect of creating a new app.
 #'
 #' @author Damian Rodziewicz
+#'
 #' @export
-#' @importFrom magrittr %>%
+#'
 #' @importFrom R.utils isAbsolutePath
 #' @importFrom reproducible checkPath
+#'
 #' @rdname newApp
 newApp <- function(appDir, appMetadata) { # nolint
   appDir <- if (isAbsolutePath(appDir)) { # nolint
@@ -115,9 +229,9 @@ newApp <- function(appDir, appMetadata) { # nolint
   }
 
   checkPath(appDir, create = TRUE)
-  generateSpadesShinyUI(appDir, appMetadata)
-  generateSpadesShinyServer(appDir, appMetadata)
-  generateSpadesShinyGlobal(appDir, appMetadata)
+  renderSpadesShinyUI(appDir, appMetadata)
+  renderSpadesShinyServer(appDir, appMetadata)
+  renderSpadesShinyGlobal(appDir, appMetadata)
 
   message("New SpaDES.shiny app created!\n",
           "If running on shiny server, please ensure the app directory has the",

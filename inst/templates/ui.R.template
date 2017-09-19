@@ -6,7 +6,6 @@ dashboardPage(skin = "green",
               dashboardHeader(title = "templateApp"),
               dashboardSidebar(width = 300,
                                sidebarMenu(id = "wholeThing",
-                                           h4(HTML("&nbsp;"), "Maps"),
                                            {{{menuItems}}}
                                )
               ),
