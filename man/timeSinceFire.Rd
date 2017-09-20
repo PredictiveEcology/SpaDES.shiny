@@ -25,7 +25,7 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
 
 \item{leafletZoomInit}{Initial leaflet zoom}
 
-\item{studyArea}{Size of study area. Options: \code{"FULL"}, \coe{"EXTRALARGE"},
+\item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
 }
 \description{

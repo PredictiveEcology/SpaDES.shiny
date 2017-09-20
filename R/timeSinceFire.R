@@ -42,7 +42,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
 #' @param leafletZoomInit Initial leaflet zoom
-#' @param studyArea Size of study area. Options: \code{"FULL"}, \coe{"EXTRALARGE"},
+#' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 #'
 #' @author Mateusz Wyszynski
