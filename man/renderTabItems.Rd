@@ -7,9 +7,12 @@
 renderTabItems(layout, modules)
 }
 \arguments{
-\item{layout}{Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.}
+\item{layout}{Tibble with layout metadata.
+Tibble format: \code{tabName}, \code{menuItemName}, \code{icon},
+\code{moduleName}.}
 
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
+\item{modules}{Tibble with modules metadata.
+Tibble format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 }
 \value{
 Rendered tab items.

@@ -3,7 +3,7 @@
 \name{timeSinceFireUI}
 \alias{timeSinceFireUI}
 \alias{timeSinceFire}
-\title{Time Since Fire Shiny Module UI}
+\title{Time-Since-Fire shiny module}
 \usage{
 timeSinceFireUI(id, rastersNumber)
 
@@ -11,7 +11,7 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
   studyArea = "SMALL")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function}
+\item{id}{An ID string that corresponds with the ID used to call the module server function.}
 
 \item{rastersNumber}{How many rasters can we choose from}
 
@@ -28,9 +28,9 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
 \item{studyArea}{Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"}
 }
 \description{
-This creates a shiny module UI for Time Since Fire shiny module. Compare with \code{?timeSinceFire}
-
-This creates a shiny module which displays rasters changing in time on a predefined map. A slider is also created on which you can choose which raster should be currently displayed. Moreover, a histogram summary for each raster choice is shown.
+A shiny module which displays rasters changing in time on a predefined map.
+A slider is also created on which you can choose which raster should be currently displayed.
+Moreover, a histogram summary for each raster choice is shown.
 }
 \author{
 Mateusz Wyszynski

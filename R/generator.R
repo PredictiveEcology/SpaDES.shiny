@@ -11,7 +11,8 @@ menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuIte
 #' Render a template using \pkg{whisker} package.
 #'
 #' @param templatePath     Path to the template file.
-#' @param data             Named list or environment with variables that will be used during rendering.
+#' @param data             Named list or environment with variables that will be
+#'                         used during rendering.
 #'
 #' @return Rendered template.
 #'
@@ -77,8 +78,12 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 
 #' Render tab items for provided layout and available modules.
 #'
-#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param layout    Tibble with layout metadata.
+#'                  Tibble format: \code{tabName}, \code{menuItemName}, \code{icon},
+#'                  \code{moduleName}.
+#'
+#' @param modules   Tibble with modules metadata.
+#'                  Tibble format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
 #' @return Rendered tab items.
 #'
@@ -86,10 +91,13 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 #'
 #' @author Damian Rodziewicz
 renderTabItems <- function(layout, modules) {
-  tabItems <- purrr::pmap(list(layout$tabName, layout$moduleId, layout$moduleUIParameters), function(tabName, moduleId, moduleUIParameters) {
-    module <- getModuleById(modules, moduleId)
-    renderTabItem(tabName, module, moduleUIParameters)
-  })
+  tabItems <- purrr::pmap(
+    list(layout$tabName, layout$moduleId, layout$moduleUIParameters),
+    function(tabName, moduleId, moduleUIParameters) {
+      module <- getModuleById(modules, moduleId)
+      renderTabItem(tabName, module, moduleUIParameters)
+    }
+  )
 
   return(paste0(tabItems, collapse = ",\n"))
 }
@@ -104,15 +112,16 @@ renderTabItems <- function(layout, modules) {
 #'
 #' @author Damian Rodziewicz
 renderMenuItem <- function(tabName, menuItemName, icon) {
-  menuItem <- renderTemplate(menuItemTemplatePath, list(tabName = tabName, menuItemName = menuItemName, icon = icon))
+  menuItem <- renderTemplate(menuItemTemplatePath,
+                             list(tabName = tabName, menuItemName = menuItemName, icon = icon))
 
   return(menuItem)
 }
 
 #' Render menu items for provided layout and available modules.
 #'
-#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param layout    Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
+#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered menu items.
 #'
@@ -168,11 +177,14 @@ renderCallModuleDirective <- function(name, id, parameters) {
 #'
 #' @return Rendered callModule directives.
 #'
+#' @author Damian Rodziewicz
 #' @importFrom purrr pmap
 #'
-#' @author Damian Rodziewicz
 renderCallModuleDirectives <- function(modules) {
-  callModuleDirectives <- purrr::pmap(list(modules$name, modules$id, modules$parameters), renderCallModuleDirective)
+  callModuleDirectives <- purrr::pmap(
+    list(modules$name, modules$id, modules$parameters),
+    renderCallModuleDirective
+  )
 
   return(paste(callModuleDirectives, collapse = "\n"))
 }
