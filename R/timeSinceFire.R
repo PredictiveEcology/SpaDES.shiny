@@ -6,6 +6,7 @@
 #' @param rastersNumber How many rasters can we choose from
 #'
 #' @author Mateusz Wyszynski
+#'
 #' @export
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom leaflet leafletOutput
@@ -18,7 +19,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
         h4(paste("Below are a sequence of snapshots of the landscape, showing the natural range of",
                  "variation in time since fire. Click on the 'play' button at the bottom right to animate")),
-        withSpinner(leaflet::leafletOutput(ns("timeSinceFire2"), height = 600)),
+        shinycssloaders::withSpinner(leaflet::leafletOutput(ns("timeSinceFire2"), height = 600)),
         sliderUI(ns("slider"),
                  "Individual snapshots of time since fire maps. Use play button (bottom right) to animate.",
                  min = 0, max = (rastersNumber - 1) * 10, value = 0, step = 10,
@@ -26,7 +27,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
     ),
     box(width = 4, solidHeader = TRUE, collapsible = TRUE,
         h4(paste("Current time since distribution distribution")),
-        withSpinner(plotOutput(ns("timeSinceFire2Hist"), height = 600))
+        shinycssloaders::withSpinner(plotOutput(ns("timeSinceFire2Hist"), height = 600))
     )
   )
 }
@@ -39,6 +40,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
+#' @param leafletZoomInit Initial leaflet zoom
+#' @param studyArea Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"
 #'
 #' @author Mateusz Wyszynski
 #' @export
@@ -54,7 +57,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSinceFire
-timeSinceFire <- function(input, output, session, rasters) {
+timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, studyArea = "SMALL") {
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
     rasInp <- isolate(rasterInput())

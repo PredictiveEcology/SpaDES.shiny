@@ -3,7 +3,7 @@
 \name{sliderUI}
 \alias{sliderUI}
 \alias{slider}
-\title{Slider Module}
+\title{Slider Module UI}
 \usage{
 sliderUI(id, ...)
 
@@ -23,6 +23,8 @@ UI function}
 }
 \description{
 This creates a slider module UI.
+
+Slider Module
 }
 \author{
 Mateusz Wyszynski

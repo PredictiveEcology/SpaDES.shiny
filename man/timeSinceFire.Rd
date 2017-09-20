@@ -7,7 +7,8 @@
 \usage{
 timeSinceFireUI(id, rastersNumber)
 
-timeSinceFire(input, output, session, rasters)
+timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
+  studyArea = "SMALL")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function}
@@ -21,6 +22,10 @@ timeSinceFire(input, output, session, rasters)
 \item{session}{Shiny server session object}
 
 \item{rasters}{Set of rasters to be displayed}
+
+\item{leafletZoomInit}{Initial leaflet zoom}
+
+\item{studyArea}{Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"}
 }
 \description{
 This creates a shiny module UI for Time Since Fire shiny module. Compare with \code{?timeSinceFire}

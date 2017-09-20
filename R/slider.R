@@ -1,4 +1,4 @@
-#' Slider Module
+#' Slider Module UI
 #'
 #' @description This creates a slider module UI.
 #'
@@ -16,6 +16,8 @@ sliderUI <- function(id, ...) {
   sliderInput(ns("slider"), ...)
 }
 
+#' Slider Module
+#'
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
