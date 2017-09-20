@@ -9,6 +9,16 @@ exportCsvUI(id)
 
 exportCsv(input, output, session)
 }
+\arguments{
+\item{id}{An ID string that corresponds with the ID used to call the module's
+UI function}
+
+\item{input}{shiny server input object}
+
+\item{output}{shiny server output object}
+
+\item{session}{shiny server session object}
+}
 \description{
 Proof-of-concept
 }
