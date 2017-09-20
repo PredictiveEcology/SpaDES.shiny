@@ -1,3 +1,7 @@
+if (getRversion() >= "3.1.0") {
+  utils::globalVariables(c("id"))
+}
+
 uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
 serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
 globalTemplatePath <- system.file(package = "SpaDES.shiny", "templates/global.R.template")
@@ -21,24 +25,32 @@ renderTemplate <- function(templatePath, data) {
 
 #' Retrieve a module metadata from modules tibble.
 #'
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
-#' @param moduleId       Id of the module to retrieve.
+#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param moduleId  Id of the module to retrieve.
 #'
 #' @return Tibble containing the module if it was found. Empty tibble otherwise.
 #'
-#' @importFrom magrittr %>%
-#'
 #' @author Damian Rodziewicz
+#' @importFrom dplyr filter
+#' @importFrom magrittr %>%
+#' @importFrom utils head
+#'
 getModuleById <- function(modules, moduleId) {
   module <- modules %>%
-    filter(id == moduleId) %>%
+    dplyr::filter(id == moduleId) %>%
     head()
 
   return(module)
 }
 
+#' Render parameters
+#'
+#' DESCRIPTION NEEDED (TODO)
+#'
+#' @param parameters description needed (TODO)
+#'
 renderParameters <- function(parameters) {
-  renderedParameters <- if(length(parameters) > 0) {
+  renderedParameters <- if (length(parameters) > 0) {
     paste(",", paste(parameters, collapse = ", "))
   } else {
     ""
