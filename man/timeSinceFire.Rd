@@ -25,7 +25,8 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
 
 \item{leafletZoomInit}{Initial leaflet zoom}
 
-\item{studyArea}{Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"}
+\item{studyArea}{Size of study area. Options: \code{"FULL"}, \coe{"EXTRALARGE"},
+\code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
 }
 \description{
 A shiny module which displays rasters changing in time on a predefined map.

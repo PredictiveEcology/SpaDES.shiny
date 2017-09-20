@@ -20,11 +20,13 @@ timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
   tagList(
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
-        h4(paste("Below are a sequence of snapshots of the landscape, showing the natural range of",
-                 "variation in time since fire. Click on the 'play' button at the bottom right to animate")),
+        h4(paste("Below are a sequence of snapshots of the landscape,",
+                 "showing the natural range of variation in time since fire.",
+                 "Click on the 'play' button at the bottom right to animate.")),
         shinycssloaders::withSpinner(leaflet::leafletOutput(ns("timeSinceFire2"), height = 600)),
         sliderUI(ns("slider"),
-                 "Individual snapshots of time since fire maps. Use play button (bottom right) to animate.",
+                 paste("Individual snapshots of time since fire maps.",
+                       "Use play button (bottom right) to animate."),
                  min = 0, max = (rastersNumber - 1) * 10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
@@ -40,7 +42,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
 #' @param leafletZoomInit Initial leaflet zoom
-#' @param studyArea Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"
+#' @param studyArea Size of study area. Options: \code{"FULL"}, \coe{"EXTRALARGE"},
+#'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 #'
 #' @author Mateusz Wyszynski
 #' @export
@@ -56,7 +59,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSinceFire
-timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, studyArea = "SMALL") {
+timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
+                          studyArea = "SMALL") {
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
     rasInp <- isolate(rasterInput())
@@ -143,8 +147,10 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, 
       } else {
         sliderVal()
       }
+
+    # slider units are 10, starting at 0; index here is 1 to length (tsf)
     currentRaster <- sliderValue / 10 + 1
-    r <- rasters[[currentRaster]] # slider units are 10, starting at 0; index here is 1 to length (tsf)
+    r <- rasters[[currentRaster]]
 
     if (useGdal2Tiles) {
       message("Running gdal2TilesFn for layer ", currentRaster, " of ", length(rasters))
@@ -153,7 +159,6 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, 
             cacheRepo = paths$cachePath, digestPathContent = TRUE)
     }
     if (TRUE) {
-      #if(Sys.info()["nodename"]=="W-VIC-A105388") stopApp()
       if (ncell(r) > 3e5) {
         r <- Cache(sampleRegular, r, size = 4e5, #notOlderThan = Sys.time(),
                    asRaster = TRUE, cacheRepo = paths$cachePath)
@@ -176,10 +181,10 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, 
     }
   })
 
-  showpos <- function(x=NULL, y=NULL) {
-    #Show popup on clicks
-    #Translate Lat-Lon to cell number using the unprojected raster
-    #This is because the projected raster is not in degrees, we cannot use it!
+  showpos <- function(x = NULL, y = NULL) {
+    # Show popup on clicks
+    # Translate Lat-Lon to cell number using the unprojected raster
+    # This is because the projected raster is not in degrees, we cannot use it!
     colNam <- names(polygons)[[(length(polygons) / 4) * 4]]
     pol <- polygons[[(length(polygons) / 4) * 3]]
     friPoly <- shpStudyRegion
