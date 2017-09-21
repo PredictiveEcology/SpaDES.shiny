@@ -43,12 +43,12 @@ timeSinceFire <- function(input, output, session, rasters) {
 
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
-    rasInp <- isolate(rasterInput())
-    polyNum <- polygonInput()
-    polyFull <- polygons[[polyNum + (length(polygons)/4)*2]] # leaflet projection, Full scale
 
-    pol <- polygons[[(length(polygons)/4)*4]]
+    polyFull <- polygons[[3]] # leaflet projection, Full scale
+    pol <- polygons[[1]]
+
     shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polyFull))
+
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles("Thunderforest.OpenCycleMap", group="Open Cycle Map",
                        options=providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -145,50 +145,12 @@ timeSinceFire <- function(input, output, session, rasters) {
     1
   })
 
-  observe({
-    #Observer to show Popups on click
-    click <- input$timeSinceFire2_shape_click
-    if (!is.null(click)) {
-      showpos(x=click$lng, y=click$lat)
-    }
-  })
+  polygonsInput <- reactive(spTransform(shpStudyRegionFull, crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")))
 
-  showpos <- function(x=NULL, y=NULL) {
-    #Show popup on clicks
-    #Translate Lat-Lon to cell number using the unprojected raster
-    #This is because the projected raster is not in degrees, we cannot use it!
-    colNam <- names(polygons)[[(length(polygons)/4)*4]]
-    pol <- polygons[[(length(polygons)/4)*3]]
-    friPoly <- shpStudyRegion
+  raster <- reactive(rasterInput()$r)
 
-    sp <- SpatialPoints(cbind(x,y), proj4string = crs(pol))
-    ras1 <- rasterInput()$r
-    cell <- cellFromXY(ras1, c(x, y))
-    #if (!is.na(cell)) {#If the click is inside the raster...
-    #Get row and column, to print later
-    rc <- rowColFromCell(ras1, cell)
+  click <- reactive(input$timeSinceFire2_shape_click)
 
-    #Get values from raster and polygon
-    polyVal <- sp %>%
-      extract(pol, .) %>%
-      .[polygonIndivIdsColum[[colNam]]]
-    friVal <- sp %>%
-      spTransform(crs(shpStudyRegionFull)) %>%
-      extract(shpStudyRegionFull, .) %>%
-      .["fireReturnInterval"]
-
-    val = ras1[][cell]
-
-    firstPart <- if(!is.na(val)) {
-      paste0("Time Since Fire=", round(val, 1), " years <br>")
-    } else {
-      ""
-    }
-    content <- paste0(firstPart,
-                      polygonIndivIdsColum[[colNam]],": ",polyVal,"<br>",
-                      "Fire Return Interval: ", friVal, "<br>",
-                      "Lat/Long: ", round(y,4),", ", round(x,4))
-    proxy <- leafletProxy("timeSinceFire2")
-    proxy %>% clearPopups() %>% addPopups(x, y, popup = content)
-  }
+  callModule(summaryPopups, "popups", proxy = proxy, click = click, raster = raster, polygons = polygonsInput,
+             "Time Since Fire = %s years", c("fireReturnInterval"))
 }
