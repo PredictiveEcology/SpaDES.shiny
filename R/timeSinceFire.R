@@ -20,8 +20,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber-1)*10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    histogramForRasterUI(ns("histogram"))
-  )
+    histogramForRasterUI(ns("histogram"), title = h4(paste("Current time since distribution distribution")), width = 4, solidHeader = TRUE, collapsible = TRUE))
 }
 
 #' Time Since Fire Shiny Module
@@ -100,7 +99,16 @@ timeSinceFire <- function(input, output, session, rasters) {
 
   raster <- reactive(rasterInput()$r)
 
-  callModule(histogramForRaster, "histogram", raster)
+  breaks <- reactive(ceiling(maxValue(raster())/10))
+
+  addAxisParams <- reactive({
+    numberOfBreaks <- ceiling(maxValue(raster())/10)
+    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks*10))
+  })
+
+  callModule(histogramForRaster, "histogram", raster, scale = prod(rasterResolution)/1e4, histogramBreaks = breaks,
+             addAxisParams = addAxisParams, xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)),
+             width = 1, space = 0, ylab = "Area (ha)")
 
   rasterInput <- reactive({
     sliderVal <- callModule(slider, "slider")

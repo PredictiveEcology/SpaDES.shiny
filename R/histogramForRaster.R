@@ -3,21 +3,20 @@
 #' @description This creates UI for shiny module creating histogram of data contained in raste
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function
+#' @param title Optional title for the histogram. Any shiny tag can be used.
+#' @param ... Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.
 #'
-#' @importFrom shiny NS h4 plotOutput
+#' @importFrom shiny NS plotOutput
 #' @importFrom shinydashboard box
 #' @importFrom shinycssloaders withSpinner
 #'
 #' @rdname histogramForRaster
 #'
 #' @export
-histogramForRasterUI <- function(id) {
+histogramForRasterUI <- function(id, title = "", ...) {
   ns <- NS(id)
 
-  box(width = 4, solidHeader = TRUE, collapsible = TRUE,
-      h4(paste("Current time since distribution distribution")),
-      shinycssloaders::withSpinner(plotOutput(ns("histogram"), height = 600))
-  )
+  box(title, shinycssloaders::withSpinner(plotOutput(ns("histogram"), height = 600)), ...)
 }
 
 #' Histogram for Raster Shiny Module
@@ -28,20 +27,30 @@ histogramForRasterUI <- function(id) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param raster Reactive value containing raster
+#' @param scale Number used for scaling heights of histogram bars. When set to 1 (default) histogram bar height represents
+#' amount of raster cells with value from bar interval. If the resolution of raster is known, scale parameter can
+#' be used to transform these heights into the ones representing area covered by cells.
+#' @param histogramBreaks Reactive value which is responsible for \code{breaks} parameter as in \code{hist} function from \pkg{graphics} package.
+#' See \code{\link[graphics]{hist}} for reference.
+#' @param addAxisParams Reactive value with parameters to \code{axis} function from \pkg{graphics} package. See \code{\link[graphics]{axis}} for reference. If \code{NULL}
+#' (default) then no axis is drawn.
+#' @param ... Additional graphic parameters to \code{barplot} function from \pkg{graphics} package. See \code{\link[graphics]{barplot}} for reference.
 #'
 #' @importFrom shiny renderPlot
-#' @importFrom raster maxValue hist
+#' @importFrom raster hist
 #' @importFrom graphics axis barplot
 #'
 #' @rdname histogramForRaster
 #'
 #' @export
-histogramForRaster <- function(input, output, session, raster) {
+histogramForRaster <- function(input, output, session, raster, scale = 1, histogramBreaks, addAxisParams = NULL,  ...) {
   output$histogram <- renderPlot({
-    numberOfBreaks <- ceiling(maxValue(raster())/10)
+    histogram <- raster::hist(raster(), plot = FALSE, breaks = histogramBreaks())
 
-    histogram <- hist(raster()[], plot = FALSE, breaks = numberOfBreaks)
-    barplot(histogram$counts*prod(rasterResolution)/1e4, xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)), width = 1, space = 0, ylab = "Area (ha)")
-    axis(1, at = histogram$breaks/10, labels = 0:numberOfBreaks*10)
+    barplot(histogram$counts*scale, ...)
+
+    if(!is.null(addAxisParams)) {
+      do.call(axis, addAxisParams())
+    }
   })
 }
