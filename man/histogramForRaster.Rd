@@ -5,7 +5,7 @@
 \alias{histogramForRaster}
 \title{Histogram for Raster Shiny Module}
 \usage{
-histogramForRasterUI(id, title = "", ...)
+histogramForRasterUI(id, title = "", plotParameters, ...)
 
 histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
   addAxisParams = NULL, ...)
@@ -14,6 +14,8 @@ histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
 \item{id}{An ID string that corresponds with the ID used to call the module server function}
 
 \item{title}{Optional title for the histogram. Any shiny tag can be used.}
+
+\item{plotParameters}{A list of parameters passed to \code{\link[shiny]{plotOutput}} function from \pkg{shiny} package.}
 
 \item{...}{Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.}
 

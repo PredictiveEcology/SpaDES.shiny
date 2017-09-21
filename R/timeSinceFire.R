@@ -20,7 +20,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber-1)*10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    histogramForRasterUI(ns("histogram"), title = h4(paste("Current time since distribution distribution")), width = 4, solidHeader = TRUE, collapsible = TRUE))
+    histogramForRasterUI(ns("histogram"), title = h4(paste("Current time since distribution distribution")), plotParameters = list(height = 600),
+                         width = 4, solidHeader = TRUE, collapsible = TRUE))
 }
 
 #' Time Since Fire Shiny Module

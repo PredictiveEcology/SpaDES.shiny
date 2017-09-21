@@ -5,6 +5,7 @@
 #' @param id An ID string that corresponds with the ID used to call the module server function
 #' @param title Optional title for the histogram. Any shiny tag can be used.
 #' @param ... Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.
+#' @param plotParameters A list of parameters passed to \code{\link[shiny]{plotOutput}} function from \pkg{shiny} package.
 #'
 #' @importFrom shiny NS plotOutput
 #' @importFrom shinydashboard box
@@ -13,10 +14,17 @@
 #' @rdname histogramForRaster
 #'
 #' @export
-histogramForRasterUI <- function(id, title = "", ...) {
+histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
   ns <- NS(id)
 
-  box(title, shinycssloaders::withSpinner(plotOutput(ns("histogram"), height = 600)), ...)
+  plotParameters["outputId"] = NULL
+  plotOutputParameters <- c(ns("histogram"), plotParameters)
+
+  box(title,
+      shinycssloaders::withSpinner(
+        do.call(plotOutput, plotOutputParameters)
+        ),
+      ...)
 }
 
 #' Histogram for Raster Shiny Module
