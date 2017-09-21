@@ -2,7 +2,7 @@
 % Please edit documentation in R/tilesUpdater.R
 \name{tilesUpdater}
 \alias{tilesUpdater}
-\title{tilesUpdater Module}
+\title{Tiles Updater Module}
 \usage{
 tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
   addTilesParameters = NULL, addLayersControlParameters = NULL)
@@ -20,12 +20,15 @@ tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
 
 \item{tilesGroup}{Group of rasters/tiles we want to update}
 
-\item{addTilesParameters}{Additional parameters of \code{leaflet::addTiles} function. See \code{?addTiles} for reference. Parameters: \code{proxy}/\code{map}, code{urlTemplate} and \code{group} should be provided directly as \code{tilesUpdater} arguments using \code{proxy}, \code{urlTemplate} and \code{tilesGroup} parameter respectively. If passed within \code{addTilesParameters}, these arguments will be surpressed by the values passed directly to \code{tilesUpdater}.}
+\item{addTilesParameters}{Additional parameters of \code{\link[leaflet]{addTiles}} function. Parameters: \code{proxy}/\code{map}, code{urlTemplate} and \code{group} should be provided directly as \code{tilesUpdater} arguments using \code{proxy}, \code{urlTemplate} and \code{tilesGroup} parameter respectively. If passed within \code{addTilesParameters}, these arguments will be surpressed by the values passed directly to \code{tilesUpdater}.}
 
-\item{addLayersControlParameters}{Additional parameters of \code{leaflet::addLayersControl} function. See \code{?addLayersControl} for reference.}
+\item{addLayersControlParameters}{Additional parameters of \code{\link[leaflet]{addLayersControl}} function.}
+}
+\value{
+None. Invoked for the side-effect of sending information to leaflet proxy.
 }
 \description{
-This creates a shiny module which uses leaflet proxy (see \code{?leafletProxy}) to update tiles displayed on a leaflet map.
+This creates a shiny module which uses leaflet proxy (see \code{\link[leaflet]{leafletProxy}}) to update tiles displayed on a leaflet map.
 }
 \author{
 Mateusz Wyszynski

@@ -1,14 +1,18 @@
 #' Time Since Fire Shiny Module UI
 #'
-#' @description This creates a shiny module UI for Time Since Fire shiny module. Compare with \code{?timeSinceFire}
+#' @description Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function
 #' @param rastersNumber How many rasters can we choose from
 #'
-#' @author Mateusz Wyszynski
+#' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom shiny NS tagList h4 animationOptions
+#' @importFrom shinydashboard box
+#'
+#' @rdname timeSinceFire
 #'
 #' @export
 timeSinceFireUI <- function(id, rastersNumber) {
@@ -32,7 +36,9 @@ timeSinceFireUI <- function(id, rastersNumber) {
 
 #' Time Since Fire Shiny Module
 #'
-#' @description This creates a shiny module which displays rasters changing in time on a predefined map. A slider is also created on which you can choose which raster should be currently displayed. Moreover, a histogram summary for each raster choice is shown.
+#' @description Function \code{timeSinceFire} creates a shiny module server function which displays rasters changing in time on a predefined map.
+#' A slider on which you can choose which raster should be currently displayed is also created.
+#' Moreover, a histogram summary for each raster choice is shown.
 #'
 #' @param input Shiny server input object
 #' @param output Shiny server output object
@@ -41,7 +47,15 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param leafletZoomInit Initial leaflet zoom
 #' @param studyArea Size of study area. Options: "FULL", "EXTRALARGE", "LARGE", "MEDIUM", "NWT", "SMALL"
 #'
+#' @return None. Invoked for the side-effect of creating a shiny server part.
+#'
 #' @author Mateusz Wyszynski
+#'
+#' @importFrom shiny isolate reactive callModule
+#' @importFrom leaflet renderLeaflet leaflet addProviderTiles addPolygons addLegend addMeasure addEasyButton addMiniMap setView leafletProxy tileOptions
+#' @importFrom SpaDES.core end
+#'
+#' @rdname timeSinceFire
 #'
 #' @export
 timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5, studyArea = "SMALL") {
