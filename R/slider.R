@@ -8,6 +8,8 @@
 #'
 #' @author Mateusz Wyszynski
 #' @export
+#' @importFrom shiny NS sliderInput
+#' @rdname slider
 sliderUI <- function(id, ...) {
   ns <- NS(id)
 
@@ -21,6 +23,8 @@ sliderUI <- function(id, ...) {
 #' @param session  shiny server session object
 #'
 #' @export
+#' @importFrom shiny reactive
+#' @rdname slider
 slider <- function(input, output, session) {
   return(reactive(input$slider))
 }

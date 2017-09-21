@@ -1,3 +1,7 @@
+if (getRversion() >= "3.1.0") {
+  utils::globalVariables(c("id"))
+}
+
 uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
 serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
 globalTemplatePath <- system.file(package = "SpaDES.shiny", "templates/global.R.template")
@@ -7,7 +11,8 @@ menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuIte
 #' Render a template using \pkg{whisker} package.
 #'
 #' @param templatePath     Path to the template file.
-#' @param data             Named list or environment with variables that will be used during rendering.
+#' @param data             Named list or environment with variables that will be
+#'                         used during rendering.
 #'
 #' @return Rendered template.
 #'
@@ -21,24 +26,32 @@ renderTemplate <- function(templatePath, data) {
 
 #' Retrieve a module metadata from modules tibble.
 #'
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
-#' @param moduleId       Id of the module to retrieve.
+#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param moduleId  Id of the module to retrieve.
 #'
 #' @return Tibble containing the module if it was found. Empty tibble otherwise.
 #'
-#' @importFrom magrittr %>%
-#'
 #' @author Damian Rodziewicz
+#' @importFrom dplyr filter
+#' @importFrom magrittr %>%
+#' @importFrom utils head
+#'
 getModuleById <- function(modules, moduleId) {
   module <- modules %>%
-    filter(id == moduleId) %>%
+    dplyr::filter(id == moduleId) %>%
     head()
 
   return(module)
 }
 
+#' Render parameters
+#'
+#' DESCRIPTION NEEDED (TODO)
+#'
+#' @param parameters description needed (TODO)
+#'
 renderParameters <- function(parameters) {
-  renderedParameters <- if(length(parameters) > 0) {
+  renderedParameters <- if (length(parameters) > 0) {
     paste(",", paste(parameters, collapse = ", "))
   } else {
     ""
@@ -65,8 +78,12 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 
 #' Render tab items for provided layout and available modules.
 #'
-#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param layout    Tibble with layout metadata.
+#'                  Tibble format: \code{tabName}, \code{menuItemName}, \code{icon},
+#'                  \code{moduleName}.
+#'
+#' @param modules   Tibble with modules metadata.
+#'                  Tibble format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
 #' @return Rendered tab items.
 #'
@@ -74,10 +91,13 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 #'
 #' @author Damian Rodziewicz
 renderTabItems <- function(layout, modules) {
-  tabItems <- purrr::pmap(list(layout$tabName, layout$moduleId, layout$moduleUIParameters), function(tabName, moduleId, moduleUIParameters) {
-    module <- getModuleById(modules, moduleId)
-    renderTabItem(tabName, module, moduleUIParameters)
-  })
+  tabItems <- purrr::pmap(
+    list(layout$tabName, layout$moduleId, layout$moduleUIParameters),
+    function(tabName, moduleId, moduleUIParameters) {
+      module <- getModuleById(modules, moduleId)
+      renderTabItem(tabName, module, moduleUIParameters)
+    }
+  )
 
   return(paste0(tabItems, collapse = ",\n"))
 }
@@ -92,15 +112,16 @@ renderTabItems <- function(layout, modules) {
 #'
 #' @author Damian Rodziewicz
 renderMenuItem <- function(tabName, menuItemName, icon) {
-  menuItem <- renderTemplate(menuItemTemplatePath, list(tabName = tabName, menuItemName = menuItemName, icon = icon))
+  menuItem <- renderTemplate(menuItemTemplatePath,
+                             list(tabName = tabName, menuItemName = menuItemName, icon = icon))
 
   return(menuItem)
 }
 
 #' Render menu items for provided layout and available modules.
 #'
-#' @param layout         Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param layout    Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
+#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered menu items.
 #'
@@ -156,11 +177,14 @@ renderCallModuleDirective <- function(name, id, parameters) {
 #'
 #' @return Rendered callModule directives.
 #'
+#' @author Damian Rodziewicz
 #' @importFrom purrr pmap
 #'
-#' @author Damian Rodziewicz
 renderCallModuleDirectives <- function(modules) {
-  callModuleDirectives <- purrr::pmap(list(modules$name, modules$id, modules$parameters), renderCallModuleDirective)
+  callModuleDirectives <- purrr::pmap(
+    list(modules$name, modules$id, modules$parameters),
+    renderCallModuleDirective
+  )
 
   return(paste(callModuleDirectives, collapse = "\n"))
 }
@@ -204,7 +228,7 @@ renderSpadesShinyGlobal <- function(appDir, appMetadata) {
 
 #' Use an existing shiny module.
 #'
-#' This method creates a metadata object to use in application metadata.
+#' Creates a metadata object to use in application metadata.
 #' Created object describes an existing shiny module.
 #'
 #' @param moduleName     Name of the module to use.
@@ -234,8 +258,8 @@ shinyModule <- function(moduleName) {
 #' @importFrom reproducible checkPath
 #'
 #' @rdname newApp
-newApp <- function(appDir, appMetadata) { # nolint
-  appDir <- if (isAbsolutePath(appDir)) { # nolint
+newApp <- function(appDir, appMetadata) {
+  appDir <- if (isAbsolutePath(appDir)) {
     appDir
   } else {
     file.path("/srv/shiny-server", appDir)
