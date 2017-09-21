@@ -71,6 +71,7 @@ Collate:
     'simOutputs.R'
     'slider.R'
     'spades-shiny-package.R'
+    'summaryPopups.R'
     'tilesUpdater.R'
     'timeSinceFire.R'
 RoxygenNote: 6.0.1
