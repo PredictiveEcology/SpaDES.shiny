@@ -5,12 +5,17 @@
 \alias{histogramForRaster}
 \title{Histogram for Raster Shiny Module}
 \usage{
-histogramForRasterUI(id)
+histogramForRasterUI(id, title = "", ...)
 
-histogramForRaster(input, output, session, raster)
+histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
+  addAxisParams = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function}
+
+\item{title}{Optional title for the histogram. Any shiny tag can be used.}
+
+\item{...}{Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.}
 
 \item{input}{Shiny server input object}
 
@@ -19,6 +24,18 @@ histogramForRaster(input, output, session, raster)
 \item{session}{Shiny server session object}
 
 \item{raster}{Reactive value containing raster}
+
+\item{scale}{Number used for scaling heights of histogram bars. When set to 1 (default) histogram bar height represents
+amount of raster cells with value from bar interval. If the resolution of raster is known, scale parameter can
+be used to transform these heights into the ones representing area covered by cells.}
+
+\item{histogramBreaks}{Reactive value which is responsible for \code{breaks} parameter as in \code{hist} function from \pkg{graphics} package.
+See \code{\link[graphics]{hist}} for reference.}
+
+\item{addAxisParams}{Reactive value with parameters to \code{axis} function from \pkg{graphics} package. See \code{\link[graphics]{axis}} for reference. If \code{NULL}
+(default) then no axis is drawn.}
+
+\item{...}{Additional graphic parameters to \code{barplot} function from \pkg{graphics} package. See \code{\link[graphics]{barplot}} for reference.}
 }
 \description{
 This creates UI for shiny module creating histogram of data contained in raste
