@@ -37,20 +37,21 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
+#' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
 #'
 #' @author Mateusz Wyszynski
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters, polygons) {
+timeSinceFire <- function(input, output, session, rasters, polygonsList) {
 
   polygonsInput <- reactive({
-    spTransform(shpStudyRegionFull, crs(polygons[[3]]))
+    spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))
   })
 
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
 
-    pol <- polygons[[4]]
+    pol <- polygonsList[[4]]
     shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polygonsInput()))
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles("Thunderforest.OpenCycleMap", group="Open Cycle Map",
@@ -159,8 +160,8 @@ timeSinceFire <- function(input, output, session, rasters, polygons) {
     #Show popup on clicks
     #Translate Lat-Lon to cell number using the unprojected raster
     #This is because the projected raster is not in degrees, we cannot use it!
-    colNam <- names(polygons)[[(length(polygons)/4)*4]]
-    pol <- polygons[[(length(polygons)/4)*3]]
+    colNam <- names(polygonsList)[[(length(polygonsList)/4)*4]]
+    pol <- polygonsList[[(length(polygonsList)/4)*3]]
     friPoly <- shpStudyRegion
 
     sp <- SpatialPoints(cbind(x,y), proj4string = crs(pol))
