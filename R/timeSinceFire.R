@@ -7,6 +7,8 @@
 #'
 #' @author Mateusz Wyszynski
 #'
+#' @rdname timeSinceFire
+#'
 #' @export
 timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)

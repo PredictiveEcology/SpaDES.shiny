@@ -4,7 +4,7 @@
 \alias{polygonsUpdater}
 \title{Polygons Updater Module}
 \usage{
-polygonsUpdater(input, output, session, proxy, polygonsInput, ...)
+polygonsUpdater(input, output, session, proxy, polygons, ...)
 }
 \arguments{
 \item{input}{Shiny server input object}
@@ -15,12 +15,17 @@ polygonsUpdater(input, output, session, proxy, polygonsInput, ...)
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 
-\item{polygonsInput}{Reactive value which contains a set of polygons which should be displayed on the leaflet map}
+\item{polygons}{Reactive value which contains a set of polygons which should be displayed on the leaflet map}
 
-\item{...}{Additional parameters of \code{leaflet::addPolygons} function. See \code{?leaflet::addPolygons} for reference.}
+\item{...}{Additional parameters of \code{\link[leaflet]{addPolygons}} function.}
+}
+\value{
+None. Invoked for the side-effect of creating an observer
+        which manages current set of polygons on a leaflet map using leaflet proxy.
 }
 \description{
-This creates a shiny module which uses leaflet proxy (see \code{?leafletProxy}) to update polygons displayed on a leaflet map.
+This creates a shiny module which uses leaflet proxy (see \code{\link[leaflet]{leafletProxy}})
+             to update polygons displayed on a leaflet map.
 }
 \author{
 Mateusz Wyszynski
