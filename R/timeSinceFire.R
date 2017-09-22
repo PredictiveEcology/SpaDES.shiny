@@ -101,10 +101,12 @@ timeSinceFire <- function(input, output, session, rasters) {
 
   raster <- reactive(rasterInput()$r)
 
-  breaks <- reactive(ceiling(maxValue(raster())/10))
+  numberOfBreaks <- reactive(ceiling(maxValue(raster())/10))
+
+  breaks <- reactive(numberOfBreaks())
 
   addAxisParams <- reactive({
-    numberOfBreaks <- ceiling(maxValue(raster())/10)
+    numberOfBreaks <- numberOfBreaks()
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks*10))
   })
 
