@@ -66,4 +66,5 @@ branches:
   only:
     - master
     - development
+    - develop
     - testing

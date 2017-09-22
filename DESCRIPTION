@@ -23,19 +23,25 @@ Depends:
     R (>= 3.3.3)
 Imports:
     DiagrammeR (>= 0.8.2),
+    dplyr,
     DT (>= 0.2),
     graphics,
     grDevices,
+    leaflet,
     magrittr,
     methods,
     packrat,
+    purrr,
     quickPlot,
     R.utils,
     RColorBrewer,
+    raster,
     reproducible,
     shiny (>= 0.13),
     shinyBS,
+    shinycssloaders,
     shinydashboard,
+    sp,
     SpaDES.core,
     stringi (>= 1.1.3),
     stringr,
@@ -49,8 +55,6 @@ Suggests:
     rmarkdown,
     Rserve,
     testthat (>= 1.0.2)
-Remotes:
-    PredictiveEcology/SpaDES.core,
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues

@@ -3,14 +3,15 @@
 \name{timeSinceFireUI}
 \alias{timeSinceFireUI}
 \alias{timeSinceFire}
-\title{Time Since Fire Shiny Module UI}
+\title{Time-Since-Fire shiny module}
 \usage{
 timeSinceFireUI(id, rastersNumber)
 
-timeSinceFire(input, output, session, rasters, polygons)
+timeSinceFire(input, output, session, rasters, polygonsList,
+  leafletZoomInit = 5, studyArea = "SMALL")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function}
+\item{id}{An ID string that corresponds with the ID used to call the module server function.}
 
 \item{rastersNumber}{How many rasters can we choose from}
 
@@ -21,11 +22,26 @@ timeSinceFire(input, output, session, rasters, polygons)
 \item{session}{Shiny server session object}
 
 \item{rasters}{Set of rasters to be displayed}
+
+\item{polygonsList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+
+\item{leafletZoomInit}{Initial leaflet zoom}
+
+\item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
+\code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
+}
+\value{
+None. Invoked for the side-effect of creating a shiny UI.
+
+None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
-This creates a shiny module UI for Time Since Fire shiny module. Compare with \code{?timeSinceFire}
+Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
 
-This creates a shiny module which displays rasters changing in time on a predefined map. A slider is also created on which you can choose which raster should be currently displayed. Moreover, a histogram summary for each raster choice is shown.
+Function \code{timeSinceFire} creates a shiny module server function
+             which displays rasters changing in time on a predefined map.
+             A slider, on which you can choose which raster should be currently displayed, is also created.
+             Moreover, a histogram summary for each raster choice is shown.
 }
 \author{
 Mateusz Wyszynski
