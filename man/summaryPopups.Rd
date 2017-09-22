@@ -22,7 +22,12 @@ summaryPopups(input, output, session, proxy, click, raster, polygons,
 
 \item{polygons}{Reactive value with current set of polygons on map}
 
-\item{extractedValues}{List of attributes from \code{SpatialPolygonDataFrame} which should be included in popup summary.
+\item{rasterValueLabel}{String with description of raster value. Uses \code{sprintf},
+so must include exactly one \code{\%s} in order to display raster value.
+Dafult is a string \code{"Raster value: \%s"}.}
+
+\item{extractedValues}{List of attributes from \code{SpatialPolygonDataFrame}
+which should be included in popup summary.
 When \code{NULL} (default) all attributes are included.}
 }
 \value{

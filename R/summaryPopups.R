@@ -15,8 +15,9 @@ extractValuesWithNames <- function(polygons, spatialPoints, extractedValues) {
                               list = extracted, sep = ": ")
 }
 
-displayPopupWithSummary <- function(x, y, proxy, raster, polygons, rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
-  spatialPointFromClick <- SpatialPoints(cbind(x,y), proj4string = crs(polygons))
+displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
+                                    rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
+  spatialPointFromClick <- SpatialPoints(cbind(x, y), proj4string = crs(polygons))
 
   valueExtractedFromRaster <- extract(raster, spatialPointFromClick)
 
@@ -26,7 +27,8 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons, rasterValueLa
     ""
   }
 
-  polygonInformation <- paste(extractValuesWithNames(polygons, spatialPointFromClick, extractedValues), collapse = "<br>")
+  polygonInformation <- paste(extractValuesWithNames(polygons, spatialPointFromClick, extractedValues),
+                              collapse = "<br>")
 
   popupContent <- paste0(rasterInformation,
                     polygonInformation, "<br>",
@@ -46,10 +48,12 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons, rasterValueLa
 #' @param click Reactive value with click on shape input from leaflet map.
 #' @param raster Reactive value with raster to summarize by.
 #' @param polygons Reactive value with current set of polygons on map
-#' @param rasterValueLabel String with description of raster value. Uses \code{sprintf}, so must include exactly one \code{%s}
-#' in order to display raster value. Dafult is a string \code{"Raster value: %s"}.
-#' @param extractedValues List of attributes from \code{SpatialPolygonDataFrame} which should be included in popup summary.
-#' When \code{NULL} (default) all attributes are included.
+#' @param rasterValueLabel String with description of raster value. Uses \code{sprintf},
+#'                         so must include exactly one \code{\%s} in order to display raster value.
+#'                         Dafult is a string \code{"Raster value: \%s"}.
+#' @param extractedValues List of attributes from \code{SpatialPolygonDataFrame}
+#'                        which should be included in popup summary.
+#'                        When \code{NULL} (default) all attributes are included.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny observer.
 #'
@@ -63,12 +67,14 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons, rasterValueLa
 #' @rdname summaryPopups
 #'
 #' @export
-summaryPopups <- function(input, output, session, proxy, click, raster, polygons, rasterValueLabel = "Raster value: %s", extractedValues = NULL){
+summaryPopups <- function(input, output, session, proxy, click, raster, polygons,
+                          rasterValueLabel = "Raster value: %s", extractedValues = NULL){
   observe({
     if (!is.null(click())) {
       polygons <- polygons()
       raster <- raster()
-      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy, raster, polygons, rasterValueLabel, extractedValues)
+      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy, raster, polygons,
+                              rasterValueLabel, extractedValues)
     }
   })
 }
