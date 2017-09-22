@@ -1,21 +1,22 @@
 #' Time-Since-Fire shiny module
 #'
-#' @description A shiny module which displays rasters changing in time on a predefined map.
-#' A slider is also created on which you can choose which raster should be currently displayed.
-#' Moreover, a histogram summary for each raster choice is shown.
+#' @description Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
-#'
 #' @param rastersNumber How many rasters can we choose from
 #'
-#' @author Mateusz Wyszynski
-#' @export
-#' @importFrom shinycssloaders withSpinner
+#' @return None. Invoked for the side-effect of creating a shiny UI.
+#'
 #' @importFrom leaflet leafletOutput
-#' @importFrom shiny animationOptions h4 NS tagList
+#' @importFrom shinycssloaders withSpinner
+#' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
+#'
+#' @author Mateusz Wyszynski
+#'
 #' @rdname timeSinceFire
 #'
+#' @export
 timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
   tagList(
@@ -37,6 +38,13 @@ timeSinceFireUI <- function(id, rastersNumber) {
   )
 }
 
+#' Time Since Fire Shiny Module
+#'
+#' @description Function \code{timeSinceFire} creates a shiny module server function
+#'              which displays rasters changing in time on a predefined map.
+#'              A slider, on which you can choose which raster should be currently displayed, is also created.
+#'              Moreover, a histogram summary for each raster choice is shown.
+#'
 #' @param input Shiny server input object
 #' @param output Shiny server output object
 #' @param session Shiny server session object
@@ -45,9 +53,9 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 #'
-#' @author Mateusz Wyszynski
-#' @export
-#' @importFrom graphics axis barplot hist
+#' @return None. Invoked for the side-effect of creating a shiny server part.
+#'
+#' @importFrom graphics axis barplot
 #' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons
 #' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
@@ -55,10 +63,15 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom shiny br callModule isolate observe reactive renderPlot
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
-#' @importFrom raster xmax xmin ymax ymin
+#' @importFrom raster xmax xmin ymax ymin hist
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core paddedFloatToChar
+#' @importFrom SpaDES.core paddedFloatToChar end
+#'
+#' @author Mateusz Wyszynski
+#'
 #' @rdname timeSinceFire
+#'
+#' @export
 timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
                           studyArea = "SMALL") {
   output$timeSinceFire2 <- renderLeaflet({

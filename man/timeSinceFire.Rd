@@ -28,10 +28,18 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
 \item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
 }
+\value{
+None. Invoked for the side-effect of creating a shiny UI.
+
+None. Invoked for the side-effect of creating a shiny server part.
+}
 \description{
-A shiny module which displays rasters changing in time on a predefined map.
-A slider is also created on which you can choose which raster should be currently displayed.
-Moreover, a histogram summary for each raster choice is shown.
+Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
+
+Function \code{timeSinceFire} creates a shiny module server function
+             which displays rasters changing in time on a predefined map.
+             A slider, on which you can choose which raster should be currently displayed, is also created.
+             Moreover, a histogram summary for each raster choice is shown.
 }
 \author{
 Mateusz Wyszynski

@@ -3,15 +3,14 @@
 \name{sliderUI}
 \alias{sliderUI}
 \alias{slider}
-\title{Slider Module UI}
+\title{Slider Module}
 \usage{
 sliderUI(id, ...)
 
 slider(input, output, session)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's
-UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function}
 
 \item{...}{sliderInput arguments. See ?sliderInput for reference.}
 
@@ -21,10 +20,15 @@ UI function}
 
 \item{session}{shiny server session object}
 }
-\description{
-This creates a slider module UI.
+\value{
+None. Invoked for the side-effect of creating a shiny UI.
 
-Slider Module
+Reactive value with the current value on the slider.
+}
+\description{
+Function \code{sliderUI} creates a shiny module UI.
+
+Function \code{slider} creates a slider module server function.
 }
 \author{
 Mateusz Wyszynski
