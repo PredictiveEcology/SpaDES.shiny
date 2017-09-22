@@ -7,8 +7,8 @@
 \usage{
 timeSinceFireUI(id, rastersNumber)
 
-timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
-  studyArea = "SMALL")
+timeSinceFire(input, output, session, rasters, polygonsList,
+  leafletZoomInit = 5, studyArea = "SMALL")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -22,6 +22,8 @@ timeSinceFire(input, output, session, rasters, leafletZoomInit = 5,
 \item{session}{Shiny server session object}
 
 \item{rasters}{Set of rasters to be displayed}
+
+\item{polygonsList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
 \item{leafletZoomInit}{Initial leaflet zoom}
 

@@ -49,6 +49,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param rasters Set of rasters to be displayed
+#' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param leafletZoomInit Initial leaflet zoom
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
@@ -56,7 +57,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
 #' @importFrom graphics axis barplot
-#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons
+#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersControl
 #' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
@@ -72,25 +73,23 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @rdname timeSinceFire
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
+timeSinceFire <- function(input, output, session, rasters, polygonsList, leafletZoomInit = 5,
                           studyArea = "SMALL") {
+
+  polygonsInput <- reactive({
+    spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))
+  })
+
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
-    rasInp <- isolate(rasterInput())
-    polyNum <- polygonInput()
-    polyFull <- polygons[[polyNum + (length(polygons) / 4) * 2]] # leaflet projection, Full scale
 
-    pol <- polygons[[(length(polygons) / 4) * 4]]
-    shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polyFull))
+    pol <- polygonsList[[4]]
+    shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polygonsInput()))
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles(providers$Esri.WorldImagery, group = "ESRI World Imagery",
-                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addPolygons(data = shpStudyRegionFullLFLT, color = "blue",
-                  group = "Fire return interval",
-                  fillOpacity = 0.3, weight = 1,
-                  fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) %>%
+                       options=providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addLegend(position = "bottomright", pal = timeSinceFirePalette,
                 values = 1:maxAge,
                 title = paste0("Time since fire", br(), "(years)")) %>%
@@ -116,29 +115,29 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
       setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
               mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
               zoom = leafZoom
-      )
+      ) %>%
+      addPolygons(data = polygonsInput(), group = "Fire return interval",
+                  fillOpacity = 0.3, weight = 1, color = "blue",
+                  fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
     leafMap
   })
 
   proxy <- leafletProxy("timeSinceFire2")
 
-  urlTemplate <- reactive(
-    file.path(studyArea,
-              paste0("outrstTimeSinceFire_year",
-                     paddedFloatToChar(rasterInput()$sliderVal + summaryPeriod[1],
-                                       nchar(end(mySim))),
-                     "LFLT/{z}/{x}/{y}.png")
-    )
-  )
-  addTilesParameters <- list(
-    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
-    urlTemplate = "error"
-  )
-  addLayersControlParameters <- list(
-    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
-    baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
-    overlayGroups = c("Time since fire", "Fire return interval")
-  )
+  callModule(polygonsUpdater, "polygonsUpdater", proxy, polygons = polygonsInput,
+             group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue",
+             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
+
+  urlTemplate <- reactive(file.path(studyArea,
+                                    paste0("outrstTimeSinceFire_year",
+                                           paddedFloatToChar(rasterInput()$sliderVal+summaryPeriod[1],
+                                                             nchar(end(mySim))),
+                                           "LFLT/{z}/{x}/{y}.png")))
+  addTilesParameters <- list(option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
+                             urlTemplate = "error")
+  addLayersControlParameters <- list(options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
+                                     baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
+                                     overlayGroups = c("Time since fire", "Fire return interval"))
 
   callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire",
              addTilesParameters, addLayersControlParameters)
@@ -182,10 +181,6 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
     list(r = r, sliderVal = sliderValue)
   })
 
-  polygonInput <- reactive({
-    1
-  })
-
   observe({
     #Observer to show Popups on click
     click <- input$timeSinceFire2_shape_click
@@ -198,8 +193,8 @@ timeSinceFire <- function(input, output, session, rasters, leafletZoomInit = 5,
     # Show popup on clicks
     # Translate Lat-Lon to cell number using the unprojected raster
     # This is because the projected raster is not in degrees, we cannot use it!
-    colNam <- names(polygons)[[(length(polygons) / 4) * 4]]
-    pol <- polygons[[(length(polygons) / 4) * 3]]
+    colNam <- names(polygons)[[4]]
+    pol <- polygons[[3]]
     friPoly <- shpStudyRegion
 
     sp <- SpatialPoints(cbind(x,y), proj4string = crs(pol))

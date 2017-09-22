@@ -70,6 +70,7 @@ Collate:
     'generator.R'
     'libInit.R'
     'pkgInfo.R'
+    'polygonsUpdater.R'
     'shine.R'
     'simInfo.R'
     'simOutputs.R'
