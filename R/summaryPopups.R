@@ -15,7 +15,7 @@ extractValuesWithNames <- function(polygons, spatialPoints, extractedValues) {
                               list = extracted, sep = ": ")
 }
 
-displayPopupWithSummary <- function(x=NULL, y=NULL, proxy, raster, polygons, rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
+displayPopupWithSummary <- function(x, y, proxy, raster, polygons, rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
   spatialPointFromClick <- SpatialPoints(cbind(x,y), proj4string = crs(polygons))
 
   valueExtractedFromRaster <- extract(raster, spatialPointFromClick)
