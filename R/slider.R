@@ -26,11 +26,11 @@ sliderUI <- function(id, ...) {
 #' @param output   shiny server output object
 #' @param session  shiny server session object
 #'
-#' @return Reactive value with current value of the slider.
-#'
-#' @author Mateusz Wyszynski
+#' @return Reactive value with the current value on the slider.
 #'
 #' @importFrom shiny reactive
+#'
+#' @author Mateusz Wyszynski
 #'
 #' @rdname slider
 #'

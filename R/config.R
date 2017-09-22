@@ -156,7 +156,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
             "This could take a while depending on your internet connection speed.")
     response <- readline("Do you want to proceed? [Y/n]: ")
     if (substr(tolower(response), 1, 1) != "n") {
-      install.packages(pkgDeps("SpaDES.shiny"), config$RLIB_DIR) # to DO simplify once on CRAN
+      install.packages(pkgDeps("SpaDES.shiny"), config$RLIB_DIR) # TODO simplify once on CRAN
     } else {
       warning("App package library initialization cancelled.\n",
               "Please delete the app directory and try again.")

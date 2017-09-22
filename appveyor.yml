@@ -39,6 +39,7 @@ branches:
     - master
     - development
     - testing
+    - develop
 
   except:
     - gh-pages
@@ -46,6 +47,7 @@ branches:
 clone_depth: 5
 
 build_script:
+  - Rscript -e "install.packages('testthat', repos = 'https://cran.rstudio.com', type = 'source')"
   - travis-tool.sh install_deps
 
 test_script:
@@ -77,7 +79,7 @@ artifacts:
 notifications:
  - provider: Email
    to:
-     - alex.chubaty@gmail.com
+     - damian@appsilondatascience.com
    subject: 'SpaDES.shiny: r-appveyor build {{status}}'
    message: "https://ci.appveyor.com/project/achubaty/SpaDES-shiny"
    on_build_success: false

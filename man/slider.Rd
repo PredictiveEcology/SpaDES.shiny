@@ -23,7 +23,7 @@ slider(input, output, session)
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
 
-Reactive value with current value of the slider.
+Reactive value with the current value on the slider.
 }
 \description{
 Function \code{sliderUI} creates a shiny module UI.

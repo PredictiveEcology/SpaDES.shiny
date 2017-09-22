@@ -9,7 +9,8 @@ renderTemplate(templatePath, data)
 \arguments{
 \item{templatePath}{Path to the template file.}
 
-\item{data}{Named list or environment with variables that will be used during rendering.}
+\item{data}{Named list or environment with variables that will be
+used during rendering.}
 }
 \value{
 Rendered template.
