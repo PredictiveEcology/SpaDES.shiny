@@ -8,7 +8,7 @@
 #' @author Mateusz Wyszynski
 #'
 #' @export
-timeSinceFireUI <- function(id, rastersNumber, polygonsNumber) {
+timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
   tagList(
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
@@ -18,10 +18,7 @@ timeSinceFireUI <- function(id, rastersNumber, polygonsNumber) {
         sliderUI(ns("slider"),
                  "Individual snapshots of time since fire maps. Use play button (bottom right) to animate.",
                  min = 0, max = (rastersNumber-1)*10, value = 0, step = 10,
-                 animate = animationOptions(interval = 2500, loop = FALSE)),
-        sliderUI(ns("sliderPolygons"),
-                 "Choose polygons:",
-                 min = 1, max = polygonsNumber, value = 1, step = 1)
+                 animate = animationOptions(interval = 2500, loop = FALSE))
     ),
     box(width = 4, solidHeader = TRUE, collapsible = TRUE,
         h4(paste("Current time since distribution distribution")),
@@ -44,12 +41,15 @@ timeSinceFireUI <- function(id, rastersNumber, polygonsNumber) {
 #' @export
 timeSinceFire <- function(input, output, session, rasters, polygons) {
 
+  polygonsInput <- reactive({
+    spTransform(shpStudyRegionFull, crs(polygons[[3]]))
+  })
+
   output$timeSinceFire2 <- renderLeaflet({
     leafZoom <- leafletZoomInit
-    polyFull <- polygonInput()$polygon # leaflet projection, Full scale
 
-    pol <- polygons[[length(polygons)]]
-    shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polyFull))
+    pol <- polygons[[4]]
+    shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polygonsInput()))
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles("Thunderforest.OpenCycleMap", group="Open Cycle Map",
                        options=providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -80,13 +80,18 @@ timeSinceFire <- function(input, output, session, rasters, polygons) {
       setView(mean(c(xmin(shpStudyRegionFullLFLT),xmax(shpStudyRegionFullLFLT))),
               mean(c(ymin(shpStudyRegionFullLFLT),ymax(shpStudyRegionFullLFLT))),
               zoom = leafZoom
-      )
+      ) %>%
+      addPolygons(data = polygonsInput(), group = "Fire return interval",
+                  fillOpacity = 0.3, weight = 1, color = "blue",
+                  fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
     leafMap
   })
 
   proxy <- leafletProxy("timeSinceFire2")
 
-  callModule(polygonsUpdater, "polygonsUpdater", proxy, polygonInput, group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue", fillColor = polygonInput()$fillColor)
+  callModule(polygonsUpdater, "polygonsUpdater", proxy, polygons = polygonsInput,
+             group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue",
+             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
   urlTemplate <- reactive(file.path(studyArea,
                                     paste0("outrstTimeSinceFire_year",
@@ -138,29 +143,6 @@ timeSinceFire <- function(input, output, session, rasters, polygons) {
 
     }
     list(r=r, sliderVal=sliderValue)
-  })
-
-  polygonInput <- reactive({
-    sliderVal <- callModule(slider, "sliderPolygons")
-    sliderValue <-
-      if(is.null(sliderVal())) {
-        1
-      } else {
-        sliderVal()
-      }
-    fillColor <-
-      if(sliderValue %% 2 == 0) {
-        ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)
-      } else {
-        "Spectral"
-      }
-    polygon <-
-      if(sliderValue %% 2 == 0) {
-        spTransform(shpStudyRegionFull, crs(polygons[[1 + length(polygons)/2]]))
-      } else {
-        polygons[[1]]
-      }
-    list(polygon = polygon, fillColor = fillColor)
   })
 
   observe({
