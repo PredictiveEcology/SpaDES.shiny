@@ -177,50 +177,10 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
     list(r = r, sliderVal = sliderValue)
   })
 
-  observe({
-    #Observer to show Popups on click
-    click <- input$timeSinceFire2_shape_click
-    if (!is.null(click)) {
-      showpos(x = click$lng, y = click$lat)
-    }
-  })
+  raster <- reactive(rasterInput()$r)
 
-  showpos <- function(x = NULL, y = NULL) {
-    # Show popup on clicks
-    # Translate Lat-Lon to cell number using the unprojected raster
-    # This is because the projected raster is not in degrees, we cannot use it!
-    colNam <- names(polygons)[[4]]
-    pol <- polygons[[3]]
-    friPoly <- shpStudyRegion
+  click <- reactive(input$timeSinceFire2_shape_click)
 
-    sp <- SpatialPoints(cbind(x, y), proj4string = crs(pol))
-    ras1 <- rasterInput()$r
-    cell <- cellFromXY(ras1, c(x, y))
-    #if (!is.na(cell)) {#If the click is inside the raster...
-    #Get row and column, to print later
-    rc <- rowColFromCell(ras1, cell)
-
-    #Get values from raster and polygon
-    polyVal <- sp %>%
-      extract(pol, .) %>%
-      .[polygonIndivIdsColum[[colNam]]]
-    friVal <- sp %>%
-      spTransform(crs(shpStudyRegionFull)) %>%
-      extract(shpStudyRegionFull, .) %>%
-      .["fireReturnInterval"]
-
-    val <- ras1[][cell]
-
-    firstPart <- if (!is.na(val)) {
-      paste0("Time Since Fire=", round(val, 1), " years <br>")
-    } else {
-      ""
-    }
-    content <- paste0(firstPart,
-                      polygonIndivIdsColum[[colNam]], ": ", polyVal, "<br>",
-                      "Fire Return Interval: ", friVal, "<br>",
-                      "Lat/Long: ", round(y, 4), ", ", round(x, 4))
-    proxy <- leafletProxy("timeSinceFire2")
-    proxy %>% clearPopups() %>% addPopups(x, y, popup = content) # nolint
-  }
+  callModule(summaryPopups, "popups", proxy = proxy, click = click, raster = raster, polygons = polygonsInput,
+             "Time Since Fire = %s years", c("fireReturnInterval"))
 }
