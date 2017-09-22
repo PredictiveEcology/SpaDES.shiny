@@ -1,22 +1,23 @@
 #' Time-Since-Fire shiny module
 #'
-#' @description Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
+#' @description Shiny module which displays rasters changing in time on a predefined map.
+#'              A slider, on which you can choose which raster should be currently displayed,
+#'              is also created.
+#'              Additionally, a histogram summary for each raster choice is shown.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
-#' @param rastersNumber How many rasters can we choose from
+#'
+#' @param rastersNumber How many rasters can we choose from.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
+#' @author Mateusz Wyszynski
+#' @export
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
-#'
-#' @author Mateusz Wyszynski
-#'
 #' @rdname timeSinceFire
-#'
-#' @export
 timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
   tagList(
@@ -38,13 +39,6 @@ timeSinceFireUI <- function(id, rastersNumber) {
   )
 }
 
-#' Time Since Fire Shiny Module
-#'
-#' @description Function \code{timeSinceFire} creates a shiny module server function
-#'              which displays rasters changing in time on a predefined map.
-#'              A slider, on which you can choose which raster should be currently displayed, is also created.
-#'              Moreover, a histogram summary for each raster choice is shown.
-#'
 #' @param input Shiny server input object
 #' @param output Shiny server output object
 #' @param session Shiny server session object
@@ -56,6 +50,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
+#' @export
 #' @importFrom graphics axis barplot
 #' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersControl
 #' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
@@ -67,12 +62,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom raster xmax xmin ymax ymin hist
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar end
-#'
-#' @author Mateusz Wyszynski
-#'
 #' @rdname timeSinceFire
-#'
-#' @export
 timeSinceFire <- function(input, output, session, rasters, polygonsList, leafletZoomInit = 5,
                           studyArea = "SMALL") {
 
@@ -89,7 +79,7 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
       addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles(providers$Esri.WorldImagery, group = "ESRI World Imagery",
-                       options=providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addLegend(position = "bottomright", pal = timeSinceFirePalette,
                 values = 1:maxAge,
                 title = paste0("Time since fire", br(), "(years)")) %>%
@@ -128,28 +118,34 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
              group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue",
              fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
-  urlTemplate <- reactive(file.path(studyArea,
-                                    paste0("outrstTimeSinceFire_year",
-                                           paddedFloatToChar(rasterInput()$sliderVal+summaryPeriod[1],
-                                                             nchar(end(mySim))),
-                                           "LFLT/{z}/{x}/{y}.png")))
-  addTilesParameters <- list(option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
-                             urlTemplate = "error")
-  addLayersControlParameters <- list(options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
-                                     baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
-                                     overlayGroups = c("Time since fire", "Fire return interval"))
+  urlTemplate <- reactive(
+    file.path(studyArea, paste0("outrstTimeSinceFire_year",
+                                paddedFloatToChar(rasterInput()$sliderVal + summaryPeriod[1],
+                                                  nchar(end(mySim))),
+                                "LFLT/{z}/{x}/{y}.png"))
+  )
+  addTilesParameters <- list(
+    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
+    urlTemplate = "error"
+  )
+
+  addLayersControlParameters <- list(
+    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
+    baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
+    overlayGroups = c("Time since fire", "Fire return interval")
+  )
 
   callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire",
              addTilesParameters, addLayersControlParameters)
 
   output$timeSinceFire2Hist <- renderPlot({
     ras1 <- rasterInput()$r
-    Nbreaks <- ceiling(maxValue(ras1) / 10)
-    timeSinceFireHist <- hist(ras1[], plot = FALSE, breaks = Nbreaks)
+    nBreaks <- ceiling(maxValue(ras1) / 10)
+    timeSinceFireHist <- hist(ras1[], plot = FALSE, breaks = nBreaks)
     barplot(timeSinceFireHist$counts * prod(rasterResolution) / 1e4,
             xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge / 10)),
             width = 1, space = 0, ylab = "Area (ha)")
-    axis(1, at = timeSinceFireHist$breaks / 10, labels = 0:Nbreaks * 10)
+    axis(1, at = timeSinceFireHist$breaks / 10, labels = 0:nBreaks * 10)
   })
 
   rasterInput <- reactive({
@@ -197,7 +193,7 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
     pol <- polygons[[3]]
     friPoly <- shpStudyRegion
 
-    sp <- SpatialPoints(cbind(x,y), proj4string = crs(pol))
+    sp <- SpatialPoints(cbind(x, y), proj4string = crs(pol))
     ras1 <- rasterInput()$r
     cell <- cellFromXY(ras1, c(x, y))
     #if (!is.na(cell)) {#If the click is inside the raster...
@@ -221,10 +217,10 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
       ""
     }
     content <- paste0(firstPart,
-                      polygonIndivIdsColum[[colNam]], ": ", polyVal,"<br>",
+                      polygonIndivIdsColum[[colNam]], ": ", polyVal, "<br>",
                       "Fire Return Interval: ", friVal, "<br>",
-                      "Lat/Long: ", round(y, 4),", ", round(x, 4))
+                      "Lat/Long: ", round(y, 4), ", ", round(x, 4))
     proxy <- leafletProxy("timeSinceFire2")
-    proxy %>% clearPopups() %>% addPopups(x, y, popup = content)
+    proxy %>% clearPopups() %>% addPopups(x, y, popup = content) # nolint
   }
 }
