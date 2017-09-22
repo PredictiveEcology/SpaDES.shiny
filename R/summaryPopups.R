@@ -67,7 +67,7 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #' @importFrom leaflet clearPopups addPopups
 #' @rdname summaryPopups
 summaryPopups <- function(input, output, session, proxy, click, raster, polygons,
-                          rasterValueLabel = "Raster value: %s", extractedValues = NULL){
+                          rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
   observe({
     if (!is.null(click())) {
       polygons <- polygons()

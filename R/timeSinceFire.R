@@ -1,20 +1,19 @@
 #' Time-Since-Fire shiny module
 #'
-#' @description Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
+#' @description A shiny module showing the time-since-fire values from a raster.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
+#'
 #' @param rastersNumber How many rasters can we choose from.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
+#' @export
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
-#'
 #' @rdname timeSinceFire
-#'
-#' @export
 timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
   tagList(
@@ -29,7 +28,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber - 1) * 10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    histogramForRasterUI(ns("histogram"), title = h4(paste("Current time since distribution distribution")),
+    histogramForRasterUI(ns("histogram"),
+                         title = h4(paste("Current time since distribution distribution")),
                          plotParameters = list(height = 600), width = 4, solidHeader = TRUE,
                          collapsible = TRUE))
 }
@@ -176,18 +176,18 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
 
   raster <- reactive(rasterInput()$r)
 
-  numberOfBreaks <- reactive(ceiling(maxValue(raster())/10))
+  numberOfBreaks <- reactive(ceiling(maxValue(raster()) / 10))
 
   breaks <- reactive(numberOfBreaks())
 
   addAxisParams <- reactive({
     numberOfBreaks <- numberOfBreaks()
-    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks*10))
+    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
   callModule(histogramForRaster, "histogram", raster, histogramBreaks = breaks,
-             scale = prod(rasterResolution)/1e4, addAxisParams = addAxisParams,
-             xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)),
+             scale = prod(rasterResolution) / 1e4, addAxisParams = addAxisParams,
+             xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge / 10)),
              width = 1, space = 0, ylab = "Area (ha)")
 
   click <- reactive(input$timeSinceFire2_shape_click)

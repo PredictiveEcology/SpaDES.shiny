@@ -36,7 +36,7 @@ None. Invoked for the side-effect of creating a shiny UI.
 None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
-Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
+A shiny module showing the time-since-fire values from a raster.
 
 Function \code{timeSinceFire} creates a shiny module server function
              which displays rasters changing in time on a predefined map.
