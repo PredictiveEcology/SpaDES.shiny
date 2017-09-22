@@ -7,7 +7,7 @@
 \usage{
 histogramForRasterUI(id, title = "", plotParameters, ...)
 
-histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
+histogramForRaster(input, output, session, raster, histogramBreaks, scale = 1,
   addAxisParams = NULL, ...)
 }
 \arguments{
@@ -28,6 +28,10 @@ from \pkg{shiny} package.}
 
 \item{raster}{Reactive value containing raster}
 
+\item{histogramBreaks}{Reactive value which is responsible for \code{breaks} parameter
+as in \code{hist} function from \pkg{graphics} package.
+See \code{\link[graphics]{hist}} for reference.}
+
 \item{scale}{Number used for scaling heights of histogram bars.
 When set to 1 (default) histogram bar height represents
 amount of raster cells with value from bar interval.
@@ -36,10 +40,6 @@ be used to transform these heights into the ones representing area covered by ce
 When set to 2 (or, more generally, some number n with no further meaning) this will
 just increase the height of each histogram bar by 2 (n, respectively). So, in this scenario,
 each histogram's bar height is just count times 2 (count times n)}
-
-\item{histogramBreaks}{Reactive value which is responsible for \code{breaks} parameter
-as in \code{hist} function from \pkg{graphics} package.
-See \code{\link[graphics]{hist}} for reference.}
 
 \item{addAxisParams}{Reactive value with parameters to \code{axis} function from \pkg{graphics} package.
 See \code{\link[graphics]{axis}} for reference.

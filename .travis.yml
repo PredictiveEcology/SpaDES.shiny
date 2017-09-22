@@ -12,11 +12,11 @@ matrix:
         packages:
           - libgdal1-dev
           - libproj-dev
-    before_script:
-    - Rscript -e 'install.packages("https://cran.rstudio.com/src/contrib/Archive/DiagrammeR/DiagrammeR_0.9.0.tar.gz", repos = NULL)'
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
+    before_script:
+    - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
   - os: linux
     dist: trusty
     r: release
@@ -30,6 +30,8 @@ matrix:
     before_install:
       - export DISPLAY=:99.0
       - sh -e /etc/init.d/xvfb start
+    before_script:
+    - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     after_success:
     - Rscript -e 'covr::coveralls(package_coverage(type = "all", quiet = FALSE)))'
     - Rscript -e 'lintr::lint_package()'
@@ -44,6 +46,8 @@ matrix:
     before_install:
       - export DISPLAY=:99.0
       - sh -e /etc/init.d/xvfb start
+    before_script:
+    - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
   - os: osx
     osx_image: xcode8.2
     latex: false
@@ -62,4 +66,5 @@ branches:
   only:
     - master
     - development
+    - develop
     - testing

@@ -3,7 +3,7 @@ Type: Package
 Title: Utilities for building 'shiny' apps for 'SpaDES' simulations
 Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
-    https://predictiveecology.github.io/SpaDES.shiny/,
+    http://spades.shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
 Date: 2017-09.01
 Version: 0.1.0
@@ -20,23 +20,28 @@ Authors@R: c(
     )
 Additional_repositories: http://rforge.net
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.3.3)
 Imports:
     DiagrammeR (>= 0.8.2),
+    dplyr,
     DT (>= 0.2),
     graphics,
     grDevices,
+    leaflet,
     magrittr,
     methods,
     packrat,
+    purrr,
     quickPlot,
     R.utils,
     RColorBrewer,
+    raster,
     reproducible,
     shiny (>= 0.13),
     shinyBS,
     shinycssloaders,
     shinydashboard,
+    sp,
     SpaDES.core,
     stringi (>= 1.1.3),
     stringr,
@@ -50,8 +55,6 @@ Suggests:
     rmarkdown,
     Rserve,
     testthat (>= 1.0.2)
-Remotes:
-    PredictiveEcology/SpaDES.core,
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
@@ -68,11 +71,13 @@ Collate:
     'histogramForRaster.R'
     'libInit.R'
     'pkgInfo.R'
+    'polygonsUpdater.R'
     'shine.R'
     'simInfo.R'
     'simOutputs.R'
     'slider.R'
     'spades-shiny-package.R'
+    'summaryPopups.R'
     'tilesUpdater.R'
     'timeSinceFire.R'
 RoxygenNote: 6.0.1

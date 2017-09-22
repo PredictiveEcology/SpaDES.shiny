@@ -6,13 +6,12 @@ dashboardPage(skin = "green",
               dashboardHeader(title = "templateApp"),
               dashboardSidebar(width = 300,
                                sidebarMenu(id = "wholeThing",
-                                           h4(HTML("&nbsp;"), "Maps"),
-                                           menuItem("Module Info", tabName = "moduleInfo", icon = icon("puzzle-piece"))
+                                           {{{menuItems}}}
                                )
               ),
               dashboardBody(
                 tabItems(
-                  tabItem("moduleInfo", "{{content}}")
+                  {{{tabItems}}}
                 )
               )
 )

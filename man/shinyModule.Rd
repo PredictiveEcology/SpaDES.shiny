@@ -13,7 +13,7 @@ shinyModule(moduleName)
 Metadata object that describes an existing shiny module.
 }
 \description{
-This method creates a metadata object to use in application metadata.
+Creates a metadata object to use in application metadata.
 Created object describes an existing shiny module.
 }
 \author{
