@@ -181,6 +181,6 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
 
   click <- reactive(input$timeSinceFire2_shape_click)
 
-  callModule(summaryPopups, "popups", proxy = proxy, click = click, raster = raster, polygons = polygonsInput,
-             "Time Since Fire = %s years", c("fireReturnInterval"))
+  callModule(summaryPopups, "popups", proxy = proxy, click = click, raster = raster,
+             polygons = polygonsInput, "Time Since Fire = %s years", c("fireReturnInterval"))
 }
