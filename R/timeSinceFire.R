@@ -1,9 +1,6 @@
 #' Time-Since-Fire shiny module
 #'
-#' @description Shiny module which displays rasters changing in time on a predefined map.
-#'              A slider, on which you can choose which raster should be currently displayed,
-#'              is also created.
-#'              Additionally, a histogram summary for each raster choice is shown.
+#' @description A shiny module showing the time-since-fire values from a raster.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
 #'
@@ -11,7 +8,6 @@
 #'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
-#' @author Mateusz Wyszynski
 #' @export
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinycssloaders withSpinner
@@ -32,25 +28,30 @@ timeSinceFireUI <- function(id, rastersNumber) {
                  min = 0, max = (rastersNumber - 1) * 10, value = 0, step = 10,
                  animate = animationOptions(interval = 2500, loop = FALSE))
     ),
-    box(width = 4, solidHeader = TRUE, collapsible = TRUE,
-        h4(paste("Current time since distribution distribution")),
-        shinycssloaders::withSpinner(plotOutput(ns("timeSinceFire2Hist"), height = 600))
-    )
-  )
+    histogramForRasterUI(ns("histogram"),
+                         title = h4(paste("Current time since distribution distribution")),
+                         plotParameters = list(height = 600), width = 4, solidHeader = TRUE,
+                         collapsible = TRUE))
 }
 
-#' @param input Shiny server input object
-#' @param output Shiny server output object
-#' @param session Shiny server session object
-#' @param rasters Set of rasters to be displayed
+#' Time Since Fire Shiny Module
+#'
+#' @description Function \code{timeSinceFire} creates a shiny module server function
+#'              which displays rasters changing in time on a predefined map.
+#'              A slider, on which you can choose which raster should be currently displayed,
+#'              is also created. Moreover, a histogram summary for each raster choice is shown.
+#'
+#' @param input Shiny server input object.
+#' @param output Shiny server output object.
+#' @param session Shiny server session object.
+#' @param rasters Set of rasters to be displayed.
 #' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
-#' @param leafletZoomInit Initial leaflet zoom
+#' @param leafletZoomInit Initial leaflet zoom.
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
-#' @export
 #' @importFrom graphics axis barplot
 #' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersControl
 #' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
@@ -62,7 +63,12 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom raster xmax xmin ymax ymin hist
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar end
+#'
+#' @author Mateusz Wyszynski
+#'
 #' @rdname timeSinceFire
+#'
+#' @export
 timeSinceFire <- function(input, output, session, rasters, polygonsList, leafletZoomInit = 5,
                           studyArea = "SMALL") {
 
@@ -118,43 +124,13 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
              group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue",
              fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
-  urlTemplate <- reactive(
-    file.path(studyArea, paste0("outrstTimeSinceFire_year",
-                                paddedFloatToChar(rasterInput()$sliderVal + summaryPeriod[1],
-                                                  nchar(end(mySim))),
-                                "LFLT/{z}/{x}/{y}.png"))
-  )
-  addTilesParameters <- list(
-    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
-    urlTemplate = "error"
-  )
-
-  addLayersControlParameters <- list(
-    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
-    baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
-    overlayGroups = c("Time since fire", "Fire return interval")
-  )
-
-  callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire",
-             addTilesParameters, addLayersControlParameters)
-
-  output$timeSinceFire2Hist <- renderPlot({
-    ras1 <- rasterInput()$r
-    nBreaks <- ceiling(maxValue(ras1) / 10)
-    timeSinceFireHist <- hist(ras1[], plot = FALSE, breaks = nBreaks)
-    barplot(timeSinceFireHist$counts * prod(rasterResolution) / 1e4,
-            xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge / 10)),
-            width = 1, space = 0, ylab = "Area (ha)")
-    axis(1, at = timeSinceFireHist$breaks / 10, labels = 0:nBreaks * 10)
-  })
-
   rasterInput <- reactive({
     sliderVal <- callModule(slider, "slider")
     sliderValue <- if (is.null(sliderVal())) {
-        1
-      } else {
-        sliderVal()
-      }
+      1
+    } else {
+      sliderVal()
+    }
 
     # slider units are 10, starting at 0; index here is 1 to length (tsf)
     currentRaster <- sliderValue / 10 + 1
@@ -177,7 +153,42 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
     list(r = r, sliderVal = sliderValue)
   })
 
+  urlTemplate <- reactive(
+    file.path(studyArea, paste0("outrstTimeSinceFire_year",
+                                paddedFloatToChar(rasterInput()$sliderVal + summaryPeriod[1],
+                                                  nchar(end(mySim))),
+                                "LFLT/{z}/{x}/{y}.png"))
+  )
+
+  addTilesParameters <- list(
+    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
+    urlTemplate = "error"
+  )
+
+  addLayersControlParameters <- list(
+    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
+    baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
+    overlayGroups = c("Time since fire", "Fire return interval")
+  )
+
+  callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire",
+             addTilesParameters, addLayersControlParameters)
+
   raster <- reactive(rasterInput()$r)
+
+  numberOfBreaks <- reactive(ceiling(maxValue(raster()) / 10))
+
+  breaks <- reactive(numberOfBreaks())
+
+  addAxisParams <- reactive({
+    numberOfBreaks <- numberOfBreaks()
+    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
+  })
+
+  callModule(histogramForRaster, "histogram", raster, histogramBreaks = breaks,
+             scale = prod(rasterResolution) / 1e4, addAxisParams = addAxisParams,
+             xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge / 10)),
+             width = 1, space = 0, ylab = "Area (ha)")
 
   click <- reactive(input$timeSinceFire2_shape_click)
 

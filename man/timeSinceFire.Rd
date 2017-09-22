@@ -15,17 +15,17 @@ timeSinceFire(input, output, session, rasters, polygonsList,
 
 \item{rastersNumber}{How many rasters can we choose from.}
 
-\item{input}{Shiny server input object}
+\item{input}{Shiny server input object.}
 
-\item{output}{Shiny server output object}
+\item{output}{Shiny server output object.}
 
-\item{session}{Shiny server session object}
+\item{session}{Shiny server session object.}
 
-\item{rasters}{Set of rasters to be displayed}
+\item{rasters}{Set of rasters to be displayed.}
 
 \item{polygonsList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
-\item{leafletZoomInit}{Initial leaflet zoom}
+\item{leafletZoomInit}{Initial leaflet zoom.}
 
 \item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
@@ -36,10 +36,12 @@ None. Invoked for the side-effect of creating a shiny UI.
 None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
-Shiny module which displays rasters changing in time on a predefined map.
+A shiny module showing the time-since-fire values from a raster.
+
+Function \code{timeSinceFire} creates a shiny module server function
+             which displays rasters changing in time on a predefined map.
              A slider, on which you can choose which raster should be currently displayed,
-             is also created.
-             Additionally, a histogram summary for each raster choice is shown.
+             is also created. Moreover, a histogram summary for each raster choice is shown.
 }
 \author{
 Mateusz Wyszynski
