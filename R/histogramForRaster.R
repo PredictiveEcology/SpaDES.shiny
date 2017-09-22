@@ -4,8 +4,9 @@
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function
 #' @param title Optional title for the histogram. Any shiny tag can be used.
+#' @param plotParameters A list of parameters passed to \code{\link[shiny]{plotOutput}} function
+#'                       from \pkg{shiny} package.
 #' @param ... Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.
-#' @param plotParameters A list of parameters passed to \code{\link[shiny]{plotOutput}} function from \pkg{shiny} package.
 #'
 #' @importFrom shiny NS plotOutput
 #' @importFrom shinydashboard box
@@ -17,13 +18,13 @@
 histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
   ns <- NS(id)
 
-  plotParameters["outputId"] = NULL
+  plotParameters["outputId"] <- NULL
   plotOutputParameters <- c(ns("histogram"), plotParameters)
 
   box(title,
       shinycssloaders::withSpinner(
         do.call(plotOutput, plotOutputParameters)
-        ),
+      ),
       ...)
 }
 
@@ -35,14 +36,19 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @param output Shiny server output object
 #' @param session Shiny server session object
 #' @param raster Reactive value containing raster
-#' @param scale Number used for scaling heights of histogram bars. When set to 1 (default) histogram bar height represents
-#' amount of raster cells with value from bar interval. If the resolution of raster is known, scale parameter can
-#' be used to transform these heights into the ones representing area covered by cells.
-#' @param histogramBreaks Reactive value which is responsible for \code{breaks} parameter as in \code{hist} function from \pkg{graphics} package.
-#' See \code{\link[graphics]{hist}} for reference.
-#' @param addAxisParams Reactive value with parameters to \code{axis} function from \pkg{graphics} package. See \code{\link[graphics]{axis}} for reference. If \code{NULL}
-#' (default) then no axis is drawn.
-#' @param ... Additional graphic parameters to \code{barplot} function from \pkg{graphics} package. See \code{\link[graphics]{barplot}} for reference.
+#' @param scale Number used for scaling heights of histogram bars.
+#'              When set to 1 (default) histogram bar height represents
+#'              amount of raster cells with value from bar interval.
+#'              If the resolution of raster is known, scale parameter can
+#'              be used to transform these heights into the ones representing area covered by cells.
+#' @param histogramBreaks Reactive value which is responsible for \code{breaks} parameter
+#'                        as in \code{hist} function from \pkg{graphics} package.
+#'                        See \code{\link[graphics]{hist}} for reference.
+#' @param addAxisParams Reactive value with parameters to \code{axis} function from \pkg{graphics} package.
+#'                      See \code{\link[graphics]{axis}} for reference.
+#'                      If \code{NULL} (default) then no axis is drawn.
+#' @param ... Additional graphic parameters to \code{barplot} function from \pkg{graphics} package.
+#'            See \code{\link[graphics]{barplot}} for reference.
 #'
 #' @importFrom shiny renderPlot
 #' @importFrom raster hist
