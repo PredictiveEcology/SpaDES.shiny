@@ -2,22 +2,21 @@
 % Please edit documentation in R/generator.R
 \name{renderTemplate}
 \alias{renderTemplate}
-\title{Render a template using \pkg{whisker} package and write the result to a file.}
+\title{Render a template using \pkg{whisker} package.}
 \usage{
-renderTemplate(templatePath, data, path)
+renderTemplate(templatePath, data)
 }
 \arguments{
 \item{templatePath}{Path to the template file.}
 
-\item{data}{Named list or environment with variables that will be used during rendering.}
-
-\item{path}{Path where the rendered file should be saved.}
+\item{data}{Named list or environment with variables that will be
+used during rendering.}
 }
 \value{
-None. Invoked for the side-effect of writing generated template to file.
+Rendered template.
 }
 \description{
-Render a template using \pkg{whisker} package and write the result to a file.
+Render a template using \pkg{whisker} package.
 }
 \author{
 Damian Rodziewicz
