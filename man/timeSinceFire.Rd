@@ -13,7 +13,7 @@ timeSinceFire(input, output, session, rasters, polygonsList,
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
 
-\item{rastersNumber}{How many rasters can we choose from}
+\item{rastersNumber}{How many rasters can we choose from.}
 
 \item{input}{Shiny server input object}
 
@@ -36,15 +36,11 @@ None. Invoked for the side-effect of creating a shiny UI.
 None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
-Function \code{timeSinceFireUI} creates a shiny module UI for Time Since Fire shiny module.
-
-Function \code{timeSinceFire} creates a shiny module server function
-             which displays rasters changing in time on a predefined map.
-             A slider, on which you can choose which raster should be currently displayed, is also created.
-             Moreover, a histogram summary for each raster choice is shown.
+Shiny module which displays rasters changing in time on a predefined map.
+             A slider, on which you can choose which raster should be currently displayed,
+             is also created.
+             Additionally, a histogram summary for each raster choice is shown.
 }
 \author{
-Mateusz Wyszynski
-
 Mateusz Wyszynski
 }
