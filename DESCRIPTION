@@ -35,6 +35,7 @@ Imports:
     reproducible,
     shiny (>= 0.13),
     shinyBS,
+    shinycssloaders,
     shinydashboard,
     SpaDES.core,
     stringi (>= 1.1.3),
@@ -64,6 +65,7 @@ Collate:
     'export.R'
     'footers.R'
     'generator.R'
+    'histogramForRaster.R'
     'libInit.R'
     'pkgInfo.R'
     'shine.R'
