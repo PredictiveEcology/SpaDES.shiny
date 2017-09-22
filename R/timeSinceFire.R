@@ -110,7 +110,7 @@ timeSinceFire <- function(input, output, session, rasters) {
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks*10))
   })
 
-  callModule(histogramForRaster, "histogram", raster, scale = prod(rasterResolution)/1e4, histogramBreaks = breaks,
+  callModule(histogramForRaster, "histogram", raster, histogramBreaks = breaks, scale = prod(rasterResolution)/1e4,
              addAxisParams = addAxisParams, xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge/10)),
              width = 1, space = 0, ylab = "Area (ha)")
 

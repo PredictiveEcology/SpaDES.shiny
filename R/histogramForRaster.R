@@ -60,7 +60,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @rdname histogramForRaster
 #'
 #' @export
-histogramForRaster <- function(input, output, session, raster, scale = 1, histogramBreaks, addAxisParams = NULL,  ...) {
+histogramForRaster <- function(input, output, session, raster, histogramBreaks, scale = 1, addAxisParams = NULL,  ...) {
   output$histogram <- renderPlot({
     histogram <- raster::hist(raster(), plot = FALSE, breaks = histogramBreaks())
 
