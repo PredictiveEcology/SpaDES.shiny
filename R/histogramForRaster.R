@@ -8,6 +8,8 @@
 #'                       from \pkg{shiny} package.
 #' @param ... Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.
 #'
+#' @return None. Invoked for the side-effect of creating shiny UI.
+#'
 #' @importFrom shiny NS plotOutput
 #' @importFrom shinydashboard box
 #' @importFrom shinycssloaders withSpinner
@@ -52,6 +54,8 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'                      If \code{NULL} (default) then no axis is drawn.
 #' @param ... Additional graphic parameters to \code{barplot} function from \pkg{graphics} package.
 #'            See \code{\link[graphics]{barplot}} for reference.
+#'
+#' @return None. Invoked for the side-effect of rendering histogram plot.
 #'
 #' @importFrom shiny renderPlot
 #' @importFrom raster hist

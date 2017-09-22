@@ -48,6 +48,11 @@ If \code{NULL} (default) then no axis is drawn.}
 \item{...}{Additional graphic parameters to \code{barplot} function from \pkg{graphics} package.
 See \code{\link[graphics]{barplot}} for reference.}
 }
+\value{
+None. Invoked for the side-effect of creating shiny UI.
+
+None. Invoked for the side-effect of rendering histogram plot.
+}
 \description{
 This creates UI for shiny module creating histogram of data contained in raste
 
