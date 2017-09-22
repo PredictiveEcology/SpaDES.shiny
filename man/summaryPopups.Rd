@@ -8,11 +8,11 @@ summaryPopups(input, output, session, proxy, click, raster, polygons,
   rasterValueLabel = "Raster value: \%s", extractedValues = NULL)
 }
 \arguments{
-\item{input}{Shiny server input object}
+\item{input}{Shiny server input object.}
 
-\item{output}{Shiny server output object}
+\item{output}{Shiny server output object.}
 
-\item{session}{Shiny server session object}
+\item{session}{Shiny server session object.}
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 

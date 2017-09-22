@@ -3,7 +3,6 @@ pasteListArgumentAndItsName <- function(argumentName, list, sep) {
 }
 
 extractValuesWithNames <- function(polygons, spatialPoints, extractedValues) {
-
   extracted <- polygons %>%
     extract(spatialPoints)
 
@@ -41,9 +40,9 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #'
 #' @description This creates a shiny module which adds popups with polygons and raster summary on a leaflet map.
 #'
-#' @param input    Shiny server input object
-#' @param output   Shiny server output object
-#' @param session  Shiny server session object
+#' @param input    Shiny server input object.
+#' @param output   Shiny server output object.
+#' @param session  Shiny server session object.
 #' @param proxy Leaflet proxy which manages a connected leaflet map.
 #' @param click Reactive value with click on shape input from leaflet map.
 #' @param raster Reactive value with raster to summarize by.
