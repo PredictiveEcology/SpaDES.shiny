@@ -8,11 +8,11 @@ tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
   addTilesParameters = NULL, addLayersControlParameters = NULL)
 }
 \arguments{
-\item{input}{Shiny server input object}
+\item{input}{Shiny server input object.}
 
-\item{output}{Shiny server output object}
+\item{output}{Shiny server output object.}
 
-\item{session}{Shiny server session object}
+\item{session}{Shiny server session object.}
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 
@@ -22,19 +22,23 @@ that should be added to the leaflet map as a result.}
 \item{tilesGroup}{Group of rasters/tiles we want to update}
 
 \item{addTilesParameters}{Additional parameters of \code{\link[leaflet]{addTiles}} function.
-Parameters: \code{proxy}/\code{map}, code{urlTemplate} and \code{group}
-should be provided directly as \code{tilesUpdater} arguments using
-\code{proxy}, \code{urlTemplate} and \code{tilesGroup} parameter respectively.
-If passed within \code{addTilesParameters}, these arguments will be surpressed
-by the values passed directly to \code{tilesUpdater}.}
+Parameters: \code{proxy}/\code{map},
+\code{urlTemplate} and \code{group} should be provided
+directly as \code{tilesUpdater} arguments using
+\code{proxy}, \code{urlTemplate} and \code{tilesGroup}
+parameter respectively.
+If passed within \code{addTilesParameters}, these
+arguments will be surpressed by the values passed
+directly to \code{tilesUpdater}.}
 
-\item{addLayersControlParameters}{Additional parameters of \code{\link[leaflet]{addLayersControl}} function.}
+\item{addLayersControlParameters}{Additional parameters passed to
+\code{\link[leaflet]{addLayersControl}}.}
 }
 \value{
 None. Invoked for the side-effect of sending information to leaflet proxy.
 }
 \description{
-This creates a shiny module which uses leaflet proxy (see \code{\link[leaflet]{leafletProxy}})
+Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
              to update tiles displayed on a leaflet map.
 }
 \author{

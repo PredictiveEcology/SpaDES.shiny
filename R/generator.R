@@ -120,8 +120,7 @@ renderMenuItem <- function(tabName, menuItemName, icon) {
 
 #' Render menu items for provided layout and available modules.
 #'
-#' @param layout    Tibble with layout metadata. Tibble format: tabName, menuItemName, icon, moduleName.
-#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @inheritParams renderTabItems
 #'
 #' @return Rendered menu items.
 #'
@@ -129,7 +128,8 @@ renderMenuItem <- function(tabName, menuItemName, icon) {
 #'
 #' @author Damian Rodziewicz
 renderMenuItems <- function(layout, modules) {
-  menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon), renderMenuItem)
+  menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon),
+                           renderMenuItem)
 
   return(paste(menuItems, collapse = ",\n"))
 }
