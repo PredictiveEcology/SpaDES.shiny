@@ -57,7 +57,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
 #' @importFrom graphics axis barplot
-#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersContorl
+#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersControl
 #' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
