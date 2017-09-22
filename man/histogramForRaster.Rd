@@ -15,7 +15,8 @@ histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
 
 \item{title}{Optional title for the histogram. Any shiny tag can be used.}
 
-\item{plotParameters}{A list of parameters passed to \code{\link[shiny]{plotOutput}} function from \pkg{shiny} package.}
+\item{plotParameters}{A list of parameters passed to \code{\link[shiny]{plotOutput}} function
+from \pkg{shiny} package.}
 
 \item{...}{Additional parameters passed to \code{\link[shiny]{box}} tag from \pkg{shiny}.}
 
@@ -27,17 +28,25 @@ histogramForRaster(input, output, session, raster, scale = 1, histogramBreaks,
 
 \item{raster}{Reactive value containing raster}
 
-\item{scale}{Number used for scaling heights of histogram bars. When set to 1 (default) histogram bar height represents
-amount of raster cells with value from bar interval. If the resolution of raster is known, scale parameter can
-be used to transform these heights into the ones representing area covered by cells.}
+\item{scale}{Number used for scaling heights of histogram bars.
+When set to 1 (default) histogram bar height represents
+amount of raster cells with value from bar interval.
+If the resolution of raster is known, scale parameter can
+be used to transform these heights into the ones representing area covered by cells (count).
+When set to 2 (or, more generally, some number n with no further meaning) this will
+just increase the height of each histogram bar by 2 (n, respectively). So, in this scenario,
+each histogram's bar height is just count times 2 (count times n)}
 
-\item{histogramBreaks}{Reactive value which is responsible for \code{breaks} parameter as in \code{hist} function from \pkg{graphics} package.
+\item{histogramBreaks}{Reactive value which is responsible for \code{breaks} parameter
+as in \code{hist} function from \pkg{graphics} package.
 See \code{\link[graphics]{hist}} for reference.}
 
-\item{addAxisParams}{Reactive value with parameters to \code{axis} function from \pkg{graphics} package. See \code{\link[graphics]{axis}} for reference. If \code{NULL}
-(default) then no axis is drawn.}
+\item{addAxisParams}{Reactive value with parameters to \code{axis} function from \pkg{graphics} package.
+See \code{\link[graphics]{axis}} for reference.
+If \code{NULL} (default) then no axis is drawn.}
 
-\item{...}{Additional graphic parameters to \code{barplot} function from \pkg{graphics} package. See \code{\link[graphics]{barplot}} for reference.}
+\item{...}{Additional graphic parameters to \code{barplot} function from \pkg{graphics} package.
+See \code{\link[graphics]{barplot}} for reference.}
 }
 \description{
 This creates UI for shiny module creating histogram of data contained in raste

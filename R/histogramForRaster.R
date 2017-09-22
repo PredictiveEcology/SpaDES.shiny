@@ -40,7 +40,10 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'              When set to 1 (default) histogram bar height represents
 #'              amount of raster cells with value from bar interval.
 #'              If the resolution of raster is known, scale parameter can
-#'              be used to transform these heights into the ones representing area covered by cells.
+#'              be used to transform these heights into the ones representing area covered by cells (count).
+#'              When set to 2 (or, more generally, some number n with no further meaning) this will
+#'              just increase the height of each histogram bar by 2 (n, respectively). So, in this scenario,
+#'              each histogram's bar height is just count times 2 (count times n)
 #' @param histogramBreaks Reactive value which is responsible for \code{breaks} parameter
 #'                        as in \code{hist} function from \pkg{graphics} package.
 #'                        See \code{\link[graphics]{hist}} for reference.
