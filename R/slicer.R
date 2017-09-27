@@ -128,7 +128,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'                  "Mordor",
 #'                  "Mordor",
 #'                  "Saruman"),
-#'     Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
+#'     Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nazg\u00FBl", "Uruk-hai"),
 #'     City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
 #'     Forces = 22: 28
 #'  )
