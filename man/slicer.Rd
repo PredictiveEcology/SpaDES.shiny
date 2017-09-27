@@ -40,18 +40,6 @@ in \code{slicer}.}
 \item{serverFunction}{A summary module server function. This function will be applied to
 extracted m-dimensional data table. Should correspond to \code{uiFunction}
 in \code{slicerUI}.}
-
-\item{data}{Data in form of a \code{data.table}. For each row from \code{uiSequence} argument.
-Both server function and ui function should receive the same data table.}
-
-\item{uiSequence}{A \code{data.table} of the form
-\code{data.table(category = list_of_categories, ui = list_of_ui_actions)}.
-Both lists should contain elements of type character.
-Both server function and ui function should receive the same data table.
-Currently there are two possible actions to perform: "tab" and "box".
-Action "box": should be used only together with \pkg{shinydashboard}.
-An example of proper \code{uiSequence} is
-\code{data.table(category = c("Alliance", "Kingdom"), ui = c("tab", "box"))}}
 }
 \value{
 Shiny module UI.
@@ -72,35 +60,35 @@ Shiny module used to: \cr
   library(SpaDES.shiny)
   library(data.table)
 
-  DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
-                                "Last Alliance of Elves and Men",
-                                "Last Alliance of Elves and Men",
-                                "Mordor",
-                                "Mordor",
-                                "Mordor",
-                                "Saruman"),
-                   Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
-                   City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
-                   Forces = 22: 28)
+  DT <- data.table(
+    Alliance = c("Last Alliance of Elves and Men",
+                 "Last Alliance of Elves and Men",
+                 "Last Alliance of Elves and Men",
+                 "Mordor",
+                 "Mordor",
+                 "Mordor",
+                 "Saruman"),
+    Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
+    City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+    Forces = 22: 28
+ )
 
   uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("tab", "box"))
 
-  server <-
-    function(input, output, session) {
+  server <- function(input, output, session) {
       callModule(slicer, "slicer", DT, uiSequence,
                  serverFunction = function() {
                    callModule(slider, "slider")
                  })
     }
 
-  ui <-
-    dashboardPage(
+  ui <- dashboardPage(
       dashboardHeader(),
       dashboardSidebar(),
       dashboardBody(
         slicerUI("slicer", DT, "LOTR", uiSequence,
                  uiFunction = function(ns, data, categoryValue) {
-                   sliderUI(ns("slider"), min = data[,min(Forces)], max = data[,sum(Forces)],
+                   sliderUI(ns("slider"), min = data[,min(Forces)], max = data[, sum(Forces)],
                             value = data[,min(Forces)], step = 1, label = categoryValue)
                  })
       )
