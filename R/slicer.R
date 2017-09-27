@@ -80,8 +80,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
            "box" = {
              boxWithSlicerContent <- function(category, dataTable) {
                shinydashboard::box(
-                 width = 6,
-                 background = "light-blue",
+                 width = 6, solidHeader = TRUE, collapsible = TRUE, title = category,
                  slicerUI(ns(category), data = dataTable, categoryValue = category, uiSequence[-1, ], uiFunction)
                )
              }
@@ -139,7 +138,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'   server <-
 #'     function(input, output, session) {
 #'       callModule(slicer, "slicer", DT, uiSequence,
-#'                  serverFunction = function() {
+#'                  serverFunction = function(data) {
 #'                    callModule(slider, "slider")
 #'                  })
 #'     }
@@ -166,7 +165,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #' @rdname slicer
 slicer <- function(input, output, session, data, uiSequence, serverFunction) {
   if(nrow(uiSequence) == 0) {
-    serverFunction()
+    serverFunction(data)
   }
   else {
     category <- uiSequence$category[[1]]
