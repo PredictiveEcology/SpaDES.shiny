@@ -88,7 +88,7 @@ Shiny module used to: \cr
   server <-
     function(input, output, session) {
       callModule(slicer, "slicer", DT, uiSequence,
-                 serverFunction = function() {
+                 serverFunction = function(data) {
                    callModule(slider, "slider")
                  })
     }
@@ -102,6 +102,47 @@ Shiny module used to: \cr
                  uiFunction = function(ns, data, categoryValue) {
                    sliderUI(ns("slider"), min = data[,min(Forces)], max = data[,sum(Forces)],
                             value = data[,min(Forces)], step = 1, label = categoryValue)
+                 })
+      )
+    )
+
+  shinyApp(ui, server)
+}
+\dontrun{
+  library(shiny)
+  library(shinydashboard)
+  library(SpaDES.shiny)
+  library(data.table)
+
+  DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
+                                "Last Alliance of Elves and Men",
+                                "Last Alliance of Elves and Men",
+                                "Mordor",
+                                "Mordor",
+                                "Mordor",
+                                "Saruman"),
+                   Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
+                   City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+                   Forces = 22: 28)
+
+  uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
+
+  server <-
+    function(input, output, session) {
+      callModule(slicer, "slicer", DT, uiSequence,
+                 serverFunction = function(data) {
+                   callModule(histogram, "histogram", data[, Forces])
+                 })
+    }
+
+  ui <-
+    dashboardPage(
+      dashboardHeader(),
+      dashboardSidebar(),
+      dashboardBody(
+        slicerUI("slicer", DT, "LOTR", uiSequence,
+                 uiFunction = function(ns, data, categoryValue) {
+                   histogramUI(ns("histogram"), height = 300)
                  })
       )
     )
