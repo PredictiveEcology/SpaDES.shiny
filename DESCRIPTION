@@ -69,7 +69,6 @@ Collate:
     'export.R'
     'footers.R'
     'generator.R'
-    'grid.R'
     'histogramForRaster.R'
     'libInit.R'
     'pkgInfo.R'

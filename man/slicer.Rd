@@ -15,7 +15,8 @@ slicer(input, output, session, data, uiSequence, serverFunction)
 \item{data}{Data in form of a \code{data.table}. For each row from \code{uiSequence} argument.
 Both server function and ui function should receive the same data table.}
 
-\item{categoryValue}{Each time the data table is sliced, concrete value of the category is set. This argument stores this value.}
+\item{categoryValue}{Each time the data table is sliced (one dimension is cut off),
+concrete value of the category is set. This argument stores this value.}
 
 \item{uiSequence}{A \code{data.table} of the form
 \code{data.table(category = list_of_categories, ui = list_of_ui_actions)}.
@@ -75,7 +76,7 @@ Shiny module used to: \cr
                                 "Saruman"),
                    Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
                    City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
-                   Forces = 22: 28, radze = 13:19)
+                   Forces = 22: 28)
 
   uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("tab", "box"))
 
@@ -94,7 +95,8 @@ Shiny module used to: \cr
       dashboardBody(
         slicerUI("slicer", DT, "LOTR", uiSequence,
                  uiFunction = function(ns, data, categoryValue) {
-                   sliderUI(ns("slider"), min = data[,min(Forces)], max = data[,sum(Forces)], value = data[,min(Forces)], step = 1, label = categoryValue)
+                   sliderUI(ns("slider"), min = data[,min(Forces)], max = data[,sum(Forces)],
+                            value = data[,min(Forces)], step = 1, label = categoryValue)
                  })
       )
     )
