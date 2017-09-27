@@ -67,6 +67,11 @@ Shiny module used to: \cr
 }
 \examples{
 \dontrun{
+  library(shiny)
+  library(shinydashboard)
+  library(SpaDES.shiny)
+  library(data.table)
+
   DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
                                 "Last Alliance of Elves and Men",
                                 "Last Alliance of Elves and Men",
