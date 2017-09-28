@@ -130,7 +130,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'                  "Mordor",
 #'                  "Saruman"),
 #'     Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nazg\u00FBl", "Uruk-hai"),
-#'     City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+#'     City = c("Rivendell", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
 #'     Forces = 22: 28
 #'  )
 #'
@@ -163,39 +163,37 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'   library(SpaDES.shiny)
 #'   library(data.table)
 #'
-#'   DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
-#'                                 "Last Alliance of Elves and Men",
-#'                                 "Last Alliance of Elves and Men",
-#'                                 "Mordor",
-#'                                 "Mordor",
-#'                                 "Mordor",
-#'                                 "Saruman"),
-#'                    Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
-#'                    City = c("Rivendel", "Rohan", "Gondor", "Mordor",
-#'                             "Moria", "Mordor", "Isengard"),
-#'                    Forces = 22: 28)
+#'   DT <- data.table(
+#'   Alliance = c("Last Alliance of Elves and Men",
+#'                "Last Alliance of Elves and Men",
+#'                "Last Alliance of Elves and Men",
+#'                "Mordor",
+#'                "Mordor",
+#'                "Mordor",
+#'                "Saruman"),
+#'     Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nazg\u00FBl", "Uruk-hai"),
+#'     City = c("Rivendell", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+#'     Forces = 22: 28
+#'   )
 #'
 #'   uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
 #'
-#'   server <-
-#'     function(input, output, session) {
-#'       callModule(slicer, "slicer", DT, uiSequence,
-#'                  serverFunction = function(data) {
-#'                    callModule(histogram, "histogram", data[, Forces])
-#'                  })
-#'     }
+#'   server <- function(input, output, session) {
+#'     callModule(slicer, "slicer", DT, uiSequence, serverFunction = function(data) {
+#'       callModule(histogram, "histogram", data[, Forces])
+#'     })
+#'   }
 #'
-#'   ui <-
-#'     dashboardPage(
-#'       dashboardHeader(),
-#'       dashboardSidebar(),
-#'       dashboardBody(
-#'         slicerUI("slicer", DT, "LOTR", uiSequence,
-#'                  uiFunction = function(ns, data, categoryValue) {
-#'                    histogramUI(ns("histogram"), height = 300)
-#'                  })
+#'   ui <- dashboardPage(
+#'     dashboardHeader(),
+#'     dashboardSidebar(),
+#'     dashboardBody(
+#'       slicerUI("slicer", DT, "LOTR", uiSequence,
+#'                uiFunction = function(ns, data, categoryValue) {
+#'                  histogramUI(ns("histogram"), height = 300)
+#'                })
 #'       )
-#'     )
+#'   )
 #'
 #'   shinyApp(ui, server)
 #' }
