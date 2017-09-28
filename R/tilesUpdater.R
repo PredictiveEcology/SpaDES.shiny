@@ -46,10 +46,10 @@ tilesUpdater <- function(input, output, session, proxy, urlTemplate, tilesGroup,
     addTilesParametersCombined <- c(list(map = clearGroup(proxy, tilesGroup),
                                          urlTemplate = urlTemplate(),
                                          group = tilesGroup), addTilesParameters)
-    addLayersControlParametersCombined <- c(
+    layersControlParamsCombined <- c(
       list(map = do.call(addTiles, addTilesParametersCombined)),
       addLayersControlParameters
     )
-    do.call(addLayersControl, addLayersControlParametersCombined)
+    do.call(addLayersControl, layersControlParamsCombined)
   })
 }
