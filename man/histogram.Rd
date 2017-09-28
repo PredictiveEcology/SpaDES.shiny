@@ -21,8 +21,6 @@ histogram(input, output, session, data)
 \item{session}{Shiny server session object}
 
 \item{data}{Data used to render bar plot. See \code{\link[graphics]{barplot}} for reference.}
-
-\item{raster}{Reactive value containing raster}
 }
 \value{
 None. Invoked for the side-effect of generating UI for plot

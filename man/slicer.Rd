@@ -88,8 +88,8 @@ Shiny module used to: \cr
       dashboardBody(
         slicerUI("slicer", DT, "LOTR", uiSequence,
                  uiFunction = function(ns, data, categoryValue) {
-                   sliderUI(ns("slider"), min = data[,min(Forces)], max = data[, sum(Forces)],
-                            value = data[,min(Forces)], step = 1, label = categoryValue)
+                   sliderUI(ns("slider"), min = data[, min(Forces)], max = data[, sum(Forces)],
+                            value = data[, min(Forces)], step = 1, label = categoryValue)
                  })
       )
     )
@@ -140,5 +140,7 @@ Shiny module used to: \cr
 
 }
 \author{
+Mateusz Wyszynski
+
 Mateusz Wyszynski
 }

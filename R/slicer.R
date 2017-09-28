@@ -108,6 +108,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'
 #' @return Shiny module server function.
 #'
+#' @author Mateusz Wyszynski
 #' @export
 #' @importFrom purrr pmap map
 #' @importFrom magrittr %>%
