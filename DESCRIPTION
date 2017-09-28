@@ -22,6 +22,7 @@ Additional_repositories: http://rforge.net
 Depends:
     R (>= 3.3.3)
 Imports:
+    data.table,
     DiagrammeR (>= 0.8.2),
     dplyr,
     DT (>= 0.2),
@@ -68,6 +69,7 @@ Collate:
     'export.R'
     'footers.R'
     'generator.R'
+    'histogram.R'
     'histogramForRaster.R'
     'libInit.R'
     'pkgInfo.R'
@@ -75,6 +77,7 @@ Collate:
     'shine.R'
     'simInfo.R'
     'simOutputs.R'
+    'slicer.R'
     'slider.R'
     'spades-shiny-package.R'
     'summaryPopups.R'
