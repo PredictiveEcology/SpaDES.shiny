@@ -50,15 +50,10 @@ getTableOfSubtables <- function(dataTable, categoryName) {
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table
 #' @rdname slicer
-slicerUI <- function(id, data, categoryValue, uiSequence,
-                     uiFunction) {
+slicerUI <- function(id) {
   ns <- NS(id)
 
-  if (nrow(uiSequence) == 0) {
-    uiFunction(ns, data, categoryValue)
-  } else {
-    uiOutput(ns("recursiveUI"))
-  }
+  uiOutput(ns("recursiveUI"))
 }
 
 #' @param input    Shiny server input object.
@@ -163,17 +158,19 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'   shinyApp(ui, server)
 #' }
 #'
-slicer <- function(input, output, session, data, uiSequence, serverFunction, uiFunction) {
+slicer <- function(input, output, session, data, categoryValue, uiSequence, serverFunction, uiFunction) {
   ns <- session$ns
 
   if (nrow(uiSequence) == 0) {
     serverFunction(data)
+
+    output$recursiveUI <- renderUI(uiFunction(ns, data, categoryValue))
   } else {
     category <- uiSequence$category[[1]]
     subtables <- getTableOfSubtables(data, category)
 
     pmap(subtables, function(category, dataTable) {
-      callModule(slicer, category, dataTable, uiSequence[-1, ], serverFunction, uiFunction)
+      callModule(slicer, category, dataTable, category, uiSequence[-1, ], serverFunction, uiFunction)
     })
 
     ui <- uiSequence$ui[[1]]
@@ -183,8 +180,7 @@ slicer <- function(input, output, session, data, uiSequence, serverFunction, uiF
              "tab" = {
                tabPanelWithSlicerContent <- function(category, dataTable) {
                  tabPanel(category,
-                          slicerUI(ns(category), data = dataTable, categoryValue = category,
-                                   uiSequence[-1, ], uiFunction))
+                          slicerUI(ns(category)))
                }
 
                tabPanels <- pmap(subtables, function(category, dataTable) {
@@ -200,8 +196,7 @@ slicer <- function(input, output, session, data, uiSequence, serverFunction, uiF
                  shinydashboard::box(
                    width = 6, solidHeader = TRUE, collapsible = TRUE,
                    title = category, background = "light-blue",
-                   slicerUI(ns(category), data = dataTable, categoryValue = category,
-                            uiSequence[-1, ], uiFunction)
+                   slicerUI(ns(category))
                  )
                }
 
