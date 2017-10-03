@@ -19,8 +19,10 @@ slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
 
 \item{session}{Shiny server session object.}
 
-\item{data}{Data in form of a \code{data.table}. For each row from \code{uiSequence} argument.
-Both server function and ui function should receive the same data table.}
+\item{data}{Reactive value containing data in form of a \code{data.table}.
+For each row from \code{uiSequence} argument, a set of subtables
+is created. Each subtable is a subset of data with fixed value
+for one dimension.}
 
 \item{categoryValue}{Each time the data table is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}
@@ -28,19 +30,16 @@ concrete value of the category is set. This argument stores this value.}
 \item{uiSequence}{A \code{data.table} of the form
 \code{data.table(category = list_of_categories, ui = list_of_ui_actions)}.
 Both lists should contain elements of type character.
-Both server function and ui function should receive the same data table.
 Currently there are two possible actions to perform: "tab" and "box".
 Action "box": should be used only together with \pkg{shinydashboard}.
 An example of proper \code{uiSequence} is
 \code{data.table(category = c("Alliance", "Kingdom"), ui = c("tab", "box"))}}
 
 \item{serverFunction}{A summary module server function. This function will be applied to
-extracted m-dimensional data table. Should correspond to \code{uiFunction}
-in \code{slicerUI}.}
+extracted m-dimensional data table. Should correspond to \code{uiFunction}.}
 
 \item{uiFunction}{A summary module function UI. This function will be applied to
-extracted m-dimensional data table. Should correspond to \code{serverFunction}
-in \code{slicer}.}
+extracted m-dimensional data table. Should correspond to \code{serverFunction}.}
 }
 \value{
 Shiny module UI.
@@ -76,7 +75,9 @@ uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
 
 server <-
   function(input, output, session) {
-    callModule(slicer, "slicer", DT, "LOTR", uiSequence = uiSequence,
+    dt <- reactive(DT)
+
+    callModule(slicer, "slicer", dt, "LOTR", uiSequence = uiSequence,
                serverFunction = function(data) {
                  callModule(histogram, "histogram", data[, Forces])
                },
