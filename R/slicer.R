@@ -57,42 +57,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
   if (nrow(uiSequence) == 0) {
     uiFunction(ns, data, categoryValue)
   } else {
-    category <- uiSequence$category[[1]]
-    subtables <- getTableOfSubtables(data, category)
-
-    ui <- uiSequence$ui[[1]]
-
-    switch(ui,
-           "tab" = {
-             tabPanelWithSlicerContent <- function(category, dataTable) {
-               tabPanel(category,
-                        slicerUI(ns(category), data = dataTable, categoryValue = category,
-                                 uiSequence[-1, ], uiFunction))
-             }
-
-             tabPanels <- pmap(subtables, function(category, dataTable) {
-               tabPanelWithSlicerContent(category, dataTable)
-              })
-
-             mainPanel(
-               do.call(tabsetPanel, tabPanels)
-             )
-           },
-           "box" = {
-             boxWithSlicerContent <- function(category, dataTable) {
-               shinydashboard::box(
-                 width = 6, solidHeader = TRUE, collapsible = TRUE,
-                 title = category, background = "light-blue",
-                 slicerUI(ns(category), data = dataTable, categoryValue = category,
-                          uiSequence[-1, ], uiFunction)
-               )
-             }
-
-             pmap(subtables, function(category, dataTable) {
-               boxWithSlicerContent(category, dataTable)
-             })
-          }
-    )
+    uiOutput(ns("recursiveUI"))
   }
 }
 
@@ -198,7 +163,9 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'   shinyApp(ui, server)
 #' }
 #'
-slicer <- function(input, output, session, data, uiSequence, serverFunction) {
+slicer <- function(input, output, session, data, uiSequence, serverFunction, uiFunction) {
+  ns <- session$ns
+
   if (nrow(uiSequence) == 0) {
     serverFunction(data)
   } else {
@@ -206,7 +173,43 @@ slicer <- function(input, output, session, data, uiSequence, serverFunction) {
     subtables <- getTableOfSubtables(data, category)
 
     pmap(subtables, function(category, dataTable) {
-      callModule(slicer, category, dataTable, uiSequence[-1, ], serverFunction)
+      callModule(slicer, category, dataTable, uiSequence[-1, ], serverFunction, uiFunction)
     })
+
+    ui <- uiSequence$ui[[1]]
+
+    output$recursiveUI <- renderUI(
+      switch(ui,
+             "tab" = {
+               tabPanelWithSlicerContent <- function(category, dataTable) {
+                 tabPanel(category,
+                          slicerUI(ns(category), data = dataTable, categoryValue = category,
+                                   uiSequence[-1, ], uiFunction))
+               }
+
+               tabPanels <- pmap(subtables, function(category, dataTable) {
+                 tabPanelWithSlicerContent(category, dataTable)
+               })
+
+               mainPanel(
+                 do.call(tabsetPanel, tabPanels)
+               )
+             },
+             "box" = {
+               boxWithSlicerContent <- function(category, dataTable) {
+                 shinydashboard::box(
+                   width = 6, solidHeader = TRUE, collapsible = TRUE,
+                   title = category, background = "light-blue",
+                   slicerUI(ns(category), data = dataTable, categoryValue = category,
+                            uiSequence[-1, ], uiFunction)
+                 )
+               }
+
+               pmap(subtables, function(category, dataTable) {
+                 boxWithSlicerContent(category, dataTable)
+               })
+             }
+      )
+    )
   }
 }
