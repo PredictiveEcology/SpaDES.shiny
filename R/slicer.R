@@ -200,7 +200,7 @@ slicerUI <- function(id, data, categoryValue, uiSequence,
 #'
 slicer <- function(input, output, session, data, uiSequence, serverFunction) {
   if (nrow(uiSequence) == 0) {
-    serverFunction()
+    serverFunction(data)
   } else {
     category <- uiSequence$category[[1]]
     subtables <- getTableOfSubtables(data, category)
