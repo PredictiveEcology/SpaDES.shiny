@@ -118,50 +118,54 @@ slicerUI <- function(id) {
 slicer <- function(input, output, session, data, categoryValue, uiSequence, serverFunction, uiFunction) {
   ns <- session$ns
 
-  if (nrow(uiSequence) == 0) {
-    serverFunction(data)
+  observeEvent(data, {
+    data <- data()
 
-    output$recursiveUI <- renderUI(uiFunction(ns, data, categoryValue))
-  } else {
-    category <- uiSequence$category[[1]]
-    subtables <- getTableOfSubtables(data, category)
+    if (nrow(uiSequence) == 0) {
+      serverFunction(data)
 
-    pmap(subtables, function(category, dataTable) {
-      callModule(slicer, category, dataTable, category, uiSequence[-1, ], serverFunction, uiFunction)
-    })
+      output$recursiveUI <- renderUI(uiFunction(ns, data, categoryValue))
+    } else {
+      category <- uiSequence$category[[1]]
+      subtables <- getTableOfSubtables(data, category)
 
-    ui <- uiSequence$ui[[1]]
+      pmap(subtables, function(category, dataTable) {
+        callModule(slicer, category, reactive(dataTable), category, uiSequence[-1, ], serverFunction, uiFunction)
+      })
 
-    output$recursiveUI <- renderUI(
-      switch(ui,
-             "tab" = {
-               tabPanelWithSlicerContent <- function(category, dataTable) {
-                 tabPanel(category,
-                          slicerUI(ns(category)))
-               }
+      ui <- uiSequence$ui[[1]]
 
-               tabPanels <- pmap(subtables, function(category, dataTable) {
-                 tabPanelWithSlicerContent(category, dataTable)
-               })
+      output$recursiveUI <- renderUI(
+        switch(ui,
+               "tab" = {
+                 tabPanelWithSlicerContent <- function(category, dataTable) {
+                   tabPanel(category,
+                            slicerUI(ns(category)))
+                 }
 
-               mainPanel(
-                 do.call(tabsetPanel, tabPanels)
-               )
-             },
-             "box" = {
-               boxWithSlicerContent <- function(category, dataTable) {
-                 shinydashboard::box(
-                   width = 6, solidHeader = TRUE, collapsible = TRUE,
-                   title = category, background = "light-blue",
-                   slicerUI(ns(category))
+                 tabPanels <- pmap(subtables, function(category, dataTable) {
+                   tabPanelWithSlicerContent(category, dataTable)
+                 })
+
+                 mainPanel(
+                   do.call(tabsetPanel, tabPanels)
                  )
-               }
+               },
+               "box" = {
+                 boxWithSlicerContent <- function(category, dataTable) {
+                   shinydashboard::box(
+                     width = 6, solidHeader = TRUE, collapsible = TRUE,
+                     title = category, background = "light-blue",
+                     slicerUI(ns(category))
+                   )
+                 }
 
-               pmap(subtables, function(category, dataTable) {
-                 boxWithSlicerContent(category, dataTable)
-               })
-             }
+                 pmap(subtables, function(category, dataTable) {
+                   boxWithSlicerContent(category, dataTable)
+                 })
+               }
+        )
       )
-    )
-  }
+    }
+  })
 }
