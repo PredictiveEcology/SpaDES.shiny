@@ -28,12 +28,12 @@ for one dimension.}
 concrete value of the category is set. This argument stores this value.}
 
 \item{uiSequence}{A \code{data.table} of the form
-\code{data.table(category = list_of_categories, ui = list_of_ui_actions)}.
+\code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
 Both lists should contain elements of type character.
 Currently there are two possible actions to perform: "tab" and "box".
 Action "box": should be used only together with \pkg{shinydashboard}.
 An example of proper \code{uiSequence} is
-\code{data.table(category = c("Alliance", "Kingdom"), ui = c("tab", "box"))}}
+\code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}}
 
 \item{serverFunction}{A summary module server function. This function will be applied to
 extracted m-dimensional data table. Should correspond to \code{uiFunction}.}
@@ -72,7 +72,7 @@ DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
                           "Moria", "Mordor", "Isengard"),
                  Forces = 22: 28)
 
-uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
+uiSequence <- data.table(category = c("Alliance", "Race"), uiType = c("box", "tab"))
 
 server <-
   function(input, output, session) {

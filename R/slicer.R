@@ -11,16 +11,16 @@ getTableOfSubtables <- function(dataTable, categoryName) {
   data.table(category = categories, dataTable = dataTables)
 }
 
-whichUiToRender <- function(ui, subtables, ns) {
-  switch(ui,
+generateUI <- function(uiType, subtables, ns) {
+  switch(uiType,
          "tab" = {
-           tabPanelWithSlicerContent <- function(category, dataTable) {
+           tabPanelWithSlicerContent <- function(category) {
              tabPanel(category,
                       slicerUI(ns(category)))
            }
 
            tabPanels <- pmap(subtables, function(category, dataTable) {
-             tabPanelWithSlicerContent(category, dataTable)
+             tabPanelWithSlicerContent(category)
            })
 
            mainPanel(
@@ -28,16 +28,15 @@ whichUiToRender <- function(ui, subtables, ns) {
            )
          },
          "box" = {
-           boxWithSlicerContent <- function(category, dataTable) {
+           boxWithSlicerContent <- function(category) {
              shinydashboard::box(
                width = 6, solidHeader = TRUE, collapsible = TRUE,
-               title = category, background = "light-blue",
-               slicerUI(ns(category))
+               title = category, slicerUI(ns(category))
              )
            }
 
            pmap(subtables, function(category, dataTable) {
-             boxWithSlicerContent(category, dataTable)
+             boxWithSlicerContent(category)
            })
          }
   )
@@ -80,12 +79,12 @@ slicerUI <- function(id) {
 #'                      concrete value of the category is set. This argument stores this value.
 #'
 #' @param uiSequence A \code{data.table} of the form
-#'                   \code{data.table(category = list_of_categories, ui = list_of_ui_actions)}.
+#'                   \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
 #'                   Both lists should contain elements of type character.
 #'                   Currently there are two possible actions to perform: "tab" and "box".
 #'                   Action "box": should be used only together with \pkg{shinydashboard}.
 #'                   An example of proper \code{uiSequence} is
-#'                   \code{data.table(category = c("Alliance", "Kingdom"), ui = c("tab", "box"))}
+#'                   \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}
 #'
 #' @param serverFunction A summary module server function. This function will be applied to
 #'                       extracted m-dimensional data table. Should correspond to \code{uiFunction}.
@@ -123,7 +122,7 @@ slicerUI <- function(id) {
 #'                           "Moria", "Mordor", "Isengard"),
 #'                  Forces = 22: 28)
 #'
-#' uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
+#' uiSequence <- data.table(category = c("Alliance", "Race"), uiType = c("box", "tab"))
 #'
 #' server <-
 #'   function(input, output, session) {
@@ -169,9 +168,9 @@ slicer <- function(input, output, session, data,
                    uiSequence[-1, ], serverFunction, uiFunction)
       })
 
-      ui <- uiSequence$ui[[1]]
+      uiType <- uiSequence$uiType[[1]]
 
-      output$recursiveUI <- renderUI(whichUiToRender(ui, subtables, ns))
+      output$recursiveUI <- renderUI(generateUI(uiType, subtables, ns))
     }
   })
 }
