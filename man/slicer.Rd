@@ -68,7 +68,8 @@ DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
                               "Mordor",
                               "Saruman"),
                  Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
-                 City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+                 City = c("Rivendel", "Rohan", "Gondor", "Mordor",
+                          "Moria", "Mordor", "Isengard"),
                  Forces = 22: 28)
 
 uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))

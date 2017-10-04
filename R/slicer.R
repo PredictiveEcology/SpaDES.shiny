@@ -119,7 +119,8 @@ slicerUI <- function(id) {
 #'                               "Mordor",
 #'                               "Saruman"),
 #'                  Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
-#'                  City = c("Rivendel", "Rohan", "Gondor", "Mordor", "Moria", "Mordor", "Isengard"),
+#'                  City = c("Rivendel", "Rohan", "Gondor", "Mordor",
+#'                           "Moria", "Mordor", "Isengard"),
 #'                  Forces = 22: 28)
 #'
 #' uiSequence <- data.table(category = c("Alliance", "Race"), ui = c("box", "tab"))
@@ -148,7 +149,8 @@ slicerUI <- function(id) {
 #'
 #' shinyApp(ui, server)
 #' }
-slicer <- function(input, output, session, data, categoryValue, uiSequence, serverFunction, uiFunction) {
+slicer <- function(input, output, session, data,
+                   categoryValue, uiSequence, serverFunction, uiFunction) {
   ns <- session$ns
 
   observeEvent(data, {
@@ -163,7 +165,8 @@ slicer <- function(input, output, session, data, categoryValue, uiSequence, serv
       subtables <- getTableOfSubtables(data, category)
 
       pmap(subtables, function(category, dataTable) {
-        callModule(slicer, category, reactive(dataTable), category, uiSequence[-1, ], serverFunction, uiFunction)
+        callModule(slicer, category, reactive(dataTable), category,
+                   uiSequence[-1, ], serverFunction, uiFunction)
       })
 
       ui <- uiSequence$ui[[1]]
