@@ -7,8 +7,8 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
-  uiFunction)
+slicer(input, output, session, data, globalData, categoryValue, uiSequence,
+  serverFunction, uiFunction)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function}
@@ -23,6 +23,11 @@ slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
 For each row from \code{uiSequence} argument, a set of subtables
 is created. Each subtable is a subset of data with fixed value
 for one dimension.}
+
+\item{globalData}{Reactive value containing data in form of a \code{data.table}.
+This is the data table from the beginning, i.e. before any slices
+were made. This is helpful if the end summary function requires
+information about already sliced dimensions.}
 
 \item{categoryValue}{Each time the data table is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}
