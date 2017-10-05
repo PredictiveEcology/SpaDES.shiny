@@ -75,6 +75,11 @@ slicerUI <- function(id) {
 #'             is created. Each subtable is a subset of data with fixed value
 #'             for one dimension.
 #'
+#' @param globalData Reactive value containing data in form of a \code{data.table}.
+#'                   This is the data table from the beginning, i.e. before any slices
+#'                   were made. This is helpful if the end summary function requires
+#'                   information about already sliced dimensions.
+#'
 #' @param categoryValue Each time the data table is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
 #'
@@ -149,15 +154,18 @@ slicerUI <- function(id) {
 #'
 #' shinyApp(ui, server)
 #' }
-slicer <- function(input, output, session, data,
+slicer <- function(input, output, session, data, globalData,
                    categoryValue, uiSequence, serverFunction, uiFunction) {
   ns <- session$ns
 
-  observeEvent(data, {
+  observeEvent({
+    data
+    globalData
+  }, {
     data <- data()
 
     if (nrow(uiSequence) == 0) {
-      serverFunction(data)
+      serverFunction(data, globalData())
 
       output$recursiveUI <- renderUI(uiFunction(ns, data, categoryValue))
     } else {
@@ -165,7 +173,7 @@ slicer <- function(input, output, session, data,
       subtables <- getTableOfSubtables(data, category)
 
       pmap(subtables, function(category, dataTable) {
-        callModule(slicer, category, reactive(dataTable), category,
+        callModule(slicer, category, reactive(dataTable), globalData, category,
                    uiSequence[-1, ], serverFunction, uiFunction)
       })
 
