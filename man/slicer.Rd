@@ -64,38 +64,33 @@ library(data.table)
 DT <- data.table(Alliance = c("Last Alliance of Elves and Men",
                               "Last Alliance of Elves and Men",
                               "Last Alliance of Elves and Men",
-                              "Mordor",
-                              "Mordor",
-                              "Mordor",
-                              "Saruman"),
-                 Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nasguls", "Uruk-hai"),
-                 City = c("Rivendel", "Rohan", "Gondor", "Mordor",
+                              "Mordor", "Mordor", "Mordor", "Saruman"),
+                 Race = c("Elves", "Men", "Men", "Orcs", "Orcs", "Nazg\\u00FBl", "Uruk-hai"),
+                 City = c("Rivendell", "Rohan", "Gondor", "Mordor",
                           "Moria", "Mordor", "Isengard"),
                  Forces = 22: 28)
 
 uiSequence <- data.table(category = c("Alliance", "Race"), uiType = c("box", "tab"))
 
-server <-
-  function(input, output, session) {
-    dt <- reactive(DT)
+server <- function(input, output, session) {
+  dt <- reactive(DT)
 
-    callModule(slicer, "slicer", dt, "LOTR", uiSequence = uiSequence,
-               serverFunction = function(data) {
-                 callModule(histogram, "histogram", data[, Forces])
-               },
-               uiFunction = function(ns, data, categoryValue) {
-                 histogramUI(ns("histogram"), height = 300)
-               })
-  }
+  callModule(slicer, "slicer", dt, "LOTR", uiSequence = uiSequence,
+             serverFunction = function(data) {
+               callModule(histogram, "histogram", data[, Forces])
+             },
+             uiFunction = function(ns, data, categoryValue) {
+               histogramUI(ns("histogram"), height = 300)
+             })
+}
 
-ui <-
-  dashboardPage(
-    dashboardHeader(),
-    dashboardSidebar(),
-    dashboardBody(
-      slicerUI("slicer")
-    )
+ui <- dashboardPage(
+  dashboardHeader(),
+  dashboardSidebar(),
+  dashboardBody(
+    slicerUI("slicer")
   )
+)
 
 shinyApp(ui, server)
 }
