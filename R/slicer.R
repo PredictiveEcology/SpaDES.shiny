@@ -167,7 +167,7 @@ slicer <- function(input, output, session, data, globalData,
     if (nrow(uiSequence) == 0) {
       serverFunction(data, globalData())
 
-      output$recursiveUI <- renderUI(uiFunction(ns, data, categoryValue))
+      output$recursiveUI <- renderUI(uiFunction(ns))
     } else {
       category <- uiSequence$category[[1]]
       subtables <- getTableOfSubtables(data, category)
