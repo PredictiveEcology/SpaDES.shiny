@@ -134,11 +134,11 @@ slicerUI <- function(id) {
 #'   function(input, output, session) {
 #'     dt <- reactive(DT)
 #'
-#'     callModule(slicer, "slicer", dt, "LOTR", uiSequence = uiSequence,
-#'                serverFunction = function(data) {
+#'     callModule(slicer, "slicer", dt, dt, "LOTR", uiSequence = uiSequence,
+#'                serverFunction = function(data, globalData) {
 #'                  callModule(histogram, "histogram", data[, Forces])
 #'                },
-#'                uiFunction = function(ns, data, categoryValue) {
+#'                uiFunction = function(ns) {
 #'                  histogramUI(ns("histogram"), height = 300)
 #'                })
 #'   }
