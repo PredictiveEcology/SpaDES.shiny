@@ -7,6 +7,7 @@
 #' @param output   Shiny server output object.
 #' @param session  Shiny server session object.
 #' @param proxy    Leaflet proxy which manages a connected leaflet map.
+#' @param group    Group of polygons we want to update.
 #' @param polygons Reactive value which contains a set of polygons which should
 #'                 be displayed on the leaflet map.
 #' @param ...      Additional parameters of \code{\link[leaflet]{addPolygons}} function.
@@ -22,10 +23,10 @@
 #' @rdname polygonsUpdater
 #'
 #' @export
-polygonsUpdater <- function(input, output, session, proxy, polygons, ...) {
+polygonsUpdater <- function(input, output, session, proxy, polygons, group = "group", ...) {
   observeEvent(polygons(), {
     proxy %>%
-      addPolygons(data = polygons(),
-                  ...)
+      clearGroup(group = group) %>%
+      addPolygons(data = polygons(), group = group, ...)
   })
 }
