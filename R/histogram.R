@@ -31,8 +31,8 @@ histogramUI <- function(id, ...) {
 #' @importFrom graphics barplot
 #' @importFrom shiny renderPlot
 #' @rdname histogram
-histogram <- function(input, output, session, data) {
-  output$histogram <- renderPlot(
+histogram <- function(input, output, session, data, chosenCategories) {
+  output$histogram <- renderPlot({
     barplot(data)
-  )
+  })
 }
