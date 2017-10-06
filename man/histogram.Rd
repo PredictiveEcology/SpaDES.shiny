@@ -7,7 +7,8 @@
 \usage{
 histogramUI(id, ...)
 
-histogram(input, output, session, data)
+histogram(input, output, session, data, globalData, chosenCategories,
+  numberOfSimulationTimes)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function}
@@ -20,7 +21,15 @@ histogram(input, output, session, data)
 
 \item{session}{Shiny server session object}
 
-\item{data}{Data used to render bar plot. See \code{\link[graphics]{barplot}} for reference.}
+\item{data}{Subset of \code{globalData} created during slicing.
+See \code{?slicer} for reference.}
+
+\item{globalData}{Data in form of data table. This data was sliced during slicing.
+See \code{?slicer} for reference.}
+
+\item{chosenCategories}{List with categories that where chosen when slicing the data.}
+
+\item{numberOfSimulationTimes}{How many simulation times occurred in simulation.}
 }
 \value{
 None. Invoked for the side-effect of generating UI for plot

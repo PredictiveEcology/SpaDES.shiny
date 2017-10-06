@@ -99,6 +99,9 @@ slicerUI <- function(id) {
 #' @param uiFunction A summary module function UI. This function will be applied to
 #'                   extracted m-dimensional data table. Should correspond to \code{serverFunction}.
 #'
+#' @param chosenCategories A list with categories that were already fixed in the data table.
+#'                         Default is NULL.
+#'
 #' @return Shiny module server function.
 #'
 #' @author Mateusz Wyszynski

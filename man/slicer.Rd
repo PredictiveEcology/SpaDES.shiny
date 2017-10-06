@@ -8,7 +8,7 @@
 slicerUI(id)
 
 slicer(input, output, session, data, globalData, categoryValue, uiSequence,
-  serverFunction, uiFunction)
+  serverFunction, uiFunction, chosenCategories = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function}
@@ -46,6 +46,9 @@ extracted m-dimensional data table. Should correspond to \code{uiFunction}.}
 
 \item{uiFunction}{A summary module function UI. This function will be applied to
 extracted m-dimensional data table. Should correspond to \code{serverFunction}.}
+
+\item{chosenCategories}{A list with categories that were already fixed in the data table.
+Default is NULL.}
 }
 \value{
 Shiny module UI.
