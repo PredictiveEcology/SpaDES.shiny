@@ -42,6 +42,7 @@ histogramUI <- function(id, ...) {
 histogram <- function(input, output, session, data, globalData,
                       chosenCategories, numberOfSimulationTimes) {
   output$histogram <- renderPlot({
+    globalData <- globalData()
     maxNumClusters <- globalData[ageClass==chosenCategories[[3]] & polygonID==chosenCategories[[2]],
                                  .N, by = c("vegCover","rep")]$N + 1
     maxNumClusters <- if(length(maxNumClusters)==0) 6 else pmax(6, max(maxNumClusters))
@@ -52,6 +53,7 @@ histogram <- function(input, output, session, data, globalData,
     }
     breaksLabels <- 0:(maxNumClusters)
     breaks <- breaksLabels - 0.5
+    print(breaks)
     barplotBreaks <- breaksLabels + 0.5
 
     actualPlot <- hist(numberOfPatchesInTime,

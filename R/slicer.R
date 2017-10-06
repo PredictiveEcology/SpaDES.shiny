@@ -170,7 +170,6 @@ slicer <- function(input, output, session, data, globalData,
     data <- data()
 
     if (nrow(uiSequence) == 0) {
-      globalData <- globalData()
       serverFunction(data, globalData, chosenCategories)
 
       output$recursiveUI <- renderUI(uiFunction(ns))

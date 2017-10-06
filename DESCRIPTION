@@ -71,6 +71,7 @@ Collate:
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'
+    'largePatches.R'
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
