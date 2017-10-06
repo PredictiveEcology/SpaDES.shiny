@@ -156,7 +156,8 @@ slicerUI <- function(id) {
 #' shinyApp(ui, server)
 #' }
 slicer <- function(input, output, session, data, globalData,
-                   categoryValue, uiSequence, serverFunction, uiFunction, chosenCategories) {
+                   categoryValue, uiSequence, serverFunction,
+                   uiFunction, chosenCategories = NULL) {
   ns <- session$ns
 
   observeEvent({
@@ -166,16 +167,18 @@ slicer <- function(input, output, session, data, globalData,
     data <- data()
 
     if (nrow(uiSequence) == 0) {
-      serverFunction(data, globalData(), chosenCategories)
+      globalData <- globalData()
+      serverFunction(data, globalData, chosenCategories)
 
       output$recursiveUI <- renderUI(uiFunction(ns))
     } else {
-      category <- uiSequence$category[[1]]
-      subtables <- getTableOfSubtables(data, category)
+      categoryName <- uiSequence$category[[1]]
+      subtables <- getTableOfSubtables(data, categoryName)
 
       pmap(subtables, function(category, dataTable) {
         callModule(slicer, category, reactive(dataTable), globalData, category,
-                   uiSequence[-1, ], serverFunction, uiFunction, c(list(category), chosenCategories))
+                   uiSequence[-1, ], serverFunction, uiFunction,
+                   c(list(categoryName = category), chosenCategories))
       })
 
       uiType <- uiSequence$uiType[[1]]

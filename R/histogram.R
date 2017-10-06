@@ -23,7 +23,15 @@ histogramUI <- function(id, ...) {
 #'
 #' @param session Shiny server session object
 #'
-#' @param data Data used to render bar plot. See \code{\link[graphics]{barplot}} for reference.
+#' @param data Subset of \code{globalData} created during slicing.
+#'             See \code{?slicer} for reference.
+#'
+#' @param globalData Data in form of data table. This data was sliced during slicing.
+#'                   See \code{?slicer} for reference.
+#'
+#' @param chosenCategories List with categories that where chosen when slicing the data.
+#'
+#' @param numberOfSimulationTimes How many simulation times occurred in simulation.
 #'
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
@@ -31,8 +39,28 @@ histogramUI <- function(id, ...) {
 #' @importFrom graphics barplot
 #' @importFrom shiny renderPlot
 #' @rdname histogram
-histogram <- function(input, output, session, data, chosenCategories) {
+histogram <- function(input, output, session, data, globalData,
+                      chosenCategories, numberOfSimulationTimes) {
   output$histogram <- renderPlot({
-    barplot(data)
+    maxNumClusters <- globalData[ageClass==chosenCategories[[3]] & polygonID==chosenCategories[[2]],
+                                 .N, by = c("vegCover","rep")]$N + 1
+    maxNumClusters <- if(length(maxNumClusters)==0) 6 else pmax(6, max(maxNumClusters))
+    numberOfPatchesInTime <- rep(0, numberOfSimulationTimes)
+    if(NROW(data)) {
+      numberOfPatchesByTime <- data[,.N,by="rep"]
+      numberOfPatchesInTime[seq_len(NROW(numberOfPatchesByTime))] <- numberOfPatchesByTime$N
+    }
+    breaksLabels <- 0:(maxNumClusters)
+    breaks <- breaksLabels - 0.5
+    barplotBreaks <- breaksLabels + 0.5
+
+    actualPlot <- hist(numberOfPatchesInTime,
+                       breaks = breaks)
+    barplot(actualPlot$counts/sum(actualPlot$counts),
+            xlim = range(breaks),
+            xlab="", ylab = "Proportion in NRV",
+            col="darkgrey",border="grey", main = "",
+            width = rep(1, length(numberOfPatchesInTime)), space = 0)
+    axis(1, at = barplotBreaks, labels = breaksLabels)
   })
 }
