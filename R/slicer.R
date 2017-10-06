@@ -24,7 +24,8 @@ generateUI <- function(uiType, subtables, ns) {
            })
 
            mainPanel(
-             do.call(tabsetPanel, tabPanels)
+             do.call(tabsetPanel, tabPanels),
+             width = 12
            )
          },
          "box" = {
