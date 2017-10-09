@@ -1,7 +1,6 @@
-#' Slicer Module
+#' Large Patches Module
 #'
-#' @description Shiny module used to: \cr
-#'              1.
+#' @description
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'
@@ -26,24 +25,50 @@ largePatchesUI <- function(id) {
   )
 }
 
+#' @param input    Shiny server input object.
+#'
+#' @param output   Shiny server output object.
+#'
+#' @param session  Shiny server session object.
+#'
+#' @param numberOfSimulationTimes How many simulation time stamps there are.
+#'
+#' @param clumpMod2Args Arguments passed to \code{clumpMod2}. All arguments except
+#'                      \code{id} should be determined. Any \code{id} parameter will
+#'                      be surpressed.
+#'
+#' @return Shiny module server function.
+#'
+#' @author Mateusz Wyszynski
+#' @export
+#' @importFrom shiny mainPanel NS tabPanel tabsetPanel
+#' @importFrom shiny observeEvent renderUI callModule
+#' @importFrom shinydashboard box
+#' @importFrom purrr map
+#' @importFrom magrittr %>%
+#' @importFrom data.table data.table
+#' @rdname slicer
 largePatches <- function(session, input, output, numberOfSimulationTimes, clumpMod2Args) {
   patchSize <- callModule(slider, "slider")
 
   uiSequence <- data.table(category = c("ageClass", "polygonID", "vegCover"),
                            uiType = c("tab", "tab", "box"))
 
+  clumpMod2Args["id"] <- NULL
+
   ClumpsReturn2 <- do.call(callModule,
                            c(list(clumpMod2, "largePatches"), clumpMod2Args))
 
-  callModule(slicer, "slicer", reactive({ClumpsReturn2()$Clumps}),
-             reactive({ClumpsReturn2()$Clumps}), "LargePatches", uiSequence = uiSequence,
-             serverFunction = function(data, globalData, chosenCategories) {
-               callModule(histogram, "histogram", data,
-                          globalData, chosenCategories,
+  largePatchesData <- reactive(ClumpsReturn2()$Clumps)
+
+  callModule(slicer, "slicer", largePatchesData,
+             "LargePatches", uiSequence = uiSequence,
+             serverFunction = function(data, chosenCategories, chosenValues) {
+               callModule(histogram, "histogram",
+                          data, chosenCategories, chosenValues,
                           numberOfSimulationTimes = numberOfSimulationTimes)
              },
              uiFunction = function(ns) {
                histogramUI(ns("histogram"), height = 500)
-             },
-             chosenCategories = NULL)
+             })
 }
