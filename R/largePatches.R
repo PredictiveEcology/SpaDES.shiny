@@ -10,7 +10,7 @@
 #' @export
 #' @importFrom shiny NS fluidRow
 #' @importFrom shinydashboard box
-#' @rdname slicer
+#' @rdname largePatches
 largePatchesUI <- function(id) {
   ns <- NS(id)
 
@@ -41,13 +41,9 @@ largePatchesUI <- function(id) {
 #'
 #' @author Mateusz Wyszynski
 #' @export
-#' @importFrom shiny mainPanel NS tabPanel tabsetPanel
-#' @importFrom shiny observeEvent renderUI callModule
-#' @importFrom shinydashboard box
-#' @importFrom purrr map
-#' @importFrom magrittr %>%
+#' @importFrom shiny callModule reactive
 #' @importFrom data.table data.table
-#' @rdname slicer
+#' @rdname largePatches
 largePatches <- function(session, input, output, numberOfSimulationTimes, clumpMod2Args) {
   patchSize <- callModule(slider, "slider")
 
