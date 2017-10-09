@@ -7,7 +7,7 @@
 \usage{
 histogramUI(id, ...)
 
-histogram(input, output, session, data, globalData, chosenCategories,
+histogram(input, output, session, data, chosenCategories, chosenValues,
   numberOfSimulationTimes)
 }
 \arguments{
@@ -21,13 +21,15 @@ histogram(input, output, session, data, globalData, chosenCategories,
 
 \item{session}{Shiny server session object}
 
-\item{data}{Subset of \code{globalData} created during slicing.
-See \code{?slicer} for reference.}
+\item{data}{Reactive value containing a data table. This is global data.
+Desired subtables can be retrieved using \code{chosenCategories}
+and \code{chosenValues} parameters.}
 
-\item{globalData}{Data in form of data table. This data was sliced during slicing.
-See \code{?slicer} for reference.}
+\item{chosenCategories}{List of categories names that were already chosen
+when slicing the data.}
 
-\item{chosenCategories}{List with categories that where chosen when slicing the data.}
+\item{chosenValues}{List of categories values that were already chosen
+when slicing the data.}
 
 \item{numberOfSimulationTimes}{How many simulation times occurred in simulation.}
 }
