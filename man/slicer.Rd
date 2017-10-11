@@ -75,8 +75,9 @@ One can imagine behaviour of this module in the following way.
              received value choice. Child node also receives an information from user
              which category should be fixed next. It then performs the same calculations
              as the top node, but based on the implicitly received subtable. Simultanously,
-             for each node desired UI (e.g. tabs) is created. If no information about next category
-             to fix is provided for a node, it assumes it is a leaf. At the end, at each leaf,
+             for each node desired UI (e.g. tabs) is created.
+             If no information about next category to fix is provided for a node,
+             it assumes it is a leaf. At the end, at each leaf,
              a summary function is applied. Note that each leaf (and each node) receives
              the entire data table and the information about chosen values leading to this
              leaf (node). Hence summary can be based on implicitly determined subtable, but

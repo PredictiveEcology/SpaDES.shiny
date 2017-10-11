@@ -48,9 +48,11 @@ histogram <- function(input, output, session, data, chosenCategories,
     data <- data()
 
     subtableWith3DimensionsFixed <- getSubtable(data, chosenCategories, chosenValues)
-    subtableWith2DimensionsFixed <- getSubtable(data, head(chosenCategories, 2), head(chosenValues, 2))
+    subtableWith2DimensionsFixed <- getSubtable(data,
+                                                head(chosenCategories, 2),
+                                                head(chosenValues, 2))
 
-    maxNumClusters <- subtableWith2DimensionsFixed[, .N, by = c("vegCover","rep")]$N + 1
+    maxNumClusters <- subtableWith2DimensionsFixed[, .N, by = c("vegCover", "rep")]$N + 1
     maxNumClusters <- if (length(maxNumClusters) == 0) 6 else pmax(6, max(maxNumClusters))
     numberOfPatchesInTime <- rep(0, numberOfSimulationTimes)
     if (NROW(subtableWith3DimensionsFixed)) {
@@ -63,7 +65,7 @@ histogram <- function(input, output, session, data, chosenCategories,
 
     actualPlot <- hist(numberOfPatchesInTime,
                        breaks = breaks)
-    barplot(actualPlot$counts/sum(actualPlot$counts),
+    barplot(actualPlot$counts / sum(actualPlot$counts),
             xlim = range(breaks),
             xlab = "", ylab = "Proportion in NRV",
             col = "darkgrey", border = "grey", main = "",
