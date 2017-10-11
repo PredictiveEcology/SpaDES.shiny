@@ -1,6 +1,6 @@
 #' Large Patches Module
 #'
-#' @description
+#' @description Shiny module used to create summary for large patches function.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'

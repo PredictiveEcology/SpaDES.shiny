@@ -30,7 +30,7 @@ Shiny module UI.
 Shiny module server function.
 }
 \description{
-
+Shiny module used to create summary for large patches function.
 }
 \author{
 Mateusz Wyszynski
