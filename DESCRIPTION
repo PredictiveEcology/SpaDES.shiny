@@ -74,6 +74,7 @@ Collate:
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
+    'rasterUpdater.R'
     'shine.R'
     'simInfo.R'
     'simOutputs.R'
