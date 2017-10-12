@@ -76,7 +76,7 @@ writeConfig <- function(config, file) {
 newConfig <- function(APP_DIR, ...) { # nolint
   userdefined <- list(...)
 
-  ## read from template
+  # read from template
   config <- readConfig(system.file(package = "SpaDES.shiny", "_config/_config.yml"))
 
   config$APP_DIR <- APP_DIR # nolint
@@ -104,7 +104,7 @@ updateConfig <- function(fileFrom, fileTo) {
   configApp <- readConfig(fileTo)
   configNew <- readConfig(fileFrom)
 
-  ## do the updating magic
+  # do the updating magic
 
   # TODO
 
@@ -141,11 +141,11 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
   } %>%
     checkPath(create = TRUE)
 
-  ## create a new config file in '_config/_config.yml'
-  ## this will set the default RLIB_DIR if not user-specified
+  # create a new config file in '_config/_config.yml'
+  # this will set the default RLIB_DIR if not user-specified
   config <- newConfig(APP_DIR, ...)
 
-  ## create RLIB_DIR and install required packages
+  # create RLIB_DIR and install required packages
   if (is.null(config$RLIB_DIR)) {
     status <- libInit(APP_DIR)
     if (status != 0) stop("Unable to initialize packrat library for this app.\n",
@@ -164,7 +164,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
     }
   }
 
-  ## create app directories and copy files
+  # create app directories and copy files
   appDirs <- c("app_data", "cache", "output_shiny") # TODO revisit APP_DIR structure
   pkgDirs <- c("_config", "modules", "www")
 
@@ -211,7 +211,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
 cloneApp <- function(from, to, symlinks = FALSE) {
   to <- checkPath(to, create = TRUE)
 
-  ## create app directories and copy files
+  # create app directories and copy files
   # TODO revisit app dir structure
   toLink <- c("app_data", "modules")
   toCopy <- c("_config", "www") # handled separately
