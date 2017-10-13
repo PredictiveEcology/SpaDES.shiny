@@ -7,7 +7,7 @@
 #' @param raster Raster to generate tiles from.
 #' @param outputPath Output folder path.
 #' @param zoomRange List of numbers representing zoom value to generate tiles for.
-#' @param colorTextFile Text file that contains color values for tiles.
+#' @param colorTableFile Table file that contains color values for tiles.
 #'
 #' @return None. Invoked for the side-effect of creating tile images.
 #'
@@ -16,7 +16,7 @@
 #' @rdname gdal2Tiles
 #' @export
 #' @importFrom gdalUtils gdal_translate gdaldem
-gdal2Tiles <- function(raster, outputPath, zoomRange, colorTextFile) {
+gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
   filename1 <- filename(raster)
   reproducible::checkPath(outputPath, create = TRUE)
   filename2 <- file.path(outputPath, paste0("out",basename(filename1)))
@@ -34,7 +34,7 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTextFile) {
   }
   raster <- raster::writeRaster(x=raster, filename = filename2,
                    overwrite=TRUE,datatype="INT2S")
-  gdalUtils::gdaldem(mode="color-relief", filename2, color_text_file = as.character(colorTextFile),
+  gdalUtils::gdaldem(mode="color-relief", filename2, color_text_file = as.character(colorTableFile),
                      filename3)
   system(paste0("python ",
                 file.path(getOption("gdalUtils_gdalPath")[[1]]$path,"rgb2pct.py "),
