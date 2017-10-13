@@ -65,6 +65,7 @@ Collate:
     'config.R'
     'copyrightAuthors.R'
     'debugging.R'
+    'displayDataTable.R'
     'environment.R'
     'export.R'
     'footers.R'
