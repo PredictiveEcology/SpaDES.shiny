@@ -69,6 +69,7 @@ Collate:
     'environment.R'
     'export.R'
     'footers.R'
+    'gdal2Tiles.R'
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'

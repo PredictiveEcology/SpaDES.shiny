@@ -137,9 +137,9 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
     r <- rasters[[currentRaster]]
 
     if (useGdal2Tiles) {
-      message("Running gdal2TilesFn for layer ", currentRaster, " of ", length(rasters))
-      Cache(gdal2TilesFn, r, filename = asPath(filename(r)), #notOlderThan = Sys.time(),
-            zoomRange = 5:10, color_text_file = asPath(colorTableFile),
+      message("Running gdal2Tiles for layer ", currentRaster, " of ", length(rasters))
+      Cache(gdal2Tiles, r, filename = asPath(filename(r)), notOlderThan = Sys.time(),
+            zoomRange = 1:10, color_text_file = asPath(colorTableFile),
             cacheRepo = paths$cachePath, digestPathContent = TRUE)
     }
     if (TRUE) {
