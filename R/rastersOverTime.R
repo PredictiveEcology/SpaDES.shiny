@@ -21,7 +21,6 @@
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
-#' @rdname rastersOverTime
 rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
                               polygonsNumber, rastersNumber, rasterStepSize = 10) {
   ns <- NS(id)
@@ -72,8 +71,6 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @importFrom SpaDES.core paddedFloatToChar end
 #'
 #' @author Damian Rodziewicz
-#'
-#' @rdname rastersOverTime
 #'
 #' @export
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile, map = leaflet(),

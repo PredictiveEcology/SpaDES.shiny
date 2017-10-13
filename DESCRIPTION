@@ -26,6 +26,7 @@ Imports:
     DiagrammeR (>= 0.8.2),
     dplyr,
     DT (>= 0.2),
+    gdalUtils,
     graphics,
     grDevices,
     leaflet,
