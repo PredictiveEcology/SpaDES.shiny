@@ -1,6 +1,7 @@
-#' Histogram Module
+#' Histogram Module UI Function
 #'
-#' @description Shiny module which creates a histogram using barplot based on the data received
+#' @description UI function of a shiny module which creates a histogram
+#'              using barplot based on the data received
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'
@@ -10,13 +11,17 @@
 #'
 #' @export
 #' @importFrom  shiny plotOutput NS
-#' @rdname histogram
 histogramUI <- function(id, ...) {
   ns <- NS(id)
 
   plotOutput(ns("histogram"), ...)
 }
 
+#' Histogram Module Server Function
+#'
+#' @description Server function of a shiny module which creates a histogram
+#'              using barplot based on the data received.
+#'
 #' @param input Shiny server input object
 #'
 #' @param output Shiny server output object
@@ -35,21 +40,16 @@ histogramUI <- function(id, ...) {
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
 #' @export
-#' @importFrom graphics barplot hist axis
+#' @importFrom graphics barplot axis
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
-#' @rdname histogram
 histogram <- function(input, output, session, data, addAxisParams = NULL, ...) {
   output$histogram <- renderPlot({
     if (is.reactive(data)) {
       data <- data()
     }
 
-    barplot(data,
-            xlab = "", ylab = "Proportion in NRV",
-            col = "darkgrey", border = "grey", main = "",
-            space = 0, ...)
-    #axis(1, at = barplotBreaks, labels = breaksLabels)
+    barplot(data, ...)
 
     if (!is.null(addAxisParams)) {
       do.call(axis, addAxisParams())

@@ -27,7 +27,7 @@ generateUI <- function(uiType, categoriesValues, ns) {
          "box" = {
            boxWithSlicerContent <- function(category) {
              shinydashboard::box(
-               width = 6, solidHeader = TRUE, collapsible = TRUE,
+               width = 4, solidHeader = TRUE, collapsible = TRUE,
                title = category, slicerUI(ns(category))
              )
            }

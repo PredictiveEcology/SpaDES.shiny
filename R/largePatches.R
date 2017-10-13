@@ -43,6 +43,8 @@ largePatchesUI <- function(id) {
 #' @export
 #' @importFrom shiny callModule reactive
 #' @importFrom data.table data.table
+#' @importFrom graphics hist
+#' @importFrom purrr map
 #' @rdname largePatches
 largePatches <- function(session, input, output, numberOfSimulationTimes, clumpMod2Args) {
   patchSize <- callModule(slider, "slider")
@@ -64,55 +66,82 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                  histogramReactiveParams <- reactive({
                    data <- data()
 
-                   subtableWith3DimensionsFixed <- getSubtable(data, chosenCategories, chosenValues)
-                   subtableWith2DimensionsFixed <- getSubtable(data,
+                   subtableWith3DimensionsFixed <- getSubtable(data,
+                                                               chosenCategories,
+                                                               chosenValues)
+                   ageClassPolygonSubtable <- getSubtable(data,
                                                                head(chosenCategories, 2),
                                                                head(chosenValues, 2))
 
-                   maxNumClusters <- subtableWith2DimensionsFixed[, .N, by = c("vegCover", "rep")]$N + 1
-                   maxNumClusters <- if (length(maxNumClusters) == 0) 6 else pmax(6, max(maxNumClusters))
-                   numberOfPatchesInTime <- rep(0, numberOfSimulationTimes)
-                   if (NROW(subtableWith3DimensionsFixed)) {
-                     numberOfPatchesByTime <- subtableWith3DimensionsFixed[, .N, by = "rep"]
-                     numberOfPatchesInTime[seq_len(NROW(numberOfPatchesByTime))] <- numberOfPatchesByTime$N
+                   numOfClusters <- ageClassPolygonSubtable[, .N, by = c("vegCover", "rep")]$N
+                   maxNumClusters <- if (length(numOfClusters) == 0) {
+                     6
+                   } else {
+                     pmax(6, max(numOfClusters) + 1)
                    }
+
+                   patchesInTimeDistribution <- if (NROW(subtableWith3DimensionsFixed)) {
+                     numOfPatchesInTime <- subtableWith3DimensionsFixed[, .N, by = "rep"]
+                     numOfTimesWithPatches <- NROW(numOfPatchesInTime)
+
+                     seq(1, numberOfSimulationTimes) %>%
+                       map(function(.) {
+                         if (. <= numOfTimesWithPatches) {
+                           numOfPatchesInTime$N[.]
+                         } else {
+                           0
+                         }
+                       })
+                   } else {
+                     rep(0, numberOfSimulationTimes)
+                   }
+
                    breaksLabels <- 0:(maxNumClusters)
                    breaks <- breaksLabels - 0.5
                    barplotBreaks <- breaksLabels + 0.5
 
-                   return(list(breaks = breaks, numberOfPatchesInTime = numberOfPatchesInTime,
+                   return(list(breaks = breaks,
+                               distribution = as.numeric(patchesInTimeDistribution),
                                breaksLabels = breaksLabels, barplotBreaks = barplotBreaks))
                  })
 
                  breaks <- reactive(histogramReactiveParams()$breaks)
 
-                 numberOfPatchesInTime <- reactive(histogramReactiveParams()$numberOfPatchesInTime)
+                 distribution <- reactive(histogramReactiveParams()$distribution)
 
                  addAxisParams <- reactive(
                    list(side = 1,
-                        breaksLabels = histogramReactiveParams()$breaksLabels,
-                        barplotBreaks = histogramReactiveParams()$barplotBreaks)
+                        labels = histogramReactiveParams()$breaksLabels,
+                        at = histogramReactiveParams()$barplotBreaks)
                  )
 
                  histogramData <- reactive({
-                   actualPlot <- hist(numberOfPatchesInTime(),
+                   actualPlot <- hist(distribution(),
                                       breaks = breaks())
 
                    actualPlot$counts / sum(actualPlot$counts)
                  })
 
-                 observeEvent(histogramData,{
+                 observeEvent({
+                   histogramData
+                   breaks
+                   distribution
+                   addAxisParams
+                 },{
                    breaks <- breaks()
-                   numberOfPatchesInTime <- numberOfPatchesInTime()
+                   distribution <- distribution()
 
                    callModule(histogram, "histogram",
                               histogramData, addAxisParams,
-                              width = rep(1, length(numberOfPatchesInTime)),
-                              xlim = range(breaks))
+                              width = rep(1, length(distribution)),
+                              xlim = range(breaks), xlab = "",
+                              ylab = "Proportion in NRV",
+                              col = "darkgrey", border = "grey", main = "",
+                              space = 0)
                  })
                })
              },
              uiFunction = function(ns) {
-               histogramUI(ns("histogram"), height = 500)
+               histogramUI(ns("histogram"), height = 300)
              })
 }
