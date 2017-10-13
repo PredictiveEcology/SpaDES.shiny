@@ -60,9 +60,57 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   callModule(slicer, "slicer", largePatchesData,
              "LargePatches", uiSequence = uiSequence,
              serverFunction = function(data, chosenCategories, chosenValues) {
-               callModule(histogram, "histogram",
-                          data, chosenCategories, chosenValues,
-                          numberOfSimulationTimes = numberOfSimulationTimes)
+               observeEvent(data, {
+                 histogramReactiveParams <- reactive({
+                   data <- data()
+
+                   subtableWith3DimensionsFixed <- getSubtable(data, chosenCategories, chosenValues)
+                   subtableWith2DimensionsFixed <- getSubtable(data,
+                                                               head(chosenCategories, 2),
+                                                               head(chosenValues, 2))
+
+                   maxNumClusters <- subtableWith2DimensionsFixed[, .N, by = c("vegCover", "rep")]$N + 1
+                   maxNumClusters <- if (length(maxNumClusters) == 0) 6 else pmax(6, max(maxNumClusters))
+                   numberOfPatchesInTime <- rep(0, numberOfSimulationTimes)
+                   if (NROW(subtableWith3DimensionsFixed)) {
+                     numberOfPatchesByTime <- subtableWith3DimensionsFixed[, .N, by = "rep"]
+                     numberOfPatchesInTime[seq_len(NROW(numberOfPatchesByTime))] <- numberOfPatchesByTime$N
+                   }
+                   breaksLabels <- 0:(maxNumClusters)
+                   breaks <- breaksLabels - 0.5
+                   barplotBreaks <- breaksLabels + 0.5
+
+                   return(list(breaks = breaks, numberOfPatchesInTime = numberOfPatchesInTime,
+                               breaksLabels = breaksLabels, barplotBreaks = barplotBreaks))
+                 })
+
+                 breaks <- reactive(histogramReactiveParams()$breaks)
+
+                 numberOfPatchesInTime <- reactive(histogramReactiveParams()$numberOfPatchesInTime)
+
+                 addAxisParams <- reactive(
+                   list(side = 1,
+                        breaksLabels = histogramReactiveParams()$breaksLabels,
+                        barplotBreaks = histogramReactiveParams()$barplotBreaks)
+                 )
+
+                 histogramData <- reactive({
+                   actualPlot <- hist(numberOfPatchesInTime(),
+                                      breaks = breaks())
+
+                   actualPlot$counts / sum(actualPlot$counts)
+                 })
+
+                 observeEvent(histogramData,{
+                   breaks <- breaks()
+                   numberOfPatchesInTime <- numberOfPatchesInTime()
+
+                   callModule(histogram, "histogram",
+                              histogramData, addAxisParams,
+                              width = rep(1, length(numberOfPatchesInTime)),
+                              xlim = range(breaks))
+                 })
+               })
              },
              uiFunction = function(ns) {
                histogramUI(ns("histogram"), height = 500)

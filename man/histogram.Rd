@@ -7,8 +7,7 @@
 \usage{
 histogramUI(id, ...)
 
-histogram(input, output, session, data, chosenCategories, chosenValues,
-  numberOfSimulationTimes)
+histogram(input, output, session, data, addAxisParams = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function}
@@ -25,13 +24,10 @@ histogram(input, output, session, data, chosenCategories, chosenValues,
 Desired subtables can be retrieved using \code{chosenCategories}
 and \code{chosenValues} parameters.}
 
-\item{chosenCategories}{List of categories names that were already chosen
-when slicing the data.}
+\item{addAxisParams}{Reactive value with parameters to \code{\link[graphics]{axis}}.
+If \code{NULL} (default) then no axis is drawn.}
 
-\item{chosenValues}{List of categories values that were already chosen
-when slicing the data.}
-
-\item{numberOfSimulationTimes}{How many simulation times occurred in simulation.}
+\item{...}{Additional arguments passed to \code{\link[graphics]{barplot}} function.}
 }
 \value{
 None. Invoked for the side-effect of generating UI for plot
