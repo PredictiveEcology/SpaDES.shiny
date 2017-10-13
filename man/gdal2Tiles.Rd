@@ -4,7 +4,7 @@
 \alias{gdal2Tiles}
 \title{Gdal2Tiles}
 \usage{
-gdal2Tiles(raster, outputPath, zoomRange, colorTextFile)
+gdal2Tiles(raster, outputPath, zoomRange, colorTableFile)
 }
 \arguments{
 \item{raster}{Raster to generate tiles from.}
@@ -13,7 +13,7 @@ gdal2Tiles(raster, outputPath, zoomRange, colorTextFile)
 
 \item{zoomRange}{List of numbers representing zoom value to generate tiles for.}
 
-\item{colorTextFile}{Text file that contains color values for tiles.}
+\item{colorTableFile}{Table file that contains color values for tiles.}
 }
 \value{
 None. Invoked for the side-effect of creating tile images.
