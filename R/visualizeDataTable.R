@@ -1,6 +1,7 @@
 #' Display Data Table Module
 #'
-#' @description Shiny module which displays a data table.
+#' @description Shiny module which displays a data in table format.
+#'              Both \code{data.table} and \code{data.frame} can be used as arguments
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'
@@ -29,8 +30,7 @@ visualizeDataTableUI <- function(id, ...) {
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
 #' @export
-#' @importFrom graphics barplot
-#' @importFrom shiny renderPlot
+#' @importFrom shiny renderPlot is.reactive
 #' @rdname visualizeDataTable
 visualizeDataTable <- function(input, output, session, data) {
   output$dataTable <- renderDataTable({
