@@ -11,8 +11,8 @@
 #' @export
 #' @importFrom shiny NS
 #' @importFrom DT dataTableOutput
-#' @rdname displayDataTable
-displayDataTableUI <- function(id, ...) {
+#' @rdname visualizeDataTable
+visualizeDataTableUI <- function(id, ...) {
   ns <- NS(id)
 
   dataTableOutput(ns("dataTable"), ...)
@@ -31,8 +31,8 @@ displayDataTableUI <- function(id, ...) {
 #' @export
 #' @importFrom graphics barplot
 #' @importFrom shiny renderPlot
-#' @rdname displayDataTable
-displayDataTable <- function(input, output, session, data) {
+#' @rdname visualizeDataTable
+visualizeDataTable <- function(input, output, session, data) {
   output$dataTable <- renderDataTable({
     if (is.reactive(data)) {
       data <- data()
