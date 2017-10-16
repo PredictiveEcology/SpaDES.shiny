@@ -1,6 +1,6 @@
 #' Visualize SpatialPolygons* Module
 #'
-#' @description Shiny module which visualizes a SpatialPolygons* objects on a leaflet map.
+#' @description Shiny module which visualizes SpatialPolygons* objects on a leaflet map.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
@@ -36,16 +36,16 @@ visualizePolygonsUI <- function(id, ...) {
 #' @importFrom leaflet leaflet addTiles addPolygons
 #' @rdname visualizePolygons
 visualizePolygons <- function(input, output, session, polygons, proxy = NULL) {
-  output$map <- renderLeaflet({
-    if (is.null(proxy)) {
-      output$map <- renderLeaflet({
-        leaflet() %>%
-          addTiles()
-      })
+  if (is.null(proxy)) {
+    output$map <- renderLeaflet({
+      leaflet() %>%
+        addTiles() %>%
+        addPolygons(data = polygons(), group = session$ns("group"))
+    })
 
-      proxy <- leafletProxy("map")
-    }
-
+    proxy <- leafletProxy("map")
+    callModule(polygonsUpdater, "updater", proxy, polygons, group = session$ns("group"))
+  } else {
     callModule(polygonsUpdater, "updater", proxy, polygons)
-  })
+  }
 }

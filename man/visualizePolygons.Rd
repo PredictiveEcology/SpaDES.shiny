@@ -31,5 +31,5 @@ None. Invoked for the side-effect of generating UI for a leaflet map.
 None. Invoked for the side-effect of rendering leaflet map.
 }
 \description{
-Shiny module which visualizes a SpatialPolygons* objects on a leaflet map.
+Shiny module which visualizes SpatialPolygons* objects on a leaflet map.
 }
