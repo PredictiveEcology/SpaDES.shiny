@@ -96,7 +96,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
     raster <- rasters[[rasterIndex]]
 
     Cache(gdal2Tiles, raster, outputPath = file.path("www", session$ns("map-tiles")),
-          zoomRange = 1:10, colorTextFile = asPath(colorTableFile),
+          zoomRange = 1:10, colorTableFile = asPath(colorTableFile),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
     return(raster);
