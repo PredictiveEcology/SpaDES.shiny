@@ -66,7 +66,6 @@ Collate:
     'config.R'
     'copyrightAuthors.R'
     'debugging.R'
-    'displayDataTable.R'
     'environment.R'
     'export.R'
     'footers.R'
@@ -85,5 +84,7 @@ Collate:
     'summaryPopups.R'
     'tilesUpdater.R'
     'timeSinceFire.R'
+    'visualizeDataTable.R'
+    'visualizePolygons.R'
     'visualizeRaster.R'
 RoxygenNote: 6.0.1
