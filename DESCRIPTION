@@ -84,4 +84,5 @@ Collate:
     'tilesUpdater.R'
     'timeSinceFire.R'
     'visualizeDataTable.R'
+    'visualizePolygons.R'
 RoxygenNote: 6.0.1
