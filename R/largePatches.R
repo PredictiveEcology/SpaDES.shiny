@@ -85,9 +85,9 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                      numOfTimesWithPatches <- NROW(numOfPatchesInTime)
 
                      seq(1, numberOfSimulationTimes) %>%
-                       map(function(.) {
-                         if (. <= numOfTimesWithPatches) {
-                           numOfPatchesInTime$N[.]
+                       map(function(simulationTime) {
+                         if (simulationTime <= numOfTimesWithPatches) {
+                           numOfPatchesInTime$N[simulationTime]
                          } else {
                            0
                          }
@@ -127,7 +127,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                    breaks
                    distribution
                    addAxisParams
-                 },{
+                 }, {
                    breaks <- breaks()
                    distribution <- distribution()
 

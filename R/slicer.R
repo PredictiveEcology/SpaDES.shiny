@@ -148,11 +148,11 @@ slicer <- function(input, output, session, data,
 
       categoriesValues <- currentSubtable[, get(categoryName)] %>% unique()
 
-      categoriesValues %>% map(function(.) {
-        callModule(slicer, ., data, .,
+      categoriesValues %>% map(function(categoryValue) {
+        callModule(slicer, categoryValue, data, categoryValue,
                    uiSequence[-1, ], serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
-                   c(chosenValues, list(.)))
+                   c(chosenValues, list(categoryValue)))
       })
 
       uiType <- uiSequence$uiType[[1]]
