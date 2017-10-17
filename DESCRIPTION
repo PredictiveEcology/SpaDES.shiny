@@ -22,6 +22,7 @@ Additional_repositories: http://rforge.net
 Depends:
     R (>= 3.3.3)
 Imports:
+    archivist,
     data.table,
     DiagrammeR (>= 0.8.2),
     dplyr,
@@ -63,6 +64,7 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
 Collate: 
     'adminLogs.R'
+    'clumpMod2.R'
     'config.R'
     'copyrightAuthors.R'
     'debugging.R'

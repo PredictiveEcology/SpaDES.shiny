@@ -17,7 +17,7 @@ largePatchesUI <- function(id) {
   fluidRow(
     shinydashboard::box(
       width = 12, solidHeader = TRUE, collapsible = TRUE,
-      clumpMod2Input(ns("largePatches"))
+      clumpMod2UI(ns("largePatches"))
     ),
     shinydashboard::box(
       width = 12, solidHeader = TRUE, collapsible = TRUE, slicerUI(ns("slicer"))
@@ -54,8 +54,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
 
   clumpMod2Args["id"] <- NULL
 
-  clumpsReturn <- do.call(callModule,
-                           c(list(clumpMod2, "largePatches"), clumpMod2Args))
+  clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
 
   largePatchesData <- reactive(clumpsReturn()$Clumps)
 
