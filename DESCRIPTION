@@ -37,6 +37,7 @@ Imports:
     R.utils,
     RColorBrewer,
     raster,
+    rasterVis,
     reproducible,
     shiny (>= 0.13),
     shinyBS,
@@ -85,4 +86,5 @@ Collate:
     'timeSinceFire.R'
     'visualizeDataTable.R'
     'visualizePolygons.R'
+    'visualizeRaster.R'
 RoxygenNote: 6.0.1
