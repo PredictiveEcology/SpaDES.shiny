@@ -15,8 +15,8 @@ clumpMod2UI <- function(id) {
 
   tagList(
     numericInput(ns("PatchSize33"), value = 500, min = 100, max = NA,
-                 label=paste0("Type patch size in hectares that defines 'Large', ",
-                              "(numbers below 100 will not work)")
+                 label = paste0("Type patch size in hectares that defines 'Large', ",
+                                "(numbers below 100 will not work)")
     )
   )
 }
@@ -48,13 +48,14 @@ clumpMod2UI <- function(id) {
 #' @export
 #' @rdname clumpMod2
 clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
-                      patchSize, sizeInHa, cacheRepo, indivPolygonIndex, largePatchesFn, countNumPatches) {
-  Clumps <- reactive({
+                      patchSize, sizeInHa, cacheRepo, indivPolygonIndex, largePatchesFn,
+                      countNumPatches) {
+  clumps <- reactive({
     patchSize <- as.integer(input$PatchSize33)
 
     message(paste("Running largePatchesFn"))
-    shiny::withProgress(message = 'Calculation in progress',
-                 detail = 'This may take a while...', value = 0, {
+    shiny::withProgress(message = "Calculation in progress",
+                 detail = "This may take a while...", value = 0, {
                    args <- list(largePatchesFn, timeSinceFireFiles = tsf,
                                 vegTypeMapFiles = vtm,
                                 cl = if (tryCatch(is(cl, "cluster"),
@@ -69,20 +70,20 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl, ageC
                    shiny::setProgress(1)
                  })
     message(paste("  Finished largePatchesFn"))
-    if(FALSE) {
+    if (FALSE) {
       keepArtifacts3 <- unique(showCache(paths$cachePath, after = startCacheTime)$artifact)
       keepArtifacts <<- setdiff(keepArtifacts3, keepArtifacts)
       archivist::addTagsRepo(keepArtifacts,
                              repoDir = paths$cachePath,
                              tags = paste0("LandWebVersion:", LandWebVersion))
     }
-    if(Sys.info()["nodename"]=="W-VIC-A105388") {
-      #message("Stopping App using stopApp")
-      #stopApp()
+    if (Sys.info()["nodename"] == "W-VIC-A105388") {
+      # message("Stopping App using stopApp")
+      # stopApp()
     }
 
-    return(list(Clumps=largePatches[sizeInHa>patchSize], patchSize = patchSize))
+    return(list(Clumps = largePatches[sizeInHa > patchSize], patchSize = patchSize))
   })
 
-  return(Clumps)
+  return(clumps)
 }
