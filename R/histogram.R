@@ -1,6 +1,7 @@
-#' Histogram Module
+#' Histogram Module UI Function
 #'
-#' @description Shiny module which creates a histogram using barplot based on the data received
+#' @description UI function of a shiny module which creates a histogram
+#'              using barplot based on the data received
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'
@@ -10,29 +11,48 @@
 #'
 #' @export
 #' @importFrom  shiny plotOutput NS
-#' @rdname histogram
 histogramUI <- function(id, ...) {
   ns <- NS(id)
 
   plotOutput(ns("histogram"), ...)
 }
 
+#' Histogram Module Server Function
+#'
+#' @description Server function of a shiny module which creates a histogram
+#'              using barplot based on the data received.
+#'
 #' @param input Shiny server input object
 #'
 #' @param output Shiny server output object
 #'
 #' @param session Shiny server session object
 #'
-#' @param data Data used to render bar plot. See \code{\link[graphics]{barplot}} for reference.
+#' @param data Reactive value containing a data table. This is global data.
+#'             Desired subtables can be retrieved using \code{chosenCategories}
+#'             and \code{chosenValues} parameters.
+#'
+#' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
+#'                      If \code{NULL} (default) then no axis is drawn.
+#'
+#' @param ... Additional arguments passed to \code{\link[graphics]{barplot}} function.
 #'
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
 #' @export
-#' @importFrom graphics barplot
+#' @importFrom graphics barplot axis
 #' @importFrom shiny renderPlot
-#' @rdname histogram
-histogram <- function(input, output, session, data) {
-  output$histogram <- renderPlot(
-    barplot(data)
-  )
+#' @importFrom utils head
+histogram <- function(input, output, session, data, addAxisParams = NULL, ...) {
+  output$histogram <- renderPlot({
+    if (is.reactive(data)) {
+      data <- data()
+    }
+
+    barplot(data, ...)
+
+    if (!is.null(addAxisParams)) {
+      do.call(axis, addAxisParams())
+    }
+  })
 }
