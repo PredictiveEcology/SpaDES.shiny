@@ -29,7 +29,7 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
   if(anyNA(raster[])){
     raster[is.na(raster[])] <- -1
   }
-  if(minValue(raster)<0 ) {
+  if(raster::minValue(raster)<0 ) {
     raster <- raster - raster::minValue(raster)
   }
   raster <- raster::writeRaster(x=raster, filename = filename2,

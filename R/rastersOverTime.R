@@ -18,6 +18,7 @@
 #'
 #' @export
 #' @importFrom leaflet leafletOutput
+#' @importFrom raster sampleRegular
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
@@ -66,7 +67,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @importFrom shiny br callModule isolate observe reactive renderPlot
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
-#' @importFrom raster xmax xmin ymax ymin hist
+#' @importFrom raster xmax xmin ymax ymin hist res
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar end
 #'
@@ -104,7 +105,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   sampledRaster <- reactive({
     if (ncell(raster()) > 3e5) {
-      sampledRaster <- Cache(sampleRegular, raster(), size = 4e5, notOlderThan = Sys.time(),
+      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5, notOlderThan = Sys.time(),
                              asRaster = TRUE, cacheRepo = cachePath)
       sampledRaster[sampledRaster[] == 0] <- NA
     }
@@ -120,7 +121,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
-  rasterScale <- isolate(prod(res(raster())) / 1e4)
+  rasterScale <- isolate(prod(raster::res(raster())) / 1e4)
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
