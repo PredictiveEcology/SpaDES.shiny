@@ -63,7 +63,7 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl, ageC
                                 polygonToSummarizeBy = currentPolygon,
                                 ageClasses = ageClasses, countNumPatches = countNumPatches,
                                 cacheRepo = cacheRepo,
-                                debugCache="complete",
+                                debugCache = "complete",
                                 omitArgs = "cl")
                    args <- args[!unlist(lapply(args, is.null))]
                    largePatches <- do.call(Cache, args)
@@ -76,10 +76,6 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl, ageC
       archivist::addTagsRepo(keepArtifacts,
                              repoDir = paths$cachePath,
                              tags = paste0("LandWebVersion:", LandWebVersion))
-    }
-    if (Sys.info()["nodename"] == "W-VIC-A105388") {
-      # message("Stopping App using stopApp")
-      # stopApp()
     }
 
     return(list(Clumps = largePatches[sizeInHa > patchSize], patchSize = patchSize))
