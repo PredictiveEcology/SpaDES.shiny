@@ -22,6 +22,7 @@ Additional_repositories: http://rforge.net
 Depends:
     R (>= 3.3.3)
 Imports:
+    archivist,
     data.table,
     DiagrammeR (>= 0.8.2),
     dplyr,
@@ -38,6 +39,7 @@ Imports:
     R.utils,
     RColorBrewer,
     raster,
+    rasterVis,
     reproducible,
     shiny (>= 0.13),
     shinyBS,
@@ -63,10 +65,10 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
 Collate: 
     'adminLogs.R'
+    'clumpMod2.R'
     'config.R'
     'copyrightAuthors.R'
     'debugging.R'
-    'displayDataTable.R'
     'environment.R'
     'export.R'
     'footers.R'
@@ -74,6 +76,7 @@ Collate:
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'
+    'largePatches.R'
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
@@ -87,4 +90,7 @@ Collate:
     'summaryPopups.R'
     'tilesUpdater.R'
     'timeSinceFire.R'
+    'visualizeDataTable.R'
+    'visualizePolygons.R'
+    'visualizeRaster.R'
 RoxygenNote: 6.0.1
