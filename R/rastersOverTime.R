@@ -29,10 +29,12 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
   tagList(
     box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
         shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
-        sliderUI(ns("rastersSlider"), sliderTitle, min = 0, max = (rastersNumber - 1) * rasterStepSize,
-                 value = 0, step = rasterStepSize, animate = animationOptions(interval = 2500, loop = FALSE)),
-        sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = polygonsNumber, value = 1, step = 1,
-                 animate = animationOptions(interval = 5000, loop = TRUE))
+        sliderUI(ns("rastersSlider"), sliderTitle, min = 0,
+                 max = (rastersNumber - 1) * rasterStepSize,
+                 value = 0, step = rasterStepSize,
+                 animate = animationOptions(interval = 2500, loop = FALSE)),
+        sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = polygonsNumber,
+                 value = 1, step = 1, animate = animationOptions(interval = 5000, loop = TRUE))
     ),
     histogramForRasterUI(ns("histogram"),
                          title = h4(histogramTitle),
@@ -74,8 +76,9 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @author Damian Rodziewicz
 #'
 #' @export
-rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile, map = leaflet(),
-                            rasterStepSize = 10, cachePath = "cache", cacheNotOlderThan = Sys.time()) {
+rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
+                            map = leaflet(), rasterStepSize = 10, cachePath = "cache",
+                            cacheNotOlderThan = Sys.time()) {
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
