@@ -28,6 +28,7 @@ Imports:
     dplyr,
     DT (>= 0.2),
     gdalUtils,
+    ggplot2,
     graphics,
     grDevices,
     leaflet,
@@ -42,6 +43,7 @@ Imports:
     rasterVis,
     reproducible,
     shiny (>= 0.13),
+    R.devices,
     shinyBS,
     shinycssloaders,
     shinydashboard,
@@ -52,6 +54,7 @@ Imports:
     tools,
     utils,
     whisker,
+    xlsx,
     yaml
 Suggests:
     hunspell,

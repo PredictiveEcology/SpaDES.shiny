@@ -41,9 +41,9 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
                 filename3, " ", filename4))
   gdalUtils::gdal_translate(of = "VRT", expand = "rgb", filename4, filename5)
   system(paste0("python ",
-                file.path(getOption("gdalUtils_gdalPath")[[1]]$path,"gdal2tiles.py "),
+                file.path(getOption("gdalUtils_gdalPath")[[1]]$path, "gdal2tiles.py "),
                 "--s_srs=EPSG:4326 ", " --zoom=", min(zoomRange), "-", max(zoomRange),
-                " ", "--srcnodata=0 ", filename5," ", foldername),
+                " ", "--srcnodata=0 ", filename5, " ", foldername),
          wait = TRUE)
   unlink(filename5)
   unlink(filename4)
