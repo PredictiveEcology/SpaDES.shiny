@@ -29,7 +29,7 @@ exportUI <- function(id,
 #' @importFrom rasterVis levelplot
 #' @importFrom quickPlot Plot
 #' @importFrom xlsx write.xlsx
-#' @rdname export
+#' @importFrom graphics plot.new mtext
 exportToFile <- function(file, data, device) {
   if ("ggplot" %in% class(data)) {
     ggplot2::ggsave(file, data, device)

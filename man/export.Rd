@@ -2,14 +2,11 @@
 % Please edit documentation in R/export.R
 \name{exportUI}
 \alias{exportUI}
-\alias{exportToFile}
 \alias{export}
 \title{Export module}
 \usage{
 exportUI(id, availableTypes = c("csv", "txt", "xls", "png", "pdf", "tiff",
   "grd", "rds"))
-
-exportToFile(file, data, device)
 
 export(input, output, session, data, filename = "download")
 }
@@ -19,26 +16,18 @@ UI function}
 
 \item{availableTypes}{list of types that user can select from and export to}
 
-\item{file}{shiny server input object}
-
-\item{data}{shiny server output object}
-
-\item{device}{shiny server session object}
-
 \item{input}{shiny server input object}
 
 \item{output}{shiny server output object}
 
 \item{session}{shiny server session object}
 
-\item{filename}{name of the downloaded file}
-
 \item{data}{data to be downloaded}
+
+\item{filename}{name of the downloaded file}
 }
 \description{
 Export module
-
-Export to file
 
 Export module server
 }
