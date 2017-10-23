@@ -18,7 +18,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
 
   rastersOverTimeUI(ns("rastersOverTime"), mapTitle = "", sliderTitle = "", histogramTitle = "",
-                              polygonsNumber = 1, rastersNumber = rastersNumber, rasterStepSize = 10)
+                    polygonsNumber = 1, rastersNumber = rastersNumber, rasterStepSize = 10)
 }
 
 #' Time Since Fire Shiny Module
