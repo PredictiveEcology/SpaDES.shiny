@@ -21,7 +21,7 @@ exportUI <- function(id,
 #' Export to file
 #'
 #' @param file    shiny server input object
-#' @param data   shiny server output object
+#' @param data    shiny server output object
 #' @param device  shiny server session object
 #'
 #' @importFrom R.devices devEval

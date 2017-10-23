@@ -16,22 +16,9 @@
 #' @rdname timeSinceFire
 timeSinceFireUI <- function(id, rastersNumber) {
   ns <- NS(id)
-  tagList(
-    box(width = 8, solidHeader = TRUE, collapsible = TRUE,
-        h4(paste("Below are a sequence of snapshots of the landscape,",
-                 "showing the natural range of variation in time since fire.",
-                 "Click on the 'play' button at the bottom right to animate.")),
-        shinycssloaders::withSpinner(leaflet::leafletOutput(ns("timeSinceFire2"), height = 600)),
-        sliderUI(ns("slider"),
-                 paste("Individual snapshots of time since fire maps.",
-                       "Use play button (bottom right) to animate."),
-                 min = 0, max = (rastersNumber - 1) * 10, value = 0, step = 10,
-                 animate = animationOptions(interval = 2500, loop = FALSE))
-    ),
-    histogramForRasterUI(ns("histogram"),
-                         title = h4(paste("Current time since distribution distribution")),
-                         plotParameters = list(height = 600), width = 4, solidHeader = TRUE,
-                         collapsible = TRUE))
+
+  rastersOverTimeUI(ns("rastersOverTime"), mapTitle = "", sliderTitle = "", histogramTitle = "",
+                              polygonsNumber = 1, rastersNumber = rastersNumber, rasterStepSize = 10)
 }
 
 #' Time Since Fire Shiny Module
@@ -76,122 +63,47 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
     spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))
   })
 
-  output$timeSinceFire2 <- renderLeaflet({
-    leafZoom <- leafletZoomInit
+  leafZoom <- leafletZoomInit
 
-    pol <- polygonsList[[4]]
-    shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polygonsInput()))
-    leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
-      addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
-                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addProviderTiles(providers$Esri.WorldImagery, group = "ESRI World Imagery",
-                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addLegend(position = "bottomright", pal = timeSinceFirePalette,
-                values = 1:maxAge,
-                title = paste0("Time since fire", br(), "(years)")) %>%
-      addMeasure(
-        position = "bottomleft",
-        primaryLengthUnit = "kilometers",
-        primaryAreaUnit = "hectares",
-        activeColor = "#3D535D",
-        completedColor = "#7D4479") %>%
-      addEasyButton(easyButton(
-        icon = "fa-map", title = "Zoom to Demonstration Area",
-        onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(pol), ", ",
-                            xmin(pol), "], [", ymax(pol), ", ", xmax(pol), "]])}")))) %>%
-      addEasyButton(easyButton(
-        icon = "fa-globe", title = "Zoom out to LandWeb study area",
-        onClick = JS(paste0("function(btn, map){ map.setView([",
-                            mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
-                            ", ", mean(c(xmin(shpStudyRegionFullLFLT),
-                                         xmax(shpStudyRegionFullLFLT))), "], 5)}")))) %>%
-      addMiniMap(
-        tiles = providers$OpenStreetMap,
-        toggleDisplay = TRUE) %>%
-      setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
-              mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
-              zoom = leafZoom
-      ) %>%
-      addPolygons(data = polygonsInput(), group = "Fire return interval",
-                  fillOpacity = 0.3, weight = 1, color = "blue",
-                  fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
-    leafMap
-  })
+  pol <- polygonsList[[4]]
+  shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(isolate(polygonsInput())))
 
-  proxy <- leafletProxy("timeSinceFire2")
+  leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
+    addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
+                     options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+    addProviderTiles(providers$Esri.WorldImagery, group = "ESRI World Imagery",
+                     options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+    addLegend(position = "bottomright", pal = timeSinceFirePalette,
+              values = 1:maxAge,
+              title = paste0("Time since fire", br(), "(years)")) %>%
+    addMeasure(
+      position = "bottomleft",
+      primaryLengthUnit = "kilometers",
+      primaryAreaUnit = "hectares",
+      activeColor = "#3D535D",
+      completedColor = "#7D4479") %>%
+    addEasyButton(easyButton(
+      icon = "fa-map", title = "Zoom to Demonstration Area",
+      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(pol), ", ",
+                          xmin(pol), "], [", ymax(pol), ", ", xmax(pol), "]])}")))) %>%
+    addEasyButton(easyButton(
+      icon = "fa-globe", title = "Zoom out to LandWeb study area",
+      onClick = JS(paste0("function(btn, map){ map.setView([",
+                          mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
+                          ", ", mean(c(xmin(shpStudyRegionFullLFLT),
+                                       xmax(shpStudyRegionFullLFLT))), "], 5)}")))) %>%
+    addMiniMap(
+      tiles = providers$OpenStreetMap,
+      toggleDisplay = TRUE) %>%
+    setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
+            mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
+            zoom = leafZoom
+    ) %>%
+    addPolygons(data = isolate(polygonsInput()), group = "Fire return interval",
+                fillOpacity = 0.3, weight = 1, color = "blue",
+                fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
-  callModule(polygonsUpdater, "polygonsUpdater", proxy, polygons = polygonsInput,
-             group = "Fire return interval", fillOpacity = 0.3, weight = 1, color = "blue",
-             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
-
-  rasterInput <- reactive({
-    sliderVal <- callModule(slider, "slider")
-    sliderValue <- if (is.null(sliderVal())) {
-      1
-    } else {
-      sliderVal()
-    }
-
-    # slider units are 10, starting at 0; index here is 1 to length (tsf)
-    currentRaster <- sliderValue / 10 + 1
-    r <- rasters[[currentRaster]]
-
-    if (useGdal2Tiles) {
-      message("Running gdal2Tiles for layer ", currentRaster, " of ", length(rasters))
-      Cache(gdal2Tiles, r, filename = asPath(filename(r)), notOlderThan = Sys.time(),
-            zoomRange = 1:10, color_text_file = asPath(colorTableFile),
-            cacheRepo = paths$cachePath, digestPathContent = TRUE)
-    }
-    if (TRUE) {
-      if (ncell(r) > 3e5) {
-        r <- Cache(sampleRegular, r, size = 4e5, #notOlderThan = Sys.time(),
-                   asRaster = TRUE, cacheRepo = paths$cachePath)
-        r[r[] > 401] <- maxAge
-        r[r[] == 0] <- NA
-      }
-    }
-    list(r = r, sliderVal = sliderValue)
-  })
-
-  urlTemplate <- reactive(
-    file.path(studyArea, paste0("outrstTimeSinceFire_year",
-                                paddedFloatToChar(rasterInput()$sliderVal + summaryPeriod[1],
-                                                  nchar(end(mySim))),
-                                "LFLT/{z}/{x}/{y}.png"))
-  )
-
-  addTilesParameters <- list(
-    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8),
-    urlTemplate = "error"
-  )
-
-  addLayersControlParameters <- list(
-    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE),
-    baseGroups = c("Open Cycle Map", "ESRI World Imagery"),
-    overlayGroups = c("Time since fire", "Fire return interval")
-  )
-
-  callModule(tilesUpdater, "rasterUpdater", proxy, urlTemplate, "Time since fire",
-             addTilesParameters, addLayersControlParameters)
-
-  raster <- reactive(rasterInput()$r)
-
-  numberOfBreaks <- reactive(ceiling(maxValue(raster()) / 10))
-
-  breaks <- reactive(numberOfBreaks())
-
-  addAxisParams <- reactive({
-    numberOfBreaks <- numberOfBreaks()
-    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
-  })
-
-  callModule(histogramForRaster, "histogram", raster, histogramBreaks = breaks,
-             scale = prod(rasterResolution) / 1e4, addAxisParams = addAxisParams,
-             xlab = "Time since fire \n(Years)", col = timeSinceFirePalette(1:(maxAge / 10)),
-             width = 1, space = 0, ylab = "Area (ha)")
-
-  click <- reactive(input$timeSinceFire2_shape_click)
-
-  callModule(summaryPopups, "popups", proxy = proxy, click = click, raster = raster,
-             polygons = polygonsInput, "Time Since Fire = %s years", c("fireReturnInterval"))
+  callModule(rastersOverTime, "rastersOverTime", rasters, polygonsList, colorTableFile,
+                              leafMap, rasterStepSize = 10, cachePath = "cache",
+                              cacheNotOlderThan = Sys.time())
 }

@@ -86,7 +86,11 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
   polygonIndexValue <- callModule(slider, "polygonsSlider")
 
   polygons <- reactive({
-    index <- polygonIndexValue()
+    index <- if (is.null(polygonIndexValue())) {
+      1
+    } else {
+      polygonIndexValue()
+    }
     return(polygonsList[[index]])
   })
 
@@ -136,7 +140,6 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
   )
 
   click <- reactive(input$map_shape_click)
-
 
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, session$ns("tiles"),
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
