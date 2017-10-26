@@ -33,6 +33,10 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param session Shiny server session object.
 #' @param rasters Set of rasters to be displayed.
 #' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
+#' @param shpStudyRegionFull Study area region.
+#' @param colorTableFile File that contains color values for tiles.
+#' @param timeSinceFirePalette Color palette for time since fire.
+#' @param maxAge Maximum simulation age.
 #' @param leafletZoomInit Initial leaflet zoom.
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
@@ -56,7 +60,8 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @rdname timeSinceFire
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters, polygonsList, leafletZoomInit = 5,
+timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
+                          colorTableFile, timeSinceFirePalette, maxAge, leafletZoomInit = 5,
                           studyArea = "SMALL") {
 
   polygonsInput <- reactive({
@@ -71,7 +76,7 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addProviderTiles(providers$Esri.WorldImagery, group = "ESRI World Imagery",
+    addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
     addLegend(position = "bottomright", pal = timeSinceFirePalette,
               values = 1:maxAge,
@@ -93,7 +98,7 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, leaflet
                           ", ", mean(c(xmin(shpStudyRegionFullLFLT),
                                        xmax(shpStudyRegionFullLFLT))), "], 5)}")))) %>%
     addMiniMap(
-      tiles = providers$OpenStreetMap,
+      tiles = leaflet::providers$OpenStreetMap,
       toggleDisplay = TRUE) %>%
     setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
             mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
