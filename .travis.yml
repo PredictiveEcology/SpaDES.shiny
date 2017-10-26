@@ -53,6 +53,8 @@ matrix:
     latex: false
     r_build_args: '--no-build-vignettes'
     r_check_args: '--as-cran --ignore-vignettes --no-examples'
+    before_install:
+    - sudo R CMD javareconf
     before_script:
       - Rscript -e "install.packages('rgdal', type = 'source')"
 r_build_args: " "
