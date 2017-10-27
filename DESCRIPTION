@@ -27,6 +27,8 @@ Imports:
     DiagrammeR (>= 0.8.2),
     dplyr,
     DT (>= 0.2),
+    gdalUtils,
+    ggplot2,
     graphics,
     grDevices,
     leaflet,
@@ -41,6 +43,7 @@ Imports:
     rasterVis,
     reproducible,
     shiny (>= 0.13),
+    R.devices,
     shinyBS,
     shinycssloaders,
     shinydashboard,
@@ -51,6 +54,7 @@ Imports:
     tools,
     utils,
     whisker,
+    xlsx,
     yaml
 Suggests:
     hunspell,
@@ -71,6 +75,7 @@ Collate:
     'environment.R'
     'export.R'
     'footers.R'
+    'gdal2Tiles.R'
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'
@@ -78,6 +83,7 @@ Collate:
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
+    'rastersOverTime.R'
     'shine.R'
     'simInfo.R'
     'simOutputs.R'

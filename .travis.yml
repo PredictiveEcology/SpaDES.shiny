@@ -49,10 +49,12 @@ matrix:
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
   - os: osx
-    osx_image: xcode8.2
+    osx_image: xcode9.1
     latex: false
     r_build_args: '--no-build-vignettes'
     r_check_args: '--as-cran --ignore-vignettes --no-examples'
+    before_install:
+    - sudo R CMD javareconf
     before_script:
       - Rscript -e "install.packages('rgdal', type = 'source')"
 r_build_args: " "

@@ -1,3 +1,7 @@
+if (getRversion() >= "3.1.0") {
+  utils::globalVariables(c(".N"))
+}
+
 #' Large Patches Module
 #'
 #' @description Shiny module used to create summary for large patches function.
