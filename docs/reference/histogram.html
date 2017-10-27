@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Histogram Module Server Function — histogram • SpaDES.shiny</title>
+<title>Histogram Module UI Function — histogramUI • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,19 +80,32 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Histogram Module Server Function</h1>
+    <h1>Histogram Module UI Function</h1>
     </div>
 
     
-    <p>Server function of a shiny module which creates a histogram
+    <p>UI function of a shiny module which creates a histogram
+             using barplot based on the data received</p>
+<p>Server function of a shiny module which creates a histogram
              using barplot based on the data received.</p>
     
 
-    <pre class="usage"><span class='fu'>histogram</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>data</span>, <span class='kw'>addAxisParams</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'><a href='histogramUI.html'>histogramUI</a></span>(<span class='no'>id</span>, <span class='no'>...</span>)
+
+<span class='fu'>histogram</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>data</span>, <span class='kw'>addAxisParams</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>id</th>
+      <td><p>An ID string that corresponds with the ID used to call the module's UI function</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional UI parameters passed to <code>link[shiny]{plotOutput}</code>,
+or additional server arguments passed to <code><a href='http://www.rdocumentation.org/packages/graphics/topics/barplot'>barplot</a></code>.</p></td>
+    </tr>
     <tr>
       <th>input</th>
       <td><p>Shiny server input object</p></td>
@@ -115,10 +128,6 @@ and <code>chosenValues</code> parameters.</p></td>
       <th>addAxisParams</th>
       <td><p>Reactive value with parameters to <code><a href='http://www.rdocumentation.org/packages/graphics/topics/axis'>axis</a></code>.
 If <code>NULL</code> (default) then no axis is drawn.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional arguments passed to <code><a href='http://www.rdocumentation.org/packages/graphics/topics/barplot'>barplot</a></code> function.</p></td>
     </tr>
     </table>
     
