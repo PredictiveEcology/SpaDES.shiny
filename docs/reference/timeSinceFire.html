@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a new <span class="pkg">SpaDES.shiny</span> app — newApp • SpaDES.shiny</title>
+<title>Time-Since-Fire shiny module — timeSinceFireUI • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,32 +80,85 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a new <span class="pkg">SpaDES.shiny</span> app</h1>
+    <h1>Time-Since-Fire shiny module</h1>
     </div>
 
     
-    <p>Setup the necessary directory structure for a new app, and create a new app
-based on a template.</p>
+    <p>A shiny module showing the time-since-fire values from a raster.</p>
+<p>Function <code>timeSinceFire</code> creates a shiny module server function
+             which displays rasters changing in time on a predefined map.
+             A slider, on which you can choose which raster should be currently displayed,
+             is also created. Moreover, a histogram summary for each raster choice is shown.</p>
     
 
-    <pre class="usage"><span class='fu'>newApp</span>(<span class='no'>appDir</span>, <span class='no'>appMetadata</span>)</pre>
+    <pre class="usage"><span class='fu'>timeSinceFireUI</span>(<span class='no'>id</span>, <span class='no'>rastersNumber</span>)
+
+<span class='fu'>timeSinceFire</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>rasters</span>, <span class='no'>polygonsList</span>, <span class='no'>shpStudyRegionFull</span>,
+  <span class='no'>colorTableFile</span>, <span class='no'>timeSinceFirePalette</span>, <span class='no'>maxAge</span>, <span class='kw'>leafletZoomInit</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>studyArea</span> <span class='kw'>=</span> <span class='st'>"SMALL"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>appDir</th>
-      <td><p>The directory path to use for the new app.</p></td>
+      <th>id</th>
+      <td><p>An ID string that corresponds with the ID used to call the module server function.</p></td>
     </tr>
     <tr>
-      <th>appMetadata</th>
-      <td><p>Application metadata.</p></td>
+      <th>rastersNumber</th>
+      <td><p>How many rasters can we choose from.</p></td>
+    </tr>
+    <tr>
+      <th>input</th>
+      <td><p>Shiny server input object.</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>Shiny server output object.</p></td>
+    </tr>
+    <tr>
+      <th>session</th>
+      <td><p>Shiny server session object.</p></td>
+    </tr>
+    <tr>
+      <th>rasters</th>
+      <td><p>Set of rasters to be displayed.</p></td>
+    </tr>
+    <tr>
+      <th>polygonsList</th>
+      <td><p>List with sets of polygons. Each such set can be displayed on a leaflet map.</p></td>
+    </tr>
+    <tr>
+      <th>shpStudyRegionFull</th>
+      <td><p>Study area region.</p></td>
+    </tr>
+    <tr>
+      <th>colorTableFile</th>
+      <td><p>File that contains color values for tiles.</p></td>
+    </tr>
+    <tr>
+      <th>timeSinceFirePalette</th>
+      <td><p>Color palette for time since fire.</p></td>
+    </tr>
+    <tr>
+      <th>maxAge</th>
+      <td><p>Maximum simulation age.</p></td>
+    </tr>
+    <tr>
+      <th>leafletZoomInit</th>
+      <td><p>Initial leaflet zoom.</p></td>
+    </tr>
+    <tr>
+      <th>studyArea</th>
+      <td><p>Size of study area. Options: <code>"FULL"</code>, <code>"EXTRALARGE"</code>,
+<code>"LARGE"</code>, <code>"MEDIUM"</code>, <code>"NWT"</code>, <code>"SMALL"</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>None. Invoked for the side-effect of creating a new app.</p>
+    <p>None. Invoked for the side-effect of creating a shiny UI.</p>
+<p>None. Invoked for the side-effect of creating a shiny server part.</p>
     
 
   </div>
@@ -119,7 +172,7 @@ based on a template.</p>
 
     <h2>Author</h2>
     
-Damian Rodziewicz
+Mateusz Wyszynski
 
   </div>
 </div>
