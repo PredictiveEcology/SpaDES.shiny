@@ -1,7 +1,8 @@
 #' Rasters Over Time Shiny Module
 #'
-#' @description A shiny module showing the values from a raster in time.
+#' @description A shiny module showing the values from a raster in time on a predefined map.
 #'              Allows changing polygons and rasters via slider.
+#'              Additionally, a histogram summary for each raster choice is shown.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
 #'
@@ -15,13 +16,13 @@
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
 #' @author Damian Rodziewicz
-#'
 #' @export
 #' @importFrom leaflet leafletOutput
 #' @importFrom raster sampleRegular
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
+#' @rdname rasterOverTime
 rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
                               polygonsNumber, rastersNumber, rasterStepSize = 10) {
   ns <- NS(id)
@@ -44,13 +45,6 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
   )
 }
 
-#' Rasters Over Time Shiny Module
-#'
-#' @description Function \code{rastersOverTime} creates a shiny module server function
-#'              which displays rasters changing in time on a predefined map.
-#'              A slider, on which you can choose which raster should be currently displayed,
-#'              is also created. Moreover, a histogram summary for each raster choice is shown.
-#'
 #' @param input Shiny server input object.
 #' @param output Shiny server output object.
 #' @param session Shiny server session object.
@@ -58,24 +52,22 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param colorTableFile File that contains color values for tiles.
 #' @param map Leaflet map to show raster and polygons on.
-#' @param rasterStepSize .
 #' @param cachePath Path to cache folder.
 #' @param cacheNotOlderThan Load an artifact from cache only if it was created after notOlderThan.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
+#' @author Damian Rodziewicz
+#' @export
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
 #' @importFrom shiny br callModule isolate observe reactive renderPlot
 #' @importFrom sp SpatialPoints spTransform
-#' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
-#' @importFrom raster xmax xmin ymax ymin hist res
+#' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
+#' @importFrom raster res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core paddedFloatToChar end
-#'
-#' @author Damian Rodziewicz
-#'
-#' @export
+#' @importFrom SpaDES.core end paddedFloatToChar
+#' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
                             map = leaflet(), rasterStepSize = 10, cachePath = "cache",
                             cacheNotOlderThan = Sys.time()) {
