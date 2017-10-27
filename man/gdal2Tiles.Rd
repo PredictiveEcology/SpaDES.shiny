@@ -2,7 +2,7 @@
 % Please edit documentation in R/gdal2Tiles.R
 \name{gdal2Tiles}
 \alias{gdal2Tiles}
-\title{Gdal2Tiles}
+\title{Convert a raster to tile images}
 \usage{
 gdal2Tiles(raster, outputPath, zoomRange, colorTableFile)
 }
@@ -19,9 +19,11 @@ gdal2Tiles(raster, outputPath, zoomRange, colorTableFile)
 None. Invoked for the side-effect of creating tile images.
 }
 \description{
-Function that converts given raster to tile images.
-             Important: gdalUtils_gdalPath environment variable must point to
-             path where gdal is installed.
+Important: `gdalUtils_gdalPath` environment variable must point to
+             path where GDAL is installed.
+}
+\note{
+Requires GDAL (>=2) and python are found on the system PATH.
 }
 \author{
 Damian Rodziewicz

@@ -1,8 +1,9 @@
-#' Gdal2Tiles
+#' Convert a raster to tile images
 #'
-#' @description Function that converts given raster to tile images.
-#'              Important: gdalUtils_gdalPath environment variable must point to
-#'              path where gdal is installed.
+#' @description Important: `gdalUtils_gdalPath` environment variable must point to
+#'              path where GDAL is installed.
+#'
+#' @note Requires GDAL (>=2) and python are found on the system PATH.
 #'
 #' @param raster Raster to generate tiles from.
 #' @param outputPath Output folder path.
@@ -12,10 +13,10 @@
 #' @return None. Invoked for the side-effect of creating tile images.
 #'
 #' @author Damian Rodziewicz
-#'
-#' @rdname gdal2Tiles
 #' @export
 #' @importFrom gdalUtils gdal_translate gdaldem
+##' @importFrom reproducible checkPath
+#' @rdname gdal2Tiles
 gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
   filename1 <- filename(raster)
   reproducible::checkPath(outputPath, create = TRUE)
