@@ -3,9 +3,9 @@ Type: Package
 Title: Utilities for building 'shiny' apps for 'SpaDES' simulations
 Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
-    http://spades.shiny.predictiveecology.org/,
+    http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2017-09.01
+Date: 2017-10-27
 Version: 0.1.0
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alexander.chubaty@canada.ca",
