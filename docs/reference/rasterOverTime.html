@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualize Raster Shiny Module — visualizeRasterUI • SpaDES.shiny</title>
+<title>Rasters Over Time Shiny Module — rastersOverTimeUI • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,28 +80,52 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualize Raster Shiny Module</h1>
+    <h1>Rasters Over Time Shiny Module</h1>
     </div>
 
     
-    <p>Shiny module which visualizes raster.</p>
+    <p>A shiny module showing the values from a raster in time on a predefined map.
+             Allows changing polygons and rasters via slider.
+             Additionally, a histogram summary for each raster choice is shown.</p>
     
 
-    <pre class="usage"><span class='fu'><a href='visualizeRasterUI.html'>visualizeRasterUI</a></span>(<span class='no'>id</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'><a href='rastersOverTimeUI.html'>rastersOverTimeUI</a></span>(<span class='no'>id</span>, <span class='no'>mapTitle</span>, <span class='no'>sliderTitle</span>, <span class='no'>histogramTitle</span>, <span class='no'>polygonsNumber</span>,
+  <span class='no'>rastersNumber</span>, <span class='kw'>rasterStepSize</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
-<span class='fu'>visualizeRaster</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>raster</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='rastersOverTime.html'>rastersOverTime</a></span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>rasters</span>, <span class='no'>polygonsList</span>, <span class='no'>colorTableFile</span>,
+  <span class='kw'>map</span> <span class='kw'>=</span> <span class='fu'>leaflet</span>(), <span class='kw'>rasterStepSize</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>cachePath</span> <span class='kw'>=</span> <span class='st'>"cache"</span>,
+  <span class='kw'>cacheNotOlderThan</span> <span class='kw'>=</span> <span class='fu'>Sys.time</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>id</th>
-      <td><p>An ID string that corresponds with the ID used to call the module's UI function.</p></td>
+      <td><p>An ID string that corresponds with the ID used to call the module server function.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional UI parameters passed to <code>link[shiny]{plotOutput}</code>,
-or server parameters passed to <code>link[rasterVis]{levelplot}</code>.</p></td>
+      <th>mapTitle</th>
+      <td><p>Title to be shown above the map.</p></td>
+    </tr>
+    <tr>
+      <th>sliderTitle</th>
+      <td><p>Title to be shown above the slider.</p></td>
+    </tr>
+    <tr>
+      <th>histogramTitle</th>
+      <td><p>Title to be shown above the histogram.</p></td>
+    </tr>
+    <tr>
+      <th>polygonsNumber</th>
+      <td><p>The number of available polygons.</p></td>
+    </tr>
+    <tr>
+      <th>rastersNumber</th>
+      <td><p>The number of available rasters.</p></td>
+    </tr>
+    <tr>
+      <th>rasterStepSize</th>
+      <td><p>Size of step in the raster slider.</p></td>
     </tr>
     <tr>
       <th>input</th>
@@ -116,15 +140,35 @@ or server parameters passed to <code>link[rasterVis]{levelplot}</code>.</p></td>
       <td><p>Shiny server session object.</p></td>
     </tr>
     <tr>
-      <th>raster</th>
-      <td><p>Raster which should be visualized. Might be a reactive value
-containing raster.</p></td>
+      <th>rasters</th>
+      <td><p>Set of rasters to be displayed.</p></td>
+    </tr>
+    <tr>
+      <th>polygonsList</th>
+      <td><p>List with sets of polygons. Each such set can be displayed on a leaflet map.</p></td>
+    </tr>
+    <tr>
+      <th>colorTableFile</th>
+      <td><p>File that contains color values for tiles.</p></td>
+    </tr>
+    <tr>
+      <th>map</th>
+      <td><p>Leaflet map to show raster and polygons on.</p></td>
+    </tr>
+    <tr>
+      <th>cachePath</th>
+      <td><p>Path to cache folder.</p></td>
+    </tr>
+    <tr>
+      <th>cacheNotOlderThan</th>
+      <td><p>Load an artifact from cache only if it was created after notOlderThan.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>None. Invoked for the side-effect of rendering bar plot.</p>
+    <p>None. Invoked for the side-effect of creating a shiny UI.</p>
+<p>None. Invoked for the side-effect of creating a shiny server part.</p>
     
 
   </div>
@@ -135,6 +179,12 @@ containing raster.</p></td>
       
       <li><a href="#value">Value</a></li>
           </ul>
+
+    <h2>Author</h2>
+    
+Damian Rodziewicz
+
+Damian Rodziewicz
 
   </div>
 </div>
