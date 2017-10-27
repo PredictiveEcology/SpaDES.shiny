@@ -5,12 +5,14 @@
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function
 #'
-#' @param ... Additional parameters passed to \code{link[shiny]{plotOutput}}
+#' @param ... Additional UI parameters passed to \code{link[shiny]{plotOutput}},
+#'            or additional server arguments passed to \code{\link[graphics]{barplot}}.
 #'
-#' @return None. Invoked for the side-effect of generating UI for plot
+#' @return None. Invoked for the side-effect of rendering bar plot.
 #'
 #' @export
 #' @importFrom  shiny plotOutput NS
+#' @rdname histogram
 histogramUI <- function(id, ...) {
   ns <- NS(id)
 
@@ -35,14 +37,11 @@ histogramUI <- function(id, ...) {
 #' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
 #'                      If \code{NULL} (default) then no axis is drawn.
 #'
-#' @param ... Additional arguments passed to \code{\link[graphics]{barplot}} function.
-#'
-#' @return None. Invoked for the side-effect of rendering bar plot.
-#'
 #' @export
-#' @importFrom graphics barplot axis
+#' @importFrom graphics axis barplot
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
+#' @rdname histogram
 histogram <- function(input, output, session, data, addAxisParams = NULL, ...) {
   output$histogram <- renderPlot({
     if (is.reactive(data)) {
