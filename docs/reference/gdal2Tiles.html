@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gdal2Tiles — gdal2Tiles • SpaDES.shiny</title>
+<title>Convert a raster to tile images — gdal2Tiles • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,13 +80,12 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Gdal2Tiles</h1>
+    <h1>Convert a raster to tile images</h1>
     </div>
 
     
-    <p>Function that converts given raster to tile images.
-             Important: gdalUtils_gdalPath environment variable must point to
-             path where gdal is installed.</p>
+    <p>Important: `gdalUtils_gdalPath` environment variable must point to
+             path where GDAL is installed.</p>
     
 
     <pre class="usage"><span class='fu'>gdal2Tiles</span>(<span class='no'>raster</span>, <span class='no'>outputPath</span>, <span class='no'>zoomRange</span>, <span class='no'>colorTableFile</span>)</pre>
@@ -116,6 +115,10 @@
 
     <p>None. Invoked for the side-effect of creating tile images.</p>
     
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Requires GDAL (&gt;=2) and python are found on the system PATH.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -124,6 +127,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
           </ul>
 
     <h2>Author</h2>
