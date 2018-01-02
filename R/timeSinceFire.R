@@ -53,7 +53,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
 #' @importFrom raster xmax xmin ymax ymin hist
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core paddedFloatToChar end
+#' @importFrom SpaDES.core paddedFloatToChar
 #'
 #' @author Mateusz Wyszynski
 #'

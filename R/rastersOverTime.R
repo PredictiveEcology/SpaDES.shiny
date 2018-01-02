@@ -66,7 +66,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
 #' @importFrom raster res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core end paddedFloatToChar
+#' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
                             map = leaflet(), rasterStepSize = 10, cachePath = "cache",
