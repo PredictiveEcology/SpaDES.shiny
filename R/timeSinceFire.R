@@ -110,5 +110,5 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStud
 
   callModule(rastersOverTime, "rastersOverTime", rasters, polygonsList, colorTableFile,
                               leafMap, rasterStepSize = 10, cachePath = "cache",
-                              cacheNotOlderThan = Sys.time())
+                              cacheNotOlderThan = NULL)
 }

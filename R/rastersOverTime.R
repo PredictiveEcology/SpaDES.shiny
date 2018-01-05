@@ -104,7 +104,8 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   sampledRaster <- reactive({
     if (ncell(raster()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5, notOlderThan = Sys.time(),
+      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
+                             notOlderThan = NULL,
                              asRaster = TRUE, cacheRepo = cachePath)
       sampledRaster[sampledRaster[] == 0] <- NA
     }
