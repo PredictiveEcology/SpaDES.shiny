@@ -48,13 +48,14 @@ Many module parameters are only accessed by modules at the start of a
 }
 \examples{
 \dontrun{
+ library(SpaDES.core)
  mySim <- simInit(
    times <- list(start = 0.0, end = 20.0),
    params = list(
      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
    ),
    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-   paths = list(modulePath = system.file("sampleModules", package = "SpaDES"))
+   paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
  )
 
 shine(mySim)
