@@ -139,7 +139,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   callModule(summaryPopups, "popups", mapProxy, click, raster, polygons)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale, addAxisParams = addAxisParams,
