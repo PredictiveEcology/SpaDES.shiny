@@ -62,7 +62,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @export
 timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
                           colorTableFile, timeSinceFirePalette, maxAge, leafletZoomInit = 5,
-                          studyArea = "SMALL") {
+                          studyArea = "SMALL", sim = NULL) {
 
   polygonsInput <- reactive({
     spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))
@@ -109,6 +109,6 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStud
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
   callModule(rastersOverTime, "rastersOverTime", rasters, polygonsList, colorTableFile,
-                              leafMap, rasterStepSize = 10, cachePath = "cache",
-                              cacheNotOlderThan = NULL)
+                              leafMap, rasterStepSize = 10,
+                              cacheNotOlderThan = NULL, sim = sim)
 }

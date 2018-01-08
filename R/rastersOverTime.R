@@ -69,7 +69,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
-                            map = leaflet(), rasterStepSize = 10, cachePath = "cache",
+                            map = leaflet(), rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
@@ -86,6 +86,14 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
     return(polygonsList[[index]])
   })
 
+  if (is.null(sim)) {
+    cachePath <- "cache"
+    outputSubPath <- "outputs"
+  } else {
+    cachePath <- cachePath(sim)
+    outputSubPath <- outputPath(sim)
+  }
+
   raster <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
       1
@@ -95,7 +103,8 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
     raster <- rasters[[rasterIndex]]
 
-    Cache(gdal2Tiles, raster, outputPath = file.path("www", session$ns("map-tiles")),
+    outputPath <- file.path("www", basename(outputSubPath), session$ns("map-tiles"))
+    Cache(gdal2Tiles, raster, outputPath = outputPath,
           zoomRange = 1:10, colorTableFile = asPath(colorTableFile),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
@@ -125,7 +134,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
-    file.path(session$ns("map-tiles"), paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
+    file.path(basename(outputSubPath), session$ns("map-tiles"), paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 
   addTilesParameters <- list(
