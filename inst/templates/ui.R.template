@@ -7,7 +7,9 @@ dashboardPage(skin = "green",
               dashboardSidebar(width = 300,
                                sidebarMenu(id = "wholeThing",
                                            {{{menuItems}}}
-                               )
+                               ),
+                               img(src = "http://d3u4jj2f3q2139.cloudfront.net/logo-appsilon-data-science-transparent.png",
+                                   style="position: absolute; bottom: 10px; margin: 25px; height: 40px; height: 70px")
               ),
               dashboardBody(
                 tabItems(
