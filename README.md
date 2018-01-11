@@ -123,13 +123,14 @@ Tibble example:
 ```
 devtools::install_github("PredictiveEcology/SpaDES.shiny", ref = "develop")
 library(SpaDES.shiny)
+library(tibble)
 
 appMetadata <- list(
   modules = tribble(
     ~type, ~name, ~id, ~parameters,
-    "shinyModule", "slider", "mySlider1", list("\"Slider label\"", 0, 100, 50, 1),
-    "shinyModule", "slider", "mySlider2", list("\"Slider label 2\"", 0, 200, 100, 10),
-    "shinyModule", "export", "myExport1", list(c("csv", "txt", "xls", "rds"))
+    "shinyModule", "slider", "mySlider1", list(),
+    "shinyModule", "slider", "mySlider2", list(),
+    "shinyModule", "export", "myExport1", list("data.frame(x = 1:5, y = 6:10)")
   ),
   layout = tribble(
     ~tabName, ~menuItemName, ~icon, ~moduleId, ~moduleUIParameters,
