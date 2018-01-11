@@ -54,28 +54,21 @@ Apart from the modules SpaDES.shiny provides an app generator that allows you to
 
 Following is the structure that SpaDES.shiny expects to be provided:
 
-```
-metadata:
-  modules:
-```
+modules:
 
+| type          | name          | id            | parameters                                  |
+| ------------- | ------------- | ------------- | ------------------------------------------- |
+| shinyModule   | slider        | mySlider1     | list("\\"Slider label\\"", 0, 100, 50, 1)     |
+| shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
+| shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))      |
 
-    | type          | name          | id            | parameters                                  |
-    | ------------- |:-------------:|:-------------:|--------------------------------------------:|
-    | shinyModule   | slider        | mySlider1     | list("\"Slider label\"", 0, 100, 50, 1)     |
-    | shinyModule   | slider        | mySlider2     | list("\"Slider label 2\"", 0, 200, 100, 10) |
-    | shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))      |
+layout:
 
-```
-  layout:
-```
-
-
-    | tabName        | menuItemName   | icon         | moduleId  |
-    | -------------- |:--------------:|:------------:|----------:|
-    | sliderTabName  | Slider Module  | map          | mySlider1 |
-    | sliderTabName2 | Another Slider | sliders      | mySlider2 |
-    | export         | My Export      | file-image-o | myExport3 |
+| tabName        | menuItemName   | icon         | moduleId  |
+| -------------- | -------------- | ------------ | --------- |
+| sliderTabName  | Slider Module  | map          | mySlider1 |
+| sliderTabName2 | Another Slider | sliders      | mySlider2 |
+| export         | My Export      | file-image-o | myExport3 |
 
 In `metadata$modules` you define modules that you want to be used in your app. Right now the only `type` is "shinyModule" (TODO: After it is implemented add information about "customShinyModule" which creates a new empty module for user to implement in the app). `name` corresponds to the name of the module and the `id` assigns unique identifier for that module instance. `parameters` define the parameters that should be passed to the module.
 
