@@ -70,4 +70,36 @@ Inside the template write code that you'd like to have generated. Put variables 
 
 Shiny modules in SpaDES.shiny are generic components that can be used to bootstrap the application. The module should have a generic purpose and the main aim of developer should be to make this module reusable in different applications.
 
-When building a new shiny module try to extract as much code as possible to separate modules that can be reused in other use cases. For example if you are building a shiny module that consists of a table, plot and a slider divide it into three modules each representing separate logic that can be reusable - a table view of a data.frame, a plot and a slider. First always check if there already exists a module that does the job. 
+When building a new shiny module try to extract as much code as possible to separate modules that can be reused in other use cases. For example if you are building a shiny module that consists of a table, plot and a slider divide it into three modules each representing separate logic that can be reusable - a table view of a data.frame, a plot and a slider. First always check if there already exists a module that does the job.
+
+Take a look at `rastersOverTime` module. The aim of this module is to display a map with rasters that change over time. We want to be able to also change underlying polygons that are displayed and show histogram of raster values.
+
+We can divide this module into smaller independent components. `rastersOverTime` module actually consists of a:
+```
+- map
+- slider that allows user to choose raster to display
+- slider that allows user to choose polygons to display
+- raster updater that draws a chosen raster on a map
+- polygon updater that draws chosen set of polygons on a map
+- summary popup that shows pop ups on map for selected polygons and raster
+- histogram for a raster
+```
+
+This division gives us 7 independent generic components (actually 6 components - slider is used twice) that can be used in any combination.
+
+In the end your code may look as follows:
+
+```
+rasterIndexValue <- callModule(slider, "rastersSlider")
+polygonIndexValue <- callModule(slider, "polygonsSlider")
+...
+callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, session$ns("tiles"),
+           addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
+callModule(summaryPopups, "popups", mapProxy, click, raster, polygons)
+callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons, weight = 0.2)
+callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
+           scale = rasterScale, addAxisParams = addAxisParams,
+           width = 1, space = 0)
+```
+
+What is more - if someone wants to create a map with raster selection and popups - he can just take a map, slider, raster updater and summary popup. What's more user can decide to implement different way of selecting the raster - he'll just use another module instead of the slider.
