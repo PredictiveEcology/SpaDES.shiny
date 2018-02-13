@@ -66,10 +66,10 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
 #' @importFrom raster res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core end paddedFloatToChar
+#' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
-                            map = leaflet(), rasterStepSize = 10, cachePath = "cache",
+                            map = leaflet(), rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
@@ -86,6 +86,14 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
     return(polygonsList[[index]])
   })
 
+  if (is.null(sim)) {
+    cachePath <- "cache"
+    outputSubPath <- "outputs"
+  } else {
+    cachePath <- cachePath(sim)
+    outputSubPath <- outputPath(sim)
+  }
+
   raster <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
       1
@@ -95,7 +103,8 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
     raster <- rasters[[rasterIndex]]
 
-    Cache(gdal2Tiles, raster, outputPath = file.path("www", session$ns("map-tiles")),
+    outputPath <- file.path("www", basename(outputSubPath), session$ns("map-tiles"))
+    Cache(gdal2Tiles, raster, outputPath = outputPath,
           zoomRange = 1:10, colorTableFile = asPath(colorTableFile),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
@@ -104,7 +113,8 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   sampledRaster <- reactive({
     if (ncell(raster()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5, notOlderThan = Sys.time(),
+      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
+                             notOlderThan = NULL,
                              asRaster = TRUE, cacheRepo = cachePath)
       sampledRaster[sampledRaster[] == 0] <- NA
     }
@@ -124,7 +134,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
-    file.path(session$ns("map-tiles"), paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
+    file.path(basename(outputSubPath), session$ns("map-tiles"), paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 
   addTilesParameters <- list(
@@ -138,7 +148,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   callModule(summaryPopups, "popups", mapProxy, click, raster, polygons)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale, addAxisParams = addAxisParams,

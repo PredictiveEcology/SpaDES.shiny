@@ -50,21 +50,22 @@ if (getRversion() >= "3.1.0") {
 #' @importFrom shiny selectInput sliderInput sidebarLayout sidebarPanel
 #' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
 #' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
+#' @importFrom SpaDES.core completed end<- eventDiagram inputs
 #' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
-#' @importFrom SpaDES.core spades start time<-
+#' @importFrom SpaDES.core spades time<-
 #' @importFrom stats time
 #' @importFrom utils browseURL
 #' @include environment.R
 #' @examples
 #' \dontrun{
+#'  library(SpaDES.core)
 #'  mySim <- simInit(
 #'    times <- list(start = 0.0, end = 20.0),
 #'    params = list(
 #'      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
 #'    ),
 #'    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES"))
+#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
 #'  )
 #'
 #' shine(mySim)

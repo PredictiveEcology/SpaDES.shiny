@@ -5,13 +5,15 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2017-10-27
-Version: 0.1.0.9000
+Date: 2018-01-05
+Version: 0.1.0.9001
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alexander.chubaty@canada.ca",
              role = c("aut", "cre")),
       person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
              role = c("aut")),
+      person("Damian", "Rodziewicz", role = c("aut")),
+      person("Mateusz", "Wyszynski", role = c("aut")),
       person("Olivia", "Sung", role = c("ctb")),
       person("Alex", "Tso", role = c("ctb")),
       person("Greyson", "Wang", role = c("ctb")),
@@ -48,7 +50,7 @@ Imports:
     shinycssloaders,
     shinydashboard,
     sp,
-    SpaDES.core,
+    SpaDES.core (>= 0.1.0),
     stringi (>= 1.1.3),
     stringr,
     tools,

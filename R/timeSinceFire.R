@@ -53,7 +53,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
 #' @importFrom raster xmax xmin ymax ymin hist
 #' @importFrom reproducible asPath Cache
-#' @importFrom SpaDES.core paddedFloatToChar end
+#' @importFrom SpaDES.core paddedFloatToChar
 #'
 #' @author Mateusz Wyszynski
 #'
@@ -62,7 +62,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @export
 timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
                           colorTableFile, timeSinceFirePalette, maxAge, leafletZoomInit = 5,
-                          studyArea = "SMALL") {
+                          studyArea = "SMALL", sim = NULL) {
 
   polygonsInput <- reactive({
     spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))
@@ -109,6 +109,6 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStud
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
   callModule(rastersOverTime, "rastersOverTime", rasters, polygonsList, colorTableFile,
-                              leafMap, rasterStepSize = 10, cachePath = "cache",
-                              cacheNotOlderThan = Sys.time())
+                              leafMap, rasterStepSize = 10,
+                              cacheNotOlderThan = NULL, sim = sim)
 }
