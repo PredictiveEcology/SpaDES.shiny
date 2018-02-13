@@ -1,3 +1,7 @@
 function(input, output, session) {
+  ## run additonal server code from server_file.R
+  if (file.exists("server_file.R")) source("server_file.R")
+
+  ## module calls
   {{{callModuleDirectives}}}
 }
