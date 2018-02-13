@@ -29,6 +29,9 @@ Authors:
 
 Other contributors:
 \itemize{
+  \item Olivia Sung [contributor]
+  \item Alex Tso [contributor]
+  \item Greyson Wang [contributor]
   \item Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada [copyright holder]
 }
 

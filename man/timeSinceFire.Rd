@@ -9,7 +9,7 @@ timeSinceFireUI(id, rastersNumber)
 
 timeSinceFire(input, output, session, rasters, polygonsList, shpStudyRegionFull,
   colorTableFile, timeSinceFirePalette, maxAge, leafletZoomInit = 5,
-  studyArea = "SMALL")
+  studyArea = "SMALL", sim = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}

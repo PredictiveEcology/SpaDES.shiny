@@ -9,7 +9,7 @@ rastersOverTimeUI(id, mapTitle, sliderTitle, histogramTitle, polygonsNumber,
   rastersNumber, rasterStepSize = 10)
 
 rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
-  map = leaflet(), rasterStepSize = 10, cachePath = "cache",
+  map = leaflet(), rasterStepSize = 10, sim = NULL,
   cacheNotOlderThan = Sys.time())
 }
 \arguments{
@@ -41,9 +41,9 @@ rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
-\item{cachePath}{Path to cache folder.}
-
 \item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
+
+\item{cachePath}{Path to cache folder.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
