@@ -38,6 +38,8 @@ timeSinceFire(input, output, session, rasters, polygonsList, shpStudyRegionFull,
 
 \item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
+
+\item{sim}{A SpaDES simulation object (\code{simList}).}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.

@@ -10,7 +10,7 @@ rastersOverTimeUI(id, mapTitle, sliderTitle, histogramTitle, polygonsNumber,
 
 rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
   map = leaflet(), rasterStepSize = 10, sim = NULL,
-  cacheNotOlderThan = Sys.time())
+  cachePath = cachePath(sim), cacheNotOlderThan = Sys.time())
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -41,9 +41,11 @@ rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
-\item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
+\item{sim}{A SpaDES simulation object (\code{simList}).}
 
 \item{cachePath}{Path to cache folder.}
+
+\item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.

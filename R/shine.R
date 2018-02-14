@@ -50,9 +50,9 @@ if (getRversion() >= "3.1.0") {
 #' @importFrom shiny selectInput sliderInput sidebarLayout sidebarPanel
 #' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
 #' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom SpaDES.core completed end<- eventDiagram inputs
+#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
 #' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
-#' @importFrom SpaDES.core spades time<-
+#' @importFrom SpaDES.core spades start time<-
 #' @importFrom stats time
 #' @importFrom utils browseURL
 #' @include environment.R

@@ -40,6 +40,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param leafletZoomInit Initial leaflet zoom.
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
 #'                  \code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
+#' @param sim A SpaDES simulation object (\code{simList}).
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'

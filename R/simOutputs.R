@@ -64,6 +64,7 @@ initialMapUI <- function(id) {
 #' @export
 #' @importFrom quickPlot clearPlot Plot setColors<-
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom SpaDES.core start
 #' @rdname initialMap
 initialMap <- function(input, output, session, sim, mapID) {
   output$mapInit <- renderPlot({

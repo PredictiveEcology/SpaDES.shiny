@@ -52,6 +52,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param colorTableFile File that contains color values for tiles.
 #' @param map Leaflet map to show raster and polygons on.
+#' @param sim A SpaDES simulation object (\code{simList}).
 #' @param cachePath Path to cache folder.
 #' @param cacheNotOlderThan Load an artifact from cache only if it was created after notOlderThan.
 #'
@@ -70,6 +71,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
                             map = leaflet(), rasterStepSize = 10, sim = NULL,
+                            cachePath = cachePath(sim),
                             cacheNotOlderThan = Sys.time()) {
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
