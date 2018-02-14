@@ -136,7 +136,8 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
-    file.path(basename(outputSubPath), session$ns("map-tiles"), paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
+    file.path(basename(outputSubPath), session$ns("map-tiles"),
+              paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 
   addTilesParameters <- list(
