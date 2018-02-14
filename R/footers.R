@@ -22,9 +22,11 @@ copyrightFooter <- function(copyrightInfo) {
 sidebarFooter <- function() {
   HTML(paste(
     "<footer>",
-    "<div id=\"sidebar\">",
-    "Powered by <a href=\"http://SpaDES.PredictiveEcology.org\", target=\"_blank\">\u2660 SpaDES</a> ", # nolint
-    "and <a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a>",
+    "<div id=\"sidebar\" style='position: absolute; bottom: 5px; margin: 15px'>",
+    " Built with ",
+    "<a href=\"http://SpaDES.PredictiveEcology.org\">  <img src=\"http://predictiveecology.org/img/avatar.png\", height=25px>SpaDES, </a>", # nolint
+    "<a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a> ",
+    "and <a href=\"https://appsilondatascience.com/\">  <img src=\"http://d3u4jj2f3q2139.cloudfront.net/logo-appsilon-data-science-transparent.png\", height=20px> </a>", # nolint
     "</div>",
     "</footer>"
   ))
