@@ -10,7 +10,7 @@ rastersOverTimeUI(id, mapTitle, sliderTitle, histogramTitle, polygonsNumber,
 
 rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
   map = leaflet(), rasterStepSize = 10, sim = NULL,
-  cachePath = cachePath(sim), cacheNotOlderThan = Sys.time())
+  cachePath = getPath(sim)$cachePath, cacheNotOlderThan = Sys.time())
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}

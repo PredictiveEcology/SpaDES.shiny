@@ -71,7 +71,7 @@ rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
                             map = leaflet(), rasterStepSize = 10, sim = NULL,
-                            cachePath = cachePath(sim),
+                            cachePath = getPath(sim)$cachePath,
                             cacheNotOlderThan = Sys.time()) {
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
