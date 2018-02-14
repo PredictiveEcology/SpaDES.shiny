@@ -87,6 +87,8 @@ matrix:
       - sh -e /etc/init.d/xvfb start
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_packages:
+    - devtools
   - os: osx
     osx_image: xcode9.2
     latex: false
