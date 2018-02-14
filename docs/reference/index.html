@@ -34,6 +34,18 @@
 <![endif]-->
 
 
+<!-- Google analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-58633549-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
   </head>
 
   <body>
@@ -52,13 +64,16 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -82,7 +97,7 @@
     <div class="page-header">
       <h1>
         Reference
-        <small>version&nbsp;0.1.0.9000</small>
+        <small>version&nbsp;0.1.0.9001</small>
       </h1>
     </div>
 
@@ -176,15 +191,15 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="histogram.html">histogramUI</a></code> <code><a href="histogram.html">histogram</a></code> </p>
-          </td>
-          <td><p>Histogram Module UI Function</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
             <p><code><a href="histogramForRaster.html">histogramForRasterUI</a></code> <code><a href="histogramForRaster.html">histogramForRaster</a></code> </p>
           </td>
           <td><p>Histogram for Raster Shiny Module</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="histogram.html">histogramUI</a></code> <code><a href="histogram.html">histogram</a></code> </p>
+          </td>
+          <td><p>Histogram Module UI Function</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -218,13 +233,13 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="newApp.html">newApp</a></code> </p>
+            <p><code><a href="newAppDeprecated.html">newAppDeprecated</a></code> </p>
           </td>
           <td><p>Create a new <span class="pkg">SpaDES.shiny</span> app</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="newAppDeprecated.html">newAppDeprecated</a></code> </p>
+            <p><code><a href="newApp.html">newApp</a></code> </p>
           </td>
           <td><p>Create a new <span class="pkg">SpaDES.shiny</span> app</p></td>
         </tr><tr>
@@ -453,11 +468,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alex M Chubaty, Eliot J B McIntire.</p>
+  <p>Developed by Alex M Chubaty, Eliot J B McIntire, Damian Rodziewicz, Mateusz Wyszynski.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
