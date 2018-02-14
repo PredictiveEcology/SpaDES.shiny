@@ -15,7 +15,8 @@ dashboardPage(
   dashboardBody(
     tabItems(
       {{{tabItems}}}
-    )
+    ),
+	copyrightFooter(copyrightInfo)
   )
 )
 

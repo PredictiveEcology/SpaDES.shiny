@@ -9,10 +9,22 @@
 #' @export
 #' @importFrom shiny HTML
 #' @rdname footers
+#' @examples
+#' copyrightInfo <- paste(
+#'   shiny::icon("copyright",  lib = "font-awesome"), "Copyright ",
+#'   format(Sys.time(), "%Y"),
+#'   paste("Her Majesty the Queen in Right of Canada,",
+#'         "as represented by the Minister of Natural Resources Canada.")
+#' )
+#' 
+#' # The following line is in the ui.R.template and will be run if 
+#' # global.R has a copyrightInfo object
+#' copyrightFooter(copyrightInfo)
 copyrightFooter <- function(copyrightInfo) {
-  HTML(paste(
-    "<footer>", "<div id=\"copyright\">", copyrightInfo, "</div>", "</footer>"
-  ))
+	if (!missing(copyrightInfo))
+	  HTML(paste(
+		"<footer>", "<div id=\"copyright\">", copyrightInfo, "</div>", "</footer>"
+	  ))
 }
 
 #' @author Alex Chubaty

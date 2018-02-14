@@ -16,6 +16,18 @@ sidebarFooter()
 App copyright info can be inserted into a footer in the dashboard body using
 \code{copyrightFooter}.
 }
+\examples{
+copyrightInfo <- paste(
+  shiny::icon("copyright",  lib = "font-awesome"), "Copyright ",
+  format(Sys.time(), "\%Y"),
+  paste("Her Majesty the Queen in Right of Canada,",
+        "as represented by the Minister of Natural Resources Canada.")
+)
+
+# The following line is in the ui.R.template and will be run if 
+# global.R has a copyrightInfo object
+copyrightFooter(copyrightInfo)
+}
 \author{
 Alex Chubaty
 
