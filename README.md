@@ -48,6 +48,10 @@ In the following sections you'll learn what does the application structure look 
 
 Following is the structure that `SpaDES.shiny` expects to be provided:
 
+title:
+
+A character string denoted the name of the application, which appears in the top left corner (above the sidebar).
+
 modules:
 
 | type          | name          | id            | parameters                                    |
@@ -90,6 +94,7 @@ devtools::install_github("PredictiveEcology/SpaDES.shiny", ref = "develop")
 library(SpaDES.shiny)
 
 appMetadata <- list(
+  title = "Cool App",
   modules = data.frame(
     type = c("shinyModule", "shinyModule", "shinyModule"),
     name = c("slider", "slider", "export"),
@@ -124,6 +129,7 @@ library(SpaDES.shiny)
 library(tibble)
 
 appMetadata <- list(
+  title = "Cool App",
   modules = tribble(
     ~type, ~name, ~id, ~parameters,
     "shinyModule", "slider", "mySlider1", list(),

@@ -2,11 +2,11 @@ if (getRversion() >= "3.1.0") {
   utils::globalVariables(c("id"))
 }
 
-uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
-serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
 globalTemplatePath <- system.file(package = "SpaDES.shiny", "templates/global.R.template")
-tabItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/tabItem.template")
 menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuItem.template")
+serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
+tabItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/tabItem.template")
+uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
 
 #' Render a template using \pkg{whisker} package.
 #'
@@ -22,6 +22,18 @@ menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuIte
 renderTemplate <- function(templatePath, data) {
   template <- readLines(templatePath)
   whisker.render(template, data)
+}
+
+#' Render the name of the app.
+#'
+#' @param title  Name of the app to be displayed in the top left (above the sidebar).
+#'
+#' @return Rendered app name.
+#'
+#' @author Alex Chubaty
+renderTitle <- function(title) {
+  name <- ifelse(is.null(title), "Template App", title)
+  return(deparse(paste(name)))
 }
 
 #' Retrieve a module metadata from modules tibble.
@@ -146,6 +158,7 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
   uiPath <- file.path(appDir, "ui.R")
 
   data <- list(
+    title = renderTitle(appMetadata$title),
     menuItems = renderMenuItems(appMetadata$layout, appMetadata$modules),
     tabItems = renderTabItems(appMetadata$layout, appMetadata$modules)
   )
@@ -173,13 +186,12 @@ renderCallModuleDirective <- function(name, id, parameters) {
 
 #' Render callModule directives for provided modules.
 #'
-#' @param modules        Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered callModule directives.
 #'
 #' @author Damian Rodziewicz
 #' @importFrom purrr pmap
-#'
 renderCallModuleDirectives <- function(modules) {
   callModuleDirectives <- purrr::pmap(
     list(modules$name, modules$id, modules$parameters),
