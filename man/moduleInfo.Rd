@@ -7,7 +7,7 @@
 \usage{
 moduleInfoUI(id)
 
-moduleInfo(input, output, session, sim)
+moduleInfo(input, output, session, sim, data = FALSE)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's
@@ -19,7 +19,11 @@ UI function}
 
 \item{session}{shiny server session object}
 
-\item{sim}{A \code{simList} object}
+\item{sim}{A \code{simList} object.}
+
+\item{data}{Logical. \code{TRUE} indicates to use the Rmd file for the
+module's data (\file{moduleName/moduleName_data.Rmd}), if present.
+\code{FALSE} uses the module's Rmd file (\file{moduleName/moduleName.Rmd}).}
 }
 \description{
 TO DO: needs documentation

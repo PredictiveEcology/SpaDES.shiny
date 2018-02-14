@@ -22,7 +22,8 @@ UI function}
 \item{sim}{A \code{simList} object}
 }
 \description{
-TO DO: needs to be generalized
+Display the rendered Rmarkdown content of the module's data description file
+(\file{moduleName/moduleName_data.Rmd}).
 }
 \author{
 Alex Chubaty
