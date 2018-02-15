@@ -4,4 +4,8 @@ function(input, output, session) {
 
   ## module calls
   {{{callModuleDirectives}}}
+  
+  ## copyright footer (see ?copyrightFooter)
+  callModule(copyrightFooter, "copyright", {{{copyright}}})
 }
+

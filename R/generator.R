@@ -36,6 +36,18 @@ renderTitle <- function(title) {
   return(deparse(paste(name)))
 }
 
+#' Render the copyright holder name of the app.
+#'
+#' @param copyright  Name of the app copyright holder.
+#'
+#' @return Rendered app copyright holder name.
+#'
+#' @author Alex Chubaty
+renderCopyright <- function(copyright) {
+  cph <- ifelse(is.null(copyright), "The Author(s)", copyright)
+  return(deparse(paste(cph)))
+}
+
 #' Retrieve a module metadata from modules tibble.
 #'
 #' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
@@ -216,7 +228,8 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
   callModuleDirectives <- renderCallModuleDirectives(appMetadata$modules)
 
   data <- list(
-    callModuleDirectives = callModuleDirectives
+    callModuleDirectives = callModuleDirectives,
+    copyright = renderCopyright(appMetadata$copyright)
   )
 
   renderedContent <- renderTemplate(serverTemplatePath, data)

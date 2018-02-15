@@ -1,30 +1,52 @@
 #' Generate HTML footers for body or sidebar
 #'
 #' App copyright info can be inserted into a footer in the dashboard body using
-#' \code{copyrightFooter}.
+#' \code{copyrightFooter} module.
 #'
-#' @param copyrightInfo  Character string containing your app's copyright info.
+#' @param id An ID string that corresponds with the ID used to call the module's
+#'   UI function
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom shiny HTML
+#' @importFrom shiny NS renderText
 #' @rdname footers
+#'
 #' @examples
-#' copyrightInfo <- paste(
-#'   shiny::icon("copyright",  lib = "font-awesome"), "Copyright ",
-#'   format(Sys.time(), "%Y"),
-#'   paste("Her Majesty the Queen in Right of Canada,",
-#'         "as represented by the Minister of Natural Resources Canada.")
-#' )
-#' 
-#' # The following line is in the ui.R.template and will be run if 
-#' # global.R has a copyrightInfo object
-#' copyrightFooter(copyrightInfo)
-copyrightFooter <- function(copyrightInfo) {
-	if (!missing(copyrightInfo))
-	  HTML(paste(
-		"<footer>", "<div id=\"copyright\">", copyrightInfo, "</div>", "</footer>"
-	  ))
+#' \dontrun{
+#' # define this in global.R (or global_file.R)
+#' cph <- paste("Author Name")
+#'
+#' # The following line is in the global.R.template:
+#' callModule(copyrightFooter, "copyright", cph)
+#' }
+copyrightFooterUI <- function(id) {
+  ns <- NS(id)
+
+  uiOutput(ns("copyrightInfo"))
+}
+
+#' @param input    shiny server input object
+#' @param output   shiny server output object
+#' @param session  shiny server session object
+#' @param cph      Character string indicating the copyright holder name.
+#'                 This is automatically generated from the \code{copyright} item
+#'                 in the app metadata sued my \code{newApp}.
+#' @param year     Character string indicating the copyright date.
+#'                 Defaults to the current year.
+#'
+#' @export
+#' @importFrom shiny HTML icon
+#' @rdname footers
+copyrightFooter <- function(input, output, session, cph = "Author Name",
+                            year = format(Sys.time(), "%Y")) {
+  output$copyrightInfo <- renderUI({
+    HTML(paste(
+      "<footer>", "<div id=\"copyright\">",
+      shiny::icon("copyright",  lib = "font-awesome"),
+      "Copyright ", year, cph,
+      "</div>", "</footer>"
+    ))
+  })
 }
 
 #' @author Alex Chubaty
