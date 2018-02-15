@@ -48,11 +48,15 @@ In the following sections you'll learn what does the application structure look 
 
 Following is the structure that `SpaDES.shiny` expects to be provided:
 
-title:
+**title:**
 
-A character string denoted the name of the application, which appears in the top left corner (above the sidebar).
+A character string denoting the name of the application, which appears in the top left corner (above the sidebar).
 
-modules:
+**copyright:**
+
+A character string denoting the name of the app copyright holder (appears in footer).
+
+**modules:**
 
 | type          | name          | id            | parameters                                    |
 | ------------- | ------------- | ------------- | --------------------------------------------- |
@@ -60,7 +64,7 @@ modules:
 | shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
 | shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))        |
 
-layout:
+**layout:**
 
 | tabName        | menuItemName   | icon         | moduleId  |
 | -------------- | -------------- | ------------ | --------- |
@@ -95,6 +99,7 @@ library(SpaDES.shiny)
 
 appMetadata <- list(
   title = "Cool App",
+  copyright = "Jim Author",
   modules = data.frame(
     type = c("shinyModule", "shinyModule", "shinyModule"),
     name = c("slider", "slider", "export"),
@@ -130,6 +135,7 @@ library(tibble)
 
 appMetadata <- list(
   title = "Cool App",
+  copyright = "Jim Author",
   modules = tribble(
     ~type, ~name, ~id, ~parameters,
     "shinyModule", "slider", "mySlider1", list(),
