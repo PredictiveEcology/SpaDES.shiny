@@ -2,16 +2,15 @@
 #'
 #' @description Function \code{sliderUI} creates a shiny module UI.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function
-#' @param ... sliderInput arguments. See ?sliderInput for reference.
+#' @param id   An ID string that corresponds with the ID used to call the module's UI function.
+#' @param ...  Additonal arguments passed to \code{sliderInput}.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
-#' @importFrom shiny NS sliderInput
-#'
-#' @rdname slider
-#'
 #' @export
+#' @importFrom shiny NS sliderInput
+#' @rdname slider
+#' @seealso \code{\link{sliderInput}}
 sliderUI <- function(id, ...) {
   ns <- NS(id)
 

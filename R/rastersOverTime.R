@@ -1,8 +1,8 @@
-#' Rasters Over Time Shiny Module
+#' Rasters-over-time shiny module
 #'
-#' @description A shiny module showing the values from a raster in time on a predefined map.
-#'              Allows changing polygons and rasters via slider.
-#'              Additionally, a histogram summary for each raster choice is shown.
+#' A shiny module showing the values from a raster in time on a predefined map.
+#' Allows changing polygons and rasters via slider.
+#' Additionally, a histogram summary for each raster choice is shown.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
 #'
@@ -118,8 +118,10 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
       sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
                              notOlderThan = NULL,
                              asRaster = TRUE, cacheRepo = cachePath)
-      sampledRaster[sampledRaster[] == 0] <- NA
+    } else {
+      sampledRaster <- raster()
     }
+    sampledRaster[sampledRaster[] == 0] <- NA
 
     sampledRaster
   })

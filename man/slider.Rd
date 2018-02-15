@@ -10,9 +10,9 @@ sliderUI(id, ...)
 slider(input, output, session)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
-\item{...}{sliderInput arguments. See ?sliderInput for reference.}
+\item{...}{Additonal arguments passed to \code{sliderInput}.}
 
 \item{input}{shiny server input object}
 
@@ -29,6 +29,9 @@ Reactive value with the current value on the slider.
 Function \code{sliderUI} creates a shiny module UI.
 
 Function \code{slider} creates a slider module server function.
+}
+\seealso{
+\code{\link{sliderInput}}
 }
 \author{
 Mateusz Wyszynski

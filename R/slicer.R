@@ -37,29 +37,30 @@ generateUI <- function(uiType, categoriesValues, ns) {
   )
 }
 
-#' Slicer Module
+#' Slicer shiny module
 #'
-#' @description One can imagine behaviour of this module in the following way.
-#'              A tree of height m is created. We begin at the top of the tree
-#'              with the entire data table. A category (column) from a data table is chosen.
-#'              This choice is determined by an user using \code{uiSequence} argument.
-#'              Each value of this fixed category determines a
-#'              subtable of the data table. For each value choice a child node is created.
-#'              Value choice is passed to the corresponding child node.
-#'              Therefore every child node implicitly receives a subtable corresponding to the
-#'              received value choice. Child node also receives an information from user
-#'              which category should be fixed next. It then performs the same calculations
-#'              as the top node, but based on the implicitly received subtable. Simultanously,
-#'              for each node desired UI (e.g. tabs) is created.
-#'              If no information about next category to fix is provided for a node,
-#'              it assumes it is a leaf. At the end, at each leaf,
-#'              a summary function is applied. Note that each leaf (and each node) receives
-#'              the entire data table and the information about chosen values leading to this
-#'              leaf (node). Hence summary can be based on implicitly determined subtable, but
-#'              also based on entire data table or some subtable
-#'              determined by a subset of chosen values.
+#' One can imagine behaviour of this module in the following way.
+#' A tree of height m is created. We begin at the top of the tree with the entire data table.
+#' A category (column) from a data table is chosen.
+#' This choice is determined by an user using \code{uiSequence} argument.
+#' Each value of this fixed category determines a subtable of the data table.
+#' For each value choice a child node is created.
+#' Value choice is passed to the corresponding child node.
+#' Therefore every child node implicitly receives a subtable corresponding to the
+#' received value choice.
+#' Child node also receives an information from user which category should be fixed next.
+#' It then performs the same calculations as the top node, but based on the implicitly
+#' received subtable.
+#' Simultaneously, for each node desired UI (e.g., tabs) is created.
+#' If no information about next category to fix is provided for a node,
+#' it assumes it is a leaf. At the end, at each leaf,
+#' a summary function is applied. Note that each leaf (and each node) receives
+#' the entire data table and the information about chosen values leading to this
+#' leaf (node).
+#' Hence summary can be based on implicitly determined subtable, but also based
+#' on entire data table or some subtable determined by a subset of chosen values.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @return Shiny module UI.
 #'
@@ -74,11 +75,8 @@ slicerUI <- function(id) {
 }
 
 #' @param input    Shiny server input object.
-#'
 #' @param output   Shiny server output object.
-#'
 #' @param session  Shiny server session object.
-#'
 #' @param data Reactive value containing data in form of a \code{data.table}.
 #'             This data table is not changed.
 #'             Its subtables are accessed using \code{chosenCategories}

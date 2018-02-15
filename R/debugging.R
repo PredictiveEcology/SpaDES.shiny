@@ -17,8 +17,7 @@ simLogFile <- function(config, session, simID) {
 #'
 #' @details Generates a tab consisting of the text output from the log file.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Olivia Sung, Alex Chubaty, Alex Tso
 #' @export

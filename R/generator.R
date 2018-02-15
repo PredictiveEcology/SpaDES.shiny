@@ -93,8 +93,11 @@ renderParameters <- function(parameters) {
 #' @author Damian Rodziewicz
 renderTabItem <- function(tabName, module, moduleUIParameters) {
   # TODO: Separate id for each module so that user can have two modules A with different ids.
+  #ns <- NS(id)
+
   parameters <- renderParameters(moduleUIParameters)
   tabContent <- paste0(module$name, "UI(\"", module$id, "\"", parameters, ")")
+  #tabContent <- paste0(module$name, "UI(\"", ns(module$id), "\"", parameters, ")")
   tabItem <- renderTemplate(tabItemTemplatePath, list(tabName = tabName, tabContent = tabContent))
 
   return(tabItem)
@@ -123,7 +126,7 @@ renderTabItems <- function(layout, modules) {
     }
   )
 
-  return(paste0(tabItems, collapse = ",\n"))
+  return(paste0(tabItems, collapse = ",\n      "))
 }
 
 #' Render a menu item.
@@ -137,7 +140,8 @@ renderTabItems <- function(layout, modules) {
 #' @author Damian Rodziewicz
 renderMenuItem <- function(tabName, menuItemName, icon) {
   menuItem <- renderTemplate(menuItemTemplatePath,
-                             list(tabName = tabName, menuItemName = menuItemName, icon = icon))
+                             list(tabName = tabName,
+                                  menuItemName = menuItemName, icon = icon))
 
   return(menuItem)
 }
@@ -155,7 +159,7 @@ renderMenuItems <- function(layout, modules) {
   menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon),
                            renderMenuItem)
 
-  return(paste(menuItems, collapse = ",\n"))
+  return(paste(menuItems, collapse = ",\n      "))
 }
 
 #' Render and save ui.R file.
@@ -190,8 +194,11 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
 #' @author Damian Rodziewicz
 renderCallModuleDirective <- function(name, id, parameters) {
   # TODO: Separate id for each module so that user can have two modules A with different ids.
+  #ns <- NS(id)
+
   renderedParameters <- renderParameters(parameters)
   callModuleDirective <- paste0("callModule(", name, ", \"", id, "\"", renderedParameters, ")")
+  #callModuleDirective <- paste0("callModule(", name, ", \"", ns(id), "\"", renderedParameters, ")")
 
   return(callModuleDirective)
 }
@@ -210,7 +217,7 @@ renderCallModuleDirectives <- function(modules) {
     renderCallModuleDirective
   )
 
-  return(paste(callModuleDirectives, collapse = "\n"))
+  return(paste(callModuleDirectives, collapse = "\n  "))
 }
 
 #' Render and save server.R file.

@@ -6,7 +6,7 @@ if (getRversion() >= "3.1.0") {
 #'
 #' @description Shiny module used to create summary for large patches function.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @return Shiny module UI.
 #'

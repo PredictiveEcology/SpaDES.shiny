@@ -10,7 +10,7 @@ histogramUI(id, ...)
 histogram(input, output, session, data, addAxisParams = NULL, ...)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{...}{Additional UI parameters passed to \code{link[shiny]{plotOutput}},
 or additional server arguments passed to \code{\link[graphics]{barplot}}.}
