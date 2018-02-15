@@ -13,8 +13,8 @@
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList h4 animationOptions
 #' @importFrom shinydashboard box
-#' @rdname timeSinceFire
-timeSinceFireUI <- function(id, rastersNumber) {
+#' @rdname timeSeriesofRasters
+timeSeriesofRastersUI <- function(id, rastersNumber) {
   ns <- NS(id)
 
   rastersOverTimeUI(ns("rastersOverTime"), mapTitle = "", sliderTitle = "", histogramTitle = "",
@@ -23,7 +23,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 
 #' Time Since Fire Shiny Module
 #'
-#' @description Function \code{timeSinceFire} creates a shiny module server function
+#' @description Function \code{timeSeriesofRasters} creates a shiny module server function
 #'              which displays rasters changing in time on a predefined map.
 #'              A slider, on which you can choose which raster should be currently displayed,
 #'              is also created. Moreover, a histogram summary for each raster choice is shown.
@@ -35,7 +35,7 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param shpStudyRegionFull Study area region.
 #' @param colorTableFile File that contains color values for tiles.
-#' @param timeSinceFirePalette Color palette for time since fire.
+#' @param timeSeriesofRastersPalette Color palette for time since fire.
 #' @param maxAge Maximum simulation age.
 #' @param leafletZoomInit Initial leaflet zoom.
 #' @param studyArea Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
@@ -58,11 +58,11 @@ timeSinceFireUI <- function(id, rastersNumber) {
 #'
 #' @author Mateusz Wyszynski
 #'
-#' @rdname timeSinceFire
+#' @rdname timeSeriesofRasters
 #'
 #' @export
-timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
-                          colorTableFile, timeSinceFirePalette, maxAge, leafletZoomInit = 5,
+timeSeriesofRasters <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
+                          colorTableFile, timeSeriesofRastersPalette, maxAge, leafletZoomInit = 5,
                           studyArea = "SMALL", sim = NULL) {
 
   polygonsInput <- reactive({
@@ -79,7 +79,7 @@ timeSinceFire <- function(input, output, session, rasters, polygonsList, shpStud
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addLegend(position = "bottomright", pal = timeSinceFirePalette,
+    addLegend(position = "bottomright", pal = timeSeriesofRastersPalette,
               values = 1:maxAge,
               title = paste0("Time since fire", br(), "(years)")) %>%
     addMeasure(

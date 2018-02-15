@@ -95,7 +95,7 @@ Collate:
     'spades-shiny-package.R'
     'summaryPopups.R'
     'tilesUpdater.R'
-    'timeSinceFire.R'
+    'timeSeriesofRasters.R'
     'visualizeDataTable.R'
     'visualizePolygons.R'
     'visualizeRaster.R'
