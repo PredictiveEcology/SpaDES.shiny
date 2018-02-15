@@ -3,7 +3,7 @@
 #' @description Shiny module which displays a data in table format.
 #'              Both \code{data.table} and \code{data.frame} can be used as arguments
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @param ... Additional parameters passed to \code{link[DT]{dataTableOutput}}
 #'

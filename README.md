@@ -72,7 +72,8 @@ A character string denoting the name of the app copyright holder (appears in foo
 | sliderTabName2 | Another Slider | sliders      | mySlider2 |
 | export         | My Export      | file-image-o | myExport3 |
 
-In `metadata$modules` you define modules that you want to be used in your app. Right now the only `type` is "shinyModule".
+In `metadata$modules` you define modules that you want to be used in your app.
+Right now the only `type` is "shinyModule".
 (TODO: After it is implemented add information about "customShinyModule" which creates a new empty module for user to implement in the app).
 - `name` corresponds to the name of the module and the `id` assigns unique identifier for that module instance.
 - `parameters` define the parameters that should be passed to the module.

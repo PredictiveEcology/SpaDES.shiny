@@ -3,7 +3,7 @@
 \name{rastersOverTimeUI}
 \alias{rastersOverTimeUI}
 \alias{rastersOverTime}
-\title{Rasters Over Time Shiny Module}
+\title{Rasters-over-time shiny module}
 \usage{
 rastersOverTimeUI(id, mapTitle, sliderTitle, histogramTitle, polygonsNumber,
   rastersNumber, rasterStepSize = 10)
@@ -54,8 +54,8 @@ None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
 A shiny module showing the values from a raster in time on a predefined map.
-             Allows changing polygons and rasters via slider.
-             Additionally, a histogram summary for each raster choice is shown.
+Allows changing polygons and rasters via slider.
+Additionally, a histogram summary for each raster choice is shown.
 }
 \author{
 Damian Rodziewicz

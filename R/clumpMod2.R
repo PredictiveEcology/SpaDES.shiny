@@ -47,9 +47,9 @@ clumpMod2UI <- function(id) {
 #' @author Damian Rodziewicz
 #' @export
 #' @rdname clumpMod2
-clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
-                      patchSize, sizeInHa, cacheRepo, indivPolygonIndex, largePatchesFn,
-                      countNumPatches) {
+clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
+                      ageClasses, patchSize, sizeInHa, cacheRepo, indivPolygonIndex,
+                      largePatchesFn, countNumPatches) {
   clumps <- reactive({
     patchSize <- as.integer(input$PatchSize33)
 

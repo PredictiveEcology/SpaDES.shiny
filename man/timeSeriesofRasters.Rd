@@ -3,7 +3,7 @@
 \name{timeSeriesofRastersUI}
 \alias{timeSeriesofRastersUI}
 \alias{timeSeriesofRasters}
-\title{Time-Since-Fire shiny module}
+\title{Time series of rasters shiny module}
 \usage{
 timeSeriesofRastersUI(id, rastersNumber)
 
@@ -47,12 +47,11 @@ None. Invoked for the side-effect of creating a shiny UI.
 None. Invoked for the side-effect of creating a shiny server part.
 }
 \description{
-A shiny module showing the time-since-fire values from a raster.
-
 Function \code{timeSeriesofRasters} creates a shiny module server function
-             which displays rasters changing in time on a predefined map.
-             A slider, on which you can choose which raster should be currently displayed,
-             is also created. Moreover, a histogram summary for each raster choice is shown.
+which displays rasters changing in time on a predefined map.
+A slider, on which you can choose which raster should be currently displayed,
+is also created.
+A histogram summary for each raster choice is also shown.
 }
 \author{
 Mateusz Wyszynski

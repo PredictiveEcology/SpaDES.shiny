@@ -3,7 +3,7 @@
 #' @description UI function of a shiny module which creates a histogram
 #'              using barplot based on the data received
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @param ... Additional UI parameters passed to \code{link[shiny]{plotOutput}},
 #'            or additional server arguments passed to \code{\link[graphics]{barplot}}.

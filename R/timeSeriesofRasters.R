@@ -1,6 +1,10 @@
-#' Time-Since-Fire shiny module
+#' Time series of rasters shiny module
 #'
-#' @description A shiny module showing the time-since-fire values from a raster.
+#' Function \code{timeSeriesofRasters} creates a shiny module server function
+#' which displays rasters changing in time on a predefined map.
+#' A slider, on which you can choose which raster should be currently displayed,
+#' is also created.
+#' A histogram summary for each raster choice is also shown.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
 #'
@@ -21,13 +25,6 @@ timeSeriesofRastersUI <- function(id, rastersNumber) {
                     polygonsNumber = 1, rastersNumber = rastersNumber, rasterStepSize = 10)
 }
 
-#' Time Since Fire Shiny Module
-#'
-#' @description Function \code{timeSeriesofRasters} creates a shiny module server function
-#'              which displays rasters changing in time on a predefined map.
-#'              A slider, on which you can choose which raster should be currently displayed,
-#'              is also created. Moreover, a histogram summary for each raster choice is shown.
-#'
 #' @param input Shiny server input object.
 #' @param output Shiny server output object.
 #' @param session Shiny server session object.
@@ -44,26 +41,25 @@ timeSeriesofRastersUI <- function(id, rastersNumber) {
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
+#' @author Mateusz Wyszynski
+#' @export
 #' @importFrom graphics axis barplot
-#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons addLayersControl
-#' @importFrom leaflet addPopups addProviderTiles clearPopups colorFactor easyButton
-#' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
+#' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons
+#' @importFrom leaflet addLayersControl addPopups addProviderTiles
+#' @importFrom leaflet clearPopups colorFactor easyButton JS
+#' @importFrom leaflet layersControlOptions leaflet leafletOptions leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
 #' @importFrom shiny br callModule isolate observe reactive renderPlot
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
-#' @importFrom raster xmax xmin ymax ymin hist
+#' @importFrom raster hist xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
 #' @importFrom SpaDES.core paddedFloatToChar
-#'
-#' @author Mateusz Wyszynski
-#'
 #' @rdname timeSeriesofRasters
 #'
-#' @export
 timeSeriesofRasters <- function(input, output, session, rasters, polygonsList, shpStudyRegionFull,
-                          colorTableFile, timeSeriesofRastersPalette, maxAge, leafletZoomInit = 5,
-                          studyArea = "SMALL", sim = NULL) {
+                                colorTableFile, timeSeriesofRastersPalette, maxAge, leafletZoomInit = 5,
+                                studyArea = "SMALL", sim = NULL) {
 
   polygonsInput <- reactive({
     spTransform(shpStudyRegionFull, crs(polygonsList[[3]]))

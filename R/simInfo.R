@@ -1,7 +1,6 @@
 #' \code{SpaDES} simulation information (parent) module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Olivia Sung, Alex Chubaty, Greyson Wang
 #' @export
@@ -37,8 +36,7 @@ simInfo <- function(input, output, session, sim) {
 
 #' \code{SpaDES} module diagram module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -79,8 +77,7 @@ simModuleDiagram <- function(input, output, session, sim) {
 
 #' \code{SpaDES} object diagram
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -121,10 +118,9 @@ simObjectDiagram <- function(input, output, session, sim) {
   })
 }
 
-#' Simulation event diagram module
+#' Simulation event diagram shiny module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -172,8 +168,7 @@ simEventDiagram <- function(input, output, session, sim) {
 #'
 #' TO DO: needs documentation
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -231,8 +226,7 @@ moduleInfo <- function(input, output, session, sim, data = FALSE) {
 
 #' \code{SpaDES} module parameter values module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' TO DO: needs documentation
 #'
@@ -278,8 +272,7 @@ moduleParams <- function(input, output, session, sim) {
 #' Display the rendered Rmarkdown content of the module's data description file
 #' (\file{moduleName/moduleName_data.Rmd}).
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -298,6 +291,7 @@ dataInfoUI <- function(id) {
 #' @param sim      A \code{simList} object
 #'
 #' @export
+#' @importFrom shiny callModule
 #' @rdname dataInfo
 dataInfo <- function(input, output, session, sim) {
   callModule(moduleInfo, "allDataInfo", sim, data = TRUE)

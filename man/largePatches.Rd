@@ -10,7 +10,7 @@ largePatchesUI(id)
 largePatches(session, input, output, numberOfSimulationTimes, clumpMod2Args)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{session}{Shiny server session object.}
 

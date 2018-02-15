@@ -3,8 +3,7 @@
 #' App copyright info can be inserted into a footer in the dashboard body using
 #' \code{copyrightFooter} module.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export

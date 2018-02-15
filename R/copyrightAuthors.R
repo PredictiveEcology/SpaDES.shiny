@@ -3,8 +3,7 @@
 #' @details Generates a fluidRow containing two boxes
 #' about the app's Authors and Contributors and the Copyright and License.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty & Alex Tso (module)
 #' @export

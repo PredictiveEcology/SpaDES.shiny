@@ -1,15 +1,14 @@
 #' Export module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param availableTypes list of types that user can select from and export to
 #'
 #' @importFrom shiny downloadButton NS selectInput tagList
 #' @rdname export
 #'
 #' @export
-exportUI <- function(id,
-                     availableTypes = c("csv", "txt", "xls", "png", "pdf", "tiff", "grd", "rds")) {
+exportUI <- function(id, availableTypes = c("csv", "txt", "xls", "png", "pdf",
+                                            "tiff", "grd", "rds")) {
   ns <- NS(id)
 
   tagList(

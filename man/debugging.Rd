@@ -10,8 +10,7 @@ debuggingUI(id)
 debugging(input, output, session, config, simID)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's
-UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 

@@ -7,8 +7,9 @@ dashboardPage(
   dashboardHeader(title = {{{title}}}),
   dashboardSidebar(
     width = 300,
-    sidebarMenu(id = "wholeThing",
-                {{{menuItems}}}
+    sidebarMenu(
+      id = "wholeThing",
+      {{{menuItems}}}
     ),
     sidebarFooter()
   ),
@@ -16,7 +17,6 @@ dashboardPage(
     tabItems(
       {{{tabItems}}}
     ),
-	  copyrightFooterUI("copyright")
+    copyrightFooterUI("copyright")
   )
 )
-
