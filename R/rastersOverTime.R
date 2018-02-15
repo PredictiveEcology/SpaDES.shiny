@@ -118,8 +118,10 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
       sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
                              notOlderThan = NULL,
                              asRaster = TRUE, cacheRepo = cachePath)
-      sampledRaster[sampledRaster[] == 0] <- NA
+    } else {
+      sampledRaster <- raster()
     }
+    sampledRaster[sampledRaster[] == 0] <- NA
 
     sampledRaster
   })
