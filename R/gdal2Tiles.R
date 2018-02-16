@@ -38,7 +38,7 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
 
   # TODO: temporary workaround for https://github.com/eliotmcintire/LandWeb/issues/13
   if (is.null(getOption("gdalUtils_gdalPath")) ||
-      is.null(getOption("gdalUtils_gdalPath")[[1]]))
+      getOption("gdalUtils_gdalPath") == "NULL")
     gdalUtils::gdal_setInstallation(rescan = TRUE)
   # end workaround
 
