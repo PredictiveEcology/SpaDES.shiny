@@ -35,6 +35,12 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
   }
   raster <- raster::writeRaster(x = raster, filename = filename2,
                                 overwrite = TRUE, datatype = "INT2S")
+
+  # TODO: temporary workaround for https://github.com/eliotmcintire/LandWeb/issues/13
+  if (is.null(getOption("gdalUtils_gdalPath")))
+    gdalUtils::gdal_setInstallation(rescan = TRUE)
+  # end workaround
+
   gdalUtils::gdaldem(mode = "color-relief", filename2,
                      color_text_file = as.character(colorTableFile), filename3)
   system(paste0("python ",
