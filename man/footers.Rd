@@ -31,6 +31,8 @@ in the app metadata sued my \code{newApp}.}
 
 \item{year}{Character string indicating the copyright date.
 Defaults to the current year.}
+
+\item{footer}{Custom text to appear in footer above the SpaDES and Appsilon logos.}
 }
 \description{
 App copyright info can be inserted into a footer in the dashboard body using

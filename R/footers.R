@@ -49,6 +49,7 @@ sidebarFooterUI <- function(id) {
   uiOutput(ns("sidebarInfo"))
 }
 
+#' @param footer Custom text to appear in footer above the SpaDES and Appsilon logos.
 #' @export
 #' @importFrom shiny br HTML
 #' @rdname footers
