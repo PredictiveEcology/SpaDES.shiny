@@ -3,7 +3,7 @@
 \name{largePatchesUI}
 \alias{largePatchesUI}
 \alias{largePatches}
-\title{Large Patches Module}
+\title{Large patches (shiny module)}
 \usage{
 largePatchesUI(id)
 
@@ -25,12 +25,12 @@ largePatches(session, input, output, numberOfSimulationTimes, clumpMod2Args)
 be surpressed.}
 }
 \value{
-Shiny module UI.
+shiny module UI.
 
 Shiny module server function.
 }
 \description{
-Shiny module used to create summary for large patches function.
+Create summary for large patches function.
 }
 \author{
 Mateusz Wyszynski

@@ -48,6 +48,17 @@ renderCopyright <- function(copyright) {
   return(deparse(paste(cph)))
 }
 
+#' Render additional sidebar footer info.
+#'
+#' @param sidebar  Custom text to insert into app sidebar footer..
+#'
+#' @return Rendered additional sidebar footer info.
+#'
+#' @author Alex Chubaty
+renderSidebar <- function(sidebar) {
+  return(deparse(paste(sidebar)))
+}
+
 #' Retrieve a module metadata from modules tibble.
 #'
 #' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
@@ -236,7 +247,8 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
 
   data <- list(
     callModuleDirectives = callModuleDirectives,
-    copyright = renderCopyright(appMetadata$copyright)
+    copyright = renderCopyright(appMetadata$copyright),
+    sidebar = renderSidebar(appMetadata$sidebarInfo)
   )
 
   renderedContent <- renderTemplate(serverTemplatePath, data)

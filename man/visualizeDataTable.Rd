@@ -3,7 +3,7 @@
 \name{visualizeDataTableUI}
 \alias{visualizeDataTableUI}
 \alias{visualizeDataTable}
-\title{Display Data Table Module}
+\title{Display data.table (shiny module)}
 \usage{
 visualizeDataTableUI(id, ...)
 
@@ -28,6 +28,6 @@ None. Invoked for the side-effect of generating UI for plot
 None. Invoked for the side-effect of rendering bar plot.
 }
 \description{
-Shiny module which displays a data in table format.
-             Both \code{data.table} and \code{data.frame} can be used as arguments
+Display tabular data.
+Both \code{data.table} and \code{data.frame} can be used as arguments.
 }

@@ -7,17 +7,8 @@
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom shiny NS renderText
+#' @importFrom shiny NS uiOutput
 #' @rdname footers
-#'
-#' @examples
-#' \dontrun{
-#' # define this in global.R (or global_file.R)
-#' cph <- paste("Author Name")
-#'
-#' # The following line is in the global.R.template:
-#' callModule(copyrightFooter, "copyright", cph)
-#' }
 copyrightFooterUI <- function(id) {
   ns <- NS(id)
 
@@ -34,7 +25,7 @@ copyrightFooterUI <- function(id) {
 #'                 Defaults to the current year.
 #'
 #' @export
-#' @importFrom shiny HTML icon
+#' @importFrom shiny HTML icon renderUI
 #' @rdname footers
 copyrightFooter <- function(input, output, session, cph = "Author Name",
                             year = format(Sys.time(), "%Y")) {
@@ -50,17 +41,35 @@ copyrightFooter <- function(input, output, session, cph = "Author Name",
 
 #' @author Alex Chubaty
 #' @export
-#' @importFrom shiny HTML
+#' @importFrom shiny NS uiOutput
 #' @rdname footers
-sidebarFooter <- function() {
-  HTML(paste(
-    "<footer>",
-    "<div id=\"sidebar\" style='position: absolute; bottom: 5px; margin: 15px'>",
-    " Built with ",
-    "<a href=\"http://SpaDES.PredictiveEcology.org\">  <img src=\"http://predictiveecology.org/img/avatar.png\", height=25px>SpaDES, </a>", # nolint
-    "<a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a> ",
-    "and <a href=\"https://appsilondatascience.com/\">  <img src=\"http://d3u4jj2f3q2139.cloudfront.net/logo-appsilon-data-science-transparent.png\", height=20px> </a>", # nolint
-    "</div>",
-    "</footer>"
-  ))
+sidebarFooterUI <- function(id) {
+  ns <- NS(id)
+
+  uiOutput(ns("sidebarInfo"))
+}
+
+#' @export
+#' @importFrom shiny br HTML
+#' @rdname footers
+sidebarFooter <- function(input, output, session, footer = NULL) {
+  customFooter <- if (length(footer) == 0) "" else footer
+
+  output$sidebarInfo <- renderUI({
+    HTML(paste(
+      "<footer>",
+      "<div id=\"sidebar\" style='position: absolute; bottom: 5px; margin: 15px'>",
+      paste(customFooter, br()),
+      " Built with ",
+      paste("<a href=\"http://SpaDES.PredictiveEcology.org\">",
+            "<img src=\"http://predictiveecology.org/img/avatar.png\", height=25px>SpaDES>",
+            "</a>"),
+      "<a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a> ", "and ",
+      paste("<a href=\"https://appsilondatascience.com/\">",
+            "<img src=\"http://d3u4jj2f3q2139.cloudfront.net/logo-appsilon-data-science-transparent.png\", height=20px>", # nolint
+            "</a>"),
+      "</div>",
+      "</footer>"
+    ))
+  })
 }
