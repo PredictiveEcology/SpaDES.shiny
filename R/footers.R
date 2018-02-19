@@ -63,8 +63,8 @@ sidebarFooter <- function(input, output, session, footer = NULL) {
       " Built with ",
       paste("<a href=\"http://SpaDES.PredictiveEcology.org\">",
             "<img src=\"http://predictiveecology.org/img/avatar.png\", height=25px>",
-            "SpaDES",
-            "</a>"),
+            "SpaDES,",
+            "</a> "),
       "<a href=\"http://shiny.rstudio.com/\", target=\"_blank\">shiny</a> ", "and ",
       paste("<a href=\"https://appsilondatascience.com/\">",
             "<img src=\"http://d3u4jj2f3q2139.cloudfront.net/logo-appsilon-data-science-transparent.png\", height=20px>", # nolint
