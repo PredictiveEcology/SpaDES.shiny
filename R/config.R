@@ -77,14 +77,14 @@ newConfig <- function(APP_DIR, ...) { # nolint
   userdefined <- list(...)
 
   # read from template
-  config <- readConfig(system.file(package = "SpaDES.shiny", "_config/_config.yml"))
+  config <- readConfig(system.file(package = "SpaDES.shiny", "templates/_config.yml"))
 
   config$APP_DIR <- APP_DIR # nolint
   lapply(names(userdefined), function(x) {
     config[[x]] <<- userdefined[[x]]
   })
 
-  d <- checkPath(file.path(config$APP_DIR, "_config"), create = TRUE)
+  d <- checkPath(config$APP_DIR, create = TRUE)
   writeConfig(config, file.path(d, "_config.yml"))
   return(invisible(config))
 }
@@ -141,7 +141,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
   } %>%
     checkPath(create = TRUE)
 
-  # create a new config file in '_config/_config.yml'
+  # create a new config file in 'APP_DIR/_config.yml'
   # this will set the default RLIB_DIR if not user-specified
   config <- newConfig(APP_DIR, ...)
 
@@ -156,7 +156,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
             "This could take a while depending on your internet connection speed.")
     response <- readline("Do you want to proceed? [Y/n]: ")
     if (substr(tolower(response), 1, 1) != "n") {
-      install.packages(pkgDeps("SpaDES.shiny"), config$RLIB_DIR) # TODO simplify once on CRAN
+      install.packages(pkgDeps("SpaDES.shiny"), config$RLIB_DIR) # TODO: simplify once on CRAN
     } else {
       warning("App package library initialization cancelled.\n",
               "Please delete the app directory and try again.")
@@ -166,7 +166,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
 
   # create app directories and copy files
   appDirs <- c("app_data", "cache", "output_shiny") # TODO revisit APP_DIR structure
-  pkgDirs <- c("_config", "modules", "www")
+  pkgDirs <- c("modules", "www")
 
   lapply(appDirs, function(d) {
     file.path(APP_DIR, d) %>% checkPath(create = TRUE)
@@ -215,7 +215,7 @@ cloneApp <- function(from, to, symlinks = FALSE) {
   # TODO revisit app dir structure
   toLink <- c("app_data", "modules")
   toCopy <- c("_config", "www") # handled separately
-  toMake <- c("cache", "output_shiny")
+  toMake <- c("cache", "output")
 
   lapply(toMake, function(d) {
     file.path(to, d) %>% checkPath(create = TRUE)
@@ -231,9 +231,9 @@ cloneApp <- function(from, to, symlinks = FALSE) {
   })
 
   # toCopy directories handled separately
-  file.path(to, "_config") %>% checkPath(create = TRUE)
-  if (!file.exists(file.path(from, "_config", "_config.yml"))) {
-    file.copy(system.file("_config/_config.yml", package = "SpaDES.shiny"), to, recursive = TRUE)
+  checkPath(to, create = TRUE)
+  if (!file.exists(file.path(from, "_config.yml"))) {
+    file.copy(system.file("templates/_config.yml", package = "SpaDES.shiny"), to, recursive = TRUE)
   } else {
     file.copy(file.path(from, "_config"), to, recursive = TRUE)
   }

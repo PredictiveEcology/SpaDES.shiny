@@ -2,7 +2,7 @@
 % Please edit documentation in R/summaryPopups.R
 \name{summaryPopups}
 \alias{summaryPopups}
-\title{Summary Popups Shiny Module}
+\title{Summary popups (shiny module)}
 \usage{
 summaryPopups(input, output, session, proxy, click, raster, polygons,
   rasterValueLabel = "Raster value: \%s", extractedValues = NULL)
@@ -34,8 +34,10 @@ When \code{NULL} (default) all attributes are included.}
 None. Invoked for the side-effect of creating a shiny observer.
 }
 \description{
-A shiny module which adds popups with polygons and raster summary
-on a leaflet map.
+Add popups with polygon and raster summaries on a leaflet map.
+}
+\note{
+This is a server-only module with no UI component.
 }
 \author{
 Mateusz Wyszynski

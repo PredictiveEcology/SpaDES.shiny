@@ -1,7 +1,9 @@
-#' Tiles Updater Module
+#' Tiles updater (shiny module)
 #'
-#' @description Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
-#'              to update tiles displayed on a leaflet map.
+#' Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
+#' to update tiles displayed on a leaflet map.
+#'
+#' @note This is a server-only module with no UI component.
 #'
 #' @param input    Shiny server input object.
 #'

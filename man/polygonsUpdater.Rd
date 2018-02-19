@@ -2,7 +2,7 @@
 % Please edit documentation in R/polygonsUpdater.R
 \name{polygonsUpdater}
 \alias{polygonsUpdater}
-\title{Polygons Updater Module}
+\title{Polygons updater (shiny module)}
 \usage{
 polygonsUpdater(input, output, session, proxy, polygons, group = "group", ...)
 }
@@ -27,8 +27,10 @@ None. Invoked for the side-effect of creating an observer, which
         manages current set of polygons on a leaflet map using leaflet proxy.
 }
 \description{
-Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
-             to update polygons displayed on a leaflet map.
+Update polygons displayed on a leaflet map using \code{\link[leaflet]{leafletProxy}}.
+}
+\note{
+This is a server-only module with no UI component.
 }
 \author{
 Mateusz Wyszynski

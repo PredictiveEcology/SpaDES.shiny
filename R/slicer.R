@@ -127,9 +127,9 @@ slicerUI <- function(id) {
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table
 #' @rdname slicer
-slicer <- function(input, output, session, data,
-                   categoryValue, uiSequence, serverFunction,
-                   uiFunction, chosenCategories = NULL, chosenValues = NULL) {
+slicer <- function(input, output, session, data, categoryValue, uiSequence,
+                   serverFunction, uiFunction, chosenCategories = NULL,
+                   chosenValues = NULL) {
   ns <- session$ns
 
   observeEvent({

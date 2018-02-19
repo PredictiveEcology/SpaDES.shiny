@@ -1,7 +1,8 @@
-#' Polygons Updater Module
+#' Polygons updater (shiny module)
 #'
-#' @description Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
-#'              to update polygons displayed on a leaflet map.
+#' Update polygons displayed on a leaflet map using \code{\link[leaflet]{leafletProxy}}.
+#'
+#' @note This is a server-only module with no UI component.
 #'
 #' @param input    Shiny server input object.
 #' @param output   Shiny server output object.
@@ -15,14 +16,11 @@
 #' @return None. Invoked for the side-effect of creating an observer, which
 #'         manages current set of polygons on a leaflet map using leaflet proxy.
 #'
+#' @author Mateusz Wyszynski
+#' @export
 #' @importFrom leaflet addPolygons
 #' @importFrom shiny observeEvent
-#'
-#' @author Mateusz Wyszynski
-#'
 #' @rdname polygonsUpdater
-#'
-#' @export
 polygonsUpdater <- function(input, output, session, proxy, polygons, group = "group", ...) {
   observeEvent(polygons(), {
     proxy %>%

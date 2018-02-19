@@ -73,8 +73,8 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                                                                chosenCategories,
                                                                chosenValues)
                    ageClassPolygonSubtable <- getSubtable(data,
-                                                               head(chosenCategories, 2),
-                                                               head(chosenValues, 2))
+                                                          head(chosenCategories, 2),
+                                                          head(chosenValues, 2))
 
                    numOfClusters <- ageClassPolygonSubtable[, .N, by = c("vegCover", "rep")]$N
                    maxNumClusters <- if (length(numOfClusters) == 0) {

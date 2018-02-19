@@ -2,7 +2,7 @@
 % Please edit documentation in R/tilesUpdater.R
 \name{tilesUpdater}
 \alias{tilesUpdater}
-\title{Tiles Updater Module}
+\title{Tiles updater (shiny module)}
 \usage{
 tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
   addTilesParameters = NULL, addLayersControlParameters = NULL)
@@ -39,7 +39,10 @@ None. Invoked for the side-effect of sending information to leaflet proxy.
 }
 \description{
 Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
-             to update tiles displayed on a leaflet map.
+to update tiles displayed on a leaflet map.
+}
+\note{
+This is a server-only module with no UI component.
 }
 \author{
 Mateusz Wyszynski

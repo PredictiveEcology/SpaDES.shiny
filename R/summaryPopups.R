@@ -2,9 +2,9 @@ pasteListArgumentAndItsName <- function(argumentName, list, sep) {
   paste(argumentName, list[argumentName], sep = sep)
 }
 
+#' @importFrom raster extract
 extractValuesWithNames <- function(polygons, spatialPoints, extractedValues) {
-  extracted <- polygons %>%
-    extract(spatialPoints)
+  extracted <- polygons %>% extract(spatialPoints) # nolint
 
   if (!is.null(extractedValues)) {
     extracted <- extracted[extractedValues]
@@ -14,6 +14,9 @@ extractValuesWithNames <- function(polygons, spatialPoints, extractedValues) {
                               list = extracted, sep = ": ")
 }
 
+#' @importFrom leaflet addPopups clearPopups
+#' @importFrom sp SpatialPoints
+#' @importFrom raster crs extract
 displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
                                     rasterValueLabel = "Raster value: %s",
                                     extractedValues = NULL) {
@@ -38,10 +41,11 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
   proxy %>% clearPopups() %>% addPopups(x, y, popup = popupContent) # nolint
 }
 
-#' Summary Popups Shiny Module
+#' Summary popups (shiny module)
 #'
-#' @description A shiny module which adds popups with polygons and raster summary
-#' on a leaflet map.
+#' Add popups with polygon and raster summaries on a leaflet map.
+#'
+#' @note This is a server-only module with no UI component.
 #'
 #' @param input    Shiny server input object.
 #' @param output   Shiny server output object.
@@ -64,7 +68,7 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #' @importFrom shiny observe
 #' @importFrom sp SpatialPoints
 #' @importFrom raster crs extract
-#' @importFrom leaflet clearPopups addPopups
+#' @importFrom leaflet addPopups clearPopups
 #' @rdname summaryPopups
 summaryPopups <- function(input, output, session, proxy, click, raster, polygons,
                           rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
