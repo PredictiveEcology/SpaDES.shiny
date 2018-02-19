@@ -1,7 +1,7 @@
-#' Display Data Table Module
+#' Display data.table (shiny module)
 #'
-#' @description Shiny module which displays a data in table format.
-#'              Both \code{data.table} and \code{data.frame} can be used as arguments
+#' Display tabular data.
+#' Both \code{data.table} and \code{data.frame} can be used as arguments.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'

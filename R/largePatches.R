@@ -2,17 +2,17 @@ if (getRversion() >= "3.1.0") {
   utils::globalVariables(c(".N"))
 }
 
-#' Large Patches Module
+#' Large patches (shiny module)
 #'
-#' @description Shiny module used to create summary for large patches function.
+#' Create summary for large patches function.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
-#' @return Shiny module UI.
+#' @return shiny module UI.
 #'
 #' @author Mateusz Wyszynski
 #' @export
-#' @importFrom shiny NS fluidRow
+#' @importFrom shiny fluidRow NS
 #' @importFrom shinydashboard box
 #' @rdname largePatches
 largePatchesUI <- function(id) {

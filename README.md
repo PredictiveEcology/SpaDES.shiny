@@ -56,14 +56,6 @@ A character string denoting the name of the application, which appears in the to
 
 A character string denoting the name of the app copyright holder (appears in footer).
 
-**modules:**
-
-| type          | name          | id            | parameters                                    |
-| ------------- | ------------- | ------------- | --------------------------------------------- |
-| shinyModule   | slider        | mySlider1     | list("\\"Slider label\\"", 0, 100, 50, 1)     |
-| shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
-| shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))        |
-
 **layout:**
 
 | tabName        | menuItemName   | icon         | moduleId  |
@@ -71,6 +63,21 @@ A character string denoting the name of the app copyright holder (appears in foo
 | sliderTabName  | Slider Module  | map          | mySlider1 |
 | sliderTabName2 | Another Slider | sliders      | mySlider2 |
 | export         | My Export      | file-image-o | myExport3 |
+
+In `metadata$layout` you define how the modules should be displayed.
+
+- `tabName` does not matter to you that much - it just tells ui what the name of the tab should be.
+- `menuItemName` defines what user sees in the menu.
+- `icon` is displayed next to `menuItemName`.
+- `moduleId` points to a module id from the list of modules defined in `metadata$modules`.
+
+**modules:**
+
+| type          | name          | id            | parameters                                    |
+| ------------- | ------------- | ------------- | --------------------------------------------- |
+| shinyModule   | slider        | mySlider1     | list("\\"Slider label\\"", 0, 100, 50, 1)     |
+| shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
+| shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))        |
 
 In `metadata$modules` you define modules that you want to be used in your app.
 Right now the only `type` is "shinyModule".
@@ -80,12 +87,9 @@ Right now the only `type` is "shinyModule".
 
 Essentially based on the `metadata$modules` the generator on server side will build `callModule(<type>, "<id>", <parameters>)` directives.
 
-In `metadata$layout` you define how the modules should be displayed.
+**sidebarInfo:**
 
-- `tabName` does not matter to you that much - it just tells ui what the name of the tab should be.
-- `menuItemName` defines what user sees in the menu.
-- `icon` is displayed next to `menuItemName`.
-- `moduleId` points to a module id from the list of modules defined in `metadata$modules`.
+Additional info to put in the sidebar footer, above the SpaDES and Appsilon logos.
 
 ### Code example
 
@@ -101,26 +105,33 @@ library(SpaDES.shiny)
 appMetadata <- list(
   title = "Cool App",
   copyright = "Jim Author",
-  modules = data.frame(
-    type = c("shinyModule", "shinyModule", "shinyModule"),
-    name = c("slider", "slider", "export"),
-    id = c("mySlider1", "mySlider2", "myExport1"),
-    stringsAsFactors = FALSE
-  ),
   layout = data.frame(
     tabName = c("sliderTabName1", "sliderTabName2", "myExport1"),
     menuItemName = c("Slider Module", "Another Slider", "My Export"),
     icon = c("map", "sliders", "file-image-o"),
     moduleId = c("mySlider1", "mySlider2", "myExport1"),
     stringsAsFactors = FALSE
-  )
+  ),
+  modules = data.frame(
+    type = c("shinyModule", "shinyModule", "shinyModule"),
+    name = c("slider", "slider", "export"),
+    id = c("mySlider1", "mySlider2", "myExport1"),
+    stringsAsFactors = FALSE
+  ),
+  sidebarInfo = NULL
 )
 
-appMetadata$modules$parameters <- list(list(), list(), list("data.frame(x = 1:5, y = 6:10)"))
+appMetadata$modules$parameters <- list(
+  list(),
+  list(),
+  list("data.frame(x = 1:5, y = 6:10)")
+)
+
 appMetadata$layout$moduleUIParameters <- list(
-                                              list("\"Slider label\"", 0, 100, 50, 1),
-                                              list("\"Slider label 2\"", 0, 200, 100, 10),
-                                              list(c("csv", "txt", "xls", "rds")))
+  list("\"Slider label\"", 0, 100, 50, 1),
+  list("\"Slider label 2\"", 0, 200, 100, 10),
+  list(c("csv", "txt", "xls", "rds"))
+)
 
 newApp(getwd(), appMetadata)
 

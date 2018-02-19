@@ -11,7 +11,7 @@ dashboardPage(
       id = "wholeThing",
       {{{menuItems}}}
     ),
-    sidebarFooter()
+    sidebarFooterUI("sidebar")
   ),
   dashboardBody(
     tabItems(
@@ -20,3 +20,4 @@ dashboardPage(
     copyrightFooterUI("copyright")
   )
 )
+

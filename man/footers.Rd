@@ -3,6 +3,7 @@
 \name{copyrightFooterUI}
 \alias{copyrightFooterUI}
 \alias{copyrightFooter}
+\alias{sidebarFooterUI}
 \alias{sidebarFooter}
 \title{Generate HTML footers for body or sidebar}
 \usage{
@@ -11,7 +12,9 @@ copyrightFooterUI(id)
 copyrightFooter(input, output, session, cph = "Author Name",
   year = format(Sys.time(), "\%Y"))
 
-sidebarFooter()
+sidebarFooterUI(id)
+
+sidebarFooter(input, output, session, footer = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -32,15 +35,6 @@ Defaults to the current year.}
 \description{
 App copyright info can be inserted into a footer in the dashboard body using
 \code{copyrightFooter} module.
-}
-\examples{
-\dontrun{
-# define this in global.R (or global_file.R)
-cph <- paste("Author Name")
-
-# The following line is in the global.R.template:
-callModule(copyrightFooter, "copyright", cph)
-}
 }
 \author{
 Alex Chubaty
