@@ -1,6 +1,6 @@
-#' Visualize SpatialPolygons* Module
+#' Visualize \code{SpatialPolygons*} (shiny module)
 #'
-#' @description Shiny module which visualizes SpatialPolygons* objects on a leaflet map.
+#' Display a \code{SpatialPolygons*} objects on a leaflet map.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
@@ -10,7 +10,7 @@
 #'
 #' @export
 #' @importFrom shiny NS
-#' @importFrom DT dataTableOutput
+#' @importFrom leaflet leafletOutput
 #' @rdname visualizePolygons
 visualizePolygonsUI <- function(id, ...) {
   ns <- NS(id)

@@ -1,6 +1,6 @@
-#' Visualize Raster Shiny Module
+#' Visualize raster (shiny module)
 #'
-#' @description Shiny module which visualizes raster.
+#' Display a level plot for a raster.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
@@ -24,18 +24,18 @@ visualizeRasterUI <- function(id, ...) {
 #'
 #' @param session Shiny server session object.
 #'
-#' @param raster Raster which should be visualized. Might be a reactive value
-#'               containing raster.
+#' @param raster Raster which should be visualized.
+#'               Might be a reactive value containing raster.
 #'
 #' @export
 #' @importFrom rasterVis levelplot
-#' @importFrom shiny renderPlot
+#' @importFrom shiny is.reactive renderPlot
 #' @rdname visualizeRaster
 visualizeRaster <- function(input, output, session, raster, ...) {
   output$rasterVisualization <- renderPlot({
     if (is.reactive(raster)) {
       raster <- raster()
     }
-    levelplot(raster, ...)
+    rasterVis::levelplot(raster, ...)
   })
 }

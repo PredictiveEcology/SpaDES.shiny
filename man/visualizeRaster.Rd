@@ -3,7 +3,7 @@
 \name{visualizeRasterUI}
 \alias{visualizeRasterUI}
 \alias{visualizeRaster}
-\title{Visualize Raster Shiny Module}
+\title{Visualize raster (shiny module)}
 \usage{
 visualizeRasterUI(id, ...)
 
@@ -21,12 +21,12 @@ or server parameters passed to \code{link[rasterVis]{levelplot}}.}
 
 \item{session}{Shiny server session object.}
 
-\item{raster}{Raster which should be visualized. Might be a reactive value
-containing raster.}
+\item{raster}{Raster which should be visualized.
+Might be a reactive value containing raster.}
 }
 \value{
 None. Invoked for the side-effect of rendering bar plot.
 }
 \description{
-Shiny module which visualizes raster.
+Display a level plot for a raster.
 }

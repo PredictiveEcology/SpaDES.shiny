@@ -3,7 +3,7 @@
 \name{visualizePolygonsUI}
 \alias{visualizePolygonsUI}
 \alias{visualizePolygons}
-\title{Visualize SpatialPolygons* Module}
+\title{Visualize \code{SpatialPolygons*} (shiny module)}
 \usage{
 visualizePolygonsUI(id, ...)
 
@@ -31,5 +31,5 @@ None. Invoked for the side-effect of generating UI for a leaflet map.
 None. Invoked for the side-effect of rendering leaflet map.
 }
 \description{
-Shiny module which visualizes SpatialPolygons* objects on a leaflet map.
+Display a \code{SpatialPolygons*} objects on a leaflet map.
 }
