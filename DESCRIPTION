@@ -30,6 +30,7 @@ Imports:
     DT (>= 0.2),
     gdalUtils,
     ggplot2,
+    googledrive,
     graphics,
     grDevices,
     leaflet,
@@ -71,6 +72,7 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
 Collate: 
     'adminLogs.R'
+    'authGoogle.R'
     'clumpMod2.R'
     'config.R'
     'copyrightAuthors.R'
