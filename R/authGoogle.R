@@ -27,7 +27,7 @@ authGoogleUI <- function(id) {
 #'
 #' @export
 #' @importFrom googledrive as_id drive_auth drive_deauth
-#' @importFrom shiny icon updateActionButton
+#' @importFrom shiny icon reactiveVal updateActionButton
 #' @importFrom utils getFromNamespace
 #' @rdname authGoogle
 authGoogle <- function(input, output, session, authFile) {
