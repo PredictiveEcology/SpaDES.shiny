@@ -65,8 +65,8 @@ Suggests:
     Rserve,
     testthat (>= 1.0.2)
 Remotes:
-    PredictiveEcology/reproducible@development
-    PredictiveEcology/quickPlot@development
+    PredictiveEcology/reproducible@development,
+    PredictiveEcology/quickPlot@development,
     PredictiveEcology/SpaDES.core@development
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
