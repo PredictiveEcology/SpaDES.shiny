@@ -33,11 +33,10 @@ authGoogleUI <- function(id) {
 authGoogle <- function(input, output, session, authFile) {
   access_cred <- getFromNamespace("access_cred", "googledrive")
   session$userData$AUTH_GOOGLE <- reactiveVal(ifelse(is.null(access_cred()), FALSE, TRUE))
+  tmpf <- normalizePath(tempfile(fileext = ".txt"), winslash = "/", mustWork = FALSE)
 
   observeEvent(input$authButton, {
     auth_status <- session$userData$AUTH_GOOGLE()
-
-    tmpf <- normalizePath(tempfile(fileext = ".txt"), winslash = "/", mustWork = NA)
 
     if (isTRUE(auth_status)) {
       googledrive::drive_deauth(clear_cache = TRUE, verbose = FALSE)
