@@ -72,6 +72,24 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/01-create-an-app.html">Create a `SpaDES.shiny` app</a>
+    </li>
+    <li>
+      <a href="../articles/02-authentication.html">Autheticating with Google</a>
+    </li>
+    <li>
+      <a href="../articles/03-package-devel.html">`SpaDES.shiny` package develpment</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -112,11 +130,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>id</th>
-      <td><p>An ID string that corresponds with the ID used to call the module's UI function</p></td>
+      <td><p>An ID string that corresponds with the ID used to call the module's UI function.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>sliderInput arguments. See ?sliderInput for reference.</p></td>
+      <td><p>Additonal arguments passed to <code>sliderInput</code>.</p></td>
     </tr>
     <tr>
       <th>input</th>
@@ -137,6 +155,10 @@
     <p>None. Invoked for the side-effect of creating a shiny UI.</p>
 <p>Reactive value with the current value on the slider.</p>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code>sliderInput</code></p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -145,6 +167,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
     <h2>Author</h2>

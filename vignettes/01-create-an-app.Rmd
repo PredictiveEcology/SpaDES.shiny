@@ -1,0 +1,255 @@
+---
+title: "Create a `SpaDES.shiny` app"
+author: "Damian Rodziewicz & Alex Chubaty"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{01-create-an-app}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+<!-- # TODO: preamble -->
+Lorem ipsum ...
+
+Users may wish to familiarize themselves with `shiny` apps more generally:
+
+- http://shiny.rstudio.com/tutorial/
+- http://shiny.rstudio.com/articles/
+
+Once you understand the basics of how to build a simple shiny app, it's fairly straightforward to customize more complex apps using this package.
+
+### Using this package
+
+Lorem ipsum ...
+
+### Getting help
+
+SpaDES users Q&A forum: https://groups.google.com/forum/#!forum/spades-users
+
+This is the place to ask for help on setting up and running simulations, as well as module development.
+Please do not file bug reports here.
+
+#### Bug Reports
+
+https://github.com/PredictiveEcology/SpaDES.shiny/issues
+
+## Application structure
+
+Following is the structure that `SpaDES.shiny` expects to be provided:
+
+**title:**
+
+A character string denoting the name of the application, which appears in the top left corner (above the sidebar).
+
+**copyright:**
+
+A character string denoting the name of the app copyright holder (appears in footer).
+
+**layout:**
+
+A `data.frame` defining how the modules should be displayed.
+
+| tabName        | menuItemName   | icon         | moduleId  |
+| -------------- | -------------- | ------------ | --------- |
+| sliderTabName  | Slider Module  | map          | mySlider1 |
+| sliderTabName2 | Another Slider | sliders      | mySlider2 |
+| export         | My Export      | file-image-o | myExport3 |
+
+- `tabName` tells UI the name of the tab corresponding to the menu item.
+- `menuItemName` defines the text label to use for that menu item.
+- `icon` is displayed next to `menuItemName`.
+- `moduleId` points to a module id from the list of modules defined in `metadata$modules`.
+
+**modules:**
+
+| type          | name          | id            | parameters                                    |
+| ------------- | ------------- | ------------- | --------------------------------------------- |
+| shinyModule   | slider        | mySlider1     | list("\\"Slider label\\"", 0, 100, 50, 1)     |
+| shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
+| shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))        |
+
+In `metadata$modules` you define modules that you want to be used in your app.
+Right now the only `type` is "shinyModule".
+(TODO: After it is implemented add information about "customShinyModule" which creates a new empty module for user to implement in the app).
+- `name` corresponds to the name of the module and the `id` assigns unique identifier for that module instance.
+- `parameters` define the parameters that should be passed to the module.
+
+The generator on server side will build `callModule(<type>, "<id>", <parameters>)` directives based on the `metadata$modules` list.
+
+**sidebar:**
+
+A named list specifying the following:
+
+- `footer` optional additional text to put in the sidebar footer, above the SpaDES and Appsilon logos.
+- `width` specify the width of the sidebar in pixels (default `300`).
+
+### Code example
+
+You can either use `data.frame` or `tibble` to define app structure.
+Below are two examples on how to create an app defined in the paragraph above.
+
+#### Using `data.frame`
+
+```r
+devtools::install_github("PredictiveEcology/SpaDES.shiny", ref = "develop")
+library(SpaDES.shiny)
+
+appMetadata <- list(
+  title = "Cool App",
+  copyright = "Jim Author",
+  layout = data.frame(
+    tabName = c("sliderTabName1", "sliderTabName2", "myExport1"),
+    menuItemName = c("Slider Module", "Another Slider", "My Export"),
+    icon = c("map", "sliders", "file-image-o"),
+    moduleId = c("mySlider1", "mySlider2", "myExport1"),
+    stringsAsFactors = FALSE
+  ),
+  modules = data.frame(
+    type = c("shinyModule", "shinyModule", "shinyModule"),
+    name = c("slider", "slider", "export"),
+    id = c("mySlider1", "mySlider2", "myExport1"),
+    stringsAsFactors = FALSE
+  ),
+  sidebarInfo = NULL
+)
+
+appMetadata$modules$parameters <- list(
+  list(),
+  list(),
+  list("data.frame(x = 1:5, y = 6:10)")
+)
+
+appMetadata$layout$moduleUIParameters <- list(
+  list("\"Slider label\"", 0, 100, 50, 1),
+  list("\"Slider label 2\"", 0, 200, 100, 10),
+  list(c("csv", "txt", "xls", "rds"))
+)
+
+newApp(getwd(), appMetadata)
+
+shiny::runApp(".")
+```
+
+#### Using `tibble`
+
+```r
+devtools::install_github("PredictiveEcology/SpaDES.shiny", ref = "develop")
+library(SpaDES.shiny)
+library(tibble)
+
+appMetadata <- list(
+  title = "Cool App",
+  copyright = "Jim Author",
+  modules = tribble(
+    ~type, ~name, ~id, ~parameters,
+    "shinyModule", "slider", "mySlider1", list(),
+    "shinyModule", "slider", "mySlider2", list(),
+    "shinyModule", "export", "myExport1", list("data.frame(x = 1:5, y = 6:10)")
+  ),
+  layout = tribble(
+    ~tabName, ~menuItemName, ~icon, ~moduleId, ~moduleUIParameters,
+    "sliderTabName1", "Slider Module", "map", "mySlider1", list("\"Slider label\"", 0, 100, 50, 1),
+    "sliderTabName2", "Another Slider", "sliders", "mySlider2", list("\"Slider label 2\"", 0, 200, 100, 10),
+    "myExport1", "My Export", "file-image-o", "myExport1", list(c("csv", "txt", "xls", "rds"))
+  )
+)
+newApp(getwd(), appMetadata)
+
+shiny::runApp(".")
+```
+
+## App configuration
+
+<!-- # TODO: update this section -->
+
+A default app configuration file ships with the `inSpaDES` package and can be found at the following path:
+
+```r
+system.file(package = 'inSpaDES', '_config/_config.yml')
+```
+
+This is a standard yaml file.
+
+-----
+
+### Configuration options
+
+`title` : the name of your application, which is displayed in the title bar and at the top of the dashboard.
+
+`logo` : path to an image file to display in the sidebar of your application.
+
+`theme` : one of the following bootstrap themes (only one theme may be used at a time):
+
+  ```
+  [blue, btn-primary, btn-success, btn-danger]
+  [black, btn-primary, btn-success, btn-danger]
+  [purple, btn-purple, btn-success, btn-danger]
+  [green, btn-success, btn-success, btn-danger]
+  [red, btn-danger, btn-success, btn-warning]
+  [yellow, btn-warning, btn-success, btn-danger]
+  ```
+
+`sidebarWidth` : the width of the sidebar in pixels (default `230`)
+
+`APP_DIR` : the absolute path to your application directory (usually `/srv/shiny-server/appName`)
+
+`RLIB_DIR` : the absolute path to an R package library (by default this is not set and a `packrat` library is used inside the application directory)
+
+`USE_CACHE` : Logical indicating whether simulation results should be cached (default `TRUE`)
+
+`Rserve` : Logical indicating whether child simulation processes should be run using an Rserve instance (default `FALSE` uses `Rscript` to run the simulations)
+
+`RservePorts` : an optional list of `user` and `port` matching the Rserve instance being used
+
+`dbtype` : the type of SQL database used by the app (default `postgres`)
+
+`dbname` : the name of the SQL database used by the app
+
+`host` : the fully qualified domain name of the database server used by the app
+
+`port` : the port number on which the app connects to the SQL database
+
+`user` : the database username with which the app connects to the SQL database
+
+`password` : the database password with which the app connects to the SQL database
+
+`MAX_PLOTS_SAVES` : the maximum number of plots and saves for any simulation
+
+`MAX_REPS` : the maximum number of allowed replicate simulations to run per simulation instance
+
+## App directory structure
+
+<!-- # TODO: update this section -->
+
+Apps should be fully contained within a single directory, which is typically located at `/srv/shiny-server/` where it will be served as a `shiny` app.
+
+```
+APP_DIR/           # this is the application directory
+|_  _config/       # contains configuration file(s) needed to run the app
+  |_ _config.yml
+|_ cache/          # simulation cache directory, used if enabled in `_config.yml`
+|_ modules/        # contains all modules used by the app and their data
+  |_ MODULE1/
+    |_ data/
+  |_ MODULE2/
+    |_ data/
+  |_ ...
+|_ output/         # stores simulation outputs
+|_ packrat/        # contains your app's R package library
+|_ www/            # contains additional web resources, e.g., images and javascript files
+  |_ images/
+|_ global.R        # code needed by your app's server.R and ui.R files
+|_ server.R        # your app's 'server' code
+|_ ui.R            # your app's 'ui' code
+|_ style.css       # customized CSS styles based on a template  in this package
+```

@@ -72,6 +72,24 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/01-create-an-app.html">Create a `SpaDES.shiny` app</a>
+    </li>
+    <li>
+      <a href="../articles/02-authentication.html">Autheticating with Google</a>
+    </li>
+    <li>
+      <a href="../articles/03-package-devel.html">`SpaDES.shiny` package develpment</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -121,7 +139,13 @@
           <td>
             <p><code><a href="adminLogs.html">adminLogsUI</a></code> <code><a href="adminLogs.html">adminLogs</a></code> </p>
           </td>
-          <td><p>Generate Admin Log File Viewer</p></td>
+          <td><p>Admin log file viewer shiny module</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="authGoogle.html">authGoogleUI</a></code> <code><a href="authGoogle.html">authGoogle</a></code> </p>
+          </td>
+          <td><p>Authorize a user using Google Drive account</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -173,7 +197,7 @@
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="footers.html">copyrightFooter</a></code> <code><a href="footers.html">sidebarFooter</a></code> </p>
+            <p><code><a href="footers.html">copyrightFooterUI</a></code> <code><a href="footers.html">copyrightFooter</a></code> <code><a href="footers.html">sidebarFooterUI</a></code> <code><a href="footers.html">sidebarFooter</a></code> </p>
           </td>
           <td><p>Generate HTML footers for body or sidebar</p></td>
         </tr><tr>
@@ -211,7 +235,7 @@
           <td>
             <p><code><a href="largePatches.html">largePatchesUI</a></code> <code><a href="largePatches.html">largePatches</a></code> </p>
           </td>
-          <td><p>Large Patches Module</p></td>
+          <td><p>Large patches (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -265,13 +289,13 @@
           <td>
             <p><code><a href="polygonsUpdater.html">polygonsUpdater</a></code> </p>
           </td>
-          <td><p>Polygons Updater Module</p></td>
+          <td><p>Polygons updater (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="rasterOverTime.html">rastersOverTimeUI</a></code> <code><a href="rasterOverTime.html">rastersOverTime</a></code> </p>
           </td>
-          <td><p>Rasters Over Time Shiny Module</p></td>
+          <td><p>Rasters-over-time shiny module</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -293,6 +317,12 @@
         </tr><tr>
           <!--  -->
           <td>
+            <p><code><a href="renderCopyright.html">renderCopyright</a></code> </p>
+          </td>
+          <td><p>Render the copyright holder name of the app.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
             <p><code><a href="renderMenuItem.html">renderMenuItem</a></code> </p>
           </td>
           <td><p>Render a menu item.</p></td>
@@ -308,6 +338,12 @@
             <p><code><a href="renderParameters.html">renderParameters</a></code> </p>
           </td>
           <td><p>Render parameters</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="renderSidebar.html">renderSidebar</a></code> </p>
+          </td>
+          <td><p>Render additional sidebar footer info.</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -347,6 +383,12 @@
         </tr><tr>
           <!--  -->
           <td>
+            <p><code><a href="renderTitle.html">renderTitle</a></code> </p>
+          </td>
+          <td><p>Render the name of the app.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
             <p><code><a href="shine.html">shine</a></code> </p>
           </td>
           <td><p>Display a simple, interactive shiny app of the <code>simList</code></p></td>
@@ -361,7 +403,7 @@
           <td>
             <p><code><a href="simEventDiagram.html">simEventDiagramUI</a></code> <code><a href="simEventDiagram.html">simEventDiagram</a></code> </p>
           </td>
-          <td><p>Simulation event diagram module</p></td>
+          <td><p>Simulation event diagram shiny module</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -397,7 +439,7 @@
           <td>
             <p><code><a href="slicer.html">slicerUI</a></code> <code><a href="slicer.html">slicer</a></code> </p>
           </td>
-          <td><p>Slicer Module</p></td>
+          <td><p>Slicer shiny module</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -415,19 +457,19 @@
           <td>
             <p><code><a href="summaryPopups.html">summaryPopups</a></code> </p>
           </td>
-          <td><p>Summary Popups Shiny Module</p></td>
+          <td><p>Summary popups (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="tilesUpdater.html">tilesUpdater</a></code> </p>
           </td>
-          <td><p>Tiles Updater Module</p></td>
+          <td><p>Tiles updater (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="timeSinceFire.html">timeSinceFireUI</a></code> <code><a href="timeSinceFire.html">timeSinceFire</a></code> </p>
+            <p><code><a href="timeSeriesofRasters.html">timeSeriesofRastersUI</a></code> <code><a href="timeSeriesofRasters.html">timeSeriesofRasters</a></code> </p>
           </td>
-          <td><p>Time-Since-Fire shiny module</p></td>
+          <td><p>Time series of rasters shiny module</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -439,19 +481,19 @@
           <td>
             <p><code><a href="visualizeDataTable.html">visualizeDataTableUI</a></code> <code><a href="visualizeDataTable.html">visualizeDataTable</a></code> </p>
           </td>
-          <td><p>Display Data Table Module</p></td>
+          <td><p>Display data.table (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="visualizePolygons.html">visualizePolygonsUI</a></code> <code><a href="visualizePolygons.html">visualizePolygons</a></code> </p>
           </td>
-          <td><p>Visualize SpatialPolygons* Module</p></td>
+          <td><p>Visualize <code>SpatialPolygons*</code> (shiny module)</p></td>
         </tr><tr>
           <!--  -->
           <td>
             <p><code><a href="visualizeRaster.html">visualizeRasterUI</a></code> <code><a href="visualizeRaster.html">visualizeRaster</a></code> </p>
           </td>
-          <td><p>Visualize Raster Shiny Module</p></td>
+          <td><p>Visualize raster (shiny module)</p></td>
         </tr>
       </tbody>
       </table>

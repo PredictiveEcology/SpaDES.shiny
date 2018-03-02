@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tiles Updater Module — tilesUpdater • SpaDES.shiny</title>
+<title>Tiles updater (shiny module) — tilesUpdater • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -72,6 +72,24 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/01-create-an-app.html">Create a `SpaDES.shiny` app</a>
+    </li>
+    <li>
+      <a href="../articles/02-authentication.html">Autheticating with Google</a>
+    </li>
+    <li>
+      <a href="../articles/03-package-devel.html">`SpaDES.shiny` package develpment</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -95,12 +113,12 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Tiles Updater Module</h1>
+    <h1>Tiles updater (shiny module)</h1>
     </div>
 
     
     <p>Creates a shiny module which uses <code><a href='http://www.rdocumentation.org/packages/leaflet/topics/leafletProxy'>leafletProxy</a></code>
-             to update tiles displayed on a leaflet map.</p>
+to update tiles displayed on a leaflet map.</p>
     
 
     <pre class="usage"><span class='fu'>tilesUpdater</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>, <span class='no'>proxy</span>, <span class='no'>urlTemplate</span>, <span class='no'>tilesGroup</span>,
@@ -157,6 +175,10 @@ directly to <code>tilesUpdater</code>.</p></td>
 
     <p>None. Invoked for the side-effect of sending information to leaflet proxy.</p>
     
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>This is a server-only module with no UI component.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -165,6 +187,8 @@ directly to <code>tilesUpdater</code>.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
           </ul>
 
     <h2>Author</h2>

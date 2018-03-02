@@ -72,6 +72,24 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/01-create-an-app.html">Create a `SpaDES.shiny` app</a>
+    </li>
+    <li>
+      <a href="../articles/02-authentication.html">Autheticating with Google</a>
+    </li>
+    <li>
+      <a href="../articles/03-package-devel.html">`SpaDES.shiny` package develpment</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -103,10 +121,11 @@
     <div id="version-0-1-0-9000" class="section level1">
 <h1 class="hasAnchor">
 <a href="#version-0-1-0-9000" class="anchor"></a>version 0.1.0.9000</h1>
+<p>Massive rewrite with help of <a href="https://appsilondatascience.com/">Appsilon Data Science</a> developers, @DamianRodziewicz and @mateuszwyszynski. Much of the old code is obsolete and is largely deprecated/defunct.</p>
 <ul>
-<li>Massive rewrite with help of <a href="https://appsilondatascience.com/">Appsilon Data Science</a> developers, @DamianRodziewicz and @mateuszwyszynski.</li>
 <li>Key changes are package is primarily designed around building new apps on the fly, via <code>newApp</code>.</li>
-<li>Much of the old code is obsolete and is largely deprecated/defunct.</li>
+<li>new module <code>authGoogle</code> allows logging in and authenticating users against a whitelist.</li>
+<li>added user and developer documentation (especially vignettes)</li>
 </ul>
 </div>
     </div>

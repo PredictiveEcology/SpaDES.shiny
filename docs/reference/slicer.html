@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Slicer Module — slicerUI • SpaDES.shiny</title>
+<title>Slicer shiny module — slicerUI • SpaDES.shiny</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -72,6 +72,24 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/01-create-an-app.html">Create a `SpaDES.shiny` app</a>
+    </li>
+    <li>
+      <a href="../articles/02-authentication.html">Autheticating with Google</a>
+    </li>
+    <li>
+      <a href="../articles/03-package-devel.html">`SpaDES.shiny` package develpment</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
@@ -95,29 +113,30 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Slicer Module</h1>
+    <h1>Slicer shiny module</h1>
     </div>
 
     
     <p>One can imagine behaviour of this module in the following way.
-             A tree of height m is created. We begin at the top of the tree
-             with the entire data table. A category (column) from a data table is chosen.
-             This choice is determined by an user using <code>uiSequence</code> argument.
-             Each value of this fixed category determines a
-             subtable of the data table. For each value choice a child node is created.
-             Value choice is passed to the corresponding child node.
-             Therefore every child node implicitly receives a subtable corresponding to the
-             received value choice. Child node also receives an information from user
-             which category should be fixed next. It then performs the same calculations
-             as the top node, but based on the implicitly received subtable. Simultanously,
-             for each node desired UI (e.g. tabs) is created.
-             If no information about next category to fix is provided for a node,
-             it assumes it is a leaf. At the end, at each leaf,
-             a summary function is applied. Note that each leaf (and each node) receives
-             the entire data table and the information about chosen values leading to this
-             leaf (node). Hence summary can be based on implicitly determined subtable, but
-             also based on entire data table or some subtable
-             determined by a subset of chosen values.</p>
+A tree of height m is created. We begin at the top of the tree with the entire data table.
+A category (column) from a data table is chosen.
+This choice is determined by an user using <code>uiSequence</code> argument.
+Each value of this fixed category determines a subtable of the data table.
+For each value choice a child node is created.
+Value choice is passed to the corresponding child node.
+Therefore every child node implicitly receives a subtable corresponding to the
+received value choice.
+Child node also receives an information from user which category should be fixed next.
+It then performs the same calculations as the top node, but based on the implicitly
+received subtable.
+Simultaneously, for each node desired UI (e.g., tabs) is created.
+If no information about next category to fix is provided for a node,
+it assumes it is a leaf. At the end, at each leaf,
+a summary function is applied. Note that each leaf (and each node) receives
+the entire data table and the information about chosen values leading to this
+leaf (node).
+Hence summary can be based on implicitly determined subtable, but also based
+on entire data table or some subtable determined by a subset of chosen values.</p>
     
 
     <pre class="usage"><span class='fu'>slicerUI</span>(<span class='no'>id</span>)
@@ -130,7 +149,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>id</th>
-      <td><p>An ID string that corresponds with the ID used to call the module's UI function</p></td>
+      <td><p>An ID string that corresponds with the ID used to call the module's UI function.</p></td>
     </tr>
     <tr>
       <th>input</th>

@@ -1,10 +1,10 @@
 ---
 title: "Autheticating with Google"
-author: "Alex M. Chubaty"
+author: "Alex Chubaty"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Autheticating with Google}
+  %\VignetteIndexEntry{02-authentication}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
