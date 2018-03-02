@@ -50,13 +50,13 @@ renderCopyright <- function(copyright) {
 
 #' Render additional sidebar footer info.
 #'
-#' @param sidebar  Custom text to insert into app sidebar footer..
+#' @param text  Custom text to insert into app sidebar footer.
 #'
 #' @return Rendered additional sidebar footer info.
 #'
 #' @author Alex Chubaty
-renderSidebar <- function(sidebar) {
-  return(deparse(paste(sidebar)))
+renderSidebar <- function(text) {
+  return(deparse(paste(text)))
 }
 
 #' Retrieve a module metadata from modules tibble.
@@ -187,7 +187,8 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
   data <- list(
     title = renderTitle(appMetadata$title),
     menuItems = renderMenuItems(appMetadata$layout, appMetadata$modules),
-    tabItems = renderTabItems(appMetadata$layout, appMetadata$modules)
+    tabItems = renderTabItems(appMetadata$layout, appMetadata$modules),
+    sidebarWidth = ifelse(is.null(appMetadata$sidebar$width), 300, appMetadata$sidebar$width)
   )
 
   renderedContent <- renderTemplate(uiTemplatePath, data)
@@ -248,7 +249,7 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
   data <- list(
     callModuleDirectives = callModuleDirectives,
     copyright = renderCopyright(appMetadata$copyright),
-    sidebar = renderSidebar(appMetadata$sidebarInfo)
+    sidebarFooter = renderSidebar(appMetadata$sidebar$footer)
   )
 
   renderedContent <- renderTemplate(serverTemplatePath, data)

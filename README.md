@@ -87,9 +87,12 @@ Right now the only `type` is "shinyModule".
 
 Essentially based on the `metadata$modules` the generator on server side will build `callModule(<type>, "<id>", <parameters>)` directives.
 
-**sidebarInfo:**
+**sidebar:**
 
-Additional info to put in the sidebar footer, above the SpaDES and Appsilon logos.
+A named list specifying the following:
+
+- `footer` optional additional text to put in the sidebar footer, above the SpaDES and Appsilon logos.
+- `width` specify the width of the sidebar in pixels (default `300`).
 
 ### Code example
 

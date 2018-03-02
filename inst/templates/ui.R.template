@@ -6,12 +6,12 @@ dashboardPage(
   skin = "green",
   dashboardHeader(title = {{{title}}}),
   dashboardSidebar(
-    width = 300,
+    width = {{{sidebarWidth}}},
     sidebarMenu(
       id = "wholeThing",
       {{{menuItems}}}
     ),
-    sidebarFooterUI("sidebar")
+    sidebarFooterUI("sidebarInfo")
   ),
   dashboardBody(
     useShinyjs(),
@@ -21,4 +21,3 @@ dashboardPage(
     copyrightFooterUI("copyright")
   )
 )
-

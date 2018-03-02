@@ -75,6 +75,7 @@ When building a new shiny module try to extract as much code as possible to sepa
 Take a look at `rastersOverTime` module. The aim of this module is to display a map with rasters that change over time. We want to be able to also change underlying polygons that are displayed and show histogram of raster values.
 
 We can divide this module into smaller independent components. `rastersOverTime` module actually consists of a:
+
 ```
 - map
 - slider that allows user to choose raster to display
@@ -89,7 +90,7 @@ This division gives us 7 independent generic components (actually 6 components -
 
 In the end your code may look as follows:
 
-```
+```r
 rasterIndexValue <- callModule(slider, "rastersSlider")
 polygonIndexValue <- callModule(slider, "polygonsSlider")
 ...

@@ -4,9 +4,8 @@ function(input, output, session) {
 
   ## module calls
   {{{callModuleDirectives}}}
-  
+
   ## footers (see ?copyrightFooter)
   callModule(copyrightFooter, "copyright", {{{copyright}}})
-  callModule(sidebarFooter, "sidebar", {{{sidebar}}})
+  callModule(sidebarFooter, "sidebarInfo", {{{sidebarFooter}}})
 }
-

@@ -4,10 +4,10 @@
 \alias{renderSidebar}
 \title{Render additional sidebar footer info.}
 \usage{
-renderSidebar(sidebar)
+renderSidebar(text)
 }
 \arguments{
-\item{sidebar}{Custom text to insert into app sidebar footer..}
+\item{text}{Custom text to insert into app sidebar footer.}
 }
 \value{
 Rendered additional sidebar footer info.
