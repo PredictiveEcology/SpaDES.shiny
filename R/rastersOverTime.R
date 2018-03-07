@@ -63,7 +63,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   rasterIndexValue <- callModule(slider, "rastersSlider")
   polygonIndexValue <- callModule(slider, "polygonsSlider")
 
-  pols <- reactive({
+  polys <- reactive({
     index <- if (is.null(polygonIndexValue())) {
       1
     } else {
@@ -80,36 +80,36 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
     outputSubPath <- outputPath(sim)
   }
 
-  rstr <- reactive({
+  rast <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
       1
     } else {
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rast <- rasterList[[rasterIndex]]
+    rst <- rasterList[[rasterIndex]]
 
     outputPath <- file.path("www", basename(outputSubPath), ns("map-tiles"))
-    Cache(gdal2Tiles, rast, outputPath = outputPath,
+    Cache(gdal2Tiles, rst, outputPath = outputPath,
           zoomRange = 1:10, colorTableFile = asPath(colorTable),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
-    return(rast);
+    return(rst);
   })
 
   sampledRaster <- reactive({
-    if (ncell(rstr()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, rstr(), size = 4e5,
+    if (ncell(rast()) > 3e5) {
+      sampledRaster <- Cache(raster::sampleRegular, rast(), size = 4e5,
                              notOlderThan = NULL, asRaster = TRUE, cacheRepo = cachePath)
     } else {
-      sampledRaster <- rstr()
+      sampledRaster <- rast()
     }
     sampledRaster[sampledRaster[] == 0] <- NA
 
     sampledRaster
   })
 
-  numberOfBreaks <- reactive(ceiling(maxValue(rstr()) / 10))
+  numberOfBreaks <- reactive(ceiling(maxValue(rast()) / 10))
   breaks <- reactive(numberOfBreaks())
 
   addAxisParams <- reactive({
@@ -117,10 +117,10 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
-  rasterScale <- isolate(prod(raster::res(rstr())) / 1e4)
+  rasterScale <- isolate(prod(raster::res(rast())) / 1e4)
 
   urlTemplate <- reactive({
-    rasterFilename <- strsplit(basename(filename(rstr())), "\\.")[[1]][[1]]
+    rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
     file.path(basename(outputSubPath), ns("map-tiles"),
               paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
@@ -134,9 +134,9 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"),
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, rstr, polygonList)
+  callModule(summaryPopups, "popups", mapProxy, click, rast, polys)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygonList, weight = 0.2)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polys, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale, addAxisParams = addAxisParams,
