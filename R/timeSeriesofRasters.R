@@ -99,9 +99,9 @@ timeSeriesofRasters <- function(input, output, session, rasters, polygons, shpSt
                 fillOpacity = 0.3, weight = 1, color = "blue",
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
-  callModule(rastersOverTime, "rastersOverTime", rasters = rasters, polygonsList = polygons,
+  callModule(rastersOverTime, "rastersOverTime", rasters = rasters, polygons = polygons,
              map = leafMap,  colorTable = colorTable,
-             histogramTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
+             histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
              nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10, sim = sim,
              cacheNotOlderThan = NULL)
 }

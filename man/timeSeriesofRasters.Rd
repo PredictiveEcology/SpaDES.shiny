@@ -19,7 +19,7 @@ timeSeriesofRasters(input, output, session, rasters, polygons,
 
 \item{output}{Shiny server output object.}
 
-\item{session}{Shiny server session object.}
+\item{session}{Shiny server session object.polygon}
 
 \item{rasters}{Lisst of rasters to be displayed.}
 
