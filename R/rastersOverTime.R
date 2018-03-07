@@ -134,7 +134,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"),
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, raster, polygonList)
+  callModule(summaryPopups, "popups", mapProxy, click, rstr, polygonList)
 
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygonList, weight = 0.2)
 

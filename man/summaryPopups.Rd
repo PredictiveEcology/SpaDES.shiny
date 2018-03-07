@@ -4,7 +4,7 @@
 \alias{summaryPopups}
 \title{Summary popups (shiny module)}
 \usage{
-summaryPopups(input, output, session, proxy, click, raster, polygons,
+summaryPopups(input, output, session, proxy, click, rast, polys,
   rasterValueLabel = "Raster value: \%s", extractedValues = NULL)
 }
 \arguments{
@@ -18,9 +18,9 @@ summaryPopups(input, output, session, proxy, click, raster, polygons,
 
 \item{click}{Reactive value with click on shape input from leaflet map.}
 
-\item{raster}{Reactive value with raster to summarize by.}
+\item{rast}{Reactive value with raster to summarize by.}
 
-\item{polygons}{Reactive value with current set of polygons on map}
+\item{polys}{Reactive value with current set of polygons on map}
 
 \item{rasterValueLabel}{String with description of raster value. Uses \code{sprintf},
 so must include exactly one \code{\%s} in order to display raster value.

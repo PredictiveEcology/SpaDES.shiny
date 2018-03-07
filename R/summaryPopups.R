@@ -47,13 +47,13 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input    Shiny server input object.
-#' @param output   Shiny server output object.
-#' @param session  Shiny server session object.
-#' @param proxy Leaflet proxy which manages a connected leaflet map.
-#' @param click Reactive value with click on shape input from leaflet map.
-#' @param raster Reactive value with raster to summarize by.
-#' @param polygons Reactive value with current set of polygons on map
+#' @param input            Shiny server input object.
+#' @param output           Shiny server output object.
+#' @param session          Shiny server session object.
+#' @param proxy            Leaflet proxy which manages a connected leaflet map.
+#' @param click            Reactive value with click on shape input from leaflet map.
+#' @param rast             Reactive value with raster to summarize by.
+#' @param polys            Reactive value with current set of polygons on map
 #' @param rasterValueLabel String with description of raster value. Uses \code{sprintf},
 #'                         so must include exactly one \code{\%s} in order to display raster value.
 #'                         Default is a string \code{"Raster value: \%s"}.
@@ -70,13 +70,13 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #' @importFrom raster crs extract
 #' @importFrom leaflet addPopups clearPopups
 #' @rdname summaryPopups
-summaryPopups <- function(input, output, session, proxy, click, raster, polygons,
+summaryPopups <- function(input, output, session, proxy, click, rast, polys,
                           rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
   observe({
     if (!is.null(click())) {
-      polygons <- polygons()
-      raster <- raster()
-      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy, raster, polygons,
+      polygons <- polys()
+      raster <- rast()
+      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy, rast, polys,
                               rasterValueLabel, extractedValues)
     }
   })
