@@ -23,7 +23,7 @@ clumpMod2UI <- function(id) {
 
 #' Clump Module
 #'
-#' @description Shiny module used to ...
+#' @description Shiny module used to ... # TODO: documentation needed
 #'
 #' @param input Shiny server input object.
 #' @param output Shiny server output object.
