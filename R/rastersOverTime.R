@@ -22,8 +22,8 @@ rastersOverTimeUI <- function(id) {
 #' @param input           Shiny server input object.
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
-#' @param rasters         Lisst of rasters to be displayed.
-#' @param polygons        List with sets of polygons. Each such set can be displayed on a leaflet map.
+#' @param rasterList      List of rasters to be displayed.
+#' @param polygonList     List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorTable      File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).
 #' @param histTitle       Title to be shown above the histogram.
@@ -50,7 +50,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core getPaths paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rasters, polygons, map = leaflet(),
+rastersOverTime <- function(input, output, session, rasterList, polygonList, map = leaflet(),
                             colorTable, histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cachePath = getPaths()$cachePath,
@@ -63,13 +63,13 @@ rastersOverTime <- function(input, output, session, rasters, polygons, map = lea
   rasterIndexValue <- callModule(slider, "rastersSlider")
   polygonIndexValue <- callModule(slider, "polygonsSlider")
 
-  polygons <- reactive({
+  pols <- reactive({
     index <- if (is.null(polygonIndexValue())) {
       1
     } else {
       polygonIndexValue()
     }
-    return(polygons[[index]])
+    return(polygonList[[index]])
   })
 
   if (is.null(sim)) {
@@ -80,36 +80,36 @@ rastersOverTime <- function(input, output, session, rasters, polygons, map = lea
     outputSubPath <- outputPath(sim)
   }
 
-  raster <- reactive({
+  rstr <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
       1
     } else {
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    raster <- rasters[[rasterIndex]]
+    rast <- rasterList[[rasterIndex]]
 
     outputPath <- file.path("www", basename(outputSubPath), ns("map-tiles"))
-    Cache(gdal2Tiles, raster, outputPath = outputPath,
+    Cache(gdal2Tiles, rast, outputPath = outputPath,
           zoomRange = 1:10, colorTableFile = asPath(colorTable),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
-    return(raster);
+    return(rast);
   })
 
   sampledRaster <- reactive({
-    if (ncell(raster()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
+    if (ncell(rstr()) > 3e5) {
+      sampledRaster <- Cache(raster::sampleRegular, rstr(), size = 4e5,
                              notOlderThan = NULL, asRaster = TRUE, cacheRepo = cachePath)
     } else {
-      sampledRaster <- raster()
+      sampledRaster <- rstr()
     }
     sampledRaster[sampledRaster[] == 0] <- NA
 
     sampledRaster
   })
 
-  numberOfBreaks <- reactive(ceiling(maxValue(raster()) / 10))
+  numberOfBreaks <- reactive(ceiling(maxValue(rstr()) / 10))
   breaks <- reactive(numberOfBreaks())
 
   addAxisParams <- reactive({
@@ -117,10 +117,10 @@ rastersOverTime <- function(input, output, session, rasters, polygons, map = lea
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
-  rasterScale <- isolate(prod(raster::res(raster())) / 1e4)
+  rasterScale <- isolate(prod(raster::res(rstr())) / 1e4)
 
   urlTemplate <- reactive({
-    rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
+    rasterFilename <- strsplit(basename(filename(rstr())), "\\.")[[1]][[1]]
     file.path(basename(outputSubPath), ns("map-tiles"),
               paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
@@ -134,9 +134,9 @@ rastersOverTime <- function(input, output, session, rasters, polygons, map = lea
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"),
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, raster, polygons)
+  callModule(summaryPopups, "popups", mapProxy, click, raster, polygonList)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygons, weight = 0.2)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polygonList, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale, addAxisParams = addAxisParams,

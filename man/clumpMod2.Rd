@@ -9,7 +9,7 @@ clumpMod2UI(id)
 
 clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
   patchSize, sizeInHa, cacheRepo, indivPolygonIndex, largePatchesFn,
-  countNumPatches)
+  countNumPatches, keepArtifacts = NA_character_)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's server function}
@@ -41,6 +41,8 @@ clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
 \item{largePatchesFn}{...}
 
 \item{countNumPatches}{...}
+
+\item{keepArtifacts}{...}
 }
 \value{
 Shiny module UI.
@@ -50,7 +52,7 @@ Shiny module UI.
 \description{
 Shiny module used ...
 
-Shiny module used to ...
+Shiny module used to ... # TODO: documentation needed
 }
 \author{
 Damian Rodziewicz

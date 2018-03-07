@@ -7,7 +7,7 @@
 \usage{
 timeSeriesofRastersUI(id)
 
-timeSeriesofRasters(input, output, session, rasters, polygons,
+timeSeriesofRasters(input, output, session, rasterList, polygonList,
   shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
   studyArea = "SMALL", sim = NULL, mapTitle = "", sliderTitle = "",
   histTitle = "", nPolygons, nRasters, rasterStepSize = 10)
@@ -19,11 +19,11 @@ timeSeriesofRasters(input, output, session, rasters, polygons,
 
 \item{output}{Shiny server output object.}
 
-\item{session}{Shiny server session object.polygon}
+\item{session}{Shiny server session object.}
 
-\item{rasters}{Lisst of rasters to be displayed.}
+\item{rasterList}{List of rasters to be displayed.}
 
-\item{polygons}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+\item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
 \item{shpStudyRegionFull}{Study area region. # TODO: fix this}
 

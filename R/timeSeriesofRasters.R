@@ -49,19 +49,19 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rasters, polygons, shpStudyRegionFull,
-                                colorTable, palette, maxAge, zoom = 5,
+timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
+                                shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
                                 studyArea = "SMALL", sim = NULL,
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
   polygonsInput <- reactive({
-    spTransform(shpStudyRegionFull, crs(polygons[[3]])) # TODO: why polygons[[3]]??
+    spTransform(shpStudyRegionFull, crs(polygonList[[3]])) # TODO: why polygonList[[3]]??
   })
 
   leafZoom <- zoom
 
-  pol <- polygons[[4]] # TODO: why this particular list entry only? is this the smallest area?
+  pol <- polygonList[[4]] # TODO: why this particular list entry only? is this the smallest area?
   shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(isolate(polygonsInput())))
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -99,8 +99,8 @@ timeSeriesofRasters <- function(input, output, session, rasters, polygons, shpSt
                 fillOpacity = 0.3, weight = 1, color = "blue",
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
-  callModule(rastersOverTime, "rastersOverTime", rasters = rasters, polygons = polygons,
-             map = leafMap,  colorTable = colorTable,
+  callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+             polygonList = polygonList, map = leafMap,  colorTable = colorTable,
              histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
              nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10, sim = sim,
              cacheNotOlderThan = NULL)

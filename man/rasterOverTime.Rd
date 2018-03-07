@@ -7,9 +7,9 @@
 \usage{
 rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rasters, polygons, map = leaflet(),
-  colorTable, histTitle = "", sliderTitle = "", mapTitle = "", nPolygons,
-  nRasters, rasterStepSize = 10, sim = NULL,
+rastersOverTime(input, output, session, rasterList, polygonList,
+  map = leaflet(), colorTable, histTitle = "", sliderTitle = "",
+  mapTitle = "", nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
   cachePath = getPaths()$cachePath, cacheNotOlderThan = Sys.time())
 }
 \arguments{
@@ -21,9 +21,9 @@ rastersOverTime(input, output, session, rasters, polygons, map = leaflet(),
 
 \item{session}{Shiny server session object.}
 
-\item{rasters}{Lisst of rasters to be displayed.}
+\item{rasterList}{List of rasters to be displayed.}
 
-\item{polygons}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+\item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
