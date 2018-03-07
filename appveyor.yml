@@ -39,8 +39,7 @@ branches:
     - development
     - testing
     - develop
-  except:
-    - gh-pages
+    - generalize-modules
 
 clone_depth: 5
 
@@ -76,8 +75,6 @@ artifacts:
 
 notifications:
  - provider: Email
-   to:
-     - damian@appsilondatascience.com
    subject: 'SpaDES.shiny: r-appveyor build {{status}}'
    message: "https://ci.appveyor.com/project/achubaty/SpaDES-shiny"
    on_build_success: false
