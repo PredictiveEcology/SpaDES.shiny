@@ -74,10 +74,10 @@ summaryPopups <- function(input, output, session, proxy, click, rast, polys,
                           rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
   observe({
     if (!is.null(click())) {
-      polygons <- polys()
-      raster <- rast()
-      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy, rast, polys,
-                              rasterValueLabel, extractedValues)
+      displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy = proxy,
+                              raster = rast(), polygons = polys(),
+                              rasterValueLabel = rasterValueLabel,
+                              extractedValues = extractedValues)
     }
   })
 }
