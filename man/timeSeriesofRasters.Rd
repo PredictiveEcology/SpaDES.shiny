@@ -5,16 +5,15 @@
 \alias{timeSeriesofRasters}
 \title{Time series of rasters shiny module}
 \usage{
-timeSeriesofRastersUI(id, rastersNumber)
+timeSeriesofRastersUI(id)
 
-timeSeriesofRasters(input, output, session, rasters, polygonsList,
-  shpStudyRegionFull, colorTableFile, timeSeriesofRastersPalette, maxAge,
-  leafletZoomInit = 5, studyArea = "SMALL", sim = NULL)
+timeSeriesofRasters(input, output, session, rasters, polygons,
+  shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
+  studyArea = "SMALL", sim = NULL, mapTitle = "", sliderTitle = "",
+  histTitle = "", nPolygons, nRasters, rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
-
-\item{rastersNumber}{How many rasters can we choose from.}
 
 \item{input}{Shiny server input object.}
 
@@ -22,37 +21,51 @@ timeSeriesofRasters(input, output, session, rasters, polygonsList,
 
 \item{session}{Shiny server session object.}
 
-\item{rasters}{Set of rasters to be displayed.}
+\item{rasters}{Lisst of rasters to be displayed.}
 
-\item{polygonsList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+\item{polygons}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
-\item{shpStudyRegionFull}{Study area region.}
+\item{shpStudyRegionFull}{Study area region. # TODO: fix this}
 
-\item{colorTableFile}{File that contains color values for tiles.}
+\item{colorTable}{File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
-\item{timeSeriesofRastersPalette}{Color palette for time since fire.}
+\item{palette}{Color palette for the rasters.}
 
 \item{maxAge}{Maximum simulation age.}
 
-\item{leafletZoomInit}{Initial leaflet zoom.}
+\item{zoom}{Initial leaflet zoom.}
 
-\item{studyArea}{Size of study area. Options: \code{"FULL"}, \code{"EXTRALARGE"},
-\code{"LARGE"}, \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.}
+\item{studyArea}{Size of study area.
+Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
+\code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
+# TODO: use actual study area!}
 
 \item{sim}{A SpaDES simulation object (\code{simList}).}
+
+\item{mapTitle}{Title to be shown above the map.}
+
+\item{sliderTitle}{Title to be shown above the slider.}
+
+\item{histTitle}{Title to be shown above the histogram.}
+
+\item{nPolygons}{The number of available polygons.}
+
+\item{nRasters}{The number of available rasters.}
+
+\item{rasterStepSize}{Size of step in the raster slider.}
 }
 \value{
-None. Invoked for the side-effect of creating a shiny UI.
+Invoked for the side-effect of creating a shiny UI.
 
-None. Invoked for the side-effect of creating a shiny server part.
+Invoked for the side-effect of creating shiny server and ui components.
 }
 \description{
-Function \code{timeSeriesofRasters} creates a shiny module server function
-which displays rasters changing in time on a predefined map.
-A slider, on which you can choose which raster should be currently displayed,
-is also created.
+A shiny module that displays rasters changing in time on a predefined map,
+with the user choosing which raster should be displayed by using the slider.
 A histogram summary for each raster choice is also shown.
 }
 \author{
 Mateusz Wyszynski
+
+Alex Chubaty
 }

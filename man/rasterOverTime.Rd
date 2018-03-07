@@ -5,27 +5,15 @@
 \alias{rastersOverTime}
 \title{Rasters-over-time shiny module}
 \usage{
-rastersOverTimeUI(id, mapTitle, sliderTitle, histogramTitle, polygonsNumber,
-  rastersNumber, rasterStepSize = 10)
+rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
-  map = leaflet(), rasterStepSize = 10, sim = NULL,
+rastersOverTime(input, output, session, rasters, polygons, map = leaflet(),
+  colorTable, histTitle = "", sliderTitle = "", mapTitle = "", nPolygons,
+  nRasters, rasterStepSize = 10, sim = NULL,
   cachePath = getPaths()$cachePath, cacheNotOlderThan = Sys.time())
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
-
-\item{mapTitle}{Title to be shown above the map.}
-
-\item{sliderTitle}{Title to be shown above the slider.}
-
-\item{histogramTitle}{Title to be shown above the histogram.}
-
-\item{polygonsNumber}{The number of available polygons.}
-
-\item{rastersNumber}{The number of available rasters.}
-
-\item{rasterStepSize}{Size of step in the raster slider.}
 
 \item{input}{Shiny server input object.}
 
@@ -33,13 +21,25 @@ rastersOverTime(input, output, session, rasters, polygonsList, colorTableFile,
 
 \item{session}{Shiny server session object.}
 
-\item{rasters}{Set of rasters to be displayed.}
+\item{rasters}{Lisst of rasters to be displayed.}
 
-\item{polygonsList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
-
-\item{colorTableFile}{File that contains color values for tiles.}
+\item{polygons}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
 \item{map}{Leaflet map to show raster and polygons on.}
+
+\item{colorTable}{File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).}
+
+\item{histTitle}{Title to be shown above the histogram.}
+
+\item{sliderTitle}{Title to be shown above the slider.}
+
+\item{mapTitle}{Title to be shown above the map.}
+
+\item{nPolygons}{The number of available polygons.}
+
+\item{nRasters}{The number of available rasters.}
+
+\item{rasterStepSize}{Size of step in the raster slider.}
 
 \item{sim}{A SpaDES simulation object (\code{simList}).}
 
@@ -60,5 +60,5 @@ Additionally, a histogram summary for each raster choice is shown.
 \author{
 Damian Rodziewicz
 
-Damian Rodziewicz
+Alex Chubaty
 }

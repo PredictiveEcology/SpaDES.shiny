@@ -6,73 +6,57 @@
 #'
 #' @param id An ID string that corresponds with the ID used to call the module server function.
 #'
-#' @param mapTitle Title to be shown above the map.
-#' @param sliderTitle Title to be shown above the slider.
-#' @param histogramTitle Title to be shown above the histogram.
-#' @param polygonsNumber The number of available polygons.
-#' @param rastersNumber The number of available rasters.
-#' @param rasterStepSize Size of step in the raster slider.
-#'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
 #' @author Damian Rodziewicz
+#' @author Alex Chubaty
 #' @export
-#' @importFrom leaflet leafletOutput
-#' @importFrom raster sampleRegular
-#' @importFrom shinycssloaders withSpinner
-#' @importFrom shiny NS tagList h4 animationOptions
-#' @importFrom shinydashboard box
+#' @importFrom shiny NS
 #' @rdname rasterOverTime
-rastersOverTimeUI <- function(id, mapTitle, sliderTitle, histogramTitle,
-                              polygonsNumber, rastersNumber, rasterStepSize = 10) {
+rastersOverTimeUI <- function(id) {
   ns <- NS(id)
 
-  tagList(
-    box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
-        shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
-        sliderUI(ns("rastersSlider"), sliderTitle, min = 0,
-                 max = (rastersNumber - 1) * rasterStepSize,
-                 value = 0, step = rasterStepSize,
-                 animate = animationOptions(interval = 2500, loop = FALSE)),
-        sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = polygonsNumber,
-                 value = 1, step = 1, animate = animationOptions(interval = 5000, loop = TRUE))
-    ),
-    histogramForRasterUI(ns("histogram"),
-                         title = h4(histogramTitle),
-                         plotParameters = list(height = 600), solidHeader = TRUE,
-                         collapsible = TRUE,
-                         width = 4)
-  )
+  uiOutput(ns("rotUI"))
 }
 
-#' @param input Shiny server input object.
-#' @param output Shiny server output object.
-#' @param session Shiny server session object.
-#' @param rasters Set of rasters to be displayed.
-#' @param polygonsList List with sets of polygons. Each such set can be displayed on a leaflet map.
-#' @param colorTableFile File that contains color values for tiles.
-#' @param map Leaflet map to show raster and polygons on.
-#' @param sim A SpaDES simulation object (\code{simList}).
-#' @param cachePath Path to cache folder.
-#' @param cacheNotOlderThan Load an artifact from cache only if it was created after notOlderThan.
+#' @param input           Shiny server input object.
+#' @param output          Shiny server output object.
+#' @param session         Shiny server session object.
+#' @param rasters         Lisst of rasters to be displayed.
+#' @param polygons        List with sets of polygons. Each such set can be displayed on a leaflet map.
+#' @param map             Leaflet map to show raster and polygons on.
+#' @param colorTable      File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).
+#' @param histTitle       Title to be shown above the histogram.
+#' @param mapTitle        Title to be shown above the map.
+#' @param sliderTitle     Title to be shown above the slider.
+#' @param nPolygons       The number of available polygons.
+#' @param nRasters        The number of available rasters.
+#' @param rasterStepSize  Size of step in the raster slider.
+#' @param sim             A SpaDES simulation object (\code{simList}).
+#' @param cachePath       Path to cache folder.
+#' @param cacheNotOlderThan  Load an artifact from cache only if it was created after notOlderThan.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
 #'
-#' @author Damian Rodziewicz
 #' @export
-#' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletProxy
+#' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
-#' @importFrom shiny br callModule isolate observe reactive renderPlot
-#' @importFrom sp SpatialPoints spTransform
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
-#' @importFrom raster res rowColFromCell xmax xmin ymax ymin
+#' @importFrom raster sampleRegular res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
+#' @importFrom shinycssloaders withSpinner
+#' @importFrom shinydashboard box
+#' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
+#' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core getPaths paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rasters, polygonsList, colorTableFile,
-                            map = leaflet(), rasterStepSize = 10, sim = NULL,
+rastersOverTime <- function(input, output, session, rasters, polygons, map = leaflet(),
+                            colorTable, histTitle = "", sliderTitle = "", mapTitle = "",
+                            nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cachePath = getPaths()$cachePath,
                             cacheNotOlderThan = Sys.time()) {
+  ns <- session$ns
+
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
@@ -85,7 +69,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
     } else {
       polygonIndexValue()
     }
-    return(polygonsList[[index]])
+    return(polygons[[index]])
   })
 
   if (is.null(sim)) {
@@ -105,9 +89,9 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
     raster <- rasters[[rasterIndex]]
 
-    outputPath <- file.path("www", basename(outputSubPath), session$ns("map-tiles"))
+    outputPath <- file.path("www", basename(outputSubPath), ns("map-tiles"))
     Cache(gdal2Tiles, raster, outputPath = outputPath,
-          zoomRange = 1:10, colorTableFile = asPath(colorTableFile),
+          zoomRange = 1:10, colorTableFile = asPath(colorTable),
           cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
     return(raster);
@@ -116,8 +100,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
   sampledRaster <- reactive({
     if (ncell(raster()) > 3e5) {
       sampledRaster <- Cache(raster::sampleRegular, raster(), size = 4e5,
-                             notOlderThan = NULL,
-                             asRaster = TRUE, cacheRepo = cachePath)
+                             notOlderThan = NULL, asRaster = TRUE, cacheRepo = cachePath)
     } else {
       sampledRaster <- raster()
     }
@@ -138,7 +121,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(raster())), "\\.")[[1]][[1]]
-    file.path(basename(outputSubPath), session$ns("map-tiles"),
+    file.path(basename(outputSubPath), ns("map-tiles"),
               paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 
@@ -148,7 +131,7 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
 
   click <- reactive(input$map_shape_click)
 
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, session$ns("tiles"),
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"),
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, raster, polygons)
@@ -158,4 +141,21 @@ rastersOverTime <- function(input, output, session, rasters, polygonsList, color
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale, addAxisParams = addAxisParams,
              width = 1, space = 0)
+
+  output$rotUI <- renderUI({
+    tagList(
+      box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
+          shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
+          sliderUI(ns("rastersSlider"), sliderTitle, min = 0,
+                   max = (nRasters - 1) * rasterStepSize,
+                   value = 0, step = rasterStepSize,
+                   animate = animationOptions(interval = 2500, loop = FALSE)),
+          sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = nPolygons,
+                   value = 1, step = 1, animate = animationOptions(interval = 5000, loop = TRUE))
+      ),
+      histogramForRasterUI(ns("histogram"), title = h4(histTitle),
+                           plotParameters = list(height = 600), solidHeader = TRUE,
+                           collapsible = TRUE, width = 4)
+    )
+  })
 }
