@@ -77,7 +77,7 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
       keepArtifacts <- setdiff(keepArtifacts3, keepArtifacts)
       archivist::addTagsRepo(keepArtifacts,
                              repoDir = paths$cachePath,
-                             tags = paste0("LandWebVersion:", LandWebVersion))
+                             tags = paste0("LandWebVersion:", LandWebVersion)) # TODO: make general (#97)
     }
 
     return(list(Clumps = largePatches[sizeInHa > patchSize], patchSize = patchSize))
