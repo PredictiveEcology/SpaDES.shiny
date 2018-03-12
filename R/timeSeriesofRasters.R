@@ -102,6 +102,6 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
   callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList(),
              polygonList = polygonList, map = leafMap,  colorTable = colorTable,
              histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
-             nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10, sim = sim,
+             nPolygons = nPolygons, nRasters = nRasters(), rasterStepSize = 10, sim = sim,
              cacheNotOlderThan = NULL)
 }
