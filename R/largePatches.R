@@ -37,9 +37,9 @@ largePatchesUI <- function(id) {
 #'
 #' @param numberOfSimulationTimes How many simulation time stamps there are.
 #'
-#' @param clumpMod2Args Arguments passed to \code{clumpMod2}. All arguments except
-#'                      \code{id} should be determined. Any \code{id} parameter will
-#'                      be surpressed.
+#' @param clumpMod2Args Reactive list containing named Arguments passed to \code{clumpMod2}.
+#'                      All arguments except \code{id} should be determined.
+#'                      Any \code{id} parameter will be ignored.
 #'
 #' @return Shiny module server function.
 #'
@@ -56,13 +56,17 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   uiSequence <- data.table(category = c("ageClass", "polygonID", "vegCover"),
                            uiType = c("tab", "tab", "box"))
 
-  clumpMod2Args["id"] <- NULL
+  clumpMod2Args <- reactive({
+    clumpMod2Args()["id"] <- NULL
+  })
 
-  clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
+  clumpsReturn <- reactive({
+    do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args()))
+  })
 
   largePatchesData <- reactive(clumpsReturn()$Clumps)
 
-  callModule(slicer, "slicer", largePatchesData,
+  callModule(slicer, "slicer", largePatchesData(),
              "LargePatches", uiSequence = uiSequence,
              serverFunction = function(data, chosenCategories, chosenValues) {
                observeEvent(data, {
