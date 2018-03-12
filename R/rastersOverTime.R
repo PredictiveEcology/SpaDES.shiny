@@ -127,7 +127,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
-  rasterScale <- isolate(prod(raster::res(rast())) / 1e4)
+  rasterScale <- reactive(prod(raster::res(rast())) / 1e4)
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
@@ -149,7 +149,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polys, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
-             scale = rasterScale, addAxisParams = addAxisParams,
+             scale = rasterScale(), addAxisParams = addAxisParams,
              width = 1, space = 0)
 
   output$rotUI <- renderUI({
