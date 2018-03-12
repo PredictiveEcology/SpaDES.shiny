@@ -37,7 +37,7 @@ largePatchesUI <- function(id) {
 #'
 #' @param numberOfSimulationTimes How many simulation time stamps there are.
 #'
-#' @param clumpMod2Args Reactive list containing named Arguments passed to \code{clumpMod2}.
+#' @param clumpMod2Args Reactive list containing named arguments passed to \code{clumpMod2}.
 #'                      All arguments except \code{id} should be determined.
 #'                      Any \code{id} parameter will be ignored.
 #'
@@ -144,7 +144,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                               histogramData, addAxisParams,
                               width = rep(1, length(distribution)),
                               xlim = range(breaks), xlab = "",
-                              ylab = "Proportion in NRV",
+                              ylab = "Proportion in NRV", ## TODO: don't hardcode this
                               col = "darkgrey", border = "grey", main = "",
                               space = 0)
                  })

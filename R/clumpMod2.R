@@ -28,14 +28,14 @@ clumpMod2UI <- function(id) {
 #' @param input Shiny server input object.
 #' @param output Shiny server output object.
 #' @param session Shiny server session object.
-#' @param tsf ...
-#' @param vtm ...
+#' @param tsf ... reactive
+#' @param vtm ... reactive
 #' @param currentPolygon ...
 #' @param cl ...
 #' @param ageClasses ...
 #' @param patchSize ...
 #' @param sizeInHa ...
-#' @param cacheRepo ...
+#' @param cacheRepo ... reactive
 #' @param indivPolygonIndex ...
 #' @param largePatchesFn ...
 #' @param countNumPatches ...
@@ -57,13 +57,14 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
     message(paste("Running largePatchesFn"))
     shiny::withProgress(message = "Calculation in progress",
                  detail = "This may take a while...", value = 0, {
-                   args <- list(largePatchesFn, timeSinceFireFiles = tsf,
-                                vegTypeMapFiles = vtm,
+                   args <- list(largePatchesFn, timeSinceFireFiles = tsf(),
+                                vegTypeMapFiles = vtm(),
                                 cl = if (tryCatch(is(cl, "cluster"),
                                                   error = function(x) FALSE)) cl,
                                 polygonToSummarizeBy = currentPolygon,
-                                ageClasses = ageClasses, countNumPatches = countNumPatches,
-                                cacheRepo = cacheRepo,
+                                ageClasses = ageClasses,
+                                countNumPatches = countNumPatches,
+                                cacheRepo = cacheRepo(),
                                 debugCache = "complete",
                                 omitArgs = "cl")
                    args <- args[!unlist(lapply(args, is.null))]
