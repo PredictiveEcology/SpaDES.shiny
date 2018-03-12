@@ -57,7 +57,9 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                            uiType = c("tab", "tab", "box"))
 
   clumpMod2Args <- reactive({
-    clumpMod2Args()["id"] <- NULL
+    args <- clumpMod2Args()
+    args["id"] <- NULL
+    args
   })
 
   clumpsReturn <- reactive({
