@@ -10,7 +10,7 @@ rastersOverTimeUI(id)
 rastersOverTime(input, output, session, rasterList, polygonList,
   map = leaflet(), colorTable, histTitle = "", sliderTitle = "",
   mapTitle = "", nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
-  cachePath = getPaths()$cachePath, cacheNotOlderThan = Sys.time())
+  cacheNotOlderThan = Sys.time())
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -41,9 +41,7 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{rasterStepSize}{Size of step in the raster slider.}
 
-\item{sim}{A SpaDES simulation object (\code{simList}).}
-
-\item{cachePath}{Path to cache folder.}
+\item{sim}{A reactive SpaDES simulation object (\code{simList}).}
 
 \item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
 }

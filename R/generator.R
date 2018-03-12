@@ -167,8 +167,7 @@ renderMenuItem <- function(tabName, menuItemName, icon) {
 #'
 #' @author Damian Rodziewicz
 renderMenuItems <- function(layout, modules) {
-  menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon),
-                           renderMenuItem)
+  menuItems <- purrr::pmap(list(layout$tabName, layout$menuItemName, layout$icon), renderMenuItem)
 
   return(paste(menuItems, collapse = ",\n      "))
 }
@@ -217,6 +216,10 @@ renderCallModuleDirective <- function(name, id, parameters) {
 
 #' Render callModule directives for provided modules.
 #'
+#' @note \code{spades_simInit} and \code{spades_expt} modules are omitted,
+#'       as they are rendered separately using \code{\link{renderSimInitDirective}}
+#'       and \code{\link{renderExperimentDirectives}}, respectively.
+#'
 #' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
 #'
 #' @return Rendered callModule directives.
@@ -224,12 +227,74 @@ renderCallModuleDirective <- function(name, id, parameters) {
 #' @author Damian Rodziewicz
 #' @importFrom purrr pmap
 renderCallModuleDirectives <- function(modules) {
+  # omit simInit and experiment modules
+  omit <- which(c("spades_simInit", "spades_expt") %in% modules$name)
+
   callModuleDirectives <- purrr::pmap(
-    list(modules$name, modules$id, modules$parameters),
+    list(modules$name[-omit], modules$id[-omit], modules$parameters[-omit]),
     renderCallModuleDirective
   )
 
   return(paste(callModuleDirectives, collapse = "\n  "))
+}
+
+#' Render callModule directives for simInit module if provided.
+#'
+#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#'
+#' @return Rendered callModule directives.
+#'
+#' @author Alex Chubaty
+#' @importFrom purrr pmap
+renderSimInitDirective <- function(modules) {
+  if ("spades_simInit" %in% modules$name) {
+    ID <- which(modules$name == "spades_simInit")
+    directive <- purrr::pmap(
+      list(modules$name[ID], modules$id[ID], modules$parameters[ID]),
+      renderCallModuleDirective
+    )
+    directive <- paste("mySim <-", directive)
+
+    line1 <- "### simulation initialization"
+    line2 <- paste(directive, "\n")
+
+    return(paste(c(line1, line2), collapse = "\n  "))
+  } else {
+    return(character(0))
+  }
+}
+
+#' Render callModule directives for experiment module if provided.
+#'
+#' Additonal customizations can be provided via two files: \file{pre_experiment.R}
+#' and \file{post_experiment.R}.
+#'
+#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#'
+#' @return Rendered callModule directives.
+#'
+#' @author Alex Chubaty
+#' @importFrom purrr pmap
+renderExperimentDirectives <- function(modules) {
+  if ("spades_expt" %in% modules$name) {
+    ID <- which(modules$name == "spades_expt")
+    directive <- purrr::pmap(
+      list(modules$name[ID], modules$id[ID], modules$parameters[ID]),
+      renderCallModuleDirective
+    )
+    directive <- paste("mySimOut <-", directive)
+
+    line1 <- "## pre-experiment customizations"
+    line2 <- "if (file.exists(\"pre_experiment.R\")) source(\"pre_experiment.R\", local = TRUE)\n  "
+    line3 <- "## run the simulation experiment"
+    line4 <- paste(directive, "\n  ")
+    line5 <- "## post-experiment customizations"
+    line6 <- "if (file.exists(\"post_experiment.R\")) source(\"post_experiment.R\", local = TRUE)\n"
+
+    return(paste(c(line1, line2, line3, line4, line5, line6), collapse = "\n  "))
+  } else {
+    return(character(0))
+  }
 }
 
 #' Render and save server.R file.
@@ -244,10 +309,11 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
   serverPath <- file.path(appDir, "server.R")
   modules <- appMetadata$modules
 
-  callModuleDirectives <- renderCallModuleDirectives(appMetadata$modules)
-
   data <- list(
-    callModuleDirectives = callModuleDirectives,
+    simInitDirectives = renderSimInitDirective(appMetadata$modules),
+    experimentDirectives = renderExperimentDirectives(appMetadata$modules),
+    ###
+    callModuleDirectives = renderCallModuleDirectives(appMetadata$modules),
     copyright = renderCopyright(appMetadata$copyright),
     sidebarFooter = renderSidebar(appMetadata$sidebar$footer)
   )

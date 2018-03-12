@@ -32,8 +32,7 @@ rastersOverTimeUI <- function(id) {
 #' @param nPolygons       The number of available polygons.
 #' @param nRasters        The number of available rasters.
 #' @param rasterStepSize  Size of step in the raster slider.
-#' @param sim             A SpaDES simulation object (\code{simList}).
-#' @param cachePath       Path to cache folder.
+#' @param sim             A reactive SpaDES simulation object (\code{simList}).
 #' @param cacheNotOlderThan  Load an artifact from cache only if it was created after notOlderThan.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
@@ -48,12 +47,11 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
 #' @importFrom sp SpatialPoints spTransform
-#' @importFrom SpaDES.core getPaths paddedFloatToChar
+#' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasterList, polygonList, map = leaflet(),
                             colorTable, histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
-                            cachePath = getPaths()$cachePath,
                             cacheNotOlderThan = Sys.time()) {
   ns <- session$ns
 
@@ -72,13 +70,25 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
     return(polygonList[[index]])
   })
 
-  if (is.null(sim)) {
-    cachePath <- "cache"
-    outputSubPath <- "outputs"
-  } else {
-    cachePath <- cachePath(sim)
-    outputSubPath <- outputPath(sim)
-  }
+  cache_path <- reactive({
+    if (is.null(sim())) {
+      "cache"
+    } else {
+      cachePath(sim())
+    }
+  })
+
+  output_subpath <- reactive({
+    if (is.null(sim())) {
+      "outputs"
+    } else {
+      outputPath(sim())
+    }
+  })
+
+  output_path <- reactive({
+    file.path("www", basename(output_subpath()), ns("map-tiles"))
+  })
 
   rast <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
@@ -89,10 +99,10 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
 
     rst <- rasterList[[rasterIndex]]
 
-    outputPath <- file.path("www", basename(outputSubPath), ns("map-tiles"))
-    Cache(gdal2Tiles, rst, outputPath = outputPath,
-          zoomRange = 1:10, colorTableFile = asPath(colorTable),
-          cacheRepo = cachePath, notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
+
+    Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
+          colorTableFile = asPath(colorTable), cacheRepo = cache_path(),
+          notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
 
     return(rst);
   })
@@ -100,7 +110,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   sampledRaster <- reactive({
     if (ncell(rast()) > 3e5) {
       sampledRaster <- Cache(raster::sampleRegular, rast(), size = 4e5,
-                             notOlderThan = NULL, asRaster = TRUE, cacheRepo = cachePath)
+                             notOlderThan = NULL, asRaster = TRUE, cacheRepo = cache_path())
     } else {
       sampledRaster <- rast()
     }
@@ -121,7 +131,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
-    file.path(basename(outputSubPath), ns("map-tiles"),
+    file.path(basename(output_subpath()), ns("map-tiles"),
               paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 

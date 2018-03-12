@@ -15,6 +15,11 @@ Rendered callModule directives.
 \description{
 Render callModule directives for provided modules.
 }
+\note{
+\code{spades_simInit} and \code{spades_expt} modules are omitted,
+      as they are rendered separately using \code{\link{renderSimInitDirective}}
+      and \code{\link{renderExperimentDirectives}}, respectively.
+}
 \author{
 Damian Rodziewicz
 }

@@ -101,6 +101,7 @@ Collate:
     'slicer.R'
     'slider.R'
     'spades-shiny-package.R'
+    'spades.R'
     'summaryPopups.R'
     'tilesUpdater.R'
     'timeSeriesofRasters.R'

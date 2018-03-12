@@ -1,8 +1,16 @@
 function(input, output, session) {
+  ## user authenitacion status
+  session$userData$userLoggedIn <- reactiveVal(FALSE)
+  session$userData$userAuthorized <- reactiveVal(FALSE)
+
   ## run additonal server code from server_file.R
   if (file.exists("server_file.R")) source("server_file.R")
 
-  ## module calls
+  {{{simInitDirectives}}}
+
+  {{{experimentDirectives}}}
+
+  ## non-experiment module calls
   {{{callModuleDirectives}}}
 
   ## footers (see ?copyrightFooter)
