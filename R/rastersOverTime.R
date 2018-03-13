@@ -97,7 +97,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rasterList[[rasterIndex]]
+    rst <- rasterList()[[rasterIndex]]
 
 
     Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
