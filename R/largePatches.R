@@ -56,20 +56,14 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   uiSequence <- data.table(category = c("ageClass", "polygonID", "vegCover"),
                            uiType = c("tab", "tab", "box"))
 
-  clumpMod2Args <- reactive({
-    args <- clumpMod2Args()
-    args["id"] <- NULL
-    args
-  })
+  clumpMod2Args <- clumpMod2Args["id"] <- NULL
 
-  clumpsReturn <- reactive({
-    do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args()))
-  })
+  clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
 
-  largePatchesData <- reactive(clumpsReturn()$Clumps)
+  largePatchesData <- clumpsReturn$Clumps
 
-  callModule(slicer, "slicer", largePatchesData(),
-             "LargePatches", uiSequence = uiSequence,
+  callModule(slicer, "slicer", largePatchesData, "LargePatches",
+             uiSequence = uiSequence,
              serverFunction = function(data, chosenCategories, chosenValues) {
                observeEvent(data, {
                  histogramReactiveParams <- reactive({
