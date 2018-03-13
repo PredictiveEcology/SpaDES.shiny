@@ -61,7 +61,9 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
 
   leafZoom <- zoom
 
-  pol <- polygonList()[[4]] # TODO: why this particular list entry only? is this the smallest area?
+  pol <- reactive({
+    polygonList()[[4]] # TODO: why this particular list entry only? is this the smallest area?
+  })
   shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(isolate(polygonsInput())))
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -79,8 +81,8 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       completedColor = "#7D4479") %>%
     addEasyButton(easyButton(
       icon = "fa-map", title = "Zoom to focal area", # TODO: generalize this
-      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(pol), ", ",
-                          xmin(pol), "], [", ymax(pol), ", ", xmax(pol), "]])}")))) %>%
+      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(pol()), ", ",
+                          xmin(pol()), "], [", ymax(pol()), ", ", xmax(pol()), "]])}")))) %>%
     addEasyButton(easyButton(
       icon = "fa-globe", title = "Zoom out to full study area",
       onClick = JS(paste0("function(btn, map){ map.setView([",
