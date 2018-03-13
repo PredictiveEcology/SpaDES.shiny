@@ -64,7 +64,9 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
   pol <- reactive({
     polygonList()[[4]] # TODO: why this particular list entry only? is this the smallest area?
   })
-  shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(isolate(polygonsInput())))
+  shpStudyRegionFullLFLT <- reactive({
+    spTransform(shpStudyRegionFull, crs(polygonsInput()))
+  })
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
@@ -86,16 +88,14 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     addEasyButton(easyButton(
       icon = "fa-globe", title = "Zoom out to full study area",
       onClick = JS(paste0("function(btn, map){ map.setView([",
-                          mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
-                          ", ", mean(c(xmin(shpStudyRegionFullLFLT),
-                                       xmax(shpStudyRegionFullLFLT))), "], 5)}")))) %>%
-    addMiniMap(
-      tiles = leaflet::providers$OpenStreetMap,
-      toggleDisplay = TRUE) %>%
-    setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
-            mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
-            zoom = leafZoom
-    ) %>%
+                          mean(c(ymin(shpStudyRegionFullLFLT()),
+                                 ymax(shpStudyRegionFullLFLT()))), ", ",
+                          mean(c(xmin(shpStudyRegionFullLFLT()),
+                                 xmax(shpStudyRegionFullLFLT()))), "], 5)}")))) %>%
+    addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
+    setView(mean(c(xmin(shpStudyRegionFullLFLT()), xmax(shpStudyRegionFullLFLT()))),
+            mean(c(ymin(shpStudyRegionFullLFLT()), ymax(shpStudyRegionFullLFLT()))),
+            zoom = leafZoom) %>%
     addPolygons(data = isolate(polygonsInput()), group = "Fire return interval",
                 fillOpacity = 0.3, weight = 1, color = "blue",
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
