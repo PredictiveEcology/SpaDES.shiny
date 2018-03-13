@@ -56,7 +56,11 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   uiSequence <- data.table(category = c("ageClass", "polygonID", "vegCover"),
                            uiType = c("tab", "tab", "box"))
 
-  clumpMod2Args <- clumpMod2Args["id"] <- NULL
+  clumpMod2Args <- reactive({
+    args <- clumpMod2Args()
+    args["id"] <- NULL
+    args
+  })
 
   clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
 

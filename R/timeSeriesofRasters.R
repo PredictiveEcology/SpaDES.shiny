@@ -56,12 +56,12 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
   polygonsInput <- reactive({
-    spTransform(shpStudyRegionFull, crs(polygonList[[3]])) # TODO: why polygonList[[3]]??
+    spTransform(shpStudyRegionFull, crs(polygonList()[[3]])) # TODO: why polygonList()[[3]]??
   })
 
   leafZoom <- zoom
 
-  pol <- polygonList[[4]] # TODO: why this particular list entry only? is this the smallest area?
+  pol <- polygonList()[[4]] # TODO: why this particular list entry only? is this the smallest area?
   shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(isolate(polygonsInput())))
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -69,8 +69,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addLegend(position = "bottomright", pal = palette,
-              values = 1:maxAge,
+    addLegend(position = "bottomright", pal = palette, values = 1:maxAge,
               title = paste0("Time since fire", br(), "(years)")) %>%
     addMeasure(
       position = "bottomleft",
