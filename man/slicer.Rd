@@ -21,8 +21,8 @@ slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
 
 \item{data}{Reactive value containing data in form of a \code{data.table}.
 This data table is not changed.
-Its subtables are accessed using \code{chosenCategories}
-and \code{chosenValues} arguments.
+Its subtables are accessed using \code{chosenCategories} and
+\code{chosenValues} arguments.
 This is helpful, because the end summary function might require
 information about entire data table.}
 
@@ -39,8 +39,7 @@ category choice. Currently there are two possible UI
 types to perform: "tab" and "box".
 Type "box": should be used only together with \pkg{shinydashboard}.
 An example of proper \code{uiSequence} is
-\code{data.table(category = c("Alliance", "Kingdom"),
-                 uiType = c("tab", "box"))}.}
+\code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.}
 
 \item{serverFunction}{A summary module server function. This function should take
 three arguments: \code{data}, \code{chosenCategories} and
@@ -53,10 +52,10 @@ one argument: \code{na}. Inside the function there should be
 a call to shiny module UI function. See example section.}
 
 \item{chosenCategories}{A list with categories names that were already chosen.
-Default is NULL.}
+Default \code{NULL}.}
 
 \item{chosenValues}{A list with categories values that were already chosen.
-Default is NULL.}
+Default \code{NULL}.}
 }
 \value{
 Shiny module UI.

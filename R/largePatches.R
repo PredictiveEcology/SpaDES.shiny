@@ -76,12 +76,12 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                  histogramReactiveParams <- reactive({
                    data <- data()
 
-                   subtableWith3DimensionsFixed <- getSubtable(data,
-                                                               chosenCategories,
-                                                               chosenValues)
-                   ageClassPolygonSubtable <- getSubtable(data,
-                                                          head(chosenCategories, 2),
-                                                          head(chosenValues, 2))
+                   subtableWith3DimensionsFixed <- .getSubtable(data,
+                                                                chosenCategories,
+                                                                chosenValues)
+                   ageClassPolygonSubtable <- .getSubtable(data,
+                                                           head(chosenCategories, 2),
+                                                           head(chosenValues, 2))
 
                    numOfClusters <- ageClassPolygonSubtable[, .N, by = c("vegCover", "rep")]$N
                    maxNumClusters <- if (length(numOfClusters) == 0) {

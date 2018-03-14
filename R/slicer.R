@@ -1,28 +1,39 @@
-getSubtable <- function(dataTable, chosenCategories, chosenValues) {
+#' Get subtable from a \code{data.table}
+#'
+#' @param dataTable         A \code{data.table}
+#' @param chosenCategories  ...
+#' @param chosenValues      ...
+#'
+#' @keywords internal
+#' @rdname getSubTable
+.getSubtable <- function(dataTable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
     return(dataTable)
   }
   else {
     subtable <- dataTable[get(chosenCategories[[1]]) == chosenValues[[1]]]
 
-    getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
+    .getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
 }
 
-generateUI <- function(uiType, categoriesValues, ns) {
+#' Generate UI (internal)
+#'
+#' @importFrom purrr map
+#' @importFrom shiny mainPanel tabPanel
+#' @importFrom shinydashboard box
+#' @keywords internal
+#' @rdname generateUI
+.generateUI <- function(uiType, categoriesValues, ns) {
   switch(uiType,
          "tab" = {
            tabPanelWithSlicerContent <- function(category) {
-             tabPanel(category,
-                      slicerUI(ns(category)))
+             tabPanel(category, slicerUI(ns(category)))
            }
 
            tabPanels <- categoriesValues %>% map(tabPanelWithSlicerContent)
 
-           mainPanel(
-             do.call(tabsetPanel, tabPanels),
-             width = 12
-           )
+           mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
          },
          "box" = {
            boxWithSlicerContent <- function(category) {
@@ -77,28 +88,27 @@ slicerUI <- function(id) {
 #' @param input    Shiny server input object.
 #' @param output   Shiny server output object.
 #' @param session  Shiny server session object.
-#' @param data Reactive value containing data in form of a \code{data.table}.
-#'             This data table is not changed.
-#'             Its subtables are accessed using \code{chosenCategories}
-#'             and \code{chosenValues} arguments.
-#'             This is helpful, because the end summary function might require
-#'             information about entire data table.
+#' @param data     Reactive value containing data in form of a \code{data.table}.
+#'                 This data table is not changed.
+#'                 Its subtables are accessed using \code{chosenCategories} and
+#'                 \code{chosenValues} arguments.
+#'                 This is helpful, because the end summary function might require
+#'                 information about entire data table.
 #'
 #' @param categoryValue Each time the data table is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
 #'
-#' @param uiSequence A \code{data.table} of the form
-#'                   \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
-#'                   Both lists should contain elements of type character.
-#'                   The \code{category} column should contain names of the categories
-#'                   which will be subsequently fixed. The \code{uiType} column
-#'                   should contain corresponding UI which should be applied for each
-#'                   category choice. Currently there are two possible UI
-#'                   types to perform: "tab" and "box".
-#'                   Type "box": should be used only together with \pkg{shinydashboard}.
-#'                   An example of proper \code{uiSequence} is
-#'                   \code{data.table(category = c("Alliance", "Kingdom"),
-#'                                    uiType = c("tab", "box"))}.
+#' @param uiSequence  A \code{data.table} of the form
+#'                    \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
+#'                    Both lists should contain elements of type character.
+#'                    The \code{category} column should contain names of the categories
+#'                    which will be subsequently fixed. The \code{uiType} column
+#'                    should contain corresponding UI which should be applied for each
+#'                    category choice. Currently there are two possible UI
+#'                    types to perform: "tab" and "box".
+#'                    Type "box": should be used only together with \pkg{shinydashboard}.
+#'                    An example of proper \code{uiSequence} is
+#'                    \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.
 #'
 #' @param serverFunction A summary module server function. This function should take
 #'                       three arguments: \code{data}, \code{chosenCategories} and
@@ -111,17 +121,16 @@ slicerUI <- function(id) {
 #'                   a call to shiny module UI function. See example section.
 #'
 #' @param chosenCategories A list with categories names that were already chosen.
-#'                         Default is NULL.
+#'                         Default \code{NULL}.
 #'
 #' @param chosenValues A list with categories values that were already chosen.
-#'                     Default is NULL.
+#'                     Default \code{NULL}.
 #'
 #' @return Shiny module server function.
 #'
 #' @author Mateusz Wyszynski
 #' @export
-#' @importFrom shiny mainPanel NS tabPanel tabsetPanel
-#' @importFrom shiny observeEvent renderUI callModule
+#' @importFrom shiny callModule mainPanel NS observeEvent renderUI tabPanel tabsetPanel
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
 #' @importFrom magrittr %>%
@@ -133,7 +142,7 @@ slicer <- function(input, output, session, data, categoryValue, uiSequence,
   ns <- session$ns
 
   observeEvent({
-    data
+    data()
   }, {
     if (nrow(uiSequence) == 0) {
       serverFunction(data, chosenCategories, chosenValues)
@@ -142,12 +151,12 @@ slicer <- function(input, output, session, data, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- getSubtable(data(), chosenCategories, chosenValues)
+      currentSubtable <- .getSubtable(data(), chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, get(categoryName)] %>% unique()
 
       categoriesValues %>% map(function(categoryValue) {
-        callModule(slicer, categoryValue, data, categoryValue,
+        callModule(slicer, categoryValue, data(), categoryValue,
                    uiSequence[-1, ], serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
                    c(chosenValues, list(categoryValue)))
@@ -155,7 +164,7 @@ slicer <- function(input, output, session, data, categoryValue, uiSequence,
 
       uiType <- uiSequence$uiType[[1]]
 
-      output$recursiveUI <- renderUI(generateUI(uiType, categoriesValues, ns))
+      output$recursiveUI <- renderUI(.generateUI(uiType, categoriesValues, ns))
     }
   })
 }
