@@ -35,11 +35,9 @@ largePatchesUI <- function(id) {
 #'
 #' @param session  Shiny server session object.
 #'
-#' @param numberOfSimulationTimes How many simulation time stamps there are.
+#' @param numberOfSimulationTimes  How many simulation time stamps there are.
 #'
-#' @param clumpMod2Args Reactive list containing named arguments passed to \code{clumpMod2}.
-#'                      All arguments except \code{id} should be determined.
-#'                      Any \code{id} parameter will be ignored.
+#' @param clumpMod2Args  Reactive list containing named arguments passed to \code{clumpMod2}.
 #'
 #' @return Shiny module server function.
 #'
@@ -67,7 +65,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
     do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args()))
   })
 
-  largePatchesData <- reactive(clumpsReturn$Clumps)
+  largePatchesData <- reactive(clumpsReturn()$Clumps)
 
   callModule(slicer, "slicer", largePatchesData, "LargePatches",
              uiSequence = uiSequence,
@@ -126,8 +124,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
                  )
 
                  histogramData <- reactive({
-                   actualPlot <- hist(distribution(),
-                                      breaks = breaks())
+                   actualPlot <- hist(distribution(), breaks = breaks())
 
                    actualPlot$counts / sum(actualPlot$counts)
                  })
