@@ -16,10 +16,10 @@ tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 
-\item{urlTemplate}{Reactive value which contains an url with the tiles
+\item{urlTemplate}{Reactive value which contains an URL with the tiles
 that should be added to the leaflet map as a result.}
 
-\item{tilesGroup}{Group of rasters/tiles we want to update}
+\item{tilesGroup}{Group of rasters/tiles we want to update.}
 
 \item{addTilesParameters}{Additional parameters of \code{\link[leaflet]{addTiles}} function.
 Parameters: \code{proxy}/\code{map},

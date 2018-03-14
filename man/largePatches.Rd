@@ -20,9 +20,7 @@ largePatches(session, input, output, numberOfSimulationTimes, clumpMod2Args)
 
 \item{numberOfSimulationTimes}{How many simulation time stamps there are.}
 
-\item{clumpMod2Args}{Reactive list containing named arguments passed to \code{clumpMod2}.
-All arguments except \code{id} should be determined.
-Any \code{id} parameter will be ignored.}
+\item{clumpMod2Args}{Reactive list containing named arguments passed to \code{clumpMod2}.}
 }
 \value{
 shiny module UI.

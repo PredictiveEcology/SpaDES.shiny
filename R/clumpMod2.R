@@ -38,7 +38,6 @@ clumpMod2UI <- function(id) {
 #' @param cacheRepo ... reactive
 #' @param largePatchesFn ...
 #' @param countNumPatches ...
-#' @param keepArtifacts ...
 #'
 #' @return Shiny module UI.
 #'
@@ -49,7 +48,7 @@ clumpMod2UI <- function(id) {
 #' @rdname clumpMod2
 clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
                       ageClasses, patchSize, sizeInHa, cacheRepo,
-                      largePatchesFn, countNumPatches, keepArtifacts = NA_character_) {
+                      largePatchesFn, countNumPatches) {
   clumps <- reactive({
     patchSize <- as.integer(input$PatchSize33)
 
@@ -71,13 +70,6 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
                           shiny::setProgress(1)
     })
     message(paste("  Finished largePatchesFn"))
-    if (FALSE) {
-      keepArtifacts3 <- unique(showCache(paths$cachePath, after = startCacheTime)$artifact)
-      keepArtifacts <- setdiff(keepArtifacts3, keepArtifacts)
-      archivist::addTagsRepo(keepArtifacts,
-                             repoDir = paths$cachePath,
-                             tags = paste0("LandWebVersion:", LandWebVersion)) # TODO: make general (#97)
-    }
 
     return(list(Clumps = largePatches[sizeInHa > patchSize], patchSize = patchSize))
   })
