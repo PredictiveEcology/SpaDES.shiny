@@ -156,7 +156,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
     tagList(
       box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
           shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
-          sliderUI(ns("rastersSlider"), sliderTitle, min = 0,
+          sliderUI(ns("rastersSlider"), label = sliderTitle, min = 0,
                    max = (nRasters() - 1) * rasterStepSize,
                    value = 0, step = rasterStepSize,
                    animate = animationOptions(interval = 2500, loop = FALSE)),

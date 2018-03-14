@@ -13,10 +13,10 @@
 #'
 #' @param proxy    Leaflet proxy which manages a connected leaflet map.
 #'
-#' @param urlTemplate Reactive value which contains an url with the tiles
+#' @param urlTemplate Reactive value which contains an URL with the tiles
 #'                    that should be added to the leaflet map as a result.
 #'
-#' @param tilesGroup  Group of rasters/tiles we want to update
+#' @param tilesGroup  Group of rasters/tiles we want to update.
 #'
 #' @param addTilesParameters Additional parameters of \code{\link[leaflet]{addTiles}} function.
 #'                           Parameters: \code{proxy}/\code{map},
