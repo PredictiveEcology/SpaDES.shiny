@@ -8,8 +8,8 @@
 clumpMod2UI(id)
 
 clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
-  patchSize, sizeInHa, cacheRepo, indivPolygonIndex, largePatchesFn,
-  countNumPatches, keepArtifacts = NA_character_)
+  patchSize, sizeInHa, cacheRepo, largePatchesFn, countNumPatches,
+  keepArtifacts = NA_character_)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's server function}
@@ -35,8 +35,6 @@ clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
 \item{sizeInHa}{...}
 
 \item{cacheRepo}{... reactive}
-
-\item{indivPolygonIndex}{...}
 
 \item{largePatchesFn}{...}
 
