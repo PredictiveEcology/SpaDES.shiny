@@ -51,7 +51,7 @@ largePatchesUI <- function(id) {
 #' @importFrom purrr map
 #' @rdname largePatches
 largePatches <- function(session, input, output, numberOfSimulationTimes, clumpMod2Args) {
-  patchSize <- callModule(slider, "slider")
+  #patchSize <- callModule(slider, "slider") ## TODO: where is this used? wher is the UI component?
 
   uiSequence <- data.table(category = c("ageClass", "polygonID", "vegCover"),
                            uiType = c("tab", "tab", "box"))
