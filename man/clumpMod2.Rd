@@ -19,9 +19,9 @@ clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
 
 \item{session}{Shiny server session object.}
 
-\item{tsf}{... reactive}
+\item{tsf}{...}
 
-\item{vtm}{... reactive}
+\item{vtm}{...}
 
 \item{currentPolygon}{...}
 
@@ -33,7 +33,7 @@ clumpMod2(input, output, session, tsf, vtm, currentPolygon, cl, ageClasses,
 
 \item{sizeInHa}{...}
 
-\item{cacheRepo}{... reactive}
+\item{cacheRepo}{...}
 
 \item{largePatchesFn}{...}
 
