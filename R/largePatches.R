@@ -37,7 +37,7 @@ largePatchesUI <- function(id) {
 #'
 #' @param numberOfSimulationTimes  How many simulation time stamps there are.
 #'
-#' @param clumpMod2Args  Reactive list containing named arguments passed to \code{clumpMod2}.
+#' @param clumpMod2Args  List containing named arguments passed to \code{clumpMod2}.
 #'
 #' @return Shiny module server function.
 #'
@@ -61,13 +61,12 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   #   args
   # })
 
-  clumpsReturn <- reactive({
-    do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args()))
-  })
+  clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
 
   largePatchesData <- reactive(clumpsReturn()$Clumps)
 
-  callModule(slicer, "slicer", largePatchesData, "LargePatches",
+  callModule(slicer, "slicer", data = largePatchesData,
+             categoryValue = "LargePatches",
              uiSequence = uiSequence,
              serverFunction = function(data, chosenCategories, chosenValues) {
                observeEvent(data, {
