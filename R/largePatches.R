@@ -63,7 +63,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
 
   clumpsReturn <- do.call(callModule, c(list(module = clumpMod2, id = "largePatches"), clumpMod2Args))
 
-  largePatchesData <- reactive(clumpsReturn()$Clumps)
+  largePatchesData <- reactive(clumpsReturn()()$Clumps)
 
   callModule(slicer, "slicer", data = largePatchesData,
              categoryValue = "LargePatches",
