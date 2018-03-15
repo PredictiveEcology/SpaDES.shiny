@@ -61,7 +61,7 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
   #   args
   # })
 
-  clumpsReturn <- do.call(callModule, c(list(clumpMod2, "largePatches"), clumpMod2Args))
+  clumpsReturn <- do.call(callModule, c(list(module = clumpMod2, id = "largePatches"), clumpMod2Args))
 
   largePatchesData <- reactive(clumpsReturn()$Clumps)
 
