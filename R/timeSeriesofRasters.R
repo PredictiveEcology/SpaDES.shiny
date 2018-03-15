@@ -39,13 +39,14 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom leaflet clearPopups colorFactor easyButton JS
 #' @importFrom leaflet layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
-#' @importFrom shinycssloaders withSpinner
-#' @importFrom shinydashboard box
-#' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
+#' @importFrom shiny br callModule isolate observe reactive renderPlot
 #' @importFrom sp SpatialPoints spTransform
-#' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
-#' @importFrom raster rowColFromCell xmax xmin ymax ymin
+#' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
+#' @importFrom raster hist xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
+#' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
+#' @importFrom shinydashboard box
+#' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
