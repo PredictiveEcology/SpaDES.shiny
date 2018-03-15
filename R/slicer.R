@@ -9,9 +9,8 @@
 .getSubtable <- function(dataTable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
     return(dataTable)
-  }
-  else {
-    subtable <- dataTable[get(chosenCategories[[1]]) == chosenValues[[1]]]
+  } else {
+    subtable <- dataTable[chosenCategories[[1]] == chosenValues[[1]], with = FALSE]
 
     .getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
