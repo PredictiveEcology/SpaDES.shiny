@@ -41,7 +41,7 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{rasterStepSize}{Size of step in the raster slider.}
 
-\item{sim}{A reactive SpaDES simulation object (\code{simList}).}
+\item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
 
 \item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
 }

@@ -40,7 +40,7 @@ Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
 \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 # TODO: use actual study area!}
 
-\item{sim}{A reactive SpaDES simulation object (\code{simList}).}
+\item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
 
 \item{mapTitle}{Title to be shown above the map.}
 

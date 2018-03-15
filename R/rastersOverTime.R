@@ -32,7 +32,7 @@ rastersOverTimeUI <- function(id) {
 #' @param nPolygons       The number of available polygons.
 #' @param nRasters        The number of available rasters.
 #' @param rasterStepSize  Size of step in the raster slider.
-#' @param sim             A reactive SpaDES simulation object (\code{simList}).
+#' @param sim             A \pkg{SpaDES} simulation object (\code{simList}).
 #' @param cacheNotOlderThan  Load an artifact from cache only if it was created after notOlderThan.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny server part.
@@ -71,18 +71,18 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   })
 
   cache_path <- reactive({
-    if (is.null(sim())) {
+    if (is.null(sim)) {
       "cache"
     } else {
-      cachePath(sim())
+      cachePath(sim)
     }
   })
 
   output_subpath <- reactive({
-    if (is.null(sim())) {
+    if (is.null(sim)) {
       "outputs"
     } else {
-      outputPath(sim())
+      outputPath(sim)
     }
   })
 
@@ -97,7 +97,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rasterList()[[rasterIndex]]
+    rst <- rasterList[[rasterIndex]]
 
 
     Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
@@ -157,7 +157,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
       box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
           shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
           sliderUI(ns("rastersSlider"), label = sliderTitle, min = 0,
-                   max = (nRasters() - 1) * rasterStepSize,
+                   max = (nRasters - 1) * rasterStepSize,
                    value = 0, step = rasterStepSize,
                    animate = animationOptions(interval = 2500, loop = FALSE)),
           sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = nPolygons,
