@@ -1,16 +1,16 @@
 #' Get subtable from a \code{data.table}
 #'
-#' @param dataTable         A \code{data.table}
+#' @param datatable         A \code{data.table} object.
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
 #' @keywords internal
 #' @rdname getSubTable
-.getSubtable <- function(dataTable, chosenCategories, chosenValues) {
+.getSubtable <- function(datatable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
-    return(dataTable)
+    return(datatable)
   } else {
-    subtable <- dataTable[chosenCategories[[1]] == chosenValues[[1]], with = FALSE]
+    subtable <- datatable[chosenCategories[[1]] == chosenValues[[1]]]
 
     .getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
@@ -84,15 +84,15 @@ slicerUI <- function(id) {
   uiOutput(ns("recursiveUI"))
 }
 
-#' @param input    Shiny server input object.
-#' @param output   Shiny server output object.
-#' @param session  Shiny server session object.
-#' @param data     Reactive value containing data in form of a \code{data.table}.
-#'                 This data table is not changed.
-#'                 Its subtables are accessed using \code{chosenCategories} and
-#'                 \code{chosenValues} arguments.
-#'                 This is helpful, because the end summary function might require
-#'                 information about entire data table.
+#' @param input      Shiny server input object.
+#' @param output     Shiny server output object.
+#' @param session    Shiny server session object.
+#' @param datatable  Reactive value containing data in form of a \code{data.table}.
+#'                   This data.table is not changed.
+#'                   Its subtables are accessed using \code{chosenCategories} and
+#'                   \code{chosenValues} arguments.
+#'                   This is helpful, because the end summary function might require
+#'                   information about entire data table.
 #'
 #' @param categoryValue Each time the data table is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
@@ -135,27 +135,27 @@ slicerUI <- function(id) {
 #' @importFrom magrittr %>%
 #' @importFrom data.table data.table
 #' @rdname slicer
-slicer <- function(input, output, session, data, categoryValue, uiSequence,
+slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
   ns <- session$ns
 
   observeEvent({
-    data()
+    datatable
   }, {
     if (nrow(uiSequence) == 0) {
-      serverFunction(data, chosenCategories, chosenValues)
+      serverFunction(datatable, chosenCategories, chosenValues)
 
       output$recursiveUI <- renderUI(uiFunction(ns))
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- .getSubtable(data(), chosenCategories, chosenValues)
+      currentSubtable <- .getSubtable(datatable(), chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, get(categoryName)] %>% unique()
 
       categoriesValues %>% map(function(categoryValue) {
-        callModule(slicer, categoryValue, data(), categoryValue,
+        callModule(slicer, categoryValue, datatable(), categoryValue,
                    uiSequence[-1, ], serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
                    c(chosenValues, list(categoryValue)))

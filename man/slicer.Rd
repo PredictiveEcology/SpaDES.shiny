@@ -7,8 +7,8 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
-  uiFunction, chosenCategories = NULL, chosenValues = NULL)
+slicer(input, output, session, datatable, categoryValue, uiSequence,
+  serverFunction, uiFunction, chosenCategories = NULL, chosenValues = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -19,8 +19,8 @@ slicer(input, output, session, data, categoryValue, uiSequence, serverFunction,
 
 \item{session}{Shiny server session object.}
 
-\item{data}{Reactive value containing data in form of a \code{data.table}.
-This data table is not changed.
+\item{datatable}{Reactive value containing data in form of a \code{data.table}.
+This data.table is not changed.
 Its subtables are accessed using \code{chosenCategories} and
 \code{chosenValues} arguments.
 This is helpful, because the end summary function might require

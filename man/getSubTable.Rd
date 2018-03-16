@@ -4,10 +4,10 @@
 \alias{.getSubtable}
 \title{Get subtable from a \code{data.table}}
 \usage{
-.getSubtable(dataTable, chosenCategories, chosenValues)
+.getSubtable(datatable, chosenCategories, chosenValues)
 }
 \arguments{
-\item{dataTable}{A \code{data.table}}
+\item{datatable}{A \code{data.table} object.}
 
 \item{chosenCategories}{...}
 
