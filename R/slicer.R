@@ -1,6 +1,6 @@
 #' Get subtable from a \code{data.table}
 #'
-#' @param datatable         A \code{data.table} object.
+#' @param datatable         A reactive \code{data.table} object.
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
@@ -151,7 +151,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- .getSubtable(datatable(), chosenCategories, chosenValues)
+      currentSubtable <- .getSubtable(datatable, chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, get(categoryName)] %>% unique()
 
