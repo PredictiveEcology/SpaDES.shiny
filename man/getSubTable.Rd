@@ -16,3 +16,4 @@
 \description{
 Get subtable from a \code{data.table}
 }
+\keyword{internal}

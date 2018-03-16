@@ -4,8 +4,7 @@
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
-#' @export
-# @keywords internal
+#' @keywords internal
 #' @rdname getSubTable
 .getSubtable <- function(dataTable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
