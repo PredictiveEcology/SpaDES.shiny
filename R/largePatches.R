@@ -73,7 +73,12 @@ largePatches <- function(session, input, output, numberOfSimulationTimes, clumpM
              serverFunction = function(datatable, chosenCategories, chosenValues) {
                observeEvent(datatable, {
                  histogramReactiveParams <- reactive({
+                   assert_that(is.reactive(datatable),
+                               msg = "largePatches: callModule(slicer): serverFunction: datatable is not reactive")
+
                    dt <- datatable()
+                   assert_that(is.data.table(dt),
+                               msg = "largePatches: callModule(slicer): serverFunction: dt is not a data.table")
 
                    subtableWith3DimensionsFixed <- .getSubtable(dt, chosenCategories, chosenValues)
                    ageClassPolygonSubtable <- .getSubtable(dt, head(chosenCategories, 2), head(chosenValues, 2)) # nolint

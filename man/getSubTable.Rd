@@ -7,11 +7,14 @@
 .getSubtable(datatable, chosenCategories, chosenValues)
 }
 \arguments{
-\item{datatable}{A \code{data.table} object.}
+\item{datatable}{A reactive \code{data.table} object.}
 
 \item{chosenCategories}{...}
 
 \item{chosenValues}{...}
+}
+\value{
+A \code{data.table} object
 }
 \description{
 Get subtable from a \code{data.table}

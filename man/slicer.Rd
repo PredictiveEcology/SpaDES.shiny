@@ -26,7 +26,7 @@ Its subtables are accessed using \code{chosenCategories} and
 This is helpful, because the end summary function might require
 information about entire data table.}
 
-\item{categoryValue}{Each time the data table is sliced (one dimension is cut off),
+\item{categoryValue}{Each time the \code{data.table} is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}
 
 \item{uiSequence}{A \code{data.table} of the form
@@ -42,13 +42,13 @@ An example of proper \code{uiSequence} is
 \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.}
 
 \item{serverFunction}{A summary module server function. This function should take
-three arguments: \code{data}, \code{chosenCategories} and
+three arguments: \code{datatable}, \code{chosenCategories} and
 \code{chosenValues}. Inside the function there should be
 a call to shiny module server function. See example section
 and compare with \code{link[shiny]{callModule}}).}
 
 \item{uiFunction}{A summary module function UI. This function should take
-one argument: \code{na}. Inside the function there should be
+one argument: \code{ns}. Inside the function there should be
 a call to shiny module UI function. See example section.}
 
 \item{chosenCategories}{A list with categories names that were already chosen.
@@ -88,4 +88,6 @@ on entire data table or some subtable determined by a subset of chosen values.
 Mateusz Wyszynski
 
 Mateusz Wyszynski
+
+Alex Chubaty
 }

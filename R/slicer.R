@@ -4,14 +4,20 @@
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
+#' @return A \code{data.table} object
+#'
 #' @export
-# @keywords internal
+#' @importFrom assertthat assert_that
+#  @keywords internal
 #' @rdname getSubTable
 .getSubtable <- function(datatable, chosenCategories, chosenValues) {
+  assert_that(is.data.table(datatable))
+
   if (NROW(chosenValues) == 0) {
     return(datatable)
   } else {
-    subtable <- datatable[chosenCategories[[1]] == chosenValues[[1]]]
+    ids <- which(datatable[[chosenCategories[[1]]]] %in% chosenValues[[1]])
+    subtable <- datatable[ids]
 
     .getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
@@ -95,7 +101,7 @@ slicerUI <- function(id) {
 #'                   This is helpful, because the end summary function might require
 #'                   information about entire data table.
 #'
-#' @param categoryValue Each time the data table is sliced (one dimension is cut off),
+#' @param categoryValue Each time the \code{data.table} is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
 #'
 #' @param uiSequence  A \code{data.table} of the form
@@ -111,13 +117,13 @@ slicerUI <- function(id) {
 #'                    \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.
 #'
 #' @param serverFunction A summary module server function. This function should take
-#'                       three arguments: \code{data}, \code{chosenCategories} and
+#'                       three arguments: \code{datatable}, \code{chosenCategories} and
 #'                       \code{chosenValues}. Inside the function there should be
 #'                       a call to shiny module server function. See example section
 #'                       and compare with \code{link[shiny]{callModule}}).
 #'
 #' @param uiFunction A summary module function UI. This function should take
-#'                   one argument: \code{na}. Inside the function there should be
+#'                   one argument: \code{ns}. Inside the function there should be
 #'                   a call to shiny module UI function. See example section.
 #'
 #' @param chosenCategories A list with categories names that were already chosen.
@@ -129,7 +135,9 @@ slicerUI <- function(id) {
 #' @return Shiny module server function.
 #'
 #' @author Mateusz Wyszynski
+#' @author Alex Chubaty
 #' @export
+#' @importFrom assertthat assert_that
 #' @importFrom shiny callModule mainPanel NS observeEvent renderUI tabPanel tabsetPanel
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
@@ -139,11 +147,16 @@ slicerUI <- function(id) {
 slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
+  assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
+
   ns <- session$ns
 
   observeEvent({
     datatable
   }, {
+    assert_that(is.data.table(datatable()),
+                msg = "slicer(): observeEvent: datatable() is not a data.table")
+
     if (nrow(uiSequence) == 0) {
       serverFunction(datatable, chosenCategories, chosenValues)
 
@@ -153,10 +166,10 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
 
       currentSubtable <- .getSubtable(datatable, chosenCategories, chosenValues)
 
-      categoriesValues <- currentSubtable[, get(categoryName)] %>% unique()
+      categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>% unique()
 
       categoriesValues %>% map(function(categoryValue) {
-        callModule(slicer, categoryValue, datatable(), categoryValue,
+        callModule(slicer, categoryValue, datatable, categoryValue,
                    uiSequence[-1, ], serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
                    c(chosenValues, list(categoryValue)))
