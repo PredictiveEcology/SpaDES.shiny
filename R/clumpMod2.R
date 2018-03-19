@@ -55,7 +55,8 @@ clumpMod2 <- function(input, output, session, tsf, vtm, currentPolygon, cl,
     message(paste("Running largePatchesFn"))
     shiny::withProgress(message = "Calculation in progress",
                         detail = "This may take a while...", value = 0, {
-                          args <- list(largePatchesFn, timeSinceFireFiles = tsf,
+                          args <- list(largePatchesFn,
+                                       timeSinceFireFiles = tsf,
                                        vegTypeMapFiles = vtm,
                                        cl = if (tryCatch(is(cl, "cluster"),
                                                          error = function(x) FALSE)) cl,
