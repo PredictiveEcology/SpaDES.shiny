@@ -80,7 +80,6 @@ ByteCompile: yes
 Collate: 
     'adminLogs.R'
     'authGoogle.R'
-    'clumpMod2.R'
     'config.R'
     'copyrightAuthors.R'
     'debugging.R'
@@ -91,7 +90,6 @@ Collate:
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'
-    'largePatches.R'
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
