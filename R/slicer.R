@@ -24,6 +24,10 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
 
 #' Generate UI (internal)
 #'
+#' @param uiType  Character indicating the UI type; currently one of \code{"box"} or \code{"tab"}.
+#'
+#' @param categoriesValue  Single column \code{data.table} containing the names of the categories.
+#'
 #' @importFrom purrr map
 #' @importFrom shiny mainPanel tabPanel
 #' @importFrom shinydashboard box
@@ -36,7 +40,7 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
              tabPanel(category, slicerUI(ns(category)))
            }
 
-           tabPanels <- categoriesValues %>% map(tabPanelWithSlicerContent)
+           tabPanels <- unname(categoriesValues) %>% map(tabPanelWithSlicerContent)
 
            mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
          },
@@ -48,33 +52,31 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
              )
            }
 
-           categoriesValues %>% map(boxWithSlicerContent)
+           unname(categoriesValues) %>% map(boxWithSlicerContent)
          }
   )
 }
 
 #' Slicer shiny module
 #'
-#' One can imagine behaviour of this module in the following way.
-#' A tree of height m is created. We begin at the top of the tree with the entire data table.
-#' A category (column) from a data table is chosen.
-#' This choice is determined by an user using \code{uiSequence} argument.
-#' Each value of this fixed category determines a subtable of the data table.
-#' For each value choice a child node is created.
-#' Value choice is passed to the corresponding child node.
-#' Therefore every child node implicitly receives a subtable corresponding to the
+#' One can imagine behaviour of this module in the following way:
+#' A tree of height \code{m} is created.
+#' We begin at the top of the tree with the entire \code{data.table}.
+#' A category (column) from a \code{data.table} is chosen via \code{uiSequence}.
+#' Each value of this fixed category determines a subtable of the \code{data.table}.
+#' For each value choice a child node is created and receives the value choice.
+#' Therefore, every child node implicitly receives a subtable corresponding to the
 #' received value choice.
 #' Child node also receives an information from user which category should be fixed next.
 #' It then performs the same calculations as the top node, but based on the implicitly
 #' received subtable.
 #' Simultaneously, for each node desired UI (e.g., tabs) is created.
-#' If no information about next category to fix is provided for a node,
-#' it assumes it is a leaf. At the end, at each leaf,
-#' a summary function is applied. Note that each leaf (and each node) receives
-#' the entire data table and the information about chosen values leading to this
-#' leaf (node).
-#' Hence summary can be based on implicitly determined subtable, but also based
-#' on entire data table or some subtable determined by a subset of chosen values.
+#' If no information about next category to fix is provided for a node, it assumes it is a leaf.
+#' At the end, at each leaf, a summary function is applied.
+#' Note that each leaf (and each node) receives the entire \code{data.table} and
+#' the information about chosen values leading to this leaf (node).
+#' Hence, summary can be based on implicitly determined subtable, but also based
+#' on entire \code{data.table} or some subtable determined by a subset of chosen values.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
