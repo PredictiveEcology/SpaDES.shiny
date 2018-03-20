@@ -38,6 +38,7 @@ histogramUI <- function(id, ...) {
 #'                      If \code{NULL} (default) then no axis is drawn.
 #'
 #' @export
+#' @importFrom assertthat assert_that
 #' @importFrom graphics axis barplot
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
@@ -48,6 +49,7 @@ histogram <- function(input, output, session, data, addAxisParams = NULL, ...) {
       data <- data()
     }
 
+    assertthat::assert_that(is.data.table(data))
     barplot(data, ...)
 
     if (!is.null(addAxisParams)) {

@@ -15,8 +15,9 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
     return(datatable)
   } else {
-    ids <- which(datatable[[chosenCategories[[1]]]] %in% chosenValues[[1]])
-    subtable <- datatable[ids]
+    #ids <- which(datatable[[chosenCategories[[1]]]] %in% chosenValues[[1]])
+    #subtable <- datatable[ids]
+    subtable <- setkeyv(datatable, chosenCategories[[1]])[chosenValues[[1]]]
 
     getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
@@ -138,11 +139,11 @@ slicerUI <- function(id) {
 #' @author Alex Chubaty
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom shiny callModule mainPanel NS observeEvent renderUI tabPanel tabsetPanel
+#' @importFrom data.table data.table
+#' @importFrom shiny callModule is.reactive mainPanel NS observeEvent renderUI tabPanel tabsetPanel
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
 #' @importFrom magrittr %>%
-#' @importFrom data.table data.table
 #' @rdname slicer
 slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,
@@ -168,11 +169,11 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
 
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>% unique()
 
-      categoriesValues %>% map(function(categoryValue) {
-        callModule(slicer, categoryValue, datatable, categoryValue,
-                   uiSequence[-1, ], serverFunction, uiFunction,
+      categoriesValues %>% map(function(value) {
+        callModule(slicer, value, datatable, value, uiSequence[-1, ],
+                   serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
-                   c(chosenValues, list(categoryValue)))
+                   c(chosenValues, list(value)))
       })
 
       uiType <- uiSequence$uiType[[1]]
