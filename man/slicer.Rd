@@ -20,11 +20,10 @@ slicer(input, output, session, datatable, categoryValue, uiSequence,
 \item{session}{Shiny server session object.}
 
 \item{datatable}{Reactive value containing data in form of a \code{data.table}.
-This data.table is not changed.
-Its subtables are accessed using \code{chosenCategories} and
-\code{chosenValues} arguments.
+This \code{data.table} is not changed; its subtables are accessed
+using \code{chosenCategories} and \code{chosenValues} arguments.
 This is helpful, because the end summary function might require
-information about entire data table.}
+information about entire \code{data.table}.}
 
 \item{categoryValue}{Each time the \code{data.table} is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}

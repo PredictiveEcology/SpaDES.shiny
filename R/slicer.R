@@ -8,9 +8,8 @@
 #'
 #' @export
 #' @importFrom assertthat assert_that
-#  @keywords internal
 #' @rdname getSubTable
-.getSubtable <- function(datatable, chosenCategories, chosenValues) {
+getSubtable <- function(datatable, chosenCategories, chosenValues) {
   assert_that(is.data.table(datatable))
 
   if (NROW(chosenValues) == 0) {
@@ -19,7 +18,7 @@
     ids <- which(datatable[[chosenCategories[[1]]]] %in% chosenValues[[1]])
     subtable <- datatable[ids]
 
-    .getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
+    getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
 }
 
@@ -95,11 +94,10 @@ slicerUI <- function(id) {
 #' @param output     Shiny server output object.
 #' @param session    Shiny server session object.
 #' @param datatable  Reactive value containing data in form of a \code{data.table}.
-#'                   This data.table is not changed.
-#'                   Its subtables are accessed using \code{chosenCategories} and
-#'                   \code{chosenValues} arguments.
+#'                   This \code{data.table} is not changed; its subtables are accessed
+#'                   using \code{chosenCategories} and \code{chosenValues} arguments.
 #'                   This is helpful, because the end summary function might require
-#'                   information about entire data table.
+#'                   information about entire \code{data.table}.
 #'
 #' @param categoryValue Each time the \code{data.table} is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
@@ -164,7 +162,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- .getSubtable(datatable, chosenCategories, chosenValues)
+      currentSubtable <- getSubtable(datatable, chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>% unique()
 
