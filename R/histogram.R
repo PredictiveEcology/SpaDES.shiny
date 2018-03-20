@@ -30,9 +30,9 @@ histogramUI <- function(id, ...) {
 #'
 #' @param session Shiny server session object
 #'
-#' @param data Reactive value containing a data table. This is global data.
-#'             Desired subtables can be retrieved using \code{chosenCategories}
-#'             and \code{chosenValues} parameters.
+#' @param datatable Reactive value containing a \code{data.table}.
+#'                  Desired subtables can be retrieved using \code{chosenCategories}
+#'                  and \code{chosenValues} parameters.
 #'
 #' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
 #'                      If \code{NULL} (default) then no axis is drawn.
@@ -43,14 +43,16 @@ histogramUI <- function(id, ...) {
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
 #' @rdname histogram
-histogram <- function(input, output, session, data, addAxisParams = NULL, ...) {
+histogram <- function(input, output, session, datatable, addAxisParams = NULL, ...) {
   output$histogram <- renderPlot({
-    if (is.reactive(data)) {
-      data <- data()
+    if (is.reactive(datatable)) {
+      dt <- datatable()
+    } else {
+      dt <- datatable
     }
+    assertthat::assert_that(is.data.table(dt))
 
-    assertthat::assert_that(is.data.table(data))
-    barplot(data, ...)
+    barplot(dt, ...)
 
     if (!is.null(addAxisParams)) {
       do.call(axis, addAxisParams())
