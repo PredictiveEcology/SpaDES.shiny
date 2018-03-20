@@ -162,7 +162,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- getSubtable(datatable, chosenCategories, chosenValues)
+      currentSubtable <- getSubtable(datatable(), chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>% unique()
 
