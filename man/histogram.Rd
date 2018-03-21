@@ -21,6 +21,12 @@ or additional server arguments passed to \code{\link[graphics]{barplot}}.}
 
 \item{session}{Shiny server session object}
 
+\item{histdata}{Reactive value containing a numeric vector of proportions corresponding
+to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)}
+represented as a proportion).
+Desired subtables can be retrieved using \code{chosenCategories}
+and \code{chosenValues} parameters.}
+
 \item{addAxisParams}{Reactive value with parameters to \code{\link[graphics]{axis}}.
 If \code{NULL} (default) then no axis is drawn.}
 }

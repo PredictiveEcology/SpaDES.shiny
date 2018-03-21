@@ -8,6 +8,7 @@
 #'
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom data.table is.data.table setkeyv
 #' @rdname getSubTable
 getSubtable <- function(datatable, chosenCategories, chosenValues) {
   assert_that(is.data.table(datatable))
@@ -139,11 +140,11 @@ slicerUI <- function(id) {
 #' @author Alex Chubaty
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom data.table data.table
+#' @importFrom data.table data.table is.data.table
+#' @importFrom magrittr %>%
 #' @importFrom shiny callModule is.reactive mainPanel NS observeEvent renderUI tabPanel tabsetPanel
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
-#' @importFrom magrittr %>%
 #' @rdname slicer
 slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,

@@ -31,7 +31,7 @@ histogramUI <- function(id, ...) {
 #' @param session Shiny server session object
 #'
 #' @param histdata  Reactive value containing a numeric vector of proportions corresponding
-#'                  to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)
+#'                  to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)}
 #'                  represented as a proportion).
 #'                  Desired subtables can be retrieved using \code{chosenCategories}
 #'                  and \code{chosenValues} parameters.
