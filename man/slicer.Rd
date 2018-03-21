@@ -7,7 +7,7 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, datatable, categoryValue, uiSequence,
+slicer(input, output, session, datatable, categoryValue, nSimTimes, uiSequence,
   serverFunction, uiFunction, chosenCategories = NULL, chosenValues = NULL)
 }
 \arguments{
@@ -27,6 +27,8 @@ information about entire \code{data.table}.}
 
 \item{categoryValue}{Each time the \code{data.table} is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}
+
+\item{nSimTimes}{Number of simulation timestamps there are.}
 
 \item{uiSequence}{A \code{data.table} of the form
 \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.

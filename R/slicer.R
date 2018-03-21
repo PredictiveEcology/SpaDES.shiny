@@ -106,6 +106,8 @@ slicerUI <- function(id) {
 #' @param categoryValue Each time the \code{data.table} is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
 #'
+#' @param nSimTimes   Number of simulation timestamps there are.
+#'
 #' @param uiSequence  A \code{data.table} of the form
 #'                    \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
 #'                    Both lists should contain elements of type character.
@@ -146,8 +148,8 @@ slicerUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
 #' @rdname slicer
-slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
-                   serverFunction, uiFunction, chosenCategories = NULL,
+slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
+                   uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
   assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
 
@@ -160,7 +162,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                 msg = "slicer(): observeEvent: datatable() is not a data.table")
 
     if (nrow(uiSequence) == 0) {
-      serverFunction(datatable, chosenCategories, chosenValues)
+      serverFunction(datatable, chosenCategories, chosenValues, nSimTimes)
 
       output$recursiveUI <- renderUI(uiFunction(ns))
     } else {
@@ -171,7 +173,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>% unique()
 
       categoriesValues %>% map(function(value) {
-        callModule(slicer, value, datatable, value, uiSequence[-1, ],
+        callModule(slicer, value, datatable, value, nSimTimes, uiSequence[-1, ],
                    serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
                    c(chosenValues, list(value)))
