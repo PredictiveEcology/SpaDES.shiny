@@ -30,7 +30,9 @@ histogramUI <- function(id, ...) {
 #'
 #' @param session Shiny server session object
 #'
-#' @param datatable Reactive value containing a \code{data.table}.
+#' @param histdata  Reactive value containing a numeric vector of proportions corresponding
+#'                  to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)
+#'                  represented as a proportion).
 #'                  Desired subtables can be retrieved using \code{chosenCategories}
 #'                  and \code{chosenValues} parameters.
 #'
@@ -43,16 +45,16 @@ histogramUI <- function(id, ...) {
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
 #' @rdname histogram
-histogram <- function(input, output, session, datatable, addAxisParams = NULL, ...) {
+histogram <- function(input, output, session, histdata, addAxisParams = NULL, ...) {
   output$histogram <- renderPlot({
-    if (is.reactive(datatable)) {
-      dt <- datatable()
+    if (is.reactive(histdata)) {
+      hst <- histdata()
     } else {
-      dt <- datatable
+      hst <- histdata
     }
-    assertthat::assert_that(is.data.table(dt))
+    assertthat::assert_that(is.numeric(hst))
 
-    barplot(dt, ...)
+    barplot(hst, ...)
 
     if (!is.null(addAxisParams)) {
       do.call(axis, addAxisParams())

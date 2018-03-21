@@ -7,7 +7,7 @@
 \usage{
 histogramUI(id, ...)
 
-histogram(input, output, session, datatable, addAxisParams = NULL, ...)
+histogram(input, output, session, histdata, addAxisParams = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -20,10 +20,6 @@ or additional server arguments passed to \code{\link[graphics]{barplot}}.}
 \item{output}{Shiny server output object}
 
 \item{session}{Shiny server session object}
-
-\item{datatable}{Reactive value containing a \code{data.table}.
-Desired subtables can be retrieved using \code{chosenCategories}
-and \code{chosenValues} parameters.}
 
 \item{addAxisParams}{Reactive value with parameters to \code{\link[graphics]{axis}}.
 If \code{NULL} (default) then no axis is drawn.}
