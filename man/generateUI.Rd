@@ -9,6 +9,8 @@
 \arguments{
 \item{uiType}{Character indicating the UI type; currently one of \code{"box"} or \code{"tab"}.}
 
+\item{ns}{Namespace function.}
+
 \item{categoriesValue}{Single column \code{data.table} containing the names of the categories.}
 }
 \description{

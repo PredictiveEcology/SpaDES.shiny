@@ -30,19 +30,22 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
 #'
 #' @param categoriesValue  Single column \code{data.table} containing the names of the categories.
 #'
+#' @param ns  Namespace function.
+#'
 #' @importFrom purrr map
 #' @importFrom shiny mainPanel tabPanel
 #' @importFrom shinydashboard box
 #' @keywords internal
 #' @rdname generateUI
 .generateUI <- function(uiType, categoriesValues, ns) {
+  categoriesValues <- unlist(categoriesValues) %>% unname() %>% as.list()
   switch(uiType,
          "tab" = {
            tabPanelWithSlicerContent <- function(category) {
              tabPanel(category, slicerUI(ns(category)))
            }
 
-           tabPanels <- unname(categoriesValues) %>% map(tabPanelWithSlicerContent)
+           tabPanels <- map(categoriesValues, tabPanelWithSlicerContent)
 
            mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
          },
@@ -54,7 +57,7 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
              )
            }
 
-           unname(categoriesValues) %>% map(boxWithSlicerContent)
+           map(categoriesValues, boxWithSlicerContent)
          }
   )
 }
