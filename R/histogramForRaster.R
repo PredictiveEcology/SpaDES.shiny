@@ -23,7 +23,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
   ns <- NS(id)
 
   plotParameters["outputId"] <- NULL
-  plotOutputParameters <- c(ns("histogram"), plotParameters)
+  plotOutputParameters <- c(ns("hist4rast"), plotParameters)
 
   box(title,
       shinycssloaders::withSpinner(
@@ -69,7 +69,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @rdname histogramForRaster
 histogramForRaster <- function(input, output, session, raster, histogramBreaks,
                                scale = 1, addAxisParams = NULL,  ...) {
-  output$histogram <- renderPlot({
+  output$hist4rast <- renderPlot({
     histogram <- raster::hist(raster(), plot = FALSE, breaks = histogramBreaks())
 
     barplot(histogram$counts * scale, ...)
