@@ -24,44 +24,6 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
   }
 }
 
-#' Generate UI (internal)
-#'
-#' @param uiType  Character indicating the UI type; currently one of \code{"box"} or \code{"tab"}.
-#'
-#' @param categoriesValue  Single column \code{data.table} containing the names of the categories.
-#'
-#' @param ns  Namespace function.
-#'
-#' @importFrom purrr map
-#' @importFrom shiny mainPanel tabPanel
-#' @importFrom shinydashboard box
-#' @keywords internal
-#' @rdname generateUI
-.generateUI <- function(uiType, categoriesValues, ns) {
-  categoriesValues <- unlist(categoriesValues) %>% unname() %>% as.list()
-  switch(uiType,
-         "tab" = {
-           tabPanelWithSlicerContent <- function(category) {
-             tabPanel(category, slicerUI(ns(category)))
-           }
-
-           tabPanels <- map(categoriesValues, tabPanelWithSlicerContent)
-
-           mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
-         },
-         "box" = {
-           boxWithSlicerContent <- function(category) {
-             shinydashboard::box(
-               width = 4, solidHeader = TRUE, collapsible = TRUE,
-               title = category, slicerUI(ns(category))
-             )
-           }
-
-           map(categoriesValues, boxWithSlicerContent)
-         }
-  )
-}
-
 #' Slicer shiny module
 #'
 #' One can imagine behaviour of this module in the following way:
@@ -155,6 +117,8 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
                    uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
   assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
+  assert_that(is.reactive(chosenCategories), msg = "slicer(): chosenCategories is not a list")
+  assert_that(is.reactive(chosenValues), msg = "slicer(): chosenValues is not a list")
 
   ns <- session$ns
 
@@ -185,7 +149,29 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
 
       uiType <- uiSequence$uiType[[1]]
 
-      output$recursiveUI <- renderUI(.generateUI(uiType, categoriesValues, ns))
+      output$recursiveUI <- renderUI({
+        switch(uiType,
+               "tab" = {
+                 tabPanelWithSlicerContent <- function(category) {
+                   tabPanel(category, slicerUI(ns(category)))
+                 }
+
+                 tabPanels <- map(categoriesValues, tabPanelWithSlicerContent)
+
+                 mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
+               },
+               "box" = {
+                 boxWithSlicerContent <- function(category) {
+                   shinydashboard::box(
+                     width = 4, solidHeader = TRUE, collapsible = TRUE,
+                     title = category, slicerUI(ns(category))
+                   )
+                 }
+
+                 map(categoriesValues, boxWithSlicerContent)
+               }
+        )
+      })
     }
   })
 }
