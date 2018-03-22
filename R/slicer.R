@@ -120,8 +120,6 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
   assert_that(is.reactive(chosenCategories), msg = "slicer(): chosenCategories is not a list")
   assert_that(is.reactive(chosenValues), msg = "slicer(): chosenValues is not a list")
 
-  ns <- session$ns
-
   observeEvent({
     datatable
   }, {
@@ -131,7 +129,8 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
     if (nrow(uiSequence) == 0) {
       serverFunction(datatable, chosenCategories, chosenValues, nSimTimes)
 
-      output$recursiveUI <- renderUI(uiFunction(ns))
+      output$recursiveUI <- renderUI(uiFunction(session$ns)) ## don't change the ns!
+
     } else {
       categoryName <- uiSequence$category[[1]]
 
@@ -150,6 +149,7 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
       uiType <- uiSequence$uiType[[1]]
 
       output$recursiveUI <- renderUI({
+        ns <- session$ns
         switch(uiType,
                "tab" = {
                  tabPanelWithSlicerContent <- function(category) {
