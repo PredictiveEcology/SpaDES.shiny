@@ -53,8 +53,6 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
                             colorTable, histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
-  ns <- session$ns
-
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
@@ -87,7 +85,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   })
 
   output_path <- reactive({
-    file.path("www", basename(output_subpath()), ns("map-tiles"))
+    file.path("www", basename(output_subpath()), session$ns("map-tiles")) ## don't change ns
   })
 
   rast <- reactive({
@@ -131,7 +129,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
 
   urlTemplate <- reactive({
     rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
-    file.path(basename(output_subpath()), ns("map-tiles"),
+    file.path(basename(output_subpath()), session$ns("map-tiles"), ## don't change ns
               paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
   })
 
@@ -141,7 +139,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
 
   click <- reactive(input$map_shape_click)
 
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"),
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, session$ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, rast, polys)
@@ -155,7 +153,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
   output$rotUI <- renderUI({
     tagList(
       box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
-          shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
+          shinycssloaders::withSpinner(leaflet::leafletOutput(session$ns("map"), height = 600)),
           sliderUI(ns("rastersSlider"), label = sliderTitle, min = 0,
                    max = (nRasters - 1) * rasterStepSize,
                    value = 0, step = rasterStepSize,
@@ -163,7 +161,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
           sliderUI(ns("polygonsSlider"), "Change polygons", min = 1, max = nPolygons,
                    value = 1, step = 1, animate = animationOptions(interval = 5000, loop = TRUE))
       ),
-      histogramForRasterUI(ns("histogram"), title = h4(histTitle),
+      histogramForRasterUI(session$ns("histogram"), title = h4(histTitle),
                            plotParameters = list(height = 600), solidHeader = TRUE,
                            collapsible = TRUE, width = 4)
     )

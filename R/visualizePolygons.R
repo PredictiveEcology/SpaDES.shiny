@@ -32,17 +32,15 @@ visualizePolygonsUI <- function(id, ...) {
 #' @importFrom leaflet leaflet addTiles addPolygons
 #' @rdname visualizePolygons
 visualizePolygons <- function(input, output, session, polys, proxy = NULL) {
-  ns <- session$ns
-
   if (is.null(proxy)) {
     output$map <- renderLeaflet({
       leaflet() %>%
         addTiles() %>%
-        addPolygons(data = polys(), group = ns("group"))
+        addPolygons(data = polys(), group = session$ns("group")) ## don't change ns
     })
 
     proxy <- leafletProxy("map")
-    callModule(polygonsUpdater, "updater", proxy, polys, group = ns("group"))
+    callModule(polygonsUpdater, "updater", proxy, polys, group = session$ns("group")) ## don't change ns
   } else {
     callModule(polygonsUpdater, "updater", proxy, polys)
   }
