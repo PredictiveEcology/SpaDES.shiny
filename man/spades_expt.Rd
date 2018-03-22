@@ -22,7 +22,7 @@ spades_expt(input, output, session, sim, reps, seed, objectsToHash,
 
 \item{objectsToHash}{A list of objects to hash (with \code{Cache}).}
 
-\item{cacheDebug}{Cache debgging (default \code{"complete"}). See \code{\link{Cache}}.}
+\item{cacheDebug}{Cache debugging (default \code{"complete"}). See \code{\link{Cache}}.}
 
 \item{...}{Additional arguments passed to \code{experiment}.}
 }

@@ -13,9 +13,7 @@ spades_simInit(input, output, session, ...)
 
 \item{session}{Shiny server session object.}
 
-\item{...}{Additional arguments passed to \code{simInit}.
-Note that \code{sim} and \code{reps} should be reactive
-(e.g., pass \code{sim = sim()}).}
+\item{...}{Additional arguments passed to \code{simInit}.}
 }
 \value{
 A reactive \code{simList} object
