@@ -135,7 +135,7 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
       currentSubtable <- getSubtable(datatable(), chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>%
-        unique() %>% unlist() %>% unname() # nolint
+        unique() %>% unname() # %>% unlist() # nolint
 
       map(categoriesValues, function(value) {
         callModule(slicer, value, datatable, value, nSimTimes, uiSequence[-1, ],
