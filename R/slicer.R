@@ -117,8 +117,6 @@ slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
                    uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
   assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
-  assert_that(is.reactive(chosenCategories), msg = "slicer(): chosenCategories is not a list")
-  assert_that(is.reactive(chosenValues), msg = "slicer(): chosenValues is not a list")
 
   observeEvent({
     datatable
