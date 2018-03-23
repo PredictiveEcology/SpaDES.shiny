@@ -5,7 +5,7 @@
 \title{Shiny module to run a \code{SpaDES} simulation experiment}
 \usage{
 spades_expt(input, output, session, sim, reps, seed, objectsToHash,
-  cacheDebug = "complete")
+  cacheDebug = "complete", spadesDebug = getOption("spades.debug"))
 }
 \arguments{
 \item{input}{Shiny server input object.}

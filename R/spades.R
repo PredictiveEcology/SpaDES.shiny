@@ -48,7 +48,7 @@ spades_simInit <- function(input, output, session, ...) {
 #' @importFrom SpaDES.core experiment
 #'
 spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
-                        cacheDebug = "complete") {
+                        cacheDebug = "complete", spadesDebug = getOption("spades.debug")) {
 
   runExperiment <- function(sim, nReps, seed, objectsToHash = "") {
     # # Do an initial run for each given study area so that all the data prep can be done once only
@@ -59,9 +59,10 @@ spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
     end(simCopy) <- 0
     message("Running Initial spades call")
     initialRun <- Cache(spades, sim = simCopy, #notOlderThan = Sys.time(),
-                        debug = "paste(Sys.time(), paste(unname(current(sim)), collapse = ' '))",
+                        debug = spadesDebug,
                         objects = "shpStudyRegion",
                         #cacheRepo = cachePath(sim),
+                        debugCache = cacheDebug,
                         .plotInitialTime = NA,
                         omitArgs = c("debug", ".plotInitialTime"))
 
@@ -70,7 +71,7 @@ spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
     message("Current experiment seed is: ", seed)
     args <- list(experiment, sim, replicates = nReps,
                  objects = objectsToHash,
-                 debug = "paste(unname(current(sim)), collapse = ' ')",
+                 debug = spadesDebug,
                  .plotInitialTime = NA,
                  clearSimEnv = TRUE,
                  omitArgs = c("debug", ".plotInitialTime"))
@@ -91,7 +92,7 @@ spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
     # A simList is a rich data structure that comes with the SpaDES.core package
     mySimOut <- Cache(runExperiment, sim(), nReps = reps(), seed = seed,
                       debugCache = cacheDebug,
-                      objectsToHash = objectsToHash(), objects = objectsToHash())#, sideEffect = TRUE)
+                      objectsToHash = objectsToHash(), objects = objectsToHash())
 
     message("  Finished Experiment.")
 
