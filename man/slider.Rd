@@ -5,20 +5,20 @@
 \alias{slider}
 \title{Slider Module}
 \usage{
-sliderUI(id, ...)
+sliderUI(id)
 
-slider(input, output, session)
+slider(input, output, session, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
-
-\item{...}{Additonal arguments passed to \code{sliderInput}.}
 
 \item{input}{shiny server input object}
 
 \item{output}{shiny server output object}
 
 \item{session}{shiny server session object}
+
+\item{...}{Additonal arguments passed to \code{sliderInput}.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.

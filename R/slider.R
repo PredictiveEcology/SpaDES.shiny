@@ -11,10 +11,10 @@
 #' @importFrom shiny NS sliderInput
 #' @rdname slider
 #' @seealso \code{\link{sliderInput}}
-sliderUI <- function(id, ...) {
+sliderUI <- function(id) {
   ns <- NS(id)
 
-  sliderInput(ns("slider"), ...)
+  uiOutput(ns("sliderOut"))
 }
 
 #' Slider Module
@@ -34,6 +34,12 @@ sliderUI <- function(id, ...) {
 #' @rdname slider
 #'
 #' @export
-slider <- function(input, output, session) {
+slider <- function(input, output, session, ...) {
+  output$sliderOut <- renderUI({
+    ns <- session$ns
+
+    sliderInput(ns("slider"), ...)
+  })
+
   return(reactive(input$slider))
 }

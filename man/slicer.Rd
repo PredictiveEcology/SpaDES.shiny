@@ -7,8 +7,9 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, datatable, categoryValue, nSimTimes, uiSequence,
-  serverFunction, uiFunction, chosenCategories = NULL, chosenValues = NULL)
+slicer(input, output, session, datatable, categoryValue, nSimTimes = NULL,
+  uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
+  chosenValues = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -42,11 +43,13 @@ Type "box": should be used only together with \pkg{shinydashboard}.
 An example of proper \code{uiSequence} is
 \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.}
 
-\item{serverFunction}{A summary module server function. This function should take
-three arguments: \code{datatable}, \code{chosenCategories} and
-\code{chosenValues}. Inside the function there should be
-a call to shiny module server function. See example section
-and compare with \code{link[shiny]{callModule}}).}
+\item{serverFunction}{A summary module server function.
+This function should take the following arguments only:
+\code{datatable}, \code{chosenCategories}, \code{chosenValues},
+and \code{nSimTimes}.
+Inside the function there should be a call to a shiny
+module server function.
+See example section and compare with \code{link[shiny]{callModule}}).}
 
 \item{uiFunction}{A summary module function UI. This function should take
 one argument: \code{ns}. Inside the function there should be

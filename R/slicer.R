@@ -85,11 +85,13 @@ slicerUI <- function(id) {
 #'                    An example of proper \code{uiSequence} is
 #'                    \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.
 #'
-#' @param serverFunction A summary module server function. This function should take
-#'                       three arguments: \code{datatable}, \code{chosenCategories} and
-#'                       \code{chosenValues}. Inside the function there should be
-#'                       a call to shiny module server function. See example section
-#'                       and compare with \code{link[shiny]{callModule}}).
+#' @param serverFunction A summary module server function.
+#'                       This function should take the following arguments only:
+#'                       \code{datatable}, \code{chosenCategories}, \code{chosenValues},
+#'                       and \code{nSimTimes}.
+#'                       Inside the function there should be a call to a shiny
+#'                       module server function.
+#'                       See example section and compare with \code{link[shiny]{callModule}}).
 #'
 #' @param uiFunction A summary module function UI. This function should take
 #'                   one argument: \code{ns}. Inside the function there should be
@@ -113,7 +115,8 @@ slicerUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @importFrom purrr map
 #' @rdname slicer
-slicer <- function(input, output, session, datatable, categoryValue, nSimTimes,
+#'
+slicer <- function(input, output, session, datatable, categoryValue, nSimTimes = NULL,
                    uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL) {
   assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
