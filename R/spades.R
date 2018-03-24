@@ -35,7 +35,9 @@ spades_simInit <- function(input, output, session, ...) {
 #' @param reps     A reactive indicating the number of replicates (e.g., pass \code{reps = reps()}).
 #' @param seed     An integer to pass to \code{set.seed} for the simulation experiment.
 #' @param objectsToHash  A list of objects to hash (with \code{Cache}).
-#' @param cacheDebug  Cache debugging (default \code{"complete"}). See \code{\link{Cache}}.
+#' @param cacheDebug  \code{Cache()} debugging (default \code{"complete"}). See \code{\link{Cache}}.
+#' @param spadesDebug \code{spades()} debugging (default \code{getOption("spades.debug")}).
+#'                    See \code{link{spades}}.
 #' @param ...      Additional arguments passed to \code{experiment}.
 #'
 #' @return A list of \code{simList} objects.
