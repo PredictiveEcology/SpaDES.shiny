@@ -18,7 +18,7 @@ slider(input, output, session, ...)
 
 \item{session}{shiny server session object}
 
-\item{...}{Additonal arguments passed to \code{sliderInput}.}
+\item{...}{Additional arguments passed to \code{\link{sliderInput}}.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
