@@ -75,7 +75,8 @@ histogramForRaster <- function(input, output, session, raster, histogramBreaks,
     barplot(histogram$counts * scale, ...)
 
     if (!is.null(addAxisParams)) {
-      do.call(axis, addAxisParams())
+      axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
+      do.call(axis, axps)
     }
   })
 }

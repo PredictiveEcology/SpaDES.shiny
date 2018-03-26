@@ -57,7 +57,8 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL, ..
     barplot(hst, ...)
 
     if (!is.null(addAxisParams)) {
-      do.call(axis, addAxisParams())
+      axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
+      do.call(axis, axps)
     }
   })
 }
