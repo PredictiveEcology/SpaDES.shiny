@@ -1,6 +1,6 @@
 #' Get subtable from a \code{data.table}
 #'
-#' @param datatable         A reactive \code{data.table} object.
+#' @param datatable         A \code{data.table} object.
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
@@ -62,16 +62,13 @@ slicerUI <- function(id) {
 #' @param input      Shiny server input object.
 #' @param output     Shiny server output object.
 #' @param session    Shiny server session object.
-#' @param datatable  Reactive value containing data in form of a \code{data.table}.
-#'                   This \code{data.table} is not changed; its subtables are accessed
+#' @param datatable  A \code{data.table} whose subtables are accessed (but not modified)
 #'                   using \code{chosenCategories} and \code{chosenValues} arguments.
 #'                   This is helpful, because the end summary function might require
-#'                   information about entire \code{data.table}.
+#'                   information about the entire \code{data.table}.
 #'
 #' @param categoryValue Each time the \code{data.table} is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
-#'
-#' @param nSimTimes   Number of simulation timestamps there are.
 #'
 #' @param uiSequence  A \code{data.table} of the form
 #'                    \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
@@ -86,9 +83,9 @@ slicerUI <- function(id) {
 #'                    \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.
 #'
 #' @param serverFunction A summary module server function.
-#'                       This function should take the following arguments only:
-#'                       \code{datatable}, \code{chosenCategories}, \code{chosenValues},
-#'                       and \code{nSimTimes}.
+#'                       This function should take, at minimum, the following arguments:
+#'                       \code{datatable}, \code{chosenCategories}, \code{chosenValues}.
+#'                       Additonal named arguments are passed via \code{...}.
 #'                       Inside the function there should be a call to a shiny
 #'                       module server function.
 #'                       See example section and compare with \code{link[shiny]{callModule}}).
@@ -103,6 +100,8 @@ slicerUI <- function(id) {
 #' @param chosenValues A list with categories values that were already chosen.
 #'                     Default \code{NULL}.
 #'
+#' @param ...          Additional arguments passed to \code{serverFunction}.
+#'
 #' @return Shiny module server function.
 #'
 #' @author Mateusz Wyszynski
@@ -116,35 +115,36 @@ slicerUI <- function(id) {
 #' @importFrom purrr map
 #' @rdname slicer
 #'
-slicer <- function(input, output, session, datatable, categoryValue, nSimTimes = NULL,
-                   uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
-                   chosenValues = NULL) {
-  assert_that(is.reactive(datatable), msg = "slicer(): datatable is not reactive")
-
+slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
+                   serverFunction, uiFunction, chosenCategories = NULL,
+                   chosenValues = NULL, ...) {
   observeEvent({
     datatable
   }, {
-    assert_that(is.data.table(datatable()),
-                msg = "slicer(): observeEvent: datatable() is not a data.table")
+    if (is.reactive(datatable)) {
+      dt <- datatable()
+    } else {
+      dt <- datatable
+    }
+    assert_that(is.data.table(dt))
 
     if (nrow(uiSequence) == 0) {
-      serverFunction(datatable, chosenCategories, chosenValues, nSimTimes)
+      serverFunction(dt, chosenCategories, chosenValues, ...)
 
       output$recursiveUI <- renderUI(uiFunction(session$ns)) ## don't change the ns!
-
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- getSubtable(datatable(), chosenCategories, chosenValues)
+      currentSubtable <- getSubtable(dt, chosenCategories, chosenValues)
 
       categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>%
         unique() %>% unlist() %>% unname() # nolint
 
       map(categoriesValues, function(value) {
-        callModule(slicer, value, datatable, value, nSimTimes, uiSequence[-1, ],
+        callModule(slicer, value, currentSubtable, value, uiSequence[-1, ],
                    serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
-                   c(chosenValues, list(value)))
+                   c(chosenValues, list(value)), ...)
       })
 
       uiType <- uiSequence$uiType[[1]]

@@ -1,3 +1,4 @@
+#' \dontrun{
 library(data.table)
 library(shiny)
 library(shinydashboard)
@@ -22,15 +23,15 @@ DT <- reactive({
 uiSequence <- data.table(category = c("Alliance", "Race"), uiType = c("tab", "box"))
 
 server <- function(input, output, session) {
-  callModule(slicer, "slicer", datatable = DT, categoryValue = "LOTR",
+  callModule(slicer, "slicer", datatable = DT, categoryValue = "LOTR", ## ?categoryvalue?
              uiSequence = uiSequence,
-             serverFunction = function(datatable, chosenCategories, chosenValues, nSimTimes) {
+             serverFunction = function(datatable, chosenCategories, chosenValues) {
                callModule(slider, "slider",
-                          min = datatable()[, min(datatable()$Forces)],
-                          max = datatable()[, sum(datatable()$Forces)],
-                          value = datatable()[, min(datatable()$Forces)],
+                          min = datatable[, min(Forces)],
+                          max = datatable[, sum(Forces)],
+                          value = datatable[, min(Forces)],
                           step = 1,
-                          label = "label")
+                          label = "Forces")
              },
              uiFunction = function(ns) {
                sliderUI(ns("slider"))
@@ -46,14 +47,16 @@ ui <- dashboardPage(
 )
 
 shinyApp(ui, server)
-
+#' }
+#'
+#' \dontrun{
 ## EXAMPLE 2
 uiSequence2 <- data.table(category = c("Alliance", "Race"), uiType = c("box", "tab"))
 
 server2 <- function(input, output, session) {
   callModule(slicer, "slicer", datatable = DT, uiSequence = uiSequence,
-             serverFunction = function(datatable, chosenCategories, chosenValues, nSimTimes) {
-               callModule(histogram, "histogram", datatable()[, datatable()$Forces])
+             serverFunction = function(datatable, chosenCategories, chosenValues) {
+               callModule(histogram, "histogram", datatable[, Forces])
              },
              uiFunction = function(ns) {
                histogramUI(ns("histogram"), height = 300)
@@ -69,3 +72,4 @@ ui2 <- dashboardPage(
 )
 
 shinyApp(ui2, server2)
+#' }

@@ -7,9 +7,9 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, datatable, categoryValue, nSimTimes = NULL,
-  uiSequence, serverFunction, uiFunction, chosenCategories = NULL,
-  chosenValues = NULL)
+slicer(input, output, session, datatable, categoryValue, uiSequence,
+  serverFunction, uiFunction, chosenCategories = NULL, chosenValues = NULL,
+  ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -20,16 +20,13 @@ slicer(input, output, session, datatable, categoryValue, nSimTimes = NULL,
 
 \item{session}{Shiny server session object.}
 
-\item{datatable}{Reactive value containing data in form of a \code{data.table}.
-This \code{data.table} is not changed; its subtables are accessed
+\item{datatable}{A \code{data.table} whose subtables are accessed (but not modified)
 using \code{chosenCategories} and \code{chosenValues} arguments.
 This is helpful, because the end summary function might require
-information about entire \code{data.table}.}
+information about the entire \code{data.table}.}
 
 \item{categoryValue}{Each time the \code{data.table} is sliced (one dimension is cut off),
 concrete value of the category is set. This argument stores this value.}
-
-\item{nSimTimes}{Number of simulation timestamps there are.}
 
 \item{uiSequence}{A \code{data.table} of the form
 \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
@@ -44,9 +41,9 @@ An example of proper \code{uiSequence} is
 \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.}
 
 \item{serverFunction}{A summary module server function.
-This function should take the following arguments only:
-\code{datatable}, \code{chosenCategories}, \code{chosenValues},
-and \code{nSimTimes}.
+This function should take, at minimum, the following arguments:
+\code{datatable}, \code{chosenCategories}, \code{chosenValues}.
+Additonal named arguments are passed via \code{...}.
 Inside the function there should be a call to a shiny
 module server function.
 See example section and compare with \code{link[shiny]{callModule}}).}
@@ -60,6 +57,8 @@ Default \code{NULL}.}
 
 \item{chosenValues}{A list with categories values that were already chosen.
 Default \code{NULL}.}
+
+\item{...}{Additional arguments passed to \code{serverFunction}.}
 }
 \value{
 Shiny module UI.
