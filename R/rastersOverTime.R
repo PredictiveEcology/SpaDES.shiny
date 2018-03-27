@@ -62,6 +62,8 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
                                  min = 0, max = (nRasters - 1) * rasterStepSize,
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
+
+  # TODO: use dropdown selector for changing polygons instead of slider
   polygonIndexValue <- callModule(slider, "polygonsSlider", "Change polygons",
                                   min = 1, max = nPolygons, value = 1, step = 1,
                                   animate = animationOptions(interval = 5000, loop = TRUE))
