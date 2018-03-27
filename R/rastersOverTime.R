@@ -109,7 +109,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
 
     Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
           colorTableFile = asPath(colorTable), cacheRepo = cache_path(),
-          notOlderThan = cacheNotOlderThan, digestPathContent = TRUE)
+          notOlderThan = cacheNotOlderThan)
 
     return(rst);
   })
