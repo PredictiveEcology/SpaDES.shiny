@@ -9,8 +9,9 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rasterList, polygonList,
   shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
-  studyArea = "SMALL", sim = NULL, mapTitle = "", sliderTitle = "",
-  histTitle = "", nPolygons, nRasters, rasterStepSize = 10)
+  studyArea = "SMALL", sim = NULL, mapLegend = "", mapTitle = "",
+  sliderTitle = "", histTitle = "", nPolygons, nRasters,
+  rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -41,6 +42,8 @@ Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
 # TODO: use actual study area!}
 
 \item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
+
+\item{mapLegend}{The legend text to add to the leaflet map}
 
 \item{mapTitle}{Title to be shown above the map.}
 

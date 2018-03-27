@@ -19,6 +19,7 @@ timeSeriesofRastersUI <- function(id) {
 
 #' @inheritParams rastersOverTime
 #'
+#' @param mapLegend           The legend text to add to the leaflet map
 #' @param shpStudyRegionFull  Study area region. # TODO: fix this
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
@@ -52,7 +53,7 @@ timeSeriesofRastersUI <- function(id) {
 #'
 timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
-                                studyArea = "SMALL", sim = NULL,
+                                studyArea = "SMALL", sim = NULL, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
@@ -69,8 +70,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                      options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addLegend(position = "bottomright", pal = palette, values = 1:maxAge,
-              title = paste0("Time since fire", br(), "(years)")) %>%
+    addLegend(position = "bottomright", pal = palette, values = 1:maxAge, title = mapLegend) %>%
     addMeasure(
       position = "bottomleft",
       primaryLengthUnit = "kilometers",
