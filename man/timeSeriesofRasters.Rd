@@ -53,6 +53,10 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 \item{nRasters}{The number of available rasters.}
 
 \item{rasterStepSize}{Size of step in the raster slider.}
+
+\item{subRegionName}{Name of the study area subregion (from \code{rasterList}).}
+
+\item{shpStudyRegion}{Study area region.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.
