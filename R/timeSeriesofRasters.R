@@ -55,18 +55,25 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
+  if (is.reactive(polygonList)) {
+    polys <- polygonList()
+  } else {
+    polys <- polygonList
+  }
+  assertthat::assert_that(is.list(polygonList)) ## TODO: test structure of the list, etc.
+
   ## the full study region, using leaflet projection (used for map only here)
   shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-    polygonList[[1]][["crsLFLT"]][["shpStudyRegion"]]
+    polys[[1]][["crsLFLT"]][["shpStudyRegion"]]
   } else {
-    polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+    polys[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
   }
 
   ## the sub study region, using leaflet projection (used for map only here)
   subRegion <- if (is.null(shpStudyRegionName)) {
-    polygonList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+    polys[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
   } else {
-    polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
+    polys[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
   }
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -102,7 +109,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
   chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                           defaultPolyName = defaultPolyName, polygonList = polygonList,
+                           defaultPolyName = defaultPolyName, polygonList = polys,
                            map = leafMap,  colorTable = colorTable,
                            histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                            nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
