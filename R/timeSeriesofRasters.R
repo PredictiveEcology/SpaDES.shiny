@@ -60,16 +60,16 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
 
     ## the full study region, using leaflet projection (used for map only here)
     shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-      polys[[1]][["crsLFLT"]][["shpStudyRegion"]]
+      polygonList[[1]][["crsLFLT"]][["shpStudyRegion"]]
     } else {
-      polys[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+      polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
     }
 
     ## the sub study region, using leaflet projection (used for map only here)
     subRegion <- if (is.null(shpStudyRegionName)) {
-      polys[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polygonList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
     } else {
-      polys[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -106,7 +106,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
   })
 
   chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                           defaultPolyName = defaultPolyName, polygonList = polys,
+                           defaultPolyName = defaultPolyName, polygonList = polygonList,
                            map = leafMap,  colorTable = colorTable,
                            histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                            nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
