@@ -93,6 +93,7 @@ Collate:
     'leaflet.R'
     'libInit.R'
     'pkgInfo.R'
+    'polygonChooser.R'
     'polygonsUpdater.R'
     'rastersOverTime.R'
     'shine.R'
