@@ -90,6 +90,7 @@ Collate:
     'generator.R'
     'histogram.R'
     'histogramForRaster.R'
+    'leaflet.R'
     'libInit.R'
     'pkgInfo.R'
     'polygonsUpdater.R'
