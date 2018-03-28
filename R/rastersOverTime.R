@@ -156,7 +156,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
       box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
           shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
           sliderUI(ns("rastersSlider")),
-          sliderUI(ns("polygonsSlider"))
+          polygonChooserUI(ns("polyDropdown"))
       ),
       histogramForRasterUI(ns("histogram"), title = h4(histTitle),
                            plotParameters = list(height = 600), solidHeader = TRUE,
