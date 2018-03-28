@@ -8,10 +8,10 @@
 timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rasterList, polygonList,
-  defaultPoly = NULL, subRegionName = NULL, shpStudyRegion, colorTable,
-  palette, maxAge, zoom = 5, studyArea = "SMALL", sim = NULL,
-  mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
-  nPolygons, nRasters, rasterStepSize = 10)
+  defaultPolyName = NULL, shpStudyRegionName = NULL, colorTable, palette,
+  maxAge, zoom = 5, sim = NULL, mapLegend = "", mapTitle = "",
+  sliderTitle = "", histTitle = "", nPolygons, nRasters,
+  rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -26,11 +26,9 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
-\item{defaultPoly}{Name of the polygon to use as the default for mapping.}
+\item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
-\item{subRegionName}{Name of the study area subregion (from \code{rasterList}).}
-
-\item{shpStudyRegion}{Study area region.}
+\item{shpStudyRegionName}{Name of the study area region (from \code{rasterList})..}
 
 \item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
@@ -40,14 +38,9 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{zoom}{Initial leaflet zoom.}
 
-\item{studyArea}{Size of study area.
-Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
-\code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
-# TODO: use actual study area!}
-
 \item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
 
-\item{mapLegend}{The legend text to add to the leaflet map}
+\item{mapLegend}{The legend text to add to the leaflet map.}
 
 \item{mapTitle}{Title to be shown above the map.}
 

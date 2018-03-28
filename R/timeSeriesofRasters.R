@@ -19,16 +19,11 @@ timeSeriesofRastersUI <- function(id) {
 
 #' @inheritParams rastersOverTime
 #'
-#' @param mapLegend           The legend text to add to the leaflet map
-#' @param subRegionName       Name of the study area subregion (from \code{rasterList}).
-#' @param shpStudyRegion      Study area region.
+#' @param mapLegend           The legend text to add to the leaflet map.
+#' @param shpStudyRegionName  Name of the study area region (from \code{rasterList})..
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
-#' @param studyArea           Size of study area.
-#'                            Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
-#'                            \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
-#'                            # TODO: use actual study area!
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -54,16 +49,24 @@ timeSeriesofRastersUI <- function(id) {
 #' @rdname timeSeriesofRasters
 #'
 timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
-                                defaultPoly = NULL, subRegionName = NULL,
-                                shpStudyRegion, colorTable, palette, maxAge, zoom = 5,
-                                studyArea = "SMALL", sim = NULL, mapLegend = "",
+                                defaultPolyName = NULL, shpStudyRegionName = NULL,
+                                colorTable, palette, maxAge, zoom = 5,
+                                sim = NULL, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  subRegion <- if (is.null(subRegionName)) {
-    polygonList[[1]]
+  ## the full study region, using leaflet projection (used for map only here)
+  shpStudyRegion <- if (is.null(shpStudyRegionName)) {
+    polygonList[[1]][["crsLFLT"]][["shpStudyRegion"]]
   } else {
-    polygonList[[subRegionName]]
+    polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+  }
+
+  ## the sub study region, using leaflet projection (used for map only here)
+  subRegion <- if (is.null(shpStudyRegionName)) {
+    polygonList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+  } else {
+    polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
   }
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -99,7 +102,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
   chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                           defaultPoly = defaultPoly, polygonList = polygonList,
+                           defaultPolyName = defaultPolyName, polygonList = polygonList,
                            map = leafMap,  colorTable = colorTable,
                            histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                            nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,

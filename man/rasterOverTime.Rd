@@ -8,7 +8,7 @@
 rastersOverTimeUI(id)
 
 rastersOverTime(input, output, session, rasterList, polygonList,
-  defaultPoly = NULL, map = leaflet(), colorTable, histTitle = "",
+  defaultPolyName = NULL, map = leaflet(), colorTable, histTitle = "",
   sliderTitle = "", mapTitle = "", nPolygons, nRasters,
   rasterStepSize = 10, sim = NULL, cacheNotOlderThan = Sys.time())
 }
@@ -25,7 +25,7 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
-\item{defaultPoly}{Name of the polygon to use as the default for mapping.}
+\item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
 \item{map}{Leaflet map to show raster and polygons on.}
 

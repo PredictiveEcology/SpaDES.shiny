@@ -24,7 +24,7 @@ rastersOverTimeUI <- function(id) {
 #' @param session         Shiny server session object.
 #' @param rasterList      List of rasters to be displayed.
 #' @param polygonList     List with sets of polygons. Each such set can be displayed on a leaflet map.
-#' @param defaultPoly     Name of the polygon to use as the default for mapping.
+#' @param defaultPolyName Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorTable      File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).
 #' @param histTitle       Title to be shown above the histogram.
@@ -52,7 +52,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rasterList, polygonList,
-                            defaultPoly = NULL, map = leaflet(), colorTable,
+                            defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
@@ -66,7 +66,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
 
-  polys <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPoly)
+  chosenPol <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName)
 
   cache_path <- reactive({
     if (is.null(sim)) {
@@ -142,9 +142,9 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, rast, polys)
+  callModule(summaryPopups, "popups", mapProxy, click, rast, chosenPol)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, polys, weight = 0.2)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, chosenPol, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
@@ -165,5 +165,5 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
     )
   })
 
-  return(polys) ## the reactive polygon selected by the user
+  return(chosenPol) ## the reactive polygon selected by the user
 }
