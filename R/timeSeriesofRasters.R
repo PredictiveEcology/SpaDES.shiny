@@ -19,9 +19,8 @@ timeSeriesofRastersUI <- function(id) {
 
 #' @inheritParams rastersOverTime
 #'
-#' @param mapLegend           The legend text to add to the leaflet map
-#' @param subRegionName       Name of the study area subregion (from \code{rasterList}).
-#' @param shpStudyRegion      Study area region.
+#' @param mapLegend           The legend text to add to the leaflet map.
+#' @param shpStudyRegionName  Name of the study area region (from \code{rasterList})..
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.

@@ -28,6 +28,8 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
+\item{shpStudyRegionName}{Name of the study area region (from \code{rasterList})..}
+
 \item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
 \item{palette}{Color palette for the rasters.}
@@ -38,7 +40,7 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
 
-\item{mapLegend}{The legend text to add to the leaflet map}
+\item{mapLegend}{The legend text to add to the leaflet map.}
 
 \item{mapTitle}{Title to be shown above the map.}
 
