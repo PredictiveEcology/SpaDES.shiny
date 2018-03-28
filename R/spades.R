@@ -62,7 +62,7 @@ spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
     message("Running Initial spades call")
     initialRun <- Cache(spades, sim = simCopy, #notOlderThan = Sys.time(),
                         debug = spadesDebug,
-                        objects = "shpSubStudyRegion",
+                        objects = "shpStudySubRegion", # TODO: this is landweb specific
                         #cacheRepo = cachePath(sim),
                         debugCache = cacheDebug,
                         .plotInitialTime = NA,

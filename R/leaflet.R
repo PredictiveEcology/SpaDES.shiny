@@ -1,1 +1,1 @@
-crsLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
