@@ -8,10 +8,10 @@
 timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rasterList, polygonList,
-  shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
-  studyArea = "SMALL", sim = NULL, mapLegend = "", mapTitle = "",
-  sliderTitle = "", histTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10)
+  defaultPoly = NULL, subRegionName = NULL, shpStudyRegionFull, colorTable,
+  palette, maxAge, zoom = 5, studyArea = "SMALL", sim = NULL,
+  mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
+  nPolygons, nRasters, rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -25,6 +25,10 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 \item{rasterList}{List of rasters to be displayed.}
 
 \item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+
+\item{defaultPoly}{Name of the polygon to use as the default for mapping.}
+
+\item{subRegionName}{Name of the study area subregion (from \code{rasterList}).}
 
 \item{shpStudyRegionFull}{Study area region. # TODO: fix this}
 

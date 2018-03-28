@@ -24,6 +24,7 @@ rastersOverTimeUI <- function(id) {
 #' @param session         Shiny server session object.
 #' @param rasterList      List of rasters to be displayed.
 #' @param polygonList     List with sets of polygons. Each such set can be displayed on a leaflet map.
+#' @param defaultPoly     Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorTable      File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).
 #' @param histTitle       Title to be shown above the histogram.

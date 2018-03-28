@@ -20,6 +20,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @inheritParams rastersOverTime
 #'
 #' @param mapLegend           The legend text to add to the leaflet map
+#' @param subRegionName       Name of the study area subregion (from \code{rasterList}).
 #' @param shpStudyRegionFull  Study area region. # TODO: fix this
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
@@ -52,12 +53,17 @@ timeSeriesofRastersUI <- function(id) {
 #' @rdname timeSeriesofRasters
 #'
 timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
+                                defaultPoly = NULL, subRegionName = NULL,
                                 shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
                                 studyArea = "SMALL", sim = NULL, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  subRegion <- polygonList$`LandWeb Study Area` # TODO: why this particular list entry only? is this the smallest area?
+  subRegion <- if (is.null(subRegionName)) {
+    polygonList[[1]]
+  } else {
+    polygonList[[subRegionName]]
+  }
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
@@ -72,7 +78,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       activeColor = "#3D535D",
       completedColor = "#7D4479") %>%
     addEasyButton(easyButton(
-      icon = "fa-map", title = "Zoom to focal area", # TODO: generalize this
+      icon = "fa-map", title = "Zoom to focal area",
       onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(subRegion), ", ",
                           xmin(subRegion), "], [", ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
     addEasyButton(easyButton(
@@ -87,12 +93,11 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
             mean(c(ymin(shpStudyRegionFull), ymax(shpStudyRegionFull))),
             zoom = zoom) %>%
     addPolygons(data = isolate(shpStudyRegionFull),
-                group = "Fire return interval",
+                group = "Fire return interval", # TODO: generalize this
                 fillOpacity = 0.3, weight = 1, color = "blue",
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
-  browser()
-  callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+  callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList, defaultPoly = defaultPoly,
              polygonList = polygonList, map = leafMap,  colorTable = colorTable,
              histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
              nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10, sim = sim,

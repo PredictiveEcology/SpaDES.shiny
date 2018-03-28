@@ -25,6 +25,8 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
 
+\item{defaultPoly}{Name of the polygon to use as the default for mapping.}
+
 \item{map}{Leaflet map to show raster and polygons on.}
 
 \item{colorTable}{File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).}
