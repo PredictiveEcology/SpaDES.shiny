@@ -21,7 +21,7 @@ timeSeriesofRastersUI <- function(id) {
 #'
 #' @param mapLegend           The legend text to add to the leaflet map
 #' @param subRegionName       Name of the study area subregion (from \code{rasterList}).
-#' @param shpStudyRegionFull  Study area region. # TODO: fix this
+#' @param shpStudyRegion      Study area region.
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
@@ -55,7 +55,7 @@ timeSeriesofRastersUI <- function(id) {
 #'
 timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 defaultPoly = NULL, subRegionName = NULL,
-                                shpStudyRegionFull, colorTable, palette, maxAge, zoom = 5,
+                                shpStudyRegion, colorTable, palette, maxAge, zoom = 5,
                                 studyArea = "SMALL", sim = NULL, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
@@ -85,15 +85,15 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     addEasyButton(easyButton(
       icon = "fa-globe", title = "Zoom out to full study area",
       onClick = JS(paste0("function(btn, map){ map.setView([",
-                          mean(c(ymin(shpStudyRegionFull),
-                                 ymax(shpStudyRegionFull))), ", ",
-                          mean(c(xmin(shpStudyRegionFull),
-                                 xmax(shpStudyRegionFull))), "], 5)}")))) %>%
+                          mean(c(ymin(shpStudyRegion),
+                                 ymax(shpStudyRegion))), ", ",
+                          mean(c(xmin(shpStudyRegion),
+                                 xmax(shpStudyRegion))), "], 5)}")))) %>%
     addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-    setView(mean(c(xmin(shpStudyRegionFull), xmax(shpStudyRegionFull))),
-            mean(c(ymin(shpStudyRegionFull), ymax(shpStudyRegionFull))),
+    setView(mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))),
+            mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))),
             zoom = zoom)# %>%
-    # addPolygons(data = isolate(shpStudyRegionFull),
+    # addPolygons(data = isolate(shpStudyRegion),
     #             group = "Fire return interval", # TODO: generalize this
     #             fillOpacity = 0.3, weight = 1, color = "blue",
     #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this

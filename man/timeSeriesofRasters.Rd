@@ -8,7 +8,7 @@
 timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rasterList, polygonList,
-  defaultPoly = NULL, subRegionName = NULL, shpStudyRegionFull, colorTable,
+  defaultPoly = NULL, subRegionName = NULL, shpStudyRegion, colorTable,
   palette, maxAge, zoom = 5, studyArea = "SMALL", sim = NULL,
   mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
   nPolygons, nRasters, rasterStepSize = 10)
@@ -30,7 +30,7 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{subRegionName}{Name of the study area subregion (from \code{rasterList}).}
 
-\item{shpStudyRegionFull}{Study area region. # TODO: fix this}
+\item{shpStudyRegion}{Study area region.}
 
 \item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
