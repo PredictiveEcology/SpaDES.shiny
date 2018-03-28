@@ -49,8 +49,9 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rasterList, polygonList, map = leaflet(),
-                            colorTable, histTitle = "", sliderTitle = "", mapTitle = "",
+rastersOverTime <- function(input, output, session, rasterList, polygonList,
+                            defaultPoly = NULL, map = leaflet(), colorTable,
+                            histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
   ns <- session$ns
@@ -63,19 +64,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList, map
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
 
-  # TODO: use dropdown selector for changing polygons instead of slider
-  polygonIndexValue <- callModule(slider, "polygonsSlider", "Change polygons",
-                                  min = 1, max = nPolygons, value = 1, step = 1,
-                                  animate = animationOptions(interval = 5000, loop = TRUE))
-
-  polys <- reactive({
-    index <- if (is.null(polygonIndexValue())) {
-      1
-    } else {
-      polygonIndexValue()
-    }
-    return(polygonList[[index]])
-  })
+  polys <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPoly)
 
   cache_path <- reactive({
     if (is.null(sim)) {

@@ -89,7 +89,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     addPolygons(data = isolate(shpStudyRegionFull),
                 group = "Fire return interval",
                 fillOpacity = 0.3, weight = 1, color = "blue",
-                fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
+                fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
   browser()
   callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
