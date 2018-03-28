@@ -57,13 +57,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  polygonsInput <- spTransform(shpStudyRegionFull, crs(polygonList[[3]])) # TODO: why polygonList()[[3]]??
-
-  leafZoom <- zoom
-
-  pol <- polygonList[[4]] # TODO: why this particular list entry only? is this the smallest area?
-
-  shpStudyRegionFullLFLT <- spTransform(shpStudyRegionFull, crs(polygonsInput))
+  subRegion <- polygonList$`LandWeb Study Area` # TODO: why this particular list entry only? is this the smallest area?
 
   leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
     addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
@@ -79,23 +73,25 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       completedColor = "#7D4479") %>%
     addEasyButton(easyButton(
       icon = "fa-map", title = "Zoom to focal area", # TODO: generalize this
-      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(pol), ", ",
-                          xmin(pol), "], [", ymax(pol), ", ", xmax(pol), "]])}")))) %>%
+      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(subRegion), ", ",
+                          xmin(subRegion), "], [", ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
     addEasyButton(easyButton(
       icon = "fa-globe", title = "Zoom out to full study area",
       onClick = JS(paste0("function(btn, map){ map.setView([",
-                          mean(c(ymin(shpStudyRegionFullLFLT),
-                                 ymax(shpStudyRegionFullLFLT))), ", ",
-                          mean(c(xmin(shpStudyRegionFullLFLT),
-                                 xmax(shpStudyRegionFullLFLT))), "], 5)}")))) %>%
+                          mean(c(ymin(shpStudyRegionFull),
+                                 ymax(shpStudyRegionFull))), ", ",
+                          mean(c(xmin(shpStudyRegionFull),
+                                 xmax(shpStudyRegionFull))), "], 5)}")))) %>%
     addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-    setView(mean(c(xmin(shpStudyRegionFullLFLT), xmax(shpStudyRegionFullLFLT))),
-            mean(c(ymin(shpStudyRegionFullLFLT), ymax(shpStudyRegionFullLFLT))),
-            zoom = leafZoom) %>%
-    addPolygons(data = isolate(polygonsInput), group = "Fire return interval",
+    setView(mean(c(xmin(shpStudyRegionFull), xmax(shpStudyRegionFull))),
+            mean(c(ymin(shpStudyRegionFull), ymax(shpStudyRegionFull))),
+            zoom = zoom) %>%
+    addPolygons(data = isolate(shpStudyRegionFull),
+                group = "Fire return interval",
                 fillOpacity = 0.3, weight = 1, color = "blue",
                 fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval))
 
+  browser()
   callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
              polygonList = polygonList, map = leafMap,  colorTable = colorTable,
              histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
