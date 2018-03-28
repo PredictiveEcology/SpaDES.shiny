@@ -26,7 +26,7 @@ rastersOverTimeUI <- function(id) {
 #' @param polygonList     List with sets of polygons. Each such set can be displayed on a leaflet map.
 #' @param defaultPoly     Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
-#' @param colorTable      File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).
+#' @param colorTable      File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).
 #' @param histTitle       Title to be shown above the histogram.
 #' @param mapTitle        Title to be shown above the map.
 #' @param sliderTitle     Title to be shown above the slider.
@@ -36,7 +36,8 @@ rastersOverTimeUI <- function(id) {
 #' @param sim             A \pkg{SpaDES} simulation object (\code{simList}).
 #' @param cacheNotOlderThan  Load an artifact from cache only if it was created after notOlderThan.
 #'
-#' @return None. Invoked for the side-effect of creating a shiny server part.
+#' @return Reactive polygon selected by the user with the \code{polygonChooser} module.
+#'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
 #'
 #' @export
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
@@ -163,4 +164,6 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
                            collapsible = TRUE, width = 4)
     )
   })
+
+  return(polys) ## the reactive polygon selected by the user
 }

@@ -32,7 +32,7 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 
 \item{shpStudyRegionFull}{Study area region. # TODO: fix this}
 
-\item{colorTable}{File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).}
+\item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
 \item{palette}{Color palette for the rasters.}
 
@@ -64,7 +64,8 @@ Options: \code{"FULL"}, \code{"EXTRALARGE"}, \code{"LARGE"},
 \value{
 Invoked for the side-effect of creating a shiny UI.
 
-Invoked for the side-effect of creating shiny server and ui components.
+Reactive polygon selected by the user with the \code{polygonChooser} module.
+         Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
 }
 \description{
 A shiny module that displays rasters changing in time on a predefined map,

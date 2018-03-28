@@ -30,7 +30,8 @@ timeSeriesofRastersUI <- function(id) {
 #'                            \code{"MEDIUM"}, \code{"NWT"}, \code{"SMALL"}.
 #'                            # TODO: use actual study area!
 #'
-#' @return Invoked for the side-effect of creating shiny server and ui components.
+#' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
+#'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
 #'
 #' @author Mateusz Wyszynski
 #' @author Alex Chubaty
@@ -91,14 +92,18 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
     addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
     setView(mean(c(xmin(shpStudyRegionFull), xmax(shpStudyRegionFull))),
             mean(c(ymin(shpStudyRegionFull), ymax(shpStudyRegionFull))),
-            zoom = zoom) %>%
-    addPolygons(data = isolate(shpStudyRegionFull),
-                group = "Fire return interval", # TODO: generalize this
-                fillOpacity = 0.3, weight = 1, color = "blue",
-                fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
-  callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList, defaultPoly = defaultPoly,
-             polygonList = polygonList, map = leafMap,  colorTable = colorTable,
-             histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
-             nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10, sim = sim,
-             cacheNotOlderThan = NULL)
+            zoom = zoom)# %>%
+    # addPolygons(data = isolate(shpStudyRegionFull),
+    #             group = "Fire return interval", # TODO: generalize this
+    #             fillOpacity = 0.3, weight = 1, color = "blue",
+    #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
+
+  chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+                           defaultPoly = defaultPoly, polygonList = polygonList,
+                           map = leafMap,  colorTable = colorTable,
+                           histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
+                           nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
+                           sim = sim, cacheNotOlderThan = NULL)
+
+  return(chosenPoly)
 }

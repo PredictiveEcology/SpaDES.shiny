@@ -29,7 +29,7 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
-\item{colorTable}{File that contains color values for tiles (passed to \code{\link{gdal2Tiles}}).}
+\item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
 \item{histTitle}{Title to be shown above the histogram.}
 
@@ -50,7 +50,8 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
 
-None. Invoked for the side-effect of creating a shiny server part.
+Reactive polygon selected by the user with the \code{polygonChooser} module.
+         Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
 }
 \description{
 A shiny module showing the values from a raster in time on a predefined map.
