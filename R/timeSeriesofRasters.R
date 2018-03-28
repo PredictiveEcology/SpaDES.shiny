@@ -55,58 +55,55 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  if (is.reactive(polygonList)) {
-    polys <- polygonList()
-  } else {
-    polys <- polygonList
-  }
-  assertthat::assert_that(is.list(polygonList)) ## TODO: test structure of the list, etc.
+  observeEvent(polygonList, {
+    assertthat::assert_that(is.list(polygonList)) ## TODO: test structure of the list, etc.
 
-  ## the full study region, using leaflet projection (used for map only here)
-  shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-    polys[[1]][["crsLFLT"]][["shpStudyRegion"]]
-  } else {
-    polys[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
-  }
+    ## the full study region, using leaflet projection (used for map only here)
+    shpStudyRegion <- if (is.null(shpStudyRegionName)) {
+      polys[[1]][["crsLFLT"]][["shpStudyRegion"]]
+    } else {
+      polys[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+    }
 
-  ## the sub study region, using leaflet projection (used for map only here)
-  subRegion <- if (is.null(shpStudyRegionName)) {
-    polys[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
-  } else {
-    polys[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
-  }
+    ## the sub study region, using leaflet projection (used for map only here)
+    subRegion <- if (is.null(shpStudyRegionName)) {
+      polys[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+    } else {
+      polys[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
+    }
 
-  leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
-    addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
-                     options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
-                     options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-    addLegend(position = "bottomright", pal = palette, values = 1:maxAge, title = mapLegend) %>%
-    addMeasure(
-      position = "bottomleft",
-      primaryLengthUnit = "kilometers",
-      primaryAreaUnit = "hectares",
-      activeColor = "#3D535D",
-      completedColor = "#7D4479") %>%
-    addEasyButton(easyButton(
-      icon = "fa-map", title = "Zoom to focal area",
-      onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(subRegion), ", ",
-                          xmin(subRegion), "], [", ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
-    addEasyButton(easyButton(
-      icon = "fa-globe", title = "Zoom out to full study area",
-      onClick = JS(paste0("function(btn, map){ map.setView([",
-                          mean(c(ymin(shpStudyRegion),
-                                 ymax(shpStudyRegion))), ", ",
-                          mean(c(xmin(shpStudyRegion),
-                                 xmax(shpStudyRegion))), "], 5)}")))) %>%
-    addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-    setView(mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))),
-            mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))),
-            zoom = zoom)# %>%
-    # addPolygons(data = isolate(shpStudyRegion),
-    #             group = "Fire return interval", # TODO: generalize this
-    #             fillOpacity = 0.3, weight = 1, color = "blue",
-    #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
+    leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
+      addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
+                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+      addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
+                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+      addLegend(position = "bottomright", pal = palette, values = 1:maxAge, title = mapLegend) %>%
+      addMeasure(
+        position = "bottomleft",
+        primaryLengthUnit = "kilometers",
+        primaryAreaUnit = "hectares",
+        activeColor = "#3D535D",
+        completedColor = "#7D4479") %>%
+      addEasyButton(easyButton(
+        icon = "fa-map", title = "Zoom to focal area",
+        onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(subRegion), ", ",
+                            xmin(subRegion), "], [", ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
+      addEasyButton(easyButton(
+        icon = "fa-globe", title = "Zoom out to full study area",
+        onClick = JS(paste0("function(btn, map){ map.setView([",
+                            mean(c(ymin(shpStudyRegion),
+                                   ymax(shpStudyRegion))), ", ",
+                            mean(c(xmin(shpStudyRegion),
+                                   xmax(shpStudyRegion))), "], 5)}")))) %>%
+      addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
+      setView(mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))),
+              mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))),
+              zoom = zoom)# %>%
+      # addPolygons(data = isolate(shpStudyRegion),
+      #             group = "Fire return interval", # TODO: generalize this
+      #             fillOpacity = 0.3, weight = 1, color = "blue",
+      #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
+  })
 
   chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
                            defaultPolyName = defaultPolyName, polygonList = polys,
