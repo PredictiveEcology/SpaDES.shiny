@@ -55,7 +55,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  observeEvent(polygonList, {
+  chosen <- reactive({
     assertthat::assert_that(is.list(polygonList)) ## TODO: test structure of the list, etc.
 
     ## the full study region, using leaflet projection (used for map only here)
@@ -103,14 +103,17 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       #             group = "Fire return interval", # TODO: generalize this
       #             fillOpacity = 0.3, weight = 1, color = "blue",
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
+
+    ## this module will return a reactive value:
+    chosenPol <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+                            defaultPolyName = defaultPolyName, polygonList = polygonList,
+                            map = leafMap,  colorTable = colorTable,
+                            histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
+                            nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
+                            sim = sim, cacheNotOlderThan = NULL)
+
+    return(chosenPol())
   })
 
-  chosenPoly <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                           defaultPolyName = defaultPolyName, polygonList = polygonList,
-                           map = leafMap,  colorTable = colorTable,
-                           histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
-                           nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
-                           sim = sim, cacheNotOlderThan = NULL)
-
-  return(chosenPoly)
+  return(chosen)
 }
