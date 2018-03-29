@@ -4,7 +4,7 @@
 \alias{summaryPopups}
 \title{Summary popups (shiny module)}
 \usage{
-summaryPopups(input, output, session, proxy, click, rast, polys,
+summaryPopups(input, output, session, proxy, click, rast, poly,
   rasterValueLabel = "Raster value: \%s", extractedValues = NULL)
 }
 \arguments{
@@ -20,6 +20,8 @@ summaryPopups(input, output, session, proxy, click, rast, polys,
 
 \item{rast}{Reactive value with raster to summarize by.}
 
+\item{poly}{Reactive value with current polygon on the map.}
+
 \item{rasterValueLabel}{String with description of raster value. Uses \code{sprintf},
 so must include exactly one \code{\%s} in order to display raster value.
 Default is a string \code{"Raster value: \%s"}.}
@@ -27,8 +29,6 @@ Default is a string \code{"Raster value: \%s"}.}
 \item{extractedValues}{List of attributes from \code{SpatialPolygonDataFrame}
 which should be included in popup summary.
 When \code{NULL} (default) all attributes are included.}
-
-\item{poly}{Reactive value with current polygon on the map.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny observer.
