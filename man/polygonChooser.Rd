@@ -34,6 +34,7 @@ Provides a dropdown list of polygons available for mapping, sorted alphabeticall
 library(leaflet)
 library(magrittr)
 library(shiny)
+library(SpaDES.tools)
 
 shinyApp(
   ui = fluidPage(
@@ -42,7 +43,7 @@ shinyApp(
   ),
   server = function(input, output, session) {
     dummyPoly <- function() {
-      SpaDES.tools::randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
+      randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
     }
     dummyPoly1 <- dummyPoly()
     dummyPoly2 <- dummyPoly()

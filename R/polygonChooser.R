@@ -31,6 +31,7 @@ polygonChooserUI <- function(id) {
 #' library(leaflet)
 #' library(magrittr)
 #' library(shiny)
+#' library(SpaDES.tools)
 #'
 #' shinyApp(
 #'   ui = fluidPage(
@@ -39,7 +40,7 @@ polygonChooserUI <- function(id) {
 #'   ),
 #'   server = function(input, output, session) {
 #'     dummyPoly <- function() {
-#'       SpaDES.tools::randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
+#'       randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
 #'     }
 #'     dummyPoly1 <- dummyPoly()
 #'     dummyPoly2 <- dummyPoly()
