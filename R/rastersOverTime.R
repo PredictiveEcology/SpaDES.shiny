@@ -144,10 +144,10 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, rast,
-             polygonList[[chosenPolyName]][["crsLFLT"]][["shpSubStudyRegion"]])
+             polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]])
 
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy,
-             polygonList[[chosenPolyName]][["crsLFLT"]][["shpSubStudyRegion"]], weight = 0.2)
+             polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]], weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
