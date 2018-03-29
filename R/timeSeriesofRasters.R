@@ -106,7 +106,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
 
     ## this module will return a reactive value:
     chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                                defaultPolyName = defaultPolyName, polygonList = polygonList,
+                                defaultPolyName = defaultPolyName, polygonList = polygonList(),
                                 map = leafMap,  colorTable = colorTable,
                                 histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                                 nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
