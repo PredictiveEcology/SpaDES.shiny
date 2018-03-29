@@ -44,12 +44,12 @@ shinyApp(
     dummyPoly1 <- SpaDES.tools::randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
     dummyPoly2 <- SpaDES.tools::randomPolygon(matrix(c(-115, 60), ncol = 2), 100)
     polygonList <- list(caribou = dummyPoly1, ecozones = dummyPoly2)
-    chosenPoly <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
+    chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
 
     output$map <- renderLeaflet({
       leaflet() \%>\%
         addTiles() \%>\%
-        addPolygons(data = chosenPoly())
+        addPolygons(data = polygonList[[chosenPolyName()]])
     })
   }
 )
