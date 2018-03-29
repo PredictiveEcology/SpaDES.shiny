@@ -19,6 +19,7 @@ timeSeriesofRastersUI <- function(id) {
 
 #' @inheritParams rastersOverTime
 #'
+#' @param rctPolygonList      Reactive list of polygons. # TODO: improve docs
 #' @param mapLegend           The legend text to add to the leaflet map.
 #' @param shpStudyRegionName  Name of the study area region (from \code{rasterList})..
 #' @param palette             Color palette for the rasters.

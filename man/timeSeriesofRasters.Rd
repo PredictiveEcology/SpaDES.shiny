@@ -24,6 +24,8 @@ timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
 
 \item{rasterList}{List of rasters to be displayed.}
 
+\item{rctPolygonList}{Reactive list of polygons. # TODO: improve docs}
+
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
 \item{shpStudyRegionName}{Name of the study area region (from \code{rasterList})..}
