@@ -69,7 +69,7 @@ polygonChooser <- function(input, output, session, polygonList, selectedPoly = N
   })
 
   return(reactive({
-    validate(need(input$polyLayer))
+    validate(need(input$polyLayer, FALSE))
     input$polyLayer
   }))
 }
