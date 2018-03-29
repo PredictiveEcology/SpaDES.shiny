@@ -56,20 +56,22 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
   chosen <- reactive({
-    assertthat::assert_that(is.list(polygonList)) ## TODO: test structure of the list, etc.
+    assertthat::assert_that(is.list(polygonList())) ## TODO: test structure of the list, etc.
+
+    polyList <- polygonList()
 
     ## the full study region, using leaflet projection (used for map only here)
     shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-      polygonList[[1]][["crsLFLT"]][["shpStudyRegion"]]
+      polyList[[1]][["crsLFLT"]][["shpStudyRegion"]]
     } else {
-      polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
     }
 
     ## the sub study region, using leaflet projection (used for map only here)
     subRegion <- if (is.null(shpStudyRegionName)) {
-      polygonList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polyList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
     } else {
-      polygonList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
