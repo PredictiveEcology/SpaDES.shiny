@@ -20,7 +20,7 @@ polygonChooserUI <- function(id) {
 #'                      # TODO: fill this in
 #' @param selectedPoly  The name of the polygon to select by default.
 #'
-#' @return A reactive containing the selected polygon.
+#' @return A reactive containing the name of the selected polygon.
 #'
 #' @export
 #' @importFrom shiny selectInput
@@ -70,6 +70,6 @@ polygonChooser <- function(input, output, session, polygonList, selectedPoly = N
 
   return(reactive({
     validate(need(input$polyLayer, FALSE))
-    polygonList[[input$polyLayer]]
+    input$polyLayer
   }))
 }

@@ -24,7 +24,7 @@ polygonChooser(input, output, session, polygonList, selectedPoly = NULL)
 \item{selectedPoly}{The name of the polygon to select by default.}
 }
 \value{
-A reactive containing the selected polygon.
+A reactive containing the name of the selected polygon.
 }
 \description{
 Provides a dropdown list of polygons available for mapping, sorted alphabetically.

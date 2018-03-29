@@ -105,14 +105,14 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
     ## this module will return a reactive value:
-    chosenPol <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                            defaultPolyName = defaultPolyName, polygonList = polygonList,
-                            map = leafMap,  colorTable = colorTable,
-                            histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
-                            nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
-                            sim = sim, cacheNotOlderThan = NULL)
+    chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+                                defaultPolyName = defaultPolyName, polygonList = polygonList,
+                                map = leafMap,  colorTable = colorTable,
+                                histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
+                                nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
+                                sim = sim, cacheNotOlderThan = NULL)
 
-    return(chosenPol())
+    return(chosenPolName())
   })
 
   return(chosen)

@@ -23,7 +23,8 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{rasterList}{List of rasters to be displayed.}
 
-\item{polygonList}{List with sets of polygons. Each such set can be displayed on a leaflet map.}
+\item{polygonList}{List with sets of polygons to be displayed on a leaflet map.
+# TODO: decribe the format of the list!}
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 

@@ -23,7 +23,8 @@ rastersOverTimeUI <- function(id) {
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
 #' @param rasterList      List of rasters to be displayed.
-#' @param polygonList     List with sets of polygons. Each such set can be displayed on a leaflet map.
+#' @param polygonList     List with sets of polygons to be displayed on a leaflet map.
+#'                        # TODO: decribe the format of the list!
 #' @param defaultPolyName Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorTable      File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).
@@ -66,7 +67,7 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
 
-  chosenPol <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName)
+  chosenPolyName <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName)
 
   cache_path <- reactive({
     if (is.null(sim)) {
@@ -142,9 +143,11 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, rast, chosenPol)
+  callModule(summaryPopups, "popups", mapProxy, click, rast,
+             polygonList[[chosenPolyName]][["crsLFLT"]][["shpSubStudyRegion"]])
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, chosenPol, weight = 0.2)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy,
+             polygonList[[chosenPolyName]][["crsLFLT"]][["shpSubStudyRegion"]], weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
@@ -165,5 +168,5 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
     )
   })
 
-  return(chosenPol) ## the reactive polygon selected by the user
+  return(chosenPolyName) ## the reactive polygon selected by the user
 }
