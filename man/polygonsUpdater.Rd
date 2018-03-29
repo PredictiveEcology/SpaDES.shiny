@@ -4,7 +4,7 @@
 \alias{polygonsUpdater}
 \title{Polygons updater (shiny module)}
 \usage{
-polygonsUpdater(input, output, session, proxy, polys, group = "group", ...)
+polygonsUpdater(input, output, session, proxy, poly, group = "group", ...)
 }
 \arguments{
 \item{input}{Shiny server input object.}
@@ -15,7 +15,7 @@ polygonsUpdater(input, output, session, proxy, polys, group = "group", ...)
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 
-\item{polys}{Reactive value which contains a set of polygons which should
+\item{poly}{Reactive value which contains a polygon which should
 be displayed on the leaflet map.}
 
 \item{group}{Group of polygons we want to update.}

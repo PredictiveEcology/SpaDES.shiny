@@ -53,7 +53,7 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #' @param proxy            Leaflet proxy which manages a connected leaflet map.
 #' @param click            Reactive value with click on shape input from leaflet map.
 #' @param rast             Reactive value with raster to summarize by.
-#' @param polys            Reactive value with current set of polygons on map
+#' @param poly             Reactive value with current polygon on the map.
 #' @param rasterValueLabel String with description of raster value. Uses \code{sprintf},
 #'                         so must include exactly one \code{\%s} in order to display raster value.
 #'                         Default is a string \code{"Raster value: \%s"}.
@@ -73,10 +73,10 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 summaryPopups <- function(input, output, session, proxy, click, rast, polys,
                           rasterValueLabel = "Raster value: %s", extractedValues = NULL) {
   observe({
-    req(click(), polys(), rast())
+    req(click(), poly(), rast())
 
     displayPopupWithSummary(x = click()$lng, y = click()$lat, proxy = proxy,
-                            raster = rast(), polygons = polys(),
+                            raster = rast(), polygons = poly(),
                             rasterValueLabel = rasterValueLabel,
                             extractedValues = extractedValues)
   })

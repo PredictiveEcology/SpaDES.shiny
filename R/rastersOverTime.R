@@ -67,7 +67,11 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
 
-  chosenPolyName <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName)
+  rctPoly4Map <- reactive({
+    polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
+  })
+
+  chosenPolyName <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName) ## reactive character
 
   cache_path <- reactive({
     if (is.null(sim)) {
@@ -143,11 +147,9 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
   callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, rast,
-             polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]])
+  callModule(summaryPopups, "popups", mapProxy, click, rast, rctPoly4Map)
 
-  callModule(polygonsUpdater, "polygonsUpdater", mapProxy,
-             polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]], weight = 0.2)
+  callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map, weight = 0.2)
 
   callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
              scale = rasterScale(), addAxisParams = addAxisParams,

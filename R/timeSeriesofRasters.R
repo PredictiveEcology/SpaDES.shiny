@@ -48,7 +48,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
+timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonList,
                                 defaultPolyName = NULL, shpStudyRegionName = NULL,
                                 colorTable, palette, maxAge, zoom = 5,
                                 sim = NULL, mapLegend = "",
@@ -56,9 +56,9 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
   chosen <- reactive({
-    assertthat::assert_that(is.list(polygonList())) ## TODO: test structure of the list, etc.
+    assertthat::assert_that(is.list(rctPolygonList())) ## TODO: test structure of the list, etc.
 
-    polyList <- polygonList()
+    polyList <- rctPolygonList()
 
     ## the full study region, using leaflet projection (used for map only here)
     shpStudyRegion <- if (is.null(shpStudyRegionName)) {
@@ -106,7 +106,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
 
     ## this module will return a reactive value:
     chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
-                                polygonList = polygonList(), defaultPolyName = defaultPolyName,
+                                polygonList = polyList, defaultPolyName = defaultPolyName,
                                 map = leafMap,  colorTable = colorTable,
                                 histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                                 nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,

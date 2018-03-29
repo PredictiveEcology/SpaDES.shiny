@@ -7,7 +7,7 @@
 \usage{
 timeSeriesofRastersUI(id)
 
-timeSeriesofRasters(input, output, session, rasterList, polygonList,
+timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
   defaultPolyName = NULL, shpStudyRegionName = NULL, colorTable, palette,
   maxAge, zoom = 5, sim = NULL, mapLegend = "", mapTitle = "",
   sliderTitle = "", histTitle = "", nPolygons, nRasters,
@@ -23,9 +23,6 @@ timeSeriesofRasters(input, output, session, rasterList, polygonList,
 \item{session}{Shiny server session object.}
 
 \item{rasterList}{List of rasters to be displayed.}
-
-\item{polygonList}{List with sets of polygons to be displayed on a leaflet map.
-# TODO: decribe the format of the list!}
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
