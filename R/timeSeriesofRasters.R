@@ -93,13 +93,11 @@ timeSeriesofRasters <- function(input, output, session, rasterList, polygonList,
       addEasyButton(easyButton(
         icon = "fa-globe", title = "Zoom out to full study area",
         onClick = JS(paste0("function(btn, map){ map.setView([",
-                            mean(c(ymin(shpStudyRegion),
-                                   ymax(shpStudyRegion))), ", ",
-                            mean(c(xmin(shpStudyRegion),
-                                   xmax(shpStudyRegion))), "], 5)}")))) %>%
+                            mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
+                            mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "], 5)}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      setView(mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))),
-              mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))),
+      setView(mean(c(xmin(subRegion), xmax(subRegion))),
+              mean(c(ymin(subRegion), ymax(subRegion))),
               zoom = zoom)# %>%
       # addPolygons(data = isolate(shpStudyRegion),
       #             group = "Fire return interval", # TODO: generalize this
