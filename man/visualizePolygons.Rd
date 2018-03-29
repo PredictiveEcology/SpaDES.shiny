@@ -7,7 +7,7 @@
 \usage{
 visualizePolygonsUI(id, ...)
 
-visualizePolygons(input, output, session, polys, proxy = NULL)
+visualizePolygons(input, output, session, poly, proxy = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -20,7 +20,7 @@ visualizePolygons(input, output, session, polys, proxy = NULL)
 
 \item{session}{Shiny server session object.}
 
-\item{polys}{Reactive value with polygons to visualize.}
+\item{poly}{Reactive value with polygon to visualize.}
 
 \item{proxy}{Proxy to a leaflet map on which polygons should be displayed.
 See \code{\link[leaflet]{leafletProxy}}}

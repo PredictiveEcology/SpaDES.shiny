@@ -21,7 +21,7 @@ visualizePolygonsUI <- function(id, ...) {
 #' @param input     Shiny server input object.
 #' @param output    Shiny server output object.
 #' @param session   Shiny server session object.
-#' @param polys     Reactive value with polygons to visualize.
+#' @param poly      Reactive value with polygon to visualize.
 #' @param proxy     Proxy to a leaflet map on which polygons should be displayed.
 #'                  See \code{\link[leaflet]{leafletProxy}}
 #'
@@ -31,17 +31,17 @@ visualizePolygonsUI <- function(id, ...) {
 #' @importFrom shiny renderPlot is.reactive
 #' @importFrom leaflet leaflet addTiles addPolygons
 #' @rdname visualizePolygons
-visualizePolygons <- function(input, output, session, polys, proxy = NULL) {
+visualizePolygons <- function(input, output, session, poly, proxy = NULL) {
   if (is.null(proxy)) {
     output$map <- renderLeaflet({
       leaflet() %>%
         addTiles() %>%
-        addPolygons(data = polys(), group = session$ns("group")) ## don't change ns
+        addPolygons(data = poly(), group = session$ns("group")) ## don't change ns
     })
 
     proxy <- leafletProxy("map")
-    callModule(polygonsUpdater, "updater", proxy, polys, group = session$ns("group")) ## don't change ns
+    callModule(polygonsUpdater, "updater", proxy, poly, group = session$ns("group")) ## don't change ns
   } else {
-    callModule(polygonsUpdater, "updater", proxy, polys)
+    callModule(polygonsUpdater, "updater", proxy, poly)
   }
 }

@@ -22,7 +22,7 @@
 #' @importFrom shiny observeEvent
 #' @rdname polygonsUpdater
 polygonsUpdater <- function(input, output, session, proxy, poly, group = "group", ...) {
-  observeEvent(polys(), {
+  observeEvent(poly(), {
     proxy %>%
       clearGroup(group = group) %>%
       addPolygons(data = poly(), group = group, ...)
