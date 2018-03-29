@@ -16,8 +16,8 @@ polygonChooserUI <- function(id) {
 #' @param input         Shiny server input object.
 #' @param output        Shiny server output object.
 #' @param session       Shiny server session object.
-#' @param polygonList   A nested list with the following structure:
-#'                      # TODO: fill this in
+#' @param rctPolygonList  A reactive nested list with the following structure:
+#'                        # TODO: fill this in
 #' @param selectedPoly  The name of the polygon to select by default.
 #'
 #' @return A reactive containing the name of the selected polygon.
@@ -45,25 +45,25 @@ polygonChooserUI <- function(id) {
 #'     dummyPoly1 <- dummyPoly()
 #'     dummyPoly2 <- dummyPoly()
 #'     dummyPoly3 <- dummyPoly()
-#'     polygonList <- list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3)
+#'     polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
 #'     chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
 #'
 #'     output$map <- renderLeaflet({
 #'       leaflet() %>%
 #'         addTiles() %>%
-#'         addPolygons(data = polygonList[[chosenPolyName()]])
+#'         addPolygons(data = polygonList()[[chosenPolyName()]])
 #'     })
 #'   }
 #' )
 #' }
-polygonChooser <- function(input, output, session, polygonList, selectedPoly = NULL) {
+polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly = NULL) {
   # TODO: assert that list has correct structure
 
   output$polyChooser <- renderUI({
     ns <- session$ns
 
     # TODO: display in alphabetical order
-    selectInput(ns("polyLayer"), "Polygon layer:", names(polygonList), selected = selectedPoly)
+    selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()), selected = selectedPoly)
   })
 
   return(reactive({

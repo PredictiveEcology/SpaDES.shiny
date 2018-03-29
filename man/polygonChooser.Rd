@@ -7,7 +7,7 @@
 \usage{
 polygonChooserUI(id)
 
-polygonChooser(input, output, session, polygonList, selectedPoly = NULL)
+polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -18,7 +18,7 @@ polygonChooser(input, output, session, polygonList, selectedPoly = NULL)
 
 \item{session}{Shiny server session object.}
 
-\item{polygonList}{A nested list with the following structure:
+\item{rctPolygonList}{A reactive nested list with the following structure:
 # TODO: fill this in}
 
 \item{selectedPoly}{The name of the polygon to select by default.}
@@ -48,13 +48,13 @@ shinyApp(
     dummyPoly1 <- dummyPoly()
     dummyPoly2 <- dummyPoly()
     dummyPoly3 <- dummyPoly()
-    polygonList <- list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3)
+    polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
     chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
 
     output$map <- renderLeaflet({
       leaflet() \%>\%
         addTiles() \%>\%
-        addPolygons(data = polygonList[[chosenPolyName()]])
+        addPolygons(data = polygonList()[[chosenPolyName()]])
     })
   }
 )
