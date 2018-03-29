@@ -20,7 +20,7 @@ slicer(input, output, session, datatable, categoryValue, uiSequence,
 
 \item{session}{Shiny server session object.}
 
-\item{datatable}{A \code{data.table} whose subtables are accessed (but not modified)
+\item{datatable}{A reactive \code{data.table} whose subtables are accessed (but not modified)
 using \code{chosenCategories} and \code{chosenValues} arguments.
 This is helpful, because the end summary function might require
 information about the entire \code{data.table}.}

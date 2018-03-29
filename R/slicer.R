@@ -4,7 +4,7 @@
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
-#' @return A \code{data.table} object
+#' @return A \code{data.table} object.
 #'
 #' @export
 #' @importFrom assertthat assert_that
@@ -62,7 +62,7 @@ slicerUI <- function(id) {
 #' @param input      Shiny server input object.
 #' @param output     Shiny server output object.
 #' @param session    Shiny server session object.
-#' @param datatable  A \code{data.table} whose subtables are accessed (but not modified)
+#' @param datatable  A reactive \code{data.table} whose subtables are accessed (but not modified)
 #'                   using \code{chosenCategories} and \code{chosenValues} arguments.
 #'                   This is helpful, because the end summary function might require
 #'                   information about the entire \code{data.table}.
@@ -121,26 +121,23 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
   observeEvent({
     datatable
   }, {
-    if (is.reactive(datatable)) {
-      dt <- datatable()
-    } else {
-      dt <- datatable
-    }
-    assert_that(is.data.table(dt))
+    assertthat::assert_that(is.data.table(datatable()))
 
     if (nrow(uiSequence) == 0) {
-      serverFunction(dt, chosenCategories, chosenValues, ...)
+      serverFunction(datatable(), chosenCategories, chosenValues, ...)
 
       output$recursiveUI <- renderUI(uiFunction(session$ns)) ## don't change the ns!
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- getSubtable(dt, chosenCategories, chosenValues)
+      currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
-      categoriesValues <- currentSubtable[, categoryName, with = FALSE] %>%
-        unique() %>% unlist() %>% unname() # nolint
+      categoriesValues <- reactive({
+        cst <- currentSubtable()
+        cst[, categoryName, with = FALSE] %>% unique() %>% unlist() %>% unname() # nolint
+      })
 
-      map(categoriesValues, function(value) {
+      map(categoriesValues(), function(value) {
         callModule(slicer, value, currentSubtable, value, uiSequence[-1, ],
                    serverFunction, uiFunction,
                    c(chosenCategories, list(categoryName)),
@@ -157,7 +154,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    tabPanel(category, slicerUI(ns(category)))
                  }
 
-                 tabPanels <- map(categoriesValues, tabPanelWithSlicerContent)
+                 tabPanels <- map(categoriesValues(), tabPanelWithSlicerContent)
 
                  mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
                },
@@ -169,7 +166,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    )
                  }
 
-                 map(categoriesValues, boxWithSlicerContent)
+                 map(categoriesValues(), boxWithSlicerContent)
                }
         )
       })
