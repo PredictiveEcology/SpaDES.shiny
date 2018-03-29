@@ -10,11 +10,12 @@
 #'
 #' @export
 #' @importFrom shiny NS
+#' @importFrom shinycssloaders withSpinner
 #' @rdname timeSeriesofRasters
 timeSeriesofRastersUI <- function(id) {
   ns <- NS(id)
 
-  rastersOverTimeUI(ns("rastersOverTime"))
+  shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime")))
 }
 
 #' @inheritParams rastersOverTime
