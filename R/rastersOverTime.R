@@ -22,7 +22,8 @@ rastersOverTimeUI <- function(id) {
 #' @param input           Shiny server input object.
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
-#' @param rasterList      List of rasters to be displayed.
+#' @param rctRasterList   Reactive List of rasters to be displayed.
+#' @param urlTemplate     The url template for leaflet map tiles
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
 #' @param defaultPolyName Name of the polygon to use as the default for mapping.
@@ -52,13 +53,15 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rctRasterList, rctPolygonList,
+rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate, 
+                            rctPolygonList,
                             defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
                             cacheNotOlderThan = Sys.time()) {
   ns <- session$ns
 
+  browser()
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
@@ -101,20 +104,19 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctPolygonLis
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rasterList[[rasterIndex]]
-
-
-    Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
-          colorTableFile = asPath(colorTable), cacheRepo = cache_path(),
-          notOlderThan = cacheNotOlderThan)
-
+    rst <- rctRasterList()[[rasterIndex]]
+# 
+#     Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
+#           colorTableFile = asPath(colorTable), cacheRepo = cache_path(),
+#           notOlderThan = cacheNotOlderThan)
+# 
     return(rst);
   })
 
-  sampledRaster <- reactive({
+  sampledRaster <- reactive({ # TODO: make this adjust to input$map_bounds
     if (ncell(rast()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, rast(), size = 4e5,
-                             notOlderThan = NULL, asRaster = TRUE, cacheRepo = cache_path())
+      sampledRaster <- Cache(raster::sampleRegular, rast(), 
+                             size = 4e5, asRaster = TRUE)
     } else {
       sampledRaster <- rast()
     }
