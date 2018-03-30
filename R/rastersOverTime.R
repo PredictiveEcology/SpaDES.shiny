@@ -22,7 +22,7 @@ rastersOverTimeUI <- function(id) {
 #' @param input           Shiny server input object.
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
-#' @param rctRasterList   Reactive List of rasters to be displayed.
+#' @param rasterList      List of rasters to be displayed.
 #' @param urlTemplate     The url template for leaflet map tiles
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
@@ -35,8 +35,6 @@ rastersOverTimeUI <- function(id) {
 #' @param nPolygons       The number of available polygons.
 #' @param nRasters        The number of available rasters.
 #' @param rasterStepSize  Size of step in the raster slider.
-#' @param sim             A \pkg{SpaDES} simulation object (\code{simList}).
-#' @param cacheNotOlderThan  Load an artifact from cache only if it was created after notOlderThan.
 #'
 #' @return Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -53,15 +51,12 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate, 
-                            rctPolygonList,
-                            defaultPolyName = NULL, map = leaflet(), colorTable,
+rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
+                            rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
-                            nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
-                            cacheNotOlderThan = Sys.time()) {
+                            nPolygons, nRasters, rasterStepSize = 10) {
   ns <- session$ns
 
-  browser()
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
@@ -77,26 +72,6 @@ rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
 
   chosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
-  cache_path <- reactive({
-    if (is.null(sim)) {
-      "cache"
-    } else {
-      cachePath(sim)
-    }
-  })
-
-  output_subpath <- reactive({
-    if (is.null(sim)) {
-      "outputs"
-    } else {
-      outputPath(sim)
-    }
-  })
-
-  output_path <- reactive({
-    file.path("www", basename(output_subpath()), ns("map-tiles")) ## don't change ns
-  })
-
   rast <- reactive({
     rasterIndex <- if (is.null(rasterIndexValue())) {
       1
@@ -104,19 +79,15 @@ rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rctRasterList()[[rasterIndex]]
-# 
-#     Cache(gdal2Tiles, rst, outputPath = output_path(), zoomRange = 1:10,
-#           colorTableFile = asPath(colorTable), cacheRepo = cache_path(),
-#           notOlderThan = cacheNotOlderThan)
-# 
+    rst <- rasterList[[rasterIndex]]
+
     return(rst);
   })
 
-  sampledRaster <- reactive({ # TODO: make this adjust to input$map_bounds
+  sampledRaster <- reactive({
+    # TODO: make this adjust to input$map_bounds
     if (ncell(rast()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, rast(), 
-                             size = 4e5, asRaster = TRUE)
+      sampledRaster <- Cache(raster::sampleRegular, rast(), size = 4e5, asRaster = TRUE)
     } else {
       sampledRaster <- rast()
     }
@@ -135,19 +106,14 @@ rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
 
   rasterScale <- reactive(prod(raster::res(rast())) / 1e4)
 
-  urlTemplate <- reactive({
-    rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
-    file.path(basename(output_subpath()), ns("map-tiles"), ## don't change ns
-              paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
-  })
-
   addTilesParameters <- list(
     option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)
   )
 
   click <- reactive(input$map_shape_click)
 
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate, ns("tiles"), ## don't change ns
+  urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate2, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, rast, rctPoly4Map)

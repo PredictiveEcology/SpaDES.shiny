@@ -49,7 +49,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rctRasterList, rctPolygonList,
+timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonList,
                                 defaultPolyName = NULL, shpStudyRegionName = NULL,
                                 colorTable, palette, maxAge, zoom = 5,
                                 sim = NULL, mapLegend = "",

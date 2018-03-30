@@ -29,7 +29,7 @@ timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
-\item{shpStudyRegionName}{Name of the study area region (from \code{rasterList})..}
+\item{shpStudyRegionName}{Name of the study area region (from \code{rctRasterList})..}
 
 \item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
 
@@ -38,8 +38,6 @@ timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
 \item{maxAge}{Maximum simulation age.}
 
 \item{zoom}{Initial leaflet zoom.}
-
-\item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
 
 \item{mapLegend}{The legend text to add to the leaflet map.}
 

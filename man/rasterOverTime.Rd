@@ -7,10 +7,10 @@
 \usage{
 rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rasterList, rctPolygonList,
-  defaultPolyName = NULL, map = leaflet(), colorTable, histTitle = "",
-  sliderTitle = "", mapTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10, sim = NULL, cacheNotOlderThan = Sys.time())
+rastersOverTime(input, output, session, rctRasterList, urlTemplate,
+  rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
+  histTitle = "", sliderTitle = "", mapTitle = "", nPolygons, nRasters,
+  rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -21,7 +21,7 @@ rastersOverTime(input, output, session, rasterList, rctPolygonList,
 
 \item{session}{Shiny server session object.}
 
-\item{rasterList}{List of rasters to be displayed.}
+\item{urlTemplate}{The url template for leaflet map tiles}
 
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}
@@ -44,9 +44,7 @@ rastersOverTime(input, output, session, rasterList, rctPolygonList,
 
 \item{rasterStepSize}{Size of step in the raster slider.}
 
-\item{sim}{A \pkg{SpaDES} simulation object (\code{simList}).}
-
-\item{cacheNotOlderThan}{Load an artifact from cache only if it was created after notOlderThan.}
+\item{rasterList}{List of rasters to be displayed.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
