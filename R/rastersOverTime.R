@@ -23,7 +23,7 @@ rastersOverTimeUI <- function(id) {
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
 #' @param rasterList      List of rasters to be displayed.
-#' @param polygonList     List with sets of polygons to be displayed on a leaflet map.
+#' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
 #' @param defaultPolyName Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
@@ -52,7 +52,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rasterList, polygonList,
+rastersOverTime <- function(input, output, session, rasterList, rctPolygonList,
                             defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,
@@ -68,10 +68,11 @@ rastersOverTime <- function(input, output, session, rasterList, polygonList,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
 
   rctPoly4Map <- reactive({
-    polygonList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
+    polyList <- rctPolygonList()
+    polyList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
   })
 
-  chosenPolyName <- callModule(polygonChooser, "polyDropdown", polygonList, defaultPolyName) ## reactive character
+  chosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
   cache_path <- reactive({
     if (is.null(sim)) {
