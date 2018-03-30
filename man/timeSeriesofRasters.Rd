@@ -9,9 +9,8 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
   defaultPolyName = NULL, shpStudyRegionName = NULL, colorTable, palette,
-  maxAge, zoom = 5, sim = NULL, mapLegend = "", mapTitle = "",
-  sliderTitle = "", histTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10)
+  maxAge, zoom = 5, mapLegend = "", mapTitle = "", sliderTitle = "",
+  histTitle = "", nPolygons, nRasters, rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
