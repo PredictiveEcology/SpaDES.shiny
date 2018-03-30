@@ -52,7 +52,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rasterList, rctPolygonList,
+rastersOverTime <- function(input, output, session, rctRasterList, rctPolygonList,
                             defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10, sim = NULL,

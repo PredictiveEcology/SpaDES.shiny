@@ -21,7 +21,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @inheritParams rastersOverTime
 #'
 #' @param mapLegend           The legend text to add to the leaflet map.
-#' @param shpStudyRegionName  Name of the study area region (from \code{rasterList})..
+#' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList})..
 #' @param palette             Color palette for the rasters.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
@@ -49,7 +49,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonList,
+timeSeriesofRasters <- function(input, output, session, rctRasterList, rctPolygonList,
                                 defaultPolyName = NULL, shpStudyRegionName = NULL,
                                 colorTable, palette, maxAge, zoom = 5,
                                 sim = NULL, mapLegend = "",
@@ -106,7 +106,7 @@ timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonLi
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
     ## this module will return a reactive value:
-    chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+    chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rctRasterList = rctRasterList,
                                 rctPolygonList = rctPolygonList, defaultPolyName = defaultPolyName,
                                 map = leafMap,  colorTable = colorTable,
                                 histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
