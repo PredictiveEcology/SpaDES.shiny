@@ -24,7 +24,8 @@ timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
 
 \item{rasterList}{List of rasters to be displayed.}
 
-\item{rctPolygonList}{Reactive list of polygons. # TODO: improve docs}
+\item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
+# TODO: decribe the format of the list!}
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 

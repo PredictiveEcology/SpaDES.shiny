@@ -7,7 +7,7 @@
 \usage{
 rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rasterList, polygonList,
+rastersOverTime(input, output, session, rasterList, rctPolygonList,
   defaultPolyName = NULL, map = leaflet(), colorTable, histTitle = "",
   sliderTitle = "", mapTitle = "", nPolygons, nRasters,
   rasterStepSize = 10, sim = NULL, cacheNotOlderThan = Sys.time())
@@ -23,7 +23,7 @@ rastersOverTime(input, output, session, rasterList, polygonList,
 
 \item{rasterList}{List of rasters to be displayed.}
 
-\item{polygonList}{List with sets of polygons to be displayed on a leaflet map.
+\item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
