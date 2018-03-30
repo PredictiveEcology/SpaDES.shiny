@@ -17,9 +17,10 @@ proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 #' @param zoomRange List of numbers representing zoom value to generate tiles for.
 #' @param colorTableFile Table file that contains color values for tiles.
 #'
-#' @return None. Invoked for the side-effect of creating tile images.
+#' @return Leafet map url template path. # TODO: improve description
 #'
 #' @author Damian Rodziewicz
+#' @author Alex Chubaty
 #' @export
 #' @importFrom gdalUtils gdal_translate gdaldem
 ##' @importFrom reproducible checkPath
@@ -65,5 +66,5 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
   unlink(filename3)
   unlink(filename2)
 
-  return(invisible(NULL))
+  return(file.path(foldername, "{z}", "{x}", "{y}.png"))
 }

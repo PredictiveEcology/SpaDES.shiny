@@ -16,7 +16,7 @@ gdal2Tiles(raster, outputPath, zoomRange, colorTableFile)
 \item{colorTableFile}{Table file that contains color values for tiles.}
 }
 \value{
-None. Invoked for the side-effect of creating tile images.
+Leafet map url template path. # TODO: improve description
 }
 \description{
 Important: `gdalUtils_gdalPath` environment variable must point to
@@ -27,4 +27,6 @@ Requires GDAL (>=2) and python are found on the system PATH.
 }
 \author{
 Damian Rodziewicz
+
+Alex Chubaty
 }
