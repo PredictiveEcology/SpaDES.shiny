@@ -57,7 +57,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  chosen <- reactive({
+  rctChosenPolyName <- reactive({
     assertthat::assert_that(is.list(rctPolygonList())) ## TODO: test structure of the list, etc.
 
     polyList <- rctPolygonList()
@@ -105,7 +105,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
     ## this module will return a reactive value:
-    chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rctRasterList = rctRasterList,
+    rctChosenPolName <- callModule(rastersOverTime, "rastersOverTime", rctRasterList = rctRasterList,
                                 rctUrlTemplate = rctUrlTemplate,
                                 rctPolygonList = rctPolygonList, defaultPolyName = defaultPolyName,
                                 map = leafMap,  colorTable = colorTable,
@@ -114,8 +114,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 #sim = sim, cacheNotOlderThan = NULL
                                 )
 
-    return(chosenPolName())
+    return(rctChosenPolName())
   })
 
-  return(chosen)
+  return(rctChosenPolyName)
 }
