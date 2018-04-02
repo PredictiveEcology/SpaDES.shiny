@@ -7,7 +7,7 @@
 \usage{
 rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rctRasterList, urlTemplate,
+rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
   histTitle = "", sliderTitle = "", mapTitle = "", nPolygons, nRasters,
   rasterStepSize = 10)
@@ -21,7 +21,9 @@ rastersOverTime(input, output, session, rctRasterList, urlTemplate,
 
 \item{session}{Shiny server session object.}
 
-\item{urlTemplate}{The url template for leaflet map tiles}
+\item{rctRasterList}{A reactive that gives a list of rasters to be displayed.}
+
+\item{rctUrlTemplate}{The reactive url template for leaflet map tiles}
 
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}
@@ -43,8 +45,6 @@ rastersOverTime(input, output, session, rctRasterList, urlTemplate,
 \item{nRasters}{The number of available rasters.}
 
 \item{rasterStepSize}{Size of step in the raster slider.}
-
-\item{rasterList}{List of rasters to be displayed.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.

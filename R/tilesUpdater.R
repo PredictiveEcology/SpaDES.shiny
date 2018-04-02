@@ -13,7 +13,8 @@
 #'
 #' @param proxy    Leaflet proxy which manages a connected leaflet map.
 #'
-#' @param urlTemplate Reactive value which contains an URL with the tiles
+#' @param rctUrlTemplateSingleRaster Reactive value which contains the URL template
+#'                    with the tiles (for a single raster)
 #'                    that should be added to the leaflet map as a result.
 #'
 #' @param tilesGroup  Group of rasters/tiles we want to update.
@@ -38,15 +39,15 @@
 #' @importFrom leaflet addLayersControl addTiles clearGroup
 #' @importFrom shiny observeEvent
 #' @rdname tilesUpdater
-tilesUpdater <- function(input, output, session, proxy, urlTemplate, tilesGroup,
+tilesUpdater <- function(input, output, session, proxy, rctUrlTemplateSingleRaster, tilesGroup,
                          addTilesParameters = NULL, addLayersControlParameters = NULL) {
-  observeEvent(urlTemplate(), {
+  observeEvent(rctUrlTemplateSingleRaster(), {
     addTilesNecessaryParameters <- list(map = clearGroup(proxy, tilesGroup),
-                                        urlTemplate = urlTemplate(),
+                                        urlTemplate = rctUrlTemplateSingleRaster(),
                                         group = tilesGroup)
     addTilesParameters[names(addTilesNecessaryParameters)] <- NULL
     addTilesParametersCombined <- c(list(map = clearGroup(proxy, tilesGroup),
-                                         urlTemplate = urlTemplate(),
+                                         urlTemplate = rctUrlTemplateSingleRaster(),
                                          group = tilesGroup), addTilesParameters)
     layersControlParamsCombined <- c(
       list(map = do.call(addTiles, addTilesParametersCombined)),

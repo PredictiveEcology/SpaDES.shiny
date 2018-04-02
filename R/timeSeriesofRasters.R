@@ -49,13 +49,13 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonList,
-                                defaultPolyName = NULL, shpStudyRegionName = NULL,
+timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
+                                rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
                                 colorTable, palette, maxAge, zoom = 5, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  chosen <- reactive({
+  rctChosenPolyName <- reactive({
     assertthat::assert_that(is.list(rctPolygonList())) ## TODO: test structure of the list, etc.
 
     polyList <- rctPolygonList()
@@ -96,23 +96,22 @@ timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonLi
                             mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
                             mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "], 5)}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      setView(mean(c(xmin(subRegion), xmax(subRegion))),
-              mean(c(ymin(subRegion), ymax(subRegion))),
-              zoom = zoom)# %>%
+      fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion)) #%>%
       # addPolygons(data = isolate(shpStudyRegion),
       #             group = "Fire return interval", # TODO: generalize this
       #             fillOpacity = 0.3, weight = 1, color = "blue",
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
     ## this module will return a reactive value:
-    chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rasterList = rasterList,
+    rctChosenPolName <- callModule(rastersOverTime, "rastersOverTime", rctRasterList = rctRasterList,
+                                rctUrlTemplate = rctUrlTemplate,
                                 rctPolygonList = rctPolygonList, defaultPolyName = defaultPolyName,
                                 map = leafMap,  colorTable = colorTable,
                                 histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
                                 nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10)
 
-    return(chosenPolName())
+    return(rctChosenPolName())
   })
 
-  return(chosen)
+  return(rctChosenPolyName)
 }
