@@ -60,7 +60,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
-  rasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
+  rctRasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
                                  min = 0, max = (nRasters - 1) * rasterStepSize,
                                  value = 0, step = rasterStepSize,
                                  animate = animationOptions(interval = 2500, loop = FALSE))
@@ -73,30 +73,40 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   chosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
   rast <- reactive({
-    rasterIndex <- if (is.null(rasterIndexValue())) {
+    rasterIndex <- if (is.null(rctRasterIndexValue())) {
       1
     } else {
-      rasterIndexValue() / rasterStepSize + 1
+      rctRasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rctRasterList()[[rasterIndex]]
+    rst <- lapply(rctRasterList(), function(x) x[[rasterIndex]]) # get both crs
 
     return(rst);
   })
 
   sampledRaster <- reactive({
     # TODO: make this adjust to input$map_bounds
-    if (ncell(rast()) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, rast(), size = 4e5, asRaster = TRUE)
+    mb <- input$map_bounds
+    ras <- if (!is.null(mb)) {
+      mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east, ymin = mb$south, ymax = mb$north)
+      sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(SpaDES.shiny::proj4stringLFLT))
+      sp2 <- spTransform(sp1, crsStudyRegion)
+      crop(rast()$crsSR, sp2)
     } else {
-      sampledRaster <- rast()
+      rast()$crsSR
+    }
+
+    if (ncell(ras) > 3e5) {
+      sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
+    } else {
+      sampledRaster <- ras
     }
     sampledRaster[sampledRaster[] == 0] <- NA
 
     sampledRaster
   })
 
-  numberOfBreaks <- reactive(ceiling(maxValue(rast()) / 10))
+  numberOfBreaks <- reactive(ceiling(maxValue(rast()$crsSR) / 10))
   breaks <- reactive(numberOfBreaks())
 
   addAxisParams <- reactive({
@@ -104,7 +114,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
   })
 
-  rasterScale <- reactive(prod(raster::res(rast())) / 1e4)
+  rasterScale <- reactive(prod(raster::res(rast()$crsSR)) / 1e4)
 
   addTilesParameters <- list(
     option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)
@@ -113,8 +123,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   click <- reactive(input$map_shape_click)
 
   rctUrlTemplateSingleFile <- reactive({
-    rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
-    if (FALSE) {
+    rasterFilename <- strsplit(basename(filename(rast()$crsLFLT)), "\\.")[[1]][[1]]
+    if (FALSE) { # from Polish app develpment -- old now
       file.path(basename(output_subpath()), ns("map-tiles"), ## don't change ns
                 paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
     }

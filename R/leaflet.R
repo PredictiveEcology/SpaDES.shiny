@@ -27,9 +27,9 @@ proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 #' @importFrom reproducible checkPath
 #' @rdname gdal2Tiles
 gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
-  
+
   filePaths <- unlist(lapply(raster, function(rstInner) {
-    
+
     filename1 <- filename(rstInner)
     reproducible::checkPath(outputPath, create = TRUE)
     filename2 <- file.path(outputPath, paste0("out", basename(filename1)))
@@ -38,7 +38,7 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
     filename5 <- file.path(outputPath, paste0("out4", basename(filename1)))
     filename5 <- gsub(pattern = "tif", x = filename5, replacement = "vrt")
     foldername <- gsub(pattern = ".tif", filename2, replacement = "")
-  
+
     if (anyNA(rstInner[])) {
       rstInner[is.na(rstInner[])] <- -1
     }
@@ -47,13 +47,13 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
     }
     rstInner <- raster::writeRaster(x = rstInner, filename = filename2,
                                   overwrite = TRUE, datatype = "INT2S")
-  
+
     # TODO: temporary workaround for https://github.com/eliotmcintire/LandWeb/issues/13
     if (is.null(getOption("gdalUtils_gdalPath")) ||
         getOption("gdalUtils_gdalPath") == "NULL")
       gdalUtils::gdal_setInstallation(rescan = TRUE)
     # end workaround
-  
+
     gdalUtils::gdaldem(mode = "color-relief", filename2,
                        color_text_file = as.character(colorTableFile), filename3)
     system(paste0("python ",
@@ -71,6 +71,6 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
     unlink(filename2)
     return(file.path(foldername, "{z}", "{x}", "{y}.png"))
   }))
-  
-  
+
+
 }
