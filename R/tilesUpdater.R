@@ -26,7 +26,7 @@
 #'                           \code{proxy}, \code{urlTemplate} and \code{tilesGroup}
 #'                           parameter respectively.
 #'                           If passed within \code{addTilesParameters}, these
-#'                           arguments will be surpressed by the values passed
+#'                           arguments will be suppressed by the values passed
 #'                           directly to \code{tilesUpdater}.
 #'
 #' @param addLayersControlParameters Additional parameters passed to

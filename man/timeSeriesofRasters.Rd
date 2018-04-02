@@ -9,8 +9,8 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-  colorTable, palette, maxAge, zoom = 5, sim = NULL, mapLegend = "",
-  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons, nRasters,
+  colorTable, palette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
+  sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10)
 }
 \arguments{
