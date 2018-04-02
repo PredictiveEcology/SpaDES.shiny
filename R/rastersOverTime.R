@@ -112,9 +112,17 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   click <- reactive(input$map_shape_click)
 
-  browser()
+  rctUrlTemplateSingleFile <- reactive({
+    rasterFilename <- strsplit(basename(filename(rast())), "\\.")[[1]][[1]]
+    if (FALSE) {
+      file.path(basename(output_subpath()), ns("map-tiles"), ## don't change ns
+                paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
+    }
+    grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
+  })
+
   #urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplate, ns("tiles"), ## don't change ns
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, rast, rctPoly4Map)
