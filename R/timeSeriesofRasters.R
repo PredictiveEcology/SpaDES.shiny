@@ -36,12 +36,10 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons
 #' @importFrom leaflet addLayersControl addPopups addProviderTiles
 #' @importFrom leaflet clearPopups colorFactor easyButton JS
-#' @importFrom leaflet layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
-#' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
-#' @importFrom shiny br callModule isolate observe reactive renderPlot
-#' @importFrom sp SpatialPoints spTransform
-#' @importFrom raster cellFromXY crs extract filename maxValue ncell rowColFromCell
-#' @importFrom raster hist xmax xmin ymax ymin
+#' @importFrom leaflet fitBounds layersControlOptions leaflet leafletOptions leafletOutput
+#' @importFrom leaflet leafletProxy providerTileOptions renderLeaflet tileOptions
+#' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
+#' @importFrom raster rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
 #' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
 #' @importFrom shinydashboard box
