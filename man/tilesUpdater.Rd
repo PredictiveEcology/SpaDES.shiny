@@ -4,7 +4,7 @@
 \alias{tilesUpdater}
 \title{Tiles updater (shiny module)}
 \usage{
-tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
+tilesUpdater(input, output, session, proxy, rctUrlTemplate, tilesGroup,
   addTilesParameters = NULL, addLayersControlParameters = NULL)
 }
 \arguments{
@@ -15,9 +15,6 @@ tilesUpdater(input, output, session, proxy, urlTemplate, tilesGroup,
 \item{session}{Shiny server session object.}
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
-
-\item{urlTemplate}{Reactive value which contains an URL with the tiles
-that should be added to the leaflet map as a result.}
 
 \item{tilesGroup}{Group of rasters/tiles we want to update.}
 
@@ -33,6 +30,9 @@ directly to \code{tilesUpdater}.}
 
 \item{addLayersControlParameters}{Additional parameters passed to
 \code{\link[leaflet]{addLayersControl}}.}
+
+\item{urlTemplate}{Reactive value which contains an URL with the tiles
+that should be added to the leaflet map as a result.}
 }
 \value{
 None. Invoked for the side-effect of sending information to leaflet proxy.

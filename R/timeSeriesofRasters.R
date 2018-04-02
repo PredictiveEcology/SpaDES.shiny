@@ -49,7 +49,8 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom SpaDES.core paddedFloatToChar
 #' @rdname timeSeriesofRasters
 #'
-timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonList,
+timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
+                                rctPolygonList,
                                 defaultPolyName = NULL, shpStudyRegionName = NULL,
                                 colorTable, palette, maxAge, zoom = 5,
                                 sim = NULL, mapLegend = "",
@@ -106,12 +107,15 @@ timeSeriesofRasters <- function(input, output, session, rasterList, rctPolygonLi
       #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
 
     ## this module will return a reactive value:
+    browser()
     chosenPolName <- callModule(rastersOverTime, "rastersOverTime", rctRasterList = rctRasterList,
+                                rctUrlTemplate = rctUrlTemplate,
                                 rctPolygonList = rctPolygonList, defaultPolyName = defaultPolyName,
                                 map = leafMap,  colorTable = colorTable,
                                 histTitle = histTitle, sliderTitle = sliderTitle, mapTitle = mapTitle,
-                                nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10,
-                                sim = sim, cacheNotOlderThan = NULL)
+                                nPolygons = nPolygons, nRasters = nRasters, rasterStepSize = 10#,
+                                #sim = sim, cacheNotOlderThan = NULL
+                                )
 
     return(chosenPolName())
   })

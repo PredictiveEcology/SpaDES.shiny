@@ -7,10 +7,10 @@
 \usage{
 timeSeriesofRastersUI(id)
 
-timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
-  defaultPolyName = NULL, shpStudyRegionName = NULL, colorTable, palette,
-  maxAge, zoom = 5, sim = NULL, mapLegend = "", mapTitle = "",
-  sliderTitle = "", histTitle = "", nPolygons, nRasters,
+timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
+  rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
+  colorTable, palette, maxAge, zoom = 5, sim = NULL, mapLegend = "",
+  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10)
 }
 \arguments{
@@ -22,7 +22,9 @@ timeSeriesofRasters(input, output, session, rasterList, rctPolygonList,
 
 \item{session}{Shiny server session object.}
 
-\item{rasterList}{List of rasters to be displayed.}
+\item{rctRasterList}{A reactive that gives a list of rasters to be displayed.}
+
+\item{rctUrlTemplate}{The reactive url template for leaflet map tiles}
 
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}

@@ -38,15 +38,16 @@
 #' @importFrom leaflet addLayersControl addTiles clearGroup
 #' @importFrom shiny observeEvent
 #' @rdname tilesUpdater
-tilesUpdater <- function(input, output, session, proxy, urlTemplate, tilesGroup,
+tilesUpdater <- function(input, output, session, proxy, rctUrlTemplate, tilesGroup,
                          addTilesParameters = NULL, addLayersControlParameters = NULL) {
-  observeEvent(urlTemplate(), {
+  observeEvent(rctUrlTemplate(), {
+    browser()
     addTilesNecessaryParameters <- list(map = clearGroup(proxy, tilesGroup),
-                                        urlTemplate = urlTemplate(),
+                                        urlTemplate = rctUrlTemplate()[1],
                                         group = tilesGroup)
     addTilesParameters[names(addTilesNecessaryParameters)] <- NULL
     addTilesParametersCombined <- c(list(map = clearGroup(proxy, tilesGroup),
-                                         urlTemplate = urlTemplate(),
+                                         urlTemplate = rctUrlTemplate()[1],
                                          group = tilesGroup), addTilesParameters)
     layersControlParamsCombined <- c(
       list(map = do.call(addTiles, addTilesParametersCombined)),

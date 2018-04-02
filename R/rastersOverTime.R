@@ -22,8 +22,8 @@ rastersOverTimeUI <- function(id) {
 #' @param input           Shiny server input object.
 #' @param output          Shiny server output object.
 #' @param session         Shiny server session object.
-#' @param rasterList      List of rasters to be displayed.
-#' @param urlTemplate     The url template for leaflet map tiles
+#' @param rctRasterList   A reactive that gives a list of rasters to be displayed.
+#' @param rctUrlTemplate  The reactive url template for leaflet map tiles
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
 #' @param defaultPolyName Name of the polygon to use as the default for mapping.
@@ -51,7 +51,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
-rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
+rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
                             rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10) {
@@ -79,7 +79,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
       rasterIndexValue() / rasterStepSize + 1
     }
 
-    rst <- rasterList[[rasterIndex]]
+    rst <- rctRasterList()[[rasterIndex]]
 
     return(rst);
   })
@@ -112,8 +112,9 @@ rastersOverTime <- function(input, output, session, rctRasterList, urlTemplate,
 
   click <- reactive(input$map_shape_click)
 
-  urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, urlTemplate2, ns("tiles"), ## don't change ns
+  browser()
+  #urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplate, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, rast, rctPoly4Map)
