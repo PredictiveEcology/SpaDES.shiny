@@ -98,9 +98,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                             mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
                             mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "], 5)}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      setView(mean(c(xmin(subRegion), xmax(subRegion))),
-              mean(c(ymin(subRegion), ymax(subRegion))),
-              zoom = zoom)# %>%
+      fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion)) #%>%
       # addPolygons(data = isolate(shpStudyRegion),
       #             group = "Fire return interval", # TODO: generalize this
       #             fillOpacity = 0.3, weight = 1, color = "blue",
