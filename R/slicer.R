@@ -11,7 +11,8 @@
 #' @importFrom data.table is.data.table setkeyv
 #' @rdname getSubTable
 getSubtable <- function(datatable, chosenCategories, chosenValues) {
-  assert_that(is.data.table(datatable))
+  assert_that(is.data.table(datatable),
+              all(vapply(chosenCategories, function(x) is.character(datatable[[x]]), logical(1))))
 
   if (NROW(chosenValues) == 0) {
     return(datatable)
@@ -129,7 +130,6 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      browser()
       currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
