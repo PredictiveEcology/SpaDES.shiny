@@ -90,9 +90,9 @@ slicerUI <- function(id) {
 #'                       module server function.
 #'                       See example section and compare with \code{link[shiny]{callModule}}).
 #'
-#' @param uiFunction A summary module function UI. This function should take
-#'                   one argument: \code{ns}. Inside the function there should be
-#'                   a call to shiny module UI function. See example section.
+#' @param uiFunction     A summary module function UI. This function should take
+#'                       one argument: \code{ns}. Inside the function there should be
+#'                       a call to shiny module UI function. See example section.
 #'
 #' @param chosenCategories A list with categories names that were already chosen.
 #'                         Default \code{NULL}.
@@ -138,10 +138,14 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
       })
 
       map(categoriesValues(), function(value) {
-        callModule(slicer, value, currentSubtable, value, uiSequence[-1, ],
-                   serverFunction, uiFunction,
-                   c(chosenCategories, list(categoryName)),
-                   c(chosenValues, list(value)), ...)
+        callModule(slicer, id = value,
+                   datatable = currentSubtable,
+                   categoryValue = value,
+                   uiSequence = uiSequence[-1, ],
+                   serverFunction = serverFunction,
+                   uiFunction = uiFunction,
+                   chosenCategories = c(chosenCategories, list(categoryName)),
+                   chosenValues = c(chosenValues, list(value)), ...)
       })
 
       uiType <- uiSequence$uiType[[1]]
