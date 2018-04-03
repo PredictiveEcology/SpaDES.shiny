@@ -63,7 +63,17 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
     ns <- session$ns
 
     # TODO: display in alphabetical order
-    selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()), selected = selectedPoly)
+    #selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()), selected = selectedPoly)
+    shinyWidgets::pickerInput(
+      inputId = ns("polyLayer"),
+      label = "Polygon layer:",
+      choices = names(rctPolygonList()),
+      selected = selectedPoly,
+      options = list(`actions-box` = TRUE),
+      multiple = FALSE,
+      inline = TRUE
+    )
+
   })
 
   return(reactive({
