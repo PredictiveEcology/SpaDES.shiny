@@ -149,7 +149,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
              width = 1, space = 0, xlab = "Time since fire, years",
              main = "Approximate area in each age class",
              ylab = "Area in visible window (1000s hectares)",
-             cex.names = 2, cex.axis = 2)
+             cex.names = 2, cex.lab = 1.3, cex.main = 1.5, cex.axis = 1.5)
 
   output$rotUI <- renderUI({
     ns <- session$ns
