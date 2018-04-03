@@ -16,9 +16,8 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
     return(datatable)
   } else {
-    #ids <- which(datatable[[chosenCategories[[1]]]] %in% chosenValues[[1]])
-    #subtable <- datatable[ids]
-    subtable <- setkeyv(datatable, chosenCategories[[1]])[chosenValues[[1]]]
+    setkeyv(datatable, chosenCategories[[length(chosenCategories)]])
+    subtable <- na.omit(datatable[chosenValues[[length(chosenValues)]]])
 
     getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
@@ -130,6 +129,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
+      browser()
       currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
