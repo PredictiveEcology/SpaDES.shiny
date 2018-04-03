@@ -120,7 +120,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   addTilesParameters <- list(
-      option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)
+      option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
   )
 
   click <- reactive(input$map_shape_click)
