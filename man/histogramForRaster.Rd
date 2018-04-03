@@ -7,8 +7,8 @@
 \usage{
 histogramForRasterUI(id, title = "", plotParameters, ...)
 
-histogramForRaster(input, output, session, raster, histogramBreaks, scale = 1,
-  addAxisParams = NULL, ...)
+histogramForRaster(input, output, session, rctRaster, rctHistogramBreaks,
+  scale = 1, addAxisParams = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -27,9 +27,9 @@ in \code{histogramForRaster}.}
 
 \item{session}{Shiny server session object}
 
-\item{raster}{Reactive value containing raster}
+\item{rctRaster}{Reactive value containing raster}
 
-\item{histogramBreaks}{Reactive value which is responsible for \code{breaks}
+\item{rctHistogramBreaks}{Reactive value which is responsible for \code{breaks}
 parameter, as in \code{\link[graphics]{hist}}.}
 
 \item{scale}{Number used for scaling heights of histogram bars.
