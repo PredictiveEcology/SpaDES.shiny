@@ -92,7 +92,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
                                           ymin = mb$south, ymax = mb$north)
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
-      sp2 <- spTransform(sp1, CRS(rast()$crsSR))
+      sp2 <- spTransform(sp1, crs(rast()$crsSR))
       crop(rast()$crsSR, sp2)
     } else {
       rast()$crsSR
