@@ -69,17 +69,17 @@ slicerUI <- function(id) {
 #' @param categoryValue Each time the \code{data.table} is sliced (one dimension is cut off),
 #'                      concrete value of the category is set. This argument stores this value.
 #'
-#' @param uiSequence  A \code{data.table} of the form
-#'                    \code{data.table(category = list_of_categories, uiType = list_of_ui_actions)}.
+#' @param uiSequence  A \code{data.table} with columns \code{category}, \code{uiType},
+#'                    and (optionally) \code{possibleValues}.
 #'                    Both lists should contain elements of type character.
 #'                    The \code{category} column should contain names of the categories
-#'                    which will be subsequently fixed. The \code{uiType} column
-#'                    should contain corresponding UI which should be applied for each
-#'                    category choice. Currently there are two possible UI
-#'                    types to perform: "tab" and "box".
+#'                    which will be subsequently fixed.
+#'                    The \code{uiType} column should contain corresponding UI
+#'                    which should be applied for each category choice.
+#'                    The \code{possibleValues} column should contain a list of
+#'                    the possible values for \code{category}.
+#'                    Currently there are two possible UI types to perform: "tab" and "box".
 #'                    Type "box": should be used only together with \pkg{shinydashboard}.
-#'                    An example of proper \code{uiSequence} is
-#'                    \code{data.table(category = c("Alliance", "Kingdom"), uiType = c("tab", "box"))}.
 #'
 #' @param serverFunction A summary module server function.
 #'                       This function should take, at minimum, the following arguments:
@@ -89,9 +89,9 @@ slicerUI <- function(id) {
 #'                       module server function.
 #'                       See example section and compare with \code{link[shiny]{callModule}}).
 #'
-#' @param uiFunction A summary module function UI. This function should take
-#'                   one argument: \code{ns}. Inside the function there should be
-#'                   a call to shiny module UI function. See example section.
+#' @param uiFunction     A summary module function UI. This function should take
+#'                       one argument: \code{ns}. Inside the function there should be
+#'                       a call to shiny module UI function. See example section.
 #'
 #' @param chosenCategories A list with categories names that were already chosen.
 #'                         Default \code{NULL}.
@@ -144,7 +144,8 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
       })
 
       map(categoriesValues(), function(value) {
-        callModule(slicer, value, datatable = currentSubtable,
+        callModule(slicer, id = value,
+                   datatable = currentSubtable,
                    categoryValue = value,
                    uiSequence = uiSequence[-1, ],
                    serverFunction = serverFunction,
