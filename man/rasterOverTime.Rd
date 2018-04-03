@@ -8,7 +8,7 @@
 rastersOverTimeUI(id)
 
 rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
-  rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
+  rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorPalette,
   histTitle = "", sliderTitle = "", mapTitle = "", nPolygons, nRasters,
   rasterStepSize = 10)
 }
@@ -32,7 +32,7 @@ rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
-\item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
+\item{colorPalette}{Colour palette to use.}
 
 \item{histTitle}{Title to be shown above the histogram.}
 

@@ -23,7 +23,8 @@ polygonChooserUI <- function(id) {
 #' @return A reactive containing the name of the selected polygon.
 #'
 #' @export
-#' @importFrom shiny selectInput
+#' @importFrom shiny need validate
+#' @importFrom shinyWidgets pickerInput
 #' @rdname polygonChooser
 #'
 #' @examples

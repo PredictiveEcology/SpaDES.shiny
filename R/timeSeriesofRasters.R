@@ -21,8 +21,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @inheritParams rastersOverTime
 #'
 #' @param mapLegend           The legend text to add to the leaflet map.
-#' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList})..
-#' @param palette             Color palette for the rasters.
+#' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
 #'
@@ -49,7 +48,7 @@ timeSeriesofRastersUI <- function(id) {
 #'
 timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
                                 rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-                                colorTable, palette, maxAge, zoom = 5, mapLegend = "",
+                                colorPalette, maxAge, zoom = 5, mapLegend = "",
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
@@ -77,7 +76,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addLegend(position = "bottomright", pal = palette, values = 1:maxAge, title = mapLegend) %>%
+      addLegend(position = "bottomright", pal = colorPalette, values = 1:maxAge, title = mapLegend) %>%
       addMeasure(
         position = "bottomleft",
         primaryLengthUnit = "kilometers",
@@ -106,7 +105,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                    rctUrlTemplate = rctUrlTemplate,
                                    rctPolygonList = rctPolygonList,
                                    defaultPolyName = defaultPolyName,
-                                   map = leafMap,  colorTable = colorTable,
+                                   map = leafMap,
+                                   colorPalette = colorPalette(0:maxAge),
                                    histTitle = histTitle,
                                    sliderTitle = sliderTitle,
                                    mapTitle = mapTitle,

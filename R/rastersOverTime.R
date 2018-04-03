@@ -28,7 +28,7 @@ rastersOverTimeUI <- function(id) {
 #'                        # TODO: decribe the format of the list!
 #' @param defaultPolyName Name of the polygon to use as the default for mapping.
 #' @param map             Leaflet map to show raster and polygons on.
-#' @param colorTable      File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).
+#' @param colorPalette    Colour palette to use.
 #' @param histTitle       Title to be shown above the histogram.
 #' @param mapTitle        Title to be shown above the map.
 #' @param sliderTitle     Title to be shown above the slider.
@@ -42,17 +42,18 @@ rastersOverTimeUI <- function(id) {
 #' @export
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
-#' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
+#' @importFrom raster cellFromXY crop crs extent extract filename hist maxValue ncell
 #' @importFrom raster sampleRegular res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shinydashboard box
 #' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
-#' @importFrom sp SpatialPoints spTransform
+#' @importFrom sp bbox CRS SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
-                            rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorTable,
+                            rctPolygonList, defaultPolyName = NULL, map = leaflet(),
+                            colorPalette,
                             histTitle = "", sliderTitle = "", mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10) {
   ns <- session$ns
@@ -88,9 +89,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     # TODO: make this adjust to input$map_bounds
     mb <- input$map_bounds
     ras <- if (!is.null(mb)) {
-      mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east, ymin = mb$south, ymax = mb$north)
-      sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(SpaDES.shiny::proj4stringLFLT))
-      sp2 <- spTransform(sp1, crsStudyRegion)
+      mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
+                                          ymin = mb$south, ymax = mb$north)
+      sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
+      sp2 <- spTransform(sp1, CRS(rast()$crsSR))
       crop(rast()$crsSR, sp2)
     } else {
       rast()$crsSR
@@ -145,7 +147,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   callModule(histogramForRaster, "histogram", sampledRaster, rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
-             col = timeSinceFirePalette(0:maxAge),
+             col = colorPalette,
              width = 1, space = 0, xlab = "Time since fire, years",
              main = "Approximate area in each age class",
              ylab = "Area in visible window (1000s hectares)",

@@ -9,7 +9,7 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-  colorTable, palette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
+  colorPalette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
   sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10)
 }
@@ -31,11 +31,9 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
-\item{shpStudyRegionName}{Name of the study area region (from \code{rctRasterList})..}
+\item{shpStudyRegionName}{Name of the study area region (from \code{rctRasterList}).}
 
-\item{colorTable}{File that contains colour values for tiles (passed to \code{\link{gdal2Tiles}}).}
-
-\item{palette}{Color palette for the rasters.}
+\item{colorPalette}{Colour palette to use.}
 
 \item{maxAge}{Maximum simulation age.}
 
