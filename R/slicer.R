@@ -129,7 +129,6 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      browser()
       currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
