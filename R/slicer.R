@@ -118,7 +118,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL, ...) {
   observeEvent({
-    datatable
+    datatable()
   }, {
     assertthat::assert_that(is.data.table(datatable()))
 
