@@ -112,7 +112,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                    mapTitle = mapTitle,
                                    nPolygons = nPolygons,
                                    nRasters = nRasters,
-                                   rasterStepSize = 10)
+                                   rasterStepSize = rasterStepSize) # from global variable summaryInterval
 
     return(rctChosenPolName())
   })
