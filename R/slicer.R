@@ -133,15 +133,24 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
       currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
-        cst <- currentSubtable()
-        cst[, categoryName, with = FALSE] %>% unique() %>% unlist() %>% unname() # nolint
+        possVals <- unlist(uiSequence[1]$possibleValues)
+        if (!is.null(possVals)) {
+          out <- possVals
+        } else {
+          cst <- currentSubtable()
+          out <- cst[, categoryName, with = FALSE] %>% unique() %>% unlist() %>% unname() # nolint
+        }
+        return(out)
       })
 
       map(categoriesValues(), function(value) {
-        callModule(slicer, value, currentSubtable, value, uiSequence[-1, ],
-                   serverFunction, uiFunction,
-                   c(chosenCategories, list(categoryName)),
-                   c(chosenValues, list(value)), ...)
+        callModule(slicer, value, datatable = currentSubtable,
+                   categoryValue = value,
+                   uiSequence = uiSequence[-1, ],
+                   serverFunction = serverFunction,
+                   uiFunction = uiFunction,
+                   chosenCategories = c(chosenCategories, list(categoryName)),
+                   chosenValues = c(chosenValues, list(value)), ...)
       })
 
       uiType <- uiSequence$uiType[[1]]
