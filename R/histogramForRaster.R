@@ -40,7 +40,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'
 #' @param session Shiny server session object
 #'
-#' @param raster Reactive value containing raster
+#' @param rctRaster Reactive value containing raster
 #'
 #' @param scale Number used for scaling heights of histogram bars.
 #'              When set to 1 (default) histogram bar height represents the number
@@ -54,7 +54,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'              So, in this scenario, each histogram's bar height is just count
 #'              times 2 (count times n).
 #'
-#' @param histogramBreaks Reactive value which is responsible for \code{breaks}
+#' @param rctHistogramBreaks Reactive value which is responsible for \code{breaks}
 #'                        parameter, as in \code{\link[graphics]{hist}}.
 #'
 #' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
@@ -67,16 +67,25 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @importFrom shiny renderPlot
 #' @importFrom raster hist
 #' @rdname histogramForRaster
-histogramForRaster <- function(input, output, session, raster, histogramBreaks,
+histogramForRaster <- function(input, output, session, rctRaster, rctHistogramBreaks,
                                scale = 1, addAxisParams = NULL,  ...) {
   output$hist4rast <- renderPlot({
-    histogram <- raster::hist(raster(), plot = FALSE, breaks = histogramBreaks())
+    histogram <- graphics::hist(rctRaster()[], plot = FALSE, breaks = rctHistogramBreaks())
 
-    barplot(histogram$counts * scale, ...)
+    barHeights <- histogram$counts * scale
+    dots <- list(...)
+    dots$col <- if (!is.null(dots$col)) { #
+      dots$col[histogram$mids]
+    } else {
+      NULL
+    }
+
+    do.call(barplot, append(list(barHeights), dots))
 
     if (!is.null(addAxisParams)) {
       axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
       do.call(axis, axps)
+
     }
   })
 }

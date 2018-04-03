@@ -106,18 +106,21 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     sampledRaster
   })
 
-  numberOfBreaks <- reactive(ceiling(maxValue(rast()$crsSR) / 10))
-  breaks <- reactive(numberOfBreaks())
+  xAxisBreaks <- reactive({
+    c(0, seq.int(ceiling(maxValue(rast()$crsSR)/10))  * 10)
+    })
 
   addAxisParams <- reactive({
-    numberOfBreaks <- numberOfBreaks()
-    return(list(side = 1, at = 0:numberOfBreaks, labels = 0:numberOfBreaks * 10))
+    xAxisBreaks1 <- xAxisBreaks()
+    return(list(side = 1, at = xAxisBreaks1/10, labels = xAxisBreaks1))
   })
 
-  rasterScale <- reactive(prod(raster::res(rast()$crsSR)) / 1e4)
+  rasterScale <- reactive({
+    prod(raster::res(rast()$crsSR)) / 1e4 / 1e3 # 1000s of hectares
+  })
 
   addTilesParameters <- list(
-    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)
+      option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 0.8)
   )
 
   click <- reactive(input$map_shape_click)
@@ -140,9 +143,13 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map,
              fillOpacity = 0.0, weight = 0.5)
 
-  callModule(histogramForRaster, "histogram", sampledRaster, histogramBreaks = breaks,
+  callModule(histogramForRaster, "histogram", sampledRaster, rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
-             width = 1, space = 0)
+             col = timeSinceFirePalette(0:maxAge),
+             width = 1, space = 0, xlab = "Time since fire, years",
+             main = "Approximate area in each age class",
+             ylab = "Area in visible window (1000s hectares)",
+             cex.names = 2, cex.axis = 2)
 
   output$rotUI <- renderUI({
     ns <- session$ns
