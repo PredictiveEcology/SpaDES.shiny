@@ -11,12 +11,13 @@
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
 #' @export
-#' @importFrom  shiny plotOutput NS
+#' @importFrom shiny plotOutput NS
+#' @importFrom shinycssloaders withSpinner
 #' @rdname histogram
 histogramUI <- function(id, ...) {
   ns <- NS(id)
 
-  plotOutput(ns("histogram"), ...)
+  shinycssloaders::withSpinner(plotOutput(ns("histogram"), ...))
 }
 
 #' Histogram Module Server Function
