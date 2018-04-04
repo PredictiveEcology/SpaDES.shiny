@@ -45,7 +45,8 @@ histogramUI <- function(id, ...) {
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
 #' @rdname histogram
-histogram <- function(input, output, session, histdata, addAxisParams = NULL, ...) {
+histogram <- function(input, output, session, histdata, addAxisParams = NULL,
+                      verticalBar = NULL, ...) {
   output$histogram <- renderPlot({
     if (is.reactive(histdata)) {
       hst <- histdata()
@@ -59,6 +60,9 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL, ..
     if (!is.null(addAxisParams)) {
       axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
       do.call(axis, axps)
+    }
+    if (!is.null(verticalBar)) {
+      abline(v = verticalBar, col = "red", lwd = 3)
     }
   })
 }
