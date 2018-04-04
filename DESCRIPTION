@@ -5,8 +5,8 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2018-04-03
-Version: 0.1.0.9001
+Date: 2018-04-04
+Version: 0.1.0.9002
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
              role = c("aut", "cre")),
