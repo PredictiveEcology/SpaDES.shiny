@@ -16,7 +16,15 @@
 rastersOverTimeUI <- function(id) {
   ns <- NS(id)
 
-  uiOutput(ns("rotUI"))
+  fluidRow(
+    box(width = 8, solidHeader = TRUE, collapsible = TRUE,
+        htmlOutput(ns("title")),
+        shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
+        sliderUI(ns("rastersSlider")),
+        polygonChooserUI(ns("polyDropdown"))
+    ),
+    uiOutput(ns("histUI"))
+  )
 }
 
 #' @param input           Shiny server input object.
@@ -70,10 +78,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   rctPoly4Map <- reactive({
     polyList <- rctPolygonList()
-    polyList[[chosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
+    polyList[[rctChosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
   })
 
-  chosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
+  rctChosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
   rasts <- reactive({
     rasterIndex <- if (is.null(rctRasterIndexValue())) {
@@ -144,22 +152,17 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
              ylab = "Area in visible window (1000s hectares)",
              cex.names = 2, cex.lab = 1.3, cex.main = 1.5, cex.axis = 1.5)
 
-  output$rotUI <- renderUI({
+  output$title <- renderUI(h4(mapTitle))
+
+  output$histUI <- renderUI({
     ns <- session$ns
 
-    tagList(
-      box(width = 8, solidHeader = TRUE, collapsible = TRUE, h4(mapTitle),
-          shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
-          sliderUI(ns("rastersSlider")),
-          polygonChooserUI(ns("polyDropdown"))
-      ),
-      histogramForRasterUI(ns("histogram"), title = h4(histTitle),
-                           plotParameters = list(height = 600), solidHeader = TRUE,
-                           collapsible = TRUE, width = 4)
-    )
+    histogramForRasterUI(ns("histogram"), title = h4(histTitle),
+                         plotParameters = list(height = 600), solidHeader = TRUE,
+                         collapsible = TRUE, width = 4)
   })
 
-  return(chosenPolyName) ## the reactive polygon selected by the user
+  return(rctChosenPolyName) ## the reactive polygon selected by the user
 }
 
 .sampleRasterToRAM <- function(ras) {
