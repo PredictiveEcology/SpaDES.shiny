@@ -11,8 +11,8 @@
 #' @importFrom data.table is.data.table setkeyv
 #' @rdname getSubTable
 getSubtable <- function(datatable, chosenCategories, chosenValues) {
-  assert_that(is.data.table(datatable),
-              all(vapply(chosenCategories, function(x) is.character(datatable[[x]]), logical(1))))
+  # assert_that(is.data.table(datatable),
+  #             all(vapply(chosenCategories, function(x) is.character(datatable[[x]]), logical(1))))
 
   if (NROW(chosenValues) == 0) {
     return(datatable)
@@ -24,11 +24,13 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
     subtable <- datatable[datatable[[chosenCategories[[len]]]]==
                                      chosenValues[[len]]]
     if (NROW(subtable) == 1)
-      na.omit(subtable)
+      subtable <- na.omit(subtable)
 
-    getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
+    getSubtableMem(subtable, chosenCategories[-1], chosenValues[-1])
   }
 }
+
+getSubtableMem <- memoise::memoise(getSubtable)
 
 #' Slicer shiny module
 #'
@@ -137,7 +139,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
+      currentSubtable <- reactive(getSubtableMem(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
         possVals <- unlist(uiSequence[1]$possibleValues)
