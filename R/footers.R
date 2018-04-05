@@ -31,7 +31,7 @@ copyrightFooter <- function(input, output, session, cph = "Author Name",
                             year = format(Sys.time(), "%Y")) {
   output$copyrightInfo <- renderUI({
     HTML(paste(
-      "<footer style=\"position: absolute; bottom: 10px;\">", "<div id=\"copyright\">",
+      "<footer>", "<div id=\"copyright\">",
       shiny::icon("copyright",  lib = "font-awesome"),
       "Copyright ", year, cph,
       "</div>", "</footer>"
@@ -59,7 +59,7 @@ sidebarFooter <- function(input, output, session, footer = NULL) {
   output$sidebarInfo <- renderUI({
     HTML(paste(
       "<footer>",
-      "<div id=\"sidebar\" style=\"position: absolute; bottom: 5px; margin: 15px\">",
+      "<div id=\"sidebar\" style='position: absolute; bottom: 5px; margin: 15px'>",
       paste(customFooter, br()),
       " Built with ",
       paste("<a href=\"http://SpaDES.PredictiveEcology.org\">",
