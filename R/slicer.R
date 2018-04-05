@@ -134,7 +134,6 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
   observeEvent(datatable(), {
     #assertthat::assert_that(is.data.table(datatable()))
 
-    browser()
     if (FALSE) {
       dtFull <- datatable()
       # used for plotting data -- 1 list element for each plot
