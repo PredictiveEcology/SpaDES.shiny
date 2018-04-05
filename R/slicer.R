@@ -134,9 +134,50 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
   observeEvent(datatable(), {
     #assertthat::assert_that(is.data.table(datatable()))
 
-    # dtList <- split(datatable(),
-    #                  by = uiSequence$category[-length(uiSequence$category)],
-    #                  flatten = FALSE)
+    browser()
+    if (FALSE) {
+      dtFull <- datatable()
+      # used for plotting data -- 1 list element for each plot
+      dtList <- split(dtFull,
+                    by = uiSequence$category,#[-length(uiSequence$category)],
+                    flatten = TRUE)
+
+      # calculate breaks -- 1 set of breaks for each group of plots
+      dtListShort <- split(dtFull,
+                      by = uiSequence$category[-length(uiSequence$category)],
+                      flatten = TRUE)
+      # Need to get a single set of breaks for all simultaneously visible histograms
+      breaksAndParams <- lapply(dtListShort, function(dtInner) {
+        numOfClusters <- dtInner[, .N, by = c("vegCover", "rep")]$N
+        maxNumClusters <- if (length(numOfClusters) == 0) {
+          6
+        } else {
+          pmax(6, max(numOfClusters) + 1)
+        }
+
+        breaksLabels <- 0:maxNumClusters
+        breaks <- breaksLabels - 0.5
+        barplotBreaks <- breaksLabels + 0.5
+
+        addAxisParams <- list(side = 1, labels = breaksLabels, at = barplotBreaks)
+        list(breaks = breaks, addAxisParams = addAxisParams)
+      })
+
+      # This is length dtList -- i.e., breaks and addAxisParams for each histogram
+      breaksAndParamsFull <- lapply(names(dtList), function(n) {
+        breaksAndParams[startsWith(n, names(dtListShort))]
+      })
+
+      # The call to serverFunction
+      Map(breaks = breaksAndParamsFull,
+          datatable = lapply(dtList, reactive),
+          nsNames = names(dtList),
+          MoreArgs = list(...),
+          serverFunction)
+
+    }
+    #browser(expr = if (exists("dtTimes")) dtTimes > 1 else FALSE)
+    #categoryNameSums$dtTimes <<- FALSE
 
     if (nrow(uiSequence) == 0) {
       serverFunction(datatable(), chosenCategories, chosenValues, ...)
