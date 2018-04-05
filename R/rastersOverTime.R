@@ -61,7 +61,9 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
-                            rctPolygonList, defaultPolyName = NULL, map = leaflet(),
+                            rctPolygonList,
+                            defaultPolyName = NULL,
+                            map = leaflet(),
                             colorPalette,
                             histTitle = "",
                             sliderTitle = "",
@@ -72,24 +74,20 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
 
-  rctRasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
-                                    min = 0, max = (nRasters - 1) * rasterStepSize,
-                                    value = 0, step = rasterStepSize,
-                                    animate = animationOptions(interval = 2500, loop = FALSE))
+  rctChosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
   rctPoly4Map <- reactive({
     polyList <- rctPolygonList()
     polyList[[rctChosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
   })
 
-  rctChosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
+  rctRasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
+                                    min = 0, max = (nRasters - 1) * rasterStepSize,
+                                    value = 0, step = rasterStepSize,
+                                    animate = animationOptions(interval = 2500, loop = FALSE))
 
   rasts <- reactive({
-    rasterIndex <- if (is.null(rctRasterIndexValue())) {
-      1
-    } else {
-      rctRasterIndexValue() / rasterStepSize + 1
-    }
+    rasterIndex <- rctRasterIndexValue() / rasterStepSize + 1
 
     rst <- lapply(rctRasterList(), function(x) x[[rasterIndex]]) # get both crs
 
