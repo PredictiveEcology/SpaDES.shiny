@@ -59,7 +59,7 @@ sidebarFooter <- function(input, output, session, footer = NULL) {
   output$sidebarInfo <- renderUI({
     HTML(paste(
       "<footer>",
-      "<div id=\"sidebar\" style='position: absolute; bottom: 5px; margin: 15px'>",
+      "<div id=\"sidebar\">",
       paste(customFooter, br()),
       " Built with ",
       paste("<a href=\"http://SpaDES.PredictiveEcology.org\">",
