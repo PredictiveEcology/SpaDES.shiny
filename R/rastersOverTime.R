@@ -101,12 +101,16 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
                                           ymin = mb$south, ymax = mb$north)
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
       sp2 <- spTransform(sp1, crs(rasts()$crsSR))
-      crop(rasts()$crsSR, sp2)
+      tryCatch(crop(rasts()$crsSR, sp2), error = function(x) NULL)
     } else {
       rasts()$crsSR
     }
 
-    Cache(.sampleRasterToRAM, ras)
+    ret <- if (!is.null(ras))
+      Cache(.sampleRasterToRAM, ras)
+    else
+      NULL
+    ret
   })
 
   xAxisBreaks <- reactive({

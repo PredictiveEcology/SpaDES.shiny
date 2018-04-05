@@ -70,7 +70,13 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 histogramForRaster <- function(input, output, session, rctRaster, rctHistogramBreaks,
                                scale = 1, addAxisParams = NULL,  ...) {
   output$hist4rast <- renderPlot({
-    histogram <- graphics::hist(rctRaster()[], plot = FALSE, breaks = rctHistogramBreaks())
+    ras <- rctRaster()
+    rasVals <- if (!is(ras, "Raster")) {
+      numeric()
+    } else {
+      ras[]
+    }
+    histogram <- graphics::hist(rasVals, plot = FALSE, breaks = rctHistogramBreaks())
 
     barHeights <- histogram$counts * scale
     dots <- list(...)
