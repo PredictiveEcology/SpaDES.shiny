@@ -131,9 +131,7 @@ slicerUI <- function(id) {
 slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    serverFunction, uiFunction, chosenCategories = NULL,
                    chosenValues = NULL, ...) {
-  observeEvent({
-    datatable()
-  }, {
+  observeEvent(datatable(), {
     #assertthat::assert_that(is.data.table(datatable()))
 
     # dtList <- split(datatable(),
