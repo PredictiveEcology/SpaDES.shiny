@@ -1,5 +1,7 @@
 #' Get subtable from a \code{data.table}
 #'
+#' \code{getSubTableMem} provides a memoised version of \code{getSubTable}.
+#'
 #' @param datatable         A \code{data.table} object.
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
@@ -9,6 +11,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom data.table is.data.table setkeyv
+#' @importFrom stats na.omit
 #' @rdname getSubTable
 getSubtable <- function(datatable, chosenCategories, chosenValues) {
   # assert_that(is.data.table(datatable),
@@ -21,8 +24,7 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
       # setkeyv(datatable, chosenCategories[[len]])
       # if (NROW(datatable) <= 1)
       #   subtable <- na.omit(datatable[chosenValues[[len]]])
-    subtable <- datatable[datatable[[chosenCategories[[len]]]]==
-                                     chosenValues[[len]]]
+    subtable <- datatable[datatable[[chosenCategories[[len]]]] == chosenValues[[len]]]
     if (NROW(subtable) == 1)
       subtable <- na.omit(subtable)
 
@@ -30,6 +32,9 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
   }
 }
 
+#' @export
+#' @importFrom memoise memoise
+#' @rdname getSubtable
 getSubtableMem <- memoise::memoise(getSubtable)
 
 #' Slicer shiny module

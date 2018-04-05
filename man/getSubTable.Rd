@@ -17,5 +17,5 @@ getSubtable(datatable, chosenCategories, chosenValues)
 A \code{data.table} object.
 }
 \description{
-Get subtable from a \code{data.table}
+\code{getSubTableMem} provides a memoised version of \code{getSubTable}.
 }

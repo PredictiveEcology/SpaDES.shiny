@@ -39,9 +39,11 @@ histogramUI <- function(id, ...) {
 #' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
 #'                      If \code{NULL} (default) then no axis is drawn.
 #'
+#' @param verticalBar  Numeric value at which to add an \code{abline} to the histogram.
+#'
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom graphics axis barplot
+#' @importFrom graphics abline axis barplot
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
 #' @rdname histogram
