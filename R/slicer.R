@@ -28,7 +28,7 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
     if (NROW(subtable) == 1)
       subtable <- na.omit(subtable)
 
-    getSubtableMem(subtable, chosenCategories[-1], chosenValues[-1])
+    getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
 }
 
@@ -136,7 +136,10 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
   }, {
     #assertthat::assert_that(is.data.table(datatable()))
 
-    browser(expr = !is.data.table(datatable()))
+    # dtList <- split(datatable(),
+    #                  by = uiSequence$category[-length(uiSequence$category)],
+    #                  flatten = FALSE)
+
     if (nrow(uiSequence) == 0) {
       serverFunction(datatable(), chosenCategories, chosenValues, ...)
 
@@ -144,7 +147,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     } else {
       categoryName <- uiSequence$category[[1]]
 
-      currentSubtable <- reactive(getSubtableMem(datatable(), chosenCategories, chosenValues))
+      currentSubtable <- reactive(getSubtable(datatable(), chosenCategories, chosenValues))
 
       categoriesValues <- reactive({
         possVals <- unlist(uiSequence[1]$possibleValues)
