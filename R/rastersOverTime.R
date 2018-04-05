@@ -86,10 +86,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
                                     animate = animationOptions(interval = 2500, loop = FALSE))
 
   rasts <- reactive({
-    rasterIndex <- rasterIndex <- if (is.null(rasterIndexValue())) {
+    rasterIndex <- rasterIndex <- if (is.null(rctRasterIndexValue())) {
       1
     } else {
-      rasterIndexValue() / rasterStepSize + 1
+      rctRasterIndexValue() / rasterStepSize + 1
     }
 
     rst <- lapply(rctRasterList(), function(x) x[[rasterIndex]]) # get both crs
