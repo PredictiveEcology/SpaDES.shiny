@@ -73,7 +73,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   chosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
-  rast <- reactive({
+  rasts <- reactive({
     rasterIndex <- if (is.null(rctRasterIndexValue())) {
       1
     } else {
@@ -86,30 +86,30 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   sampledRaster <- reactive({
-    # TODO: make this adjust to input$map_bounds
     mb <- input$map_bounds
     ras <- if (!is.null(mb)) {
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
                                           ymin = mb$south, ymax = mb$north)
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
-      sp2 <- spTransform(sp1, crs(rast()$crsSR))
-      crop(rast()$crsSR, sp2)
+      sp2 <- spTransform(sp1, crs(rasts()$crsSR))
+      crop(rasts()$crsSR, sp2)
     } else {
-      rast()$crsSR
+      rasts()$crsSR
     }
 
-    if (ncell(ras) > 3e5) {
-      sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
-    } else {
-      sampledRaster <- ras
-    }
-    sampledRaster[sampledRaster[] == 0] <- NA
+    # if (ncell(ras) > 3e5) {
+    #   sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
+    # } else {
+    #   sampledRaster <- ras
+    # }
+    # browser()
+    # sampledRaster[sampledRaster[] == 0] <- NA
 
-    sampledRaster
+    Cache(.sampleRasterToRAM, ras)
   })
 
   xAxisBreaks <- reactive({
-    c(0, seq.int(ceiling(maxValue(rast()$crsSR)/10))  * 10)
+    c(0, seq.int(ceiling(maxValue(rasts()$crsSR)/10))  * 10)
     })
 
   addAxisParams <- reactive({
@@ -118,7 +118,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   rasterScale <- reactive({
-    prod(raster::res(rast()$crsSR)) / 1e4 / 1e3 # 1000s of hectares
+    prod(raster::res(rasts()$crsSR)) / 1e4 / 1e3 # 1000s of hectares
   })
 
   addTilesParameters <- list(
@@ -128,7 +128,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   click <- reactive(input$map_shape_click)
 
   rctUrlTemplateSingleFile <- reactive({
-    rasterFilename <- strsplit(basename(filename(rast()$crsLFLT)), "\\.")[[1]][[1]]
+    rasterFilename <- strsplit(basename(filename(rasts()$crsLFLT)), "\\.")[[1]][[1]]
     if (FALSE) { # from Polish app develpment -- old now
       file.path(basename(output_subpath()), ns("map-tiles"), ## don't change ns
                 paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
@@ -140,12 +140,13 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
-  callModule(summaryPopups, "popups", mapProxy, click, rast, rctPoly4Map)
+  callModule(summaryPopups, "popups", mapProxy, click, reactive(rasts()$crsLFLT), rctPoly4Map)
 
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map,
              fillOpacity = 0.0, weight = 0.5)
 
-  callModule(histogramForRaster, "histogram", sampledRaster, rctHistogramBreaks = xAxisBreaks,
+  callModule(histogramForRaster, "histogram", sampledRaster,
+             rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
              col = colorPalette,
              width = 1, space = 0, xlab = "Time since fire, years",
@@ -169,4 +170,14 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   return(chosenPolyName) ## the reactive polygon selected by the user
+}
+
+.sampleRasterToRAM <- function(ras) {
+  if (ncell(ras) > 3e5) {
+    sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
+  } else {
+    sampledRaster <- ras
+  }
+  sampledRaster[sampledRaster[] == 0] <- NA
+  sampledRaster
 }
