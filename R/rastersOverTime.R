@@ -69,7 +69,6 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
                             sliderTitle = "",
                             mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10) {
-  ns <- session$ns
 
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
@@ -100,14 +99,14 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   sampledRaster <- reactive({
     mb <- input$map_bounds
-    ras <- if (!is.null(mb)) {
+    ras <- if (is.null(mb)) {
+      rasts()$crsSR
+    } else {
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
                                           ymin = mb$south, ymax = mb$north)
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
       sp2 <- spTransform(sp1, crs(rasts()$crsSR))
       tryCatch(crop(rasts()$crsSR, sp2), error = function(x) NULL)
-    } else {
-      rasts()$crsSR
     }
 
     ret <- if (!is.null(ras))
@@ -122,8 +121,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   addAxisParams <- reactive({
-    xAxisBreaks1 <- xAxisBreaks()
-    return(list(side = 1, at = xAxisBreaks1/10, labels = xAxisBreaks1))
+    return(list(side = 1, at = xAxisBreaks() / 10, labels = xAxisBreaks()))
   })
 
   rasterScale <- reactive({
@@ -142,7 +140,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   #urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, ns("tiles"), ## don't change ns
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, session$ns("tiles"), ## don't change ns
              addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, reactive(rasts()$crsLFLT), rctPoly4Map)
@@ -153,9 +151,9 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   callModule(histogramForRaster, "histogram", sampledRaster,
              rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
-             col = colorPalette,
-             width = 1, space = 0, xlab = "Time since fire, years",
+             col = colorPalette, width = 1, space = 0,
              main = "Approximate area in each age class",
+             xlab = "Time since fire, years",
              ylab = "Area in visible window (1000s hectares)",
              cex.names = 2, cex.lab = 1.3, cex.main = 1.5, cex.axis = 1.5)
 
