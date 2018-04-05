@@ -17,8 +17,14 @@ getSubtable <- function(datatable, chosenCategories, chosenValues) {
   if (NROW(chosenValues) == 0) {
     return(datatable)
   } else {
-    setkeyv(datatable, chosenCategories[[length(chosenCategories)]])
-    subtable <- na.omit(datatable[chosenValues[[length(chosenValues)]]])
+    len <- length(chosenCategories)
+      # setkeyv(datatable, chosenCategories[[len]])
+      # if (NROW(datatable) <= 1)
+      #   subtable <- na.omit(datatable[chosenValues[[len]]])
+    subtable <- datatable[datatable[[chosenCategories[[len]]]]==
+                                     chosenValues[[len]]]
+    if (NROW(subtable) == 1)
+      na.omit(subtable)
 
     getSubtable(subtable, chosenCategories[-1], chosenValues[-1])
   }
@@ -121,8 +127,9 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
   observeEvent({
     datatable()
   }, {
-    assertthat::assert_that(is.data.table(datatable()))
+    #assertthat::assert_that(is.data.table(datatable()))
 
+    browser(expr = !is.data.table(datatable()))
     if (nrow(uiSequence) == 0) {
       serverFunction(datatable(), chosenCategories, chosenValues, ...)
 
@@ -183,3 +190,4 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
     }
   })
 }
+
