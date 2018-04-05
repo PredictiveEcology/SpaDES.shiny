@@ -54,7 +54,9 @@ rastersOverTimeUI <- function(id) {
 rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
                             rctPolygonList, defaultPolyName = NULL, map = leaflet(),
                             colorPalette,
-                            histTitle = "", sliderTitle = "", mapTitle = "",
+                            histTitle = "",
+                            sliderTitle = "",
+                            mapTitle = "",
                             nPolygons, nRasters, rasterStepSize = 10) {
   ns <- session$ns
 
@@ -62,9 +64,9 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   mapProxy <- leafletProxy("map")
 
   rctRasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
-                                 min = 0, max = (nRasters - 1) * rasterStepSize,
-                                 value = 0, step = rasterStepSize,
-                                 animate = animationOptions(interval = 2500, loop = FALSE))
+                                    min = 0, max = (nRasters - 1) * rasterStepSize,
+                                    value = 0, step = rasterStepSize,
+                                    animate = animationOptions(interval = 2500, loop = FALSE))
 
   rctPoly4Map <- reactive({
     polyList <- rctPolygonList()
@@ -97,20 +99,12 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
       rasts()$crsSR
     }
 
-    # if (ncell(ras) > 3e5) {
-    #   sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
-    # } else {
-    #   sampledRaster <- ras
-    # }
-    # browser()
-    # sampledRaster[sampledRaster[] == 0] <- NA
-
     Cache(.sampleRasterToRAM, ras)
   })
 
   xAxisBreaks <- reactive({
-    c(0, seq.int(ceiling(maxValue(rasts()$crsSR)/10))  * 10)
-    })
+    c(0, seq.int(ceiling(maxValue(rasts()$crsSR) / 10))  * 10)
+  })
 
   addAxisParams <- reactive({
     xAxisBreaks1 <- xAxisBreaks()
@@ -122,17 +116,13 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   addTilesParameters <- list(
-      option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
+    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
   )
 
   click <- reactive(input$map_shape_click)
 
   rctUrlTemplateSingleFile <- reactive({
     rasterFilename <- strsplit(basename(filename(rasts()$crsLFLT)), "\\.")[[1]][[1]]
-    if (FALSE) { # from Polish app develpment -- old now
-      file.path(basename(output_subpath()), ns("map-tiles"), ## don't change ns
-                paste0("out", rasterFilename, "/{z}/{x}/{y}.png"))
-    }
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
 

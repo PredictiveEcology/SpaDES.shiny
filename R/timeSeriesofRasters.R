@@ -85,19 +85,17 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
         completedColor = "#7D4479") %>%
       addEasyButton(easyButton(
         icon = "fa-map", title = "Zoom to focal area",
-        onClick = JS(paste0("function(btn, map){ map.fitBounds([[", ymin(subRegion), ", ",
-                            xmin(subRegion), "], [", ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
+        onClick = JS(paste0("function(btn, map){ map.fitBounds([[",
+                            ymin(subRegion), ", ", xmin(subRegion), "], [",
+                            ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
       addEasyButton(easyButton(
         icon = "fa-globe", title = "Zoom out to full study area",
         onClick = JS(paste0("function(btn, map){ map.setView([",
                             mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
-                            mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "], 5)}")))) %>%
+                            mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
+                            zoom, ")}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion)) #%>%
-      # addPolygons(data = isolate(shpStudyRegion),
-      #             group = "Fire return interval", # TODO: generalize this
-      #             fillOpacity = 0.3, weight = 1, color = "blue",
-      #             fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)) # TODO: generalize this
+      fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion))
 
     ## this module will return a reactive value:
     rctChosenPolName <- callModule(rastersOverTime, "rastersOverTime",
