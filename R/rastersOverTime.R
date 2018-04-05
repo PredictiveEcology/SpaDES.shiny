@@ -11,7 +11,10 @@
 #' @author Damian Rodziewicz
 #' @author Alex Chubaty
 #' @export
-#' @importFrom shiny NS
+#' @importFrom leaflet leafletOutput
+#' @importFrom shiny fluidRow br htmlOutput NS uiOutput
+#' @importFrom shinycssloaders withSpinner
+#' @importFrom shinydashboard box
 #' @rdname rasterOverTime
 rastersOverTimeUI <- function(id) {
   ns <- NS(id)
@@ -53,9 +56,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom raster cellFromXY crop crs extent extract filename hist maxValue ncell
 #' @importFrom raster sampleRegular res rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
-#' @importFrom shinycssloaders withSpinner
-#' @importFrom shinydashboard box
-#' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
+#' @importFrom shiny animationOptions callModule h4 reactive
 #' @importFrom sp bbox CRS SpatialPoints spTransform
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
