@@ -2,9 +2,12 @@
 % Please edit documentation in R/slicer.R
 \name{getSubtable}
 \alias{getSubtable}
+\alias{getSubtableMem}
 \title{Get subtable from a \code{data.table}}
 \usage{
 getSubtable(datatable, chosenCategories, chosenValues)
+
+getSubtableMem(datatable, chosenCategories, chosenValues)
 }
 \arguments{
 \item{datatable}{A \code{data.table} object.}

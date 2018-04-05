@@ -12,7 +12,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom data.table is.data.table setkeyv
 #' @importFrom stats na.omit
-#' @rdname getSubTable
+#' @rdname getSubtable
 getSubtable <- function(datatable, chosenCategories, chosenValues) {
   # assert_that(is.data.table(datatable),
   #             all(vapply(chosenCategories, function(x) is.character(datatable[[x]]), logical(1))))
