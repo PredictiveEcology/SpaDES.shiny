@@ -123,8 +123,8 @@ slicerUI <- function(id) {
 #' @importFrom assertthat assert_that
 #' @importFrom data.table data.table is.data.table
 #' @importFrom magrittr %>%
-#' @importFrom shiny callModule is.reactive mainPanel NS observeEvent renderUI tabPanel tabsetPanel
-#' @importFrom shinydashboard box
+#' @importFrom shiny callModule fluidRow is.reactive mainPanel NS observeEvent renderUI tabPanel
+#' @importFrom shinydashboard box tabBox
 #' @importFrom purrr map
 #' @rdname slicer
 #'
@@ -221,7 +221,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
 
                  tabPanels <- map(categoriesValues(), tabPanelWithSlicerContent)
 
-                 mainPanel(width = 12, do.call(tabsetPanel, tabPanels))
+                 mainPanel(width = 12, do.call(tabBox, append(tabPanels, list(width = 12))))
                },
                "box" = {
                  boxWithSlicerContent <- function(category) {
@@ -231,7 +231,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
                    )
                  }
 
-                 map(categoriesValues(), boxWithSlicerContent)
+                 fluidRow(map(categoriesValues(), boxWithSlicerContent))
                }
         )
       })
