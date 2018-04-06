@@ -40,9 +40,15 @@ server <- function(input, output, session) {
 
 ui <- dashboardPage(
   dashboardHeader(),
-  dashboardSidebar(),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Lord of the Rings", tabName = "LOTR")
+    )
+  ),
   dashboardBody(
-    slicerUI("slicer")
+    tabItems(
+      tabItem(tabName = "LOTR", slicerUI("slicer"))
+    )
   )
 )
 
@@ -54,7 +60,7 @@ shinyApp(ui, server)
 uiSequence2 <- data.table(category = c("Alliance", "Race"), uiType = c("box", "tab"))
 
 server2 <- function(input, output, session) {
-  callModule(slicer, "slicer", datatable = DT, uiSequence = uiSequence,
+  callModule(slicer, "slicer", datatable = DT, uiSequence = uiSequence2,
              serverFunction = function(datatable, chosenCategories, chosenValues) {
                callModule(histogram, "histogram", datatable[, Forces])
              },
@@ -65,9 +71,15 @@ server2 <- function(input, output, session) {
 
 ui2 <- dashboardPage(
   dashboardHeader(),
-  dashboardSidebar(),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Lord of the Rings", tabName = "LOTR")
+    )
+  ),
   dashboardBody(
-    slicerUI("slicer")
+    tabItems(
+      tabItem(tabName = "LOTR", slicerUI("slicer"))
+    )
   )
 )
 
