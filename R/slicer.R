@@ -221,7 +221,7 @@ slicer <- function(input, output, session, datatable, categoryValue, uiSequence,
 
                  tabPanels <- map(categoriesValues(), tabPanelWithSlicerContent)
 
-                 mainPanel(width = 12, do.call(tabBox, append(tabPanels, list(width = 12))))
+                 fluidRow(width = 12, do.call(tabBox, append(tabPanels, list(width = 12))))
                },
                "box" = {
                  boxWithSlicerContent <- function(category) {
