@@ -139,7 +139,11 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
     ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
     ##       because of this, the examples currently do not work because they have 2 levels
-#browser()
+
+    getID <- function(x, y, z) {
+      paste("slicedUI", x, y, z, sep = "-")
+    }
+
     ## server elements
     level1names <- if (is.null(possibleValues[[1]])) {
       names(dtList)
@@ -147,27 +151,27 @@ slicer <- function(input, output, session, datatable, uiSequence,
       possibleValues[[1]]
     }
 
-    for (x in seq_along(level1names)) {
+    lapply(level1names, function(x) {
       level2names <- if (is.null(possibleValues[[2]])) {
         names(dtList[[x]])
       } else {
         possibleValues[[2]]
       }
-      for (y in seq_along(level2names)) {
+      lapply(level2names, function(y) {
         level3names <- if (is.null(possibleValues[[3]])) {
           names(dtList[[x]][[y]])
         } else {
           possibleValues[[3]]
         }
-        for (z in seq_along(level3names)) {
-          getID <- function(x, y, z) {
-            paste("slicedUI", level1names[x], level2names[y], level3names[z], sep = "-")
-          }
-
-          serverFunction(datatable = dtList[[x]][[y]][[z]], id = getID(x, y, z), ..., .dtFull = dtFull)
-        }
-      }
-    }
+        lapply(level3names, function(z) {
+          #subdt <- dtList[[x]][[y]][[z]]
+          subdt <- dt[get(categories[1]) == x &
+                        get(categories[2]) == y &
+                        get(categories[3]) == z]
+          serverFunction(datatable = subdt, id = getID(x, y, z), ..., .dtFull = dtFull)
+        })
+      })
+    })
 
     ## UI elements
     output$slicedUI <- renderUI({
@@ -178,36 +182,34 @@ slicer <- function(input, output, session, datatable, uiSequence,
       } else {
         possibleValues[[1]]
       }
-      outerTabPanels <- lapply(seq_along(level1names), function(x) {
+      outerTabPanels <- lapply(level1names, function(x) {
         level2names <- if (is.null(possibleValues[[2]])) {
           names(dtList[[x]])
         } else {
           possibleValues[[2]]
         }
-        innerTabPanels <- lapply(seq_along(level2names), function(y) {
+        innerTabPanels <- lapply(level2names, function(y) {
           level3names <- if (is.null(possibleValues[[3]])) {
             names(dtList[[x]][[y]])
           } else {
             possibleValues[[3]]
           }
 
-          getID <- function(x, y, z) {
-            paste("slicedUI", level1names[x], level2names[y], level3names[z], sep = "-")
-          }
-
-          tabPanel(level2names[y],
+          tabPanel(
+            title = y,
             fluidRow(
-              lapply(seq_along(level3names), function(z) {
+              lapply(level3names, function(z) {
                 shinydashboard::box(
                   width = 4, solidHeader = TRUE, collapsible = TRUE,
-                  title = level3names[[z]], uiFunction(session$ns(getID(x, y, z)))
+                  title = z, uiFunction(session$ns(getID(x, y, z)))
                 )
               })
             )
           )
         })
 
-        tabPanel(level1names[x],
+        tabPanel(
+          title = x,
           fluidRow(width = 12, do.call(tabBox, append(innerTabPanels, list(width = 12))))
         )
       })
