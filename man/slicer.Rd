@@ -40,7 +40,9 @@ This function should take, at minimum, the following arguments:
 \code{datatable} and \code{id}.
 Additonal named arguments are passed via \code{...}.
 Users have access to the full data.table if they need it
-(e.g., to calculate histogram breaks) via \code{.dtFull}.
+(e.g., to calculate histogram breaks) via \code{.dtFull},
+as well as a list of the currently selected category values
+via \code{.current}.
 Inside the function there should be a call to a shiny
 module server function using the \code{id}.
 See example section and compare with \code{link[shiny]{callModule}}).}
