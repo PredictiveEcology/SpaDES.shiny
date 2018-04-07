@@ -1,6 +1,7 @@
 #' \dontrun{
 library(data.table)
 library(shiny)
+library(shinycssloaders)
 library(shinydashboard)
 library(SpaDES.shiny)
 
@@ -23,18 +24,17 @@ DT <- reactive({
 uiSequence <- data.table(category = c("Alliance", "Race"), uiType = c("tab", "box"))
 
 server <- function(input, output, session) {
-  callModule(slicer, "slicer", datatable = DT, categoryValue = "LOTR", ## ?categoryvalue?
-             uiSequence = uiSequence,
-             serverFunction = function(datatable, chosenCategories, chosenValues) {
-               callModule(slider, "slider",
-                          min = datatable[, min(Forces)],
-                          max = datatable[, sum(Forces)],
+  callModule(slicer, "slicer", datatable = DT, uiSequence = uiSequence,
+             serverFunction = function(datatable, id, .dtFull) {
+               callModule(slider, id,
+                          min = .dtFull[, min(Forces)],
+                          max = .dtFull[, sum(Forces)],
                           value = datatable[, min(Forces)],
                           step = 1,
                           label = "Forces")
              },
-             uiFunction = function(ns) {
-               sliderUI(ns("slider"))
+             uiFunction = function(id) {
+               withSpinner(sliderUI(id))
              })
 }
 
@@ -61,11 +61,11 @@ uiSequence2 <- data.table(category = c("Alliance", "Race"), uiType = c("box", "t
 
 server2 <- function(input, output, session) {
   callModule(slicer, "slicer", datatable = DT, uiSequence = uiSequence2,
-             serverFunction = function(datatable, chosenCategories, chosenValues) {
-               callModule(histogram, "histogram", datatable[, Forces])
+             serverFunction = function(datatable, id, .dtFull) {
+               callModule(histogram, id, datatable[, Forces])
              },
              uiFunction = function(ns) {
-               histogramUI(ns("histogram"), height = 300)
+               histogramUI(id, height = 300)
              })
 }
 

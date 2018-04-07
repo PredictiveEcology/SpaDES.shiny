@@ -7,9 +7,8 @@
 \usage{
 slicerUI(id)
 
-slicer(input, output, session, datatable, categoryValue, uiSequence,
-  serverFunction, uiFunction, chosenCategories = NULL, chosenValues = NULL,
-  ...)
+slicer(input, output, session, datatable, uiSequence, serverFunction,
+  uiFunction, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -20,13 +19,7 @@ slicer(input, output, session, datatable, categoryValue, uiSequence,
 
 \item{session}{Shiny server session object.}
 
-\item{datatable}{A reactive \code{data.table} whose subtables are accessed (but not modified)
-using \code{chosenCategories} and \code{chosenValues} arguments.
-This is helpful, because the end summary function might require
-information about the entire \code{data.table}.}
-
-\item{categoryValue}{Each time the \code{data.table} is sliced (one dimension is cut off),
-concrete value of the category is set. This argument stores this value.}
+\item{datatable}{A reactive \code{data.table}.}
 
 \item{uiSequence}{A \code{data.table} with columns \code{category}, \code{uiType},
 and (optionally) \code{possibleValues}.
@@ -37,26 +30,23 @@ The \code{uiType} column should contain corresponding UI
 which should be applied for each category choice.
 The \code{possibleValues} column should contain a list of
 the possible values for \code{category}.
-Currently there are two possible UI types to perform: "tab" and "box".
-Type "box": should be used only together with \pkg{shinydashboard}.}
+Currently there are two possible UI types to perform: "tab" and "box",
+which both make use of \pkg{shinydashboard}.}
 
 \item{serverFunction}{A summary module server function.
 This function should take, at minimum, the following arguments:
-\code{datatable}, \code{chosenCategories}, \code{chosenValues}.
+\code{datatable} and \code{id}.
 Additonal named arguments are passed via \code{...}.
+Users have access to the full data.table if they need it
+(e.g., to calculate histogram breaks) via \code{.dtFull}.
 Inside the function there should be a call to a shiny
-module server function.
+module server function using the \code{id}.
 See example section and compare with \code{link[shiny]{callModule}}).}
 
-\item{uiFunction}{A summary module function UI. This function should take
-one argument: \code{ns}. Inside the function there should be
-a call to shiny module UI function. See example section.}
-
-\item{chosenCategories}{A list with categories names that were already chosen.
-Default \code{NULL}.}
-
-\item{chosenValues}{A list with categories values that were already chosen.
-Default \code{NULL}.}
+\item{uiFunction}{A summary module function UI taking one argument: \code{id}.
+Note: the \code{id} value is generated internally.
+Inside the function there should be a call to shiny module UI function.
+See example section.}
 
 \item{...}{Additional arguments passed to \code{serverFunction}.}
 }
