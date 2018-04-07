@@ -90,6 +90,8 @@ slicerUI <- function(id) {
 #'                       which should be applied for each category choice.
 #'                       The \code{possibleValues} column should contain a list of
 #'                       the possible values for \code{category}.
+#'                       If not supplied, possible values for each level of the list
+#'                       will be determined based on the data.
 #'                       Currently there are two possible UI types to perform: "tab" and "box",
 #'                       which both make use of \pkg{shinydashboard}.
 #'
@@ -135,23 +137,28 @@ slicer <- function(input, output, session, datatable, uiSequence,
     dtFull <- datatable()
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
 
-    categoriesValues <- if (is.null(possibleValues)) {
-      lapply(categories, function(category) {
-        dtFull[, category, with = FALSE] %>% unique() %>% unlist() %>% unname() # nolint
-      })
-    } else {
-      possibleValues
-    } ## TODO: use these possible values below
-
     ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
     ##       because of this, the examples currently do not work because they have 2 levels
-
+#browser()
     ## server elements
-    level1names <- names(dtList)
+    level1names <- if (is.null(possibleValues[[1]])) {
+      names(dtList)
+    } else {
+      possibleValues[[1]]
+    }
+
     for (x in seq_along(level1names)) {
-      level2names <- names(dtList[[x]])
+      level2names <- if (is.null(possibleValues[[2]])) {
+        names(dtList[[x]])
+      } else {
+        possibleValues[[2]]
+      }
       for (y in seq_along(level2names)) {
-        level3names <- names(dtList[[x]][[y]])
+        level3names <- if (is.null(possibleValues[[3]])) {
+          names(dtList[[x]][[y]])
+        } else {
+          categoriesValues[[3]]
+        }
         for (z in seq_along(level3names)) {
           getID <- function(x, y, z) {
             paste("slicedUI", level1names[x], level2names[y], level3names[z], sep = "-")
@@ -166,12 +173,23 @@ slicer <- function(input, output, session, datatable, uiSequence,
     output$slicedUI <- renderUI({
       ns <- session$ns
 
-      level1names <- names(dtList)
+      level1names <- if (is.null(possibleValues[[1]])) {
+        names(dtList)
+      } else {
+        possibleValues[[1]]
+      }
       outerTabPanels <- lapply(seq_along(level1names), function(x) {
-        level2names <- names(dtList[[x]])
-
+        level2names <- if (is.null(possibleValues[[2]])) {
+          names(dtList[[x]])
+        } else {
+          possibleValues[[2]]
+        }
         innerTabPanels <- lapply(seq_along(level2names), function(y) {
-          level3names <- names(dtList[[x]][[y]])
+          level3names <- if (is.null(possibleValues[[3]])) {
+            names(dtList[[x]][[y]])
+          } else {
+            categoriesValues[[3]]
+          }
 
           getID <- function(x, y, z) {
             paste("slicedUI", level1names[x], level2names[y], level3names[z], sep = "-")

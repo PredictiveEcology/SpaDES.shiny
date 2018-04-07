@@ -30,6 +30,8 @@ The \code{uiType} column should contain corresponding UI
 which should be applied for each category choice.
 The \code{possibleValues} column should contain a list of
 the possible values for \code{category}.
+If not supplied, possible values for each level of the list
+will be determined based on the data.
 Currently there are two possible UI types to perform: "tab" and "box",
 which both make use of \pkg{shinydashboard}.}
 
