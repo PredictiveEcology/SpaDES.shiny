@@ -28,9 +28,10 @@ proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 #' @rdname gdal2Tiles
 gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
 
+  message("  Making leaflet tiles")
   filePaths <- unlist(lapply(raster, function(rstInner) {
-
     filename1 <- filename(rstInner)
+    message("    ", filename1)
     reproducible::checkPath(outputPath, create = TRUE)
     filename2 <- file.path(outputPath, paste0("out", basename(filename1)))
     filename3 <- file.path(outputPath, paste0("out2", basename(filename1)))
