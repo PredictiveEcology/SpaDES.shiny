@@ -157,7 +157,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
         level3names <- if (is.null(possibleValues[[3]])) {
           names(dtList[[x]][[y]])
         } else {
-          categoriesValues[[3]]
+          possibleValues[[3]]
         }
         for (z in seq_along(level3names)) {
           getID <- function(x, y, z) {
@@ -188,7 +188,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
           level3names <- if (is.null(possibleValues[[3]])) {
             names(dtList[[x]][[y]])
           } else {
-            categoriesValues[[3]]
+            possibleValues[[3]]
           }
 
           getID <- function(x, y, z) {
