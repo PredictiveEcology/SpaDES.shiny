@@ -164,7 +164,6 @@ slicer <- function(input, output, session, datatable, uiSequence,
           possibleValues[[3]]
         }
         lapply(level3names, function(z) {
-          browser()
           ### `get` doesn't work correctly in shiny modules
           # subdt <- dt[get(categories[1]) == x &
           #               get(categories[2]) == y &
