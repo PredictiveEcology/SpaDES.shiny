@@ -170,7 +170,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
           #               get(categories[2]) == y &
           #               get(categories[3]) == z]
           subdt <- dtList[[x]][[y]][[z]]
-          if (is.null(subdt)) subdt <- na.omit(dt[NA])
+          if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
           serverFunction(datatable = subdt, id = getID(x, y, z), ..., .dtFull = dtFull)
         })
       })
