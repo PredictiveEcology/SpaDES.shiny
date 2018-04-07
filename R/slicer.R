@@ -164,10 +164,13 @@ slicer <- function(input, output, session, datatable, uiSequence,
           possibleValues[[3]]
         }
         lapply(level3names, function(z) {
-          #subdt <- dtList[[x]][[y]][[z]]
-          subdt <- dt[get(categories[1]) == x &
-                        get(categories[2]) == y &
-                        get(categories[3]) == z]
+          browser()
+          ### `get` doesn't work correctly in shiny modules
+          # subdt <- dt[get(categories[1]) == x &
+          #               get(categories[2]) == y &
+          #               get(categories[3]) == z]
+          subdt <- dtList[[x]][[y]][[z]]
+          if (is.null(subdt)) subdt <- na.omit(dt[NA])
           serverFunction(datatable = subdt, id = getID(x, y, z), ..., .dtFull = dtFull)
         })
       })
