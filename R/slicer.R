@@ -100,7 +100,9 @@ slicerUI <- function(id) {
 #'                       \code{datatable} and \code{id}.
 #'                       Additonal named arguments are passed via \code{...}.
 #'                       Users have access to the full data.table if they need it
-#'                       (e.g., to calculate histogram breaks) via \code{.dtFull}.
+#'                       (e.g., to calculate histogram breaks) via \code{.dtFull},
+#'                       as well as a list of the currently selected category values
+#'                       via \code{.current}.
 #'                       Inside the function there should be a call to a shiny
 #'                       module server function using the \code{id}.
 #'                       See example section and compare with \code{link[shiny]{callModule}}).
@@ -164,13 +166,15 @@ slicer <- function(input, output, session, datatable, uiSequence,
           possibleValues[[3]]
         }
         lapply(level3names, function(z) {
+          currentValues <- list(x, y, z) %>% setNames(categories)
           ### `get` doesn't work correctly in shiny modules
           # subdt <- dt[get(categories[1]) == x &
           #               get(categories[2]) == y &
           #               get(categories[3]) == z]
           subdt <- dtList[[x]][[y]][[z]]
           if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-          serverFunction(datatable = subdt, id = getID(x, y, z), ..., .dtFull = dtFull)
+          serverFunction(datatable = subdt, id = getID(x, y, z), ...,
+                         .current = currentValues, .dtFull = dtFull)
         })
       })
     })
