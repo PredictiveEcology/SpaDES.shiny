@@ -15,11 +15,17 @@
 timeSeriesofRastersUI <- function(id) {
   ns <- NS(id)
 
-  shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime")))
+
+  fluidRow(
+    shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime"))),
+    box(width = 8, solidHeader = TRUE, collapsible = TRUE,
+        polygonChooserUI(ns("polyDropdown")))
+  )
 }
 
 #' @inheritParams rastersOverTime
 #'
+#' @param defaultPolyName Name of the polygon to use as the default for mapping.
 #' @param mapLegend           The legend text to add to the leaflet map.
 #' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
 #' @param maxAge              Maximum simulation age.
@@ -52,7 +58,10 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10) {
 
-  rctChosenPolyName <- reactive({
+  ## this module will return a reactive character value:
+  rctChosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName)
+
+  observeEvent(rctChosenPolyName(), {
     assertthat::assert_that(is.list(rctPolygonList())) ## TODO: test structure of the list, etc.
 
     polyList <- rctPolygonList()
@@ -97,22 +106,19 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
       fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion))
 
-    ## this module will return a reactive value:
-    rctChosenPolName <- callModule(rastersOverTime, "rastersOverTime",
-                                   rctRasterList = rctRasterList,
-                                   rctUrlTemplate = rctUrlTemplate,
-                                   rctPolygonList = rctPolygonList,
-                                   defaultPolyName = defaultPolyName,
-                                   map = leafMap,
-                                   colorPalette = colorPalette(0:maxAge),
-                                   histTitle = histTitle,
-                                   sliderTitle = sliderTitle,
-                                   mapTitle = mapTitle,
-                                   nPolygons = nPolygons,
-                                   nRasters = nRasters,
-                                   rasterStepSize = rasterStepSize) # from global variable summaryInterval
-
-    return(rctChosenPolName())
+    callModule(rastersOverTime, "rastersOverTime",
+               rctRasterList = rctRasterList,
+               rctUrlTemplate = rctUrlTemplate,
+               rctPolygonList = rctPolygonList,
+               rctChosenPolyName = rctChosenPolyName,
+               map = leafMap,
+               colorPalette = colorPalette(0:maxAge),
+               histTitle = histTitle,
+               sliderTitle = sliderTitle,
+               mapTitle = mapTitle,
+               nPolygons = nPolygons,
+               nRasters = nRasters,
+               rasterStepSize = rasterStepSize) # from global variable summaryInterval
   })
 
   return(rctChosenPolyName)

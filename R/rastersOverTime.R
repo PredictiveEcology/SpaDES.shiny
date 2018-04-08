@@ -23,8 +23,7 @@ rastersOverTimeUI <- function(id) {
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
         htmlOutput(ns("title")),
         shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
-        sliderUI(ns("rastersSlider")),
-        polygonChooserUI(ns("polyDropdown"))
+        sliderUI(ns("rastersSlider"))
     ),
     uiOutput(ns("histUI"))
   )
@@ -37,7 +36,7 @@ rastersOverTimeUI <- function(id) {
 #' @param rctUrlTemplate  The reactive url template for leaflet map tiles
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
-#' @param defaultPolyName Name of the polygon to use as the default for mapping.
+#' @param rctChosenPolyName Reactive containing the name of the selected polygon (character).
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorPalette    Colour palette to use.
 #' @param histTitle       Title to be shown above the histogram.
@@ -61,7 +60,7 @@ rastersOverTimeUI <- function(id) {
 #' @importFrom SpaDES.core cachePath outputPath paddedFloatToChar
 #' @rdname rasterOverTime
 rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
-                            rctPolygonList,
+                            rctPolygonList, rctChosenPolyName,
                             defaultPolyName = NULL,
                             map = leaflet(),
                             colorPalette,
@@ -72,8 +71,6 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   output$map <- renderLeaflet(map)
   mapProxy <- leafletProxy("map")
-
-  rctChosenPolyName <- callModule(polygonChooser, "polyDropdown", rctPolygonList, defaultPolyName) ## reactive character
 
   rctPoly4Map <- reactive({
     polyList <- rctPolygonList()
@@ -166,8 +163,6 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
                          plotParameters = list(height = 600), solidHeader = TRUE,
                          collapsible = TRUE, width = 4)
   })
-
-  return(rctChosenPolyName) ## the reactive polygon selected by the user
 }
 
 .sampleRasterToRAM <- function(ras) {
