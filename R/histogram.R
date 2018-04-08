@@ -48,7 +48,7 @@ histogramUI <- function(id, ...) {
 #' @importFrom utils head
 #' @rdname histogram
 histogram <- function(input, output, session, histdata, addAxisParams = NULL,
-                      verticalBar = NULL, file = NULL, ...) {
+                      verticalBar = NULL, ...) {
 
   output$histogram <- renderPlot({
     if (is.reactive(histdata)) {
@@ -58,16 +58,14 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
     }
     assertthat::assert_that(is.numeric(hst))
 
-    doPlot <- function(file = file) {
-      barplot(hst, ...)
+    barplot(hst, ...)
 
-      if (!is.null(addAxisParams)) {
-        axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
-        do.call(axis, axps)
-      }
-      if (!is.null(verticalBar)) {
-        abline(v = verticalBar, col = "red", lwd = 3)
-      }
+    if (!is.null(addAxisParams)) {
+      axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
+      do.call(axis, axps)
+    }
+    if (!is.null(verticalBar)) {
+      abline(v = verticalBar, col = "red", lwd = 3)
     }
   })
 }
