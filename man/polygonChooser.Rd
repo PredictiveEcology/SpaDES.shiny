@@ -38,6 +38,7 @@ library(SpaDES.tools)
 
 shinyApp(
   ui = fluidPage(
+    htmlOutput("infobox"),
     leafletOutput("map"),
     polygonChooserUI("polyPicker")
   ),
@@ -50,6 +51,12 @@ shinyApp(
     dummyPoly3 <- dummyPoly()
     polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
     chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
+
+    output$infobox <- renderUI({
+      fluidRow(
+        h4("Currently viewing the ", chosenPolyName(), " polygon.")
+      )
+    })
 
     output$map <- renderLeaflet({
       leaflet() \%>\%

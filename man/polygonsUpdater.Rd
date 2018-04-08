@@ -15,8 +15,7 @@ polygonsUpdater(input, output, session, proxy, poly, group = "group", ...)
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 
-\item{poly}{Reactive value which contains a polygon which should
-be displayed on the leaflet map.}
+\item{poly}{A reactive containing a polygon to be displayed on the leaflet map.}
 
 \item{group}{Group of polygons we want to update.}
 

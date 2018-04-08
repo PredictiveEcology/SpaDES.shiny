@@ -223,4 +223,3 @@ slicer <- function(input, output, session, datatable, uiSequence,
     })
   })
 }
-
