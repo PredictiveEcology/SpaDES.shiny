@@ -26,9 +26,10 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
   plotOutputParameters <- c(ns("hist4rast"), plotParameters)
 
   box(title,
-      shinycssloaders::withSpinner(
+      #shinycssloaders::withSpinner(
         do.call(plotOutput, plotOutputParameters)
-      ),
+      #)
+      ,
       ...)
 }
 
