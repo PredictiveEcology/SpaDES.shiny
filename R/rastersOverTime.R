@@ -139,9 +139,9 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
 
-  #urlTemplate2 <- urlTemplate # TODO: chop off "www/" and enusre it's only one element
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, session$ns("tiles"), ## don't change ns
-             addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
+  ## TODO: fix the raster control layer tile swiicher in top right corner of map
+  # callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, session$ns("tiles"), ## don't change ns
+  #            addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
 
   callModule(summaryPopups, "popups", mapProxy, click, reactive(rasts()$crsLFLT), rctPoly4Map)
 

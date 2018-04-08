@@ -36,6 +36,7 @@ polygonChooserUI <- function(id) {
 #'
 #' shinyApp(
 #'   ui = fluidPage(
+#'     htmlOutput("infobox"),
 #'     leafletOutput("map"),
 #'     polygonChooserUI("polyPicker")
 #'   ),
@@ -48,6 +49,12 @@ polygonChooserUI <- function(id) {
 #'     dummyPoly3 <- dummyPoly()
 #'     polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
 #'     chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
+#'
+#'     output$infobox <- renderUI({
+#'       fluidRow(
+#'         h4("Currently viewing the ", chosenPolyName(), " polygon.")
+#'       )
+#'     })
 #'
 #'     output$map <- renderLeaflet({
 #'       leaflet() %>%

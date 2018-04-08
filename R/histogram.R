@@ -49,6 +49,7 @@ histogramUI <- function(id, ...) {
 #' @rdname histogram
 histogram <- function(input, output, session, histdata, addAxisParams = NULL,
                       verticalBar = NULL, ...) {
+
   output$histogram <- renderPlot({
     if (is.reactive(histdata)) {
       hst <- histdata()

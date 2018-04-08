@@ -9,8 +9,7 @@
 #' @param session  Shiny server session object.
 #' @param proxy    Leaflet proxy which manages a connected leaflet map.
 #' @param group    Group of polygons we want to update.
-#' @param poly     Reactive value which contains a polygon which should
-#'                 be displayed on the leaflet map.
+#' @param poly     A reactive containing a polygon to be displayed on the leaflet map.
 #' @param ...      Additional parameters of \code{\link[leaflet]{addPolygons}} function.
 #'
 #' @return None. Invoked for the side-effect of creating an observer, which
