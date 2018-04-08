@@ -97,8 +97,9 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     return(rst);
   })
 
-  sampledRaster <- reactive({
+  sampledRasterVals <- reactive({
     mb <- input$map_bounds
+
     ras <- if (is.null(mb)) {
       rasts()$crsSR
     } else {
@@ -148,7 +149,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map,
              fillOpacity = 0.0, weight = 0.5)
 
-  callModule(histogramForRaster, "histogram", sampledRaster,
+  callModule(histogramForRaster, "histogram", sampledRasterVals,
              rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
              col = colorPalette, width = 1, space = 0,
@@ -171,11 +172,11 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 }
 
 .sampleRasterToRAM <- function(ras) {
-  if (ncell(ras) > 3e5) {
-    sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
+  if (ncell(ras) > 1e7) {
+    sampledRasterVals <- raster::sampleRegular(ras, size = 5e5, asRaster = FALSE)
   } else {
-    sampledRaster <- ras
+    sampledRasterVals <- ras[]
   }
-  sampledRaster[sampledRaster[] == 0] <- NA
-  sampledRaster
+  sampledRasterVals[sampledRasterVals == 0] <- NA
+  sampledRasterVals
 }

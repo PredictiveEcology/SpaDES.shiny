@@ -41,7 +41,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'
 #' @param session Shiny server session object
 #'
-#' @param rctRaster Reactive value containing raster
+#' @param rctRasterVals Reactive values (likely extracted from a raster)
 #'
 #' @param scale Number used for scaling heights of histogram bars.
 #'              When set to 1 (default) histogram bar height represents the number
@@ -68,15 +68,15 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @importFrom shiny renderPlot
 #' @importFrom raster hist
 #' @rdname histogramForRaster
-histogramForRaster <- function(input, output, session, rctRaster, rctHistogramBreaks,
+histogramForRaster <- function(input, output, session, rctRasterVals, rctHistogramBreaks,
                                scale = 1, addAxisParams = NULL,  ...) {
   output$hist4rast <- renderPlot({
-    ras <- rctRaster()
-    rasVals <- if (!is(ras, "Raster")) {
-      numeric()
-    } else {
-      ras[]
-    }
+    rasVals <- rctRasterVals()
+    # rasVals <- if (!is(ras, "Raster")) {
+    #   numeric()
+    # } else {
+    #   ras[]
+    # }
     histogram <- graphics::hist(rasVals, plot = FALSE, breaks = rctHistogramBreaks())
 
     barHeights <- histogram$counts * scale
