@@ -41,6 +41,10 @@ histogramUI <- function(id, ...) {
 #'
 #' @param verticalBar  Numeric value at which to add an \code{abline} to the histogram.
 #'
+#' @param file optional filepath to save png outputs
+#'
+#' @param ...  Additional argumantes passed to \code{\link{barplot}}.
+#'
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom graphics abline axis barplot
@@ -48,7 +52,7 @@ histogramUI <- function(id, ...) {
 #' @importFrom utils head
 #' @rdname histogram
 histogram <- function(input, output, session, histdata, addAxisParams = NULL,
-                      verticalBar = NULL, ...) {
+                      verticalBar = NULL, file = NULL, ...) {
 
   output$histogram <- renderPlot({
     if (is.reactive(histdata)) {
@@ -58,14 +62,21 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
     }
     assertthat::assert_that(is.numeric(hst))
 
-    barplot(hst, ...)
+    doPlot <- function(file = NULL) {
+      if (!is.null(file)) png(file, width = 200, height = 200, units = "px")
+      barplot(hst, ...)
 
-    if (!is.null(addAxisParams)) {
-      axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
-      do.call(axis, axps)
+      if (!is.null(addAxisParams)) {
+        axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
+        do.call(axis, axps)
+      }
+      if (!is.null(verticalBar)) {
+        abline(v = verticalBar, col = "red", lwd = 3)
+      }
+      if (!is.null(file)) dev.off()
     }
-    if (!is.null(verticalBar)) {
-      abline(v = verticalBar, col = "red", lwd = 3)
-    }
+
+    doPlot(file = file) ## plot once to file
+    doPlot(file = NULL) ## plot normally to display
   })
 }
