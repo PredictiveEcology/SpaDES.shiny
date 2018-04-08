@@ -100,7 +100,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   sampledRasterVals <- reactive({
     mb <- input$map_bounds
 
-    ras <- if (is.null(mb)) {
+    ras <- if (is.null(mb) ) {
       rasts()$crsSR
     } else {
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
@@ -108,12 +108,15 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
       sp2 <- spTransform(sp1, crs(rasts()$crsSR))
       tryCatch(crop(rasts()$crsSR, sp2), error = function(x) NULL)
+      #tryCatch(Cache(crop, rasts()$crsSR, sp2), error = function(x) NULL)
     }
 
-    ret <- if (!is.null(ras))
-      Cache(.sampleRasterToRAM, ras)
-    else
+    ret <- if (!is.null(ras)) {
+      # Cache(.sampleRasterToRAM, ras)
+      .sampleRasterToRAM(ras)
+    } else {
       NULL
+    }
     ret
   })
 
