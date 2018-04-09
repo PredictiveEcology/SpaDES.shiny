@@ -7,7 +7,7 @@
 \usage{
 histogramForRasterUI(id, title = "", plotParameters, ...)
 
-histogramForRaster(input, output, session, rctRaster, rctHistogramBreaks,
+histogramForRaster(input, output, session, rctRasterVals, rctHistogramBreaks,
   scale = 1, addAxisParams = NULL, ...)
 }
 \arguments{
@@ -27,7 +27,7 @@ in \code{histogramForRaster}.}
 
 \item{session}{Shiny server session object}
 
-\item{rctRaster}{Reactive value containing raster}
+\item{rctRasterVals}{Reactive values (likely extracted from a raster)}
 
 \item{rctHistogramBreaks}{Reactive value which is responsible for \code{breaks}
 parameter, as in \code{\link[graphics]{hist}}.}

@@ -94,9 +94,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     return(rst);
   })
 
-  sampledRaster <- reactive({
+  sampledRasterVals <- reactive({
     mb <- input$map_bounds
-    ras <- if (is.null(mb)) {
+
+    ras <- if (is.null(mb) ) {
       rasts()$crsSR
     } else {
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
@@ -104,12 +105,15 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
       sp2 <- spTransform(sp1, crs(rasts()$crsSR))
       tryCatch(crop(rasts()$crsSR, sp2), error = function(x) NULL)
+      #tryCatch(Cache(crop, rasts()$crsSR, sp2), error = function(x) NULL)
     }
 
-    ret <- if (!is.null(ras))
-      Cache(.sampleRasterToRAM, ras)
-    else
+    ret <- if (!is.null(ras)) {
+      # Cache(.sampleRasterToRAM, ras)
+      .sampleRasterToRAM(ras)
+    } else {
       NULL
+    }
     ret
   })
 
@@ -145,7 +149,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map,
              fillOpacity = 0.0, weight = 0.5)
 
-  callModule(histogramForRaster, "histogram", sampledRaster,
+  callModule(histogramForRaster, "histogram", sampledRasterVals,
              rctHistogramBreaks = xAxisBreaks,
              scale = rasterScale(), addAxisParams = addAxisParams,
              col = colorPalette, width = 1, space = 0,
@@ -166,11 +170,11 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 }
 
 .sampleRasterToRAM <- function(ras) {
-  if (ncell(ras) > 3e5) {
-    sampledRaster <- Cache(raster::sampleRegular, ras, size = 4e5, asRaster = TRUE)
+  if (ncell(ras) > 1e7) {
+    sampledRasterVals <- raster::sampleRegular(ras, size = 5e5, asRaster = FALSE)
   } else {
-    sampledRaster <- ras
+    sampledRasterVals <- ras[]
   }
-  sampledRaster[sampledRaster[] == 0] <- NA
-  sampledRaster
+  sampledRasterVals[sampledRasterVals == 0] <- NA
+  sampledRasterVals
 }
