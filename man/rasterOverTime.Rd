@@ -8,9 +8,9 @@
 rastersOverTimeUI(id)
 
 rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
-  rctPolygonList, defaultPolyName = NULL, map = leaflet(), colorPalette,
-  histTitle = "", sliderTitle = "", mapTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10)
+  rctPolygonList, rctChosenPolyName, defaultPolyName = NULL,
+  map = leaflet(), colorPalette, histTitle = "", sliderTitle = "",
+  mapTitle = "", nPolygons, nRasters, rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -28,7 +28,7 @@ rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}
 
-\item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
+\item{rctChosenPolyName}{Reactive containing the name of the selected polygon (character).}
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
