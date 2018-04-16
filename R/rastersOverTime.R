@@ -37,6 +37,7 @@ rastersOverTimeUI <- function(id) {
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
 #'                        # TODO: decribe the format of the list!
 #' @param rctChosenPolyName Reactive containing the name of the selected polygon (character).
+#' @param defaultPolyName The name fo the default selected polygon.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param colorPalette    Colour palette to use.
 #' @param histTitle       Title to be shown above the histogram.

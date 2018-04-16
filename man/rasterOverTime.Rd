@@ -30,6 +30,8 @@ rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
 
 \item{rctChosenPolyName}{Reactive containing the name of the selected polygon (character).}
 
+\item{defaultPolyName}{The name fo the default selected polygon.}
+
 \item{map}{Leaflet map to show raster and polygons on.}
 
 \item{colorPalette}{Colour palette to use.}

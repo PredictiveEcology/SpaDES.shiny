@@ -124,6 +124,7 @@ slicerUI <- function(id) {
 #' @importFrom magrittr %>%
 #' @importFrom shiny callModule fluidRow is.reactive mainPanel NS observeEvent renderUI tabPanel
 #' @importFrom shinydashboard box tabBox
+#' @importFrom stats setNames
 #' @importFrom purrr map
 #' @rdname slicer
 #'

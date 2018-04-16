@@ -34,8 +34,6 @@ If \code{NULL} (default) then no axis is drawn.}
 \item{verticalBar}{Numeric value at which to add an \code{abline} to the histogram.}
 
 \item{file}{optional filepath to save png outputs}
-
-\item{...}{Additional argumantes passed to \code{\link{barplot}}.}
 }
 \value{
 None. Invoked for the side-effect of rendering bar plot.

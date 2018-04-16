@@ -43,11 +43,10 @@ histogramUI <- function(id, ...) {
 #'
 #' @param file optional filepath to save png outputs
 #'
-#' @param ...  Additional argumantes passed to \code{\link{barplot}}.
-#'
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom graphics abline axis barplot
+#' @importFrom grDevices dev.off png
 #' @importFrom shiny renderPlot
 #' @importFrom utils head
 #' @rdname histogram
