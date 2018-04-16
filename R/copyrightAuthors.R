@@ -24,13 +24,15 @@ copyrightAuthorsUI <- function(id) {
 #' @param copyrightInfo  Character string containing your app's copyright info.
 #' @param licenseFile    Filepath to your app's LICENSE file
 #'                       (default is \file{LICENSE} in your shiny app dir).
+#' @param status         The boxes' status, passed to \code{\link[shinydashboard]{box}}
+#'                       (default \code{"primary"}, which results in dark blue).
 #'
 #' @export
 #' @importFrom shiny a br fluidRow h4 hr HTML p renderUI strong tags verbatimTextOutput wellPanel
 #' @importFrom shinydashboard box
 #' @rdname copyrightAuthors
 copyrightAuthors <- function(input, output, session, appName, authorInfo,
-                             copyrightInfo, licenseFile = "LICENSE") {
+                             copyrightInfo, licenseFile = "LICENSE", status = "primary") {
   output$authors <- renderUI({
     if (is.null(appName)) appName <- ""
     if (is.na(appName)) appName <- ""
@@ -52,7 +54,7 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
 
     fluidRow(
       box(
-        title = "Copyright and License", status = "primary", width = 12,
+        title = "Copyright and License", status = status, width = 12,
         solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
         p(HTML(paste(copyrightInfo))),
         if (file.exists(licenseFile)) {
@@ -63,11 +65,11 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
       ),
 
       box(
-        title = "Authors and Contributors", status = "primary",
+        title = "Authors and Contributors", status = status,
         solidHeader = TRUE, collapsible = TRUE, width = 12,
         ### app's authorship information
         if (all(nzchar(authorInfo))) h4(appName),
-        if (all(nzchar(authorInfo))) p(strong("App authors: ")), # TO DO add app vers?
+        if (all(nzchar(authorInfo))) p(strong("App authors: ")), # TODO: add app vers?
         if (all(nzchar(authorInfo))) authorInfo,
         if (all(nzchar(authorInfo))) hr(),
 
