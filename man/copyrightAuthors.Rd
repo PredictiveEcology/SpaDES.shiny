@@ -8,7 +8,7 @@
 copyrightAuthorsUI(id)
 
 copyrightAuthors(input, output, session, appName, authorInfo, copyrightInfo,
-  licenseFile = "LICENSE")
+  licenseFile = "LICENSE", status = "primary")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -28,6 +28,9 @@ authorship info.}
 
 \item{licenseFile}{Filepath to your app's LICENSE file
 (default is \file{LICENSE} in your shiny app dir).}
+
+\item{status}{The boxes' status, passed to \code{\link[shinydashboard]{box}}
+(default \code{"primary"}, which results in dark blue).}
 }
 \description{
 Generate Authors and Copyright Information
