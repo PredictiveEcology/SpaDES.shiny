@@ -76,7 +76,7 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
       if (!is.null(file)) dev.off()
     }
 
-    doPlot(file = file) ## plot once to file
+    if (!is.null(file)) doPlot(file = file) ## plot once to file
     doPlot(file = NULL) ## plot normally to display
   })
 }
