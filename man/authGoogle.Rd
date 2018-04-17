@@ -22,6 +22,9 @@ authGoogle(input, output, session, appURL, authFile)
 
 \item{authFile}{Private url to a Google Drive file with access control.}
 }
+\value{
+A list of the user's Google profile details (name, email, etc.)
+}
 \description{
 Logs a user into their Google account for authorized use of the app.
 Allows app content to be made conditionally available to 3 classes of user:

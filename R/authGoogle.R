@@ -54,6 +54,8 @@ authGoogleUI <- function(id) {
 #' @param appURL    URL to the hosted app.
 #' @param authFile  Private url to a Google Drive file with access control.
 #'
+#' @return          A list of the user's Google profile details (name, email, etc.)
+#'
 #' @export
 #' @importFrom googleAuthR Authentication with_shiny
 #' @importFrom googledrive as_id
@@ -157,5 +159,5 @@ authGoogle <- function(input, output, session, appURL, authFile) {
     }
   }, label = "observer__login_status")
 
-  return(accessToken)
+  return(userDetails)
 }
