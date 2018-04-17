@@ -28,7 +28,8 @@ copyrightAuthorsUI <- function(id) {
 #'                       (default \code{"primary"}, which results in dark blue).
 #'
 #' @export
-#' @importFrom shiny a br fluidRow h4 hr HTML p renderUI strong tags verbatimTextOutput wellPanel
+#' @importFrom shiny a br column fluidRow h4 hr HTML p renderUI strong tags
+#' @importFrom shiny verbatimTextOutput wellPanel
 #' @importFrom shinydashboard box
 #' @rdname copyrightAuthors
 copyrightAuthors <- function(input, output, session, appName, authorInfo,
@@ -63,31 +64,36 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
         if (all(nzchar(authorInfo))) hr(),
 
         ### SpaDES.shiny package authorship info
-        h4("SpaDES.shiny"),
-        p("An R package providing a shiny interface for SpaDES"),
-        p(strong("Package version: "), packageVersion("SpaDES.shiny") %>% as.character()),
-        p(strong("Package authors: ")),
-        tags$ul(lapply(pkgAuthors("SpaDES.shiny") %>% as.character(), function(x) {
-          suppressWarnings(tags$li(HTML(x)))
-        })),
-        hr(),
+        column(
+          width = 6,
+          h4("SpaDES.shiny"),
+          p("An R package providing a shiny interface for SpaDES"),
+          p(strong("Package version: "), packageVersion("SpaDES.shiny") %>% as.character()),
+          p(strong("Package authors: ")),
+          tags$ul(lapply(pkgAuthors("SpaDES.shiny") %>% as.character(), function(x) {
+            suppressWarnings(tags$li(HTML(x)))
+          }))
+        ),
 
         ### SpaDES package authorship info
-        h4("SpaDES: Spatial Discrete Event Simulation"),
-        p(paste0("An R package to easily implement a variety of simulation models, ",
-                 "with a focus on spatially explicit models.")),
-        p(strong("Package version: "), packageVersion("SpaDES") %>% as.character()),
-        p(strong("Package authors: ")),
-        tags$ul(lapply(pkgAuthors("SpaDES") %>% as.character(), function(x) {
-          suppressWarnings(tags$li(HTML(x)))
-        })),
-        p("Website: ", a("http://SpaDES.PredictiveEcology.org",
-                         href = "http://SpaDES.PredictiveEcology.org",
-                         target = "_blank"),
-          br(),
-          "GitHub: ", a("https://github.com/PredictiveEcology/SpaDES",
-                        href = "https://github.com/PredictiveEcology/SpaDES",
-                        target = "_blank")
+        column(
+          width = 6,
+          h4("SpaDES: Spatial Discrete Event Simulation"),
+          p(paste0("An R package to easily implement a variety of simulation models, ",
+                   "with a focus on spatially explicit models.")),
+          p(strong("Package version: "), packageVersion("SpaDES") %>% as.character()),
+          p(strong("Package authors: ")),
+          tags$ul(lapply(pkgAuthors("SpaDES") %>% as.character(), function(x) {
+            suppressWarnings(tags$li(HTML(x)))
+          })),
+          p("Website: ", a("http://SpaDES.PredictiveEcology.org",
+                           href = "http://SpaDES.PredictiveEcology.org",
+                           target = "_blank"),
+            br(),
+            "GitHub: ", a("https://github.com/PredictiveEcology/SpaDES",
+                          href = "https://github.com/PredictiveEcology/SpaDES",
+                          target = "_blank")
+          )
         )
       ),
 
