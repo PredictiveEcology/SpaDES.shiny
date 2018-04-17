@@ -32,7 +32,7 @@ copyrightAuthorsUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @rdname copyrightAuthors
 copyrightAuthors <- function(input, output, session, appName, authorInfo,
-                             copyrightInfo, licenseFile = "LICENSE", status = "primary") {
+                             copyrightInfo, fundingInfo, licenseFile = "LICENSE", status = "primary") {
   output$authors <- renderUI({
     if (is.null(appName)) appName <- ""
     if (is.na(appName)) appName <- ""
@@ -53,17 +53,6 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
     }
 
     fluidRow(
-      box(
-        title = "Copyright and License", status = status, width = 12,
-        solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
-        p(HTML(paste(copyrightInfo))),
-        if (file.exists(licenseFile)) {
-          wellPanel(verbatimTextOutput(
-            readLines(licenseFile) %>% paste(., collapse = "\n")
-          ))
-        }
-      ),
-
       box(
         title = "Authors and Contributors", status = status,
         solidHeader = TRUE, collapsible = TRUE, width = 12,
@@ -100,6 +89,17 @@ copyrightAuthors <- function(input, output, session, appName, authorInfo,
                         href = "https://github.com/PredictiveEcology/SpaDES",
                         target = "_blank")
         )
+      ),
+
+      box(
+        title = "Copyright and License", status = status, width = 12,
+        solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
+        p(HTML(paste(copyrightInfo))),
+        if (file.exists(licenseFile)) {
+          wellPanel(verbatimTextOutput(
+            readLines(licenseFile) %>% paste(., collapse = "\n")
+          ))
+        }
       )
     )
   })
