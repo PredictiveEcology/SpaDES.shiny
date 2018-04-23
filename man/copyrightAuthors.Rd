@@ -26,6 +26,8 @@ authorship info.}
 
 \item{copyrightInfo}{Character string containing your app's copyright info.}
 
+\item{fundingInfo}{Character string containing your app's funding/partner info.}
+
 \item{licenseFile}{Filepath to your app's LICENSE file
 (default is \file{LICENSE} in your shiny app dir).}
 

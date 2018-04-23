@@ -22,6 +22,7 @@ copyrightAuthorsUI <- function(id) {
 #' @param authorInfo     Character string or person list containing your app's
 #'                       authorship info.
 #' @param copyrightInfo  Character string containing your app's copyright info.
+#' @param fundingInfo    Character string containing your app's funding/partner info.
 #' @param licenseFile    Filepath to your app's LICENSE file
 #'                       (default is \file{LICENSE} in your shiny app dir).
 #' @param status         The boxes' status, passed to \code{\link[shinydashboard]{box}}

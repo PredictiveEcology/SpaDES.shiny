@@ -11,7 +11,8 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
   colorPalette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
   sliderTitle = "", histTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10)
+  rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user =
+  NULL), ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -52,6 +53,12 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \item{nRasters}{The number of available rasters.}
 
 \item{rasterStepSize}{Size of step in the raster slider.}
+
+\item{uploadOpts}{A list of options for use with file uploads:
+\code{auth} logical indicating whether user is authorized to upload;
+\code{path} a directory path to use for file uploads;
+\code{user} the current username (used for creating user-specific paths).
+The default for all options is \code{NULL}, which means do not use.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.

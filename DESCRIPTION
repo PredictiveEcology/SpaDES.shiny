@@ -5,8 +5,8 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2018-04-04
-Version: 0.1.0.9002
+Date: 2018-04-23
+Version: 0.1.0.9003
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
              role = c("aut", "cre")),
@@ -47,6 +47,7 @@ Imports:
     RColorBrewer,
     raster,
     rasterVis,
+    rgeos,
     reproducible,
     shiny (>= 0.13),
     R.devices,
@@ -70,12 +71,14 @@ Suggests:
     knitr,
     rmarkdown,
     Rserve,
+    SpaDES.tools,
     testthat (>= 1.0.2)
 Remotes:
     MarkEdmondson1234/googleID,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/quickPlot@development,
-    PredictiveEcology/SpaDES.core@development
+    PredictiveEcology/SpaDES.core@development,
+    PredictiveEcology/SpaDES.tools@development
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
@@ -108,6 +111,7 @@ Collate:
     'summaryPopups.R'
     'tilesUpdater.R'
     'timeSeriesofRasters.R'
+    'uploadPolygon.R'
     'visualizeDataTable.R'
     'visualizePolygons.R'
     'visualizeRaster.R'

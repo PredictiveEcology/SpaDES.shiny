@@ -7,7 +7,8 @@
 \usage{
 polygonChooserUI(id)
 
-polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL)
+polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL,
+  uploadOpts = list(auth = NULL, path = NULL, user = NULL), ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -22,50 +23,73 @@ polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL)
 # TODO: fill this in}
 
 \item{selectedPoly}{The name of the polygon to select by default.}
+
+\item{uploadOpts}{A list of options for use with file uploads:
+\code{auth} logical indicating whether user is authorized to upload;
+\code{path} a directory path to use for file uploads;
+\code{user} the current username (used for creating user-specific paths).
+The default for all options is \code{NULL}, which means do not use.}
 }
 \value{
-A reactive containing the name of the selected polygon.
+A reactive list with elements \code{polygons} (a list of polygons) and
+        \code{selected} (the name of the selected polygon).
 }
 \description{
 Provides a dropdown list of polygons available for mapping, sorted alphabetically.
 }
 \examples{
 \dontrun{
-library(leaflet)
-library(magrittr)
-library(shiny)
-library(SpaDES.tools)
+if require(SpaDES.tools) {
+  library(leaflet)
+  library(magrittr)
+  library(shiny)
 
-shinyApp(
-  ui = fluidPage(
-    htmlOutput("infobox"),
-    leafletOutput("map"),
-    polygonChooserUI("polyPicker")
-  ),
-  server = function(input, output, session) {
-    dummyPoly <- function() {
-      randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
+  shinyApp(
+    ui = fluidPage(
+      htmlOutput("infobox"),
+      leafletOutput("map"),
+      polygonChooserUI("polyPicker")
+    ),
+    server = function(input, output, session) {
+      dummyPoly <- function() {
+        randomPolygon(matrix(c(-120, 60), ncol = 2), 100)
+      }
+      dummyPoly1 <- dummyPoly()
+      dummyPoly2 <- dummyPoly()
+      dummyPoly3 <- dummyPoly()
+      dummyPoly4 <- dummyPoly()
+
+      tmpf <- tempfile(fileext = ".shp")
+      raster::shapefile(dummyPoly4, filename = tmpf)
+
+      polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
+      out <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones",
+                        uploadOpts = list(
+                          auth = TRUE,
+                          path = dirname(tmpf),
+                          user = "username"
+                        ))
+
+      updatedPolygonList <- reactive(out()$polygons)
+      chosenPolyName <- reactive(out()$selected)
+      chosenPoly <- reactive(updatedPolygonList()[[chosenPolyName()]])
+
+      output$infobox <- renderUI({
+        fluidRow(
+          h4("Currently viewing the ", chosenPolyName(), " polygon.")
+        )
+      })
+
+      output$map <- renderLeaflet({
+        leaflet() \%>\%
+          addTiles() \%>\%
+          addPolygons(data = chosenPoly())
+      })
     }
-    dummyPoly1 <- dummyPoly()
-    dummyPoly2 <- dummyPoly()
-    dummyPoly3 <- dummyPoly()
-    polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
-    chosenPolyName <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones")
-
-    output$infobox <- renderUI({
-      fluidRow(
-        h4("Currently viewing the ", chosenPolyName(), " polygon.")
-      )
-    })
-
-    output$map <- renderLeaflet({
-      leaflet() \%>\%
-        addTiles() \%>\%
-        addPolygons(data = polygonList()[[chosenPolyName()]])
-    })
-  }
-)
+  )
 }
+}
+
 }
 \author{
 Alex Chubaty
