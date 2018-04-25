@@ -63,6 +63,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
   if (!dir.exists(userDir)) dir.create(userDir, recursive = TRUE)
 
   polyName <- format(Sys.time(), "%Y-%m-%d-%Hh%Mm%S")
+  polyFilename <- file.path(userDir, paste0(polyName, ".shp"))
 
   # do GIS checks etc.
   rctUserPoly <- reactive({
@@ -83,13 +84,8 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
       zipFile <- filenames[which(raster::extension(filenames) == ".zip")]
       shpFile <- filenames[which(raster::extension(filenames) == ".shp")]
 
-      # save polygon to the USERNAME dir with timestamp
-      if (length(zipFile)) {
-        ## TODO: use SpaDES.tools::prepInputs
-        utils::unzip(zipFile, exdir = userDir, overwrite = TRUE, junkpaths = TRUE)
-        fname <- list.files(userDir, pattern = ".shp", full.names = TRUE)
-        raster::shapefile(fname)
-      } else if (length(shpFile)) {
+      ## perform basic checks on the user-uploaded polygon
+      checkPoly <- function(shpFile, studyArea, polyFilename) {
         userPoly <- raster::shapefile(shpFile)
         userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
@@ -100,9 +96,27 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
           userPolyLFLT <- SpaDES.tools::postProcess(userPoly, studyArea = studyAreaLFLT, useSAcrs = TRUE)
         }
 
-        fname <- file.path(userDir, paste0(polyName, ".shp"))
-        raster::shapefile(userPoly, filename = fname)
-        raster::shapefile(fname)
+        # save polygon to the user's upload dir
+        raster::shapefile(userPoly, filename = polyFilename)
+
+        # return the polygon, loaded from the user's upload directory
+        raster::shapefile(polyFilename)
+      }
+
+      if (length(zipFile)) {
+        tmpUnzipDir <- file.path(userDir, "unzip") %>% checkPath(., create = TRUE)
+        utils::unzip(zipFile, exdir = tmpUnzipDir, overwrite = TRUE, junkpaths = TRUE)
+        on.exit(unlink(tmpUnzipDir, recursive = TRUE), add = TRUE)
+
+        shpfile <- list.files(tmpUnzipDir, pattern = ".shp", full.names = TRUE)
+
+        if (length(shpfile) == 0) warning("No shapefile found in uploaded zip archive.")
+        if (length(shpfile) > 1) warning("Multiple shapefiles found in uploaded zip archive.\n",
+                                         "Only the first one wll be used.")
+
+        checkPoly(shpfile[1], studyArea, polyFilename)
+      } else if (length(shpFile)) {
+        checkPoly(shpFile, studyArea, polyFilename)
       } else {
         warning("Invalid or missing shopefile (.shp).")
       }
