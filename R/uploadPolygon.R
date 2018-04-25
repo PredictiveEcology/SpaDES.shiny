@@ -17,6 +17,9 @@ uploadPolygonUI <- function(id) {
 #' @param session        shiny server session object
 #' @param authStatus     Logical indicating whether a user can upload files.
 #' @param userDir        User-specific directory in which to store uploaded files.
+#' @param studyArea      A \code{Spatial} object used as a template for postprocessing
+#'                       the uploaded polygon, which is cropped, reprojected, etc.
+#'                       to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.
 #'
 #' @return               Reactive object containing the uploaded polygon.
 #'
@@ -24,10 +27,12 @@ uploadPolygonUI <- function(id) {
 #' @importFrom raster extension shapefile
 #' @importFrom rgeos gBuffer
 #' @importFrom shiny fileInput modalDialog p renderUI showModal tagList textInput
+#' @importFrom SpaDES.core updateList
+#' @importFrom SpaDES.tools postProcess
 #' @importFrom tools file_path_sans_ext
 #' @importFrom utils unzip
 #' @rdname uploadPolygon
-uploadPolygon <- function(input, output, session, authStatus, userDir, ...) {
+uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea) {
 
   output$uploader <- renderUI({
     ns <- session$ns
@@ -85,14 +90,16 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, ...) {
         fname <- list.files(userDir, pattern = ".shp", full.names = TRUE)
         raster::shapefile(fname)
       } else if (length(shpFile)) {
-        userPoly <- raster::shapefile(shpFile) %>% rgeos::gBuffer(byid = TRUE, width = 0)
-        ## TODO: reproject to correct CRS
-        ## TODO: check extent overlap with LandWeb study region and intersect
+        userPoly <- raster::shapefile(shpFile)
+        userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
         ## TODO: check that attribute 'LABEL' exists for use as shinyLabel, if not, create it.
 
-        ## TODO: should all polygons in the user's dir be added to the list???
-        ## TODO: allow a user to remove old uploaded polygons
+        if (!is.null(studyArea)) {
+          studyAreaLFLT <- spTransform(studyArea, proj4stringLFLT)
+          userPolyLFLT <- SpaDES.tools::postProcess(userPoly, studyArea = studyAreaLFLT, useSAcrs = TRUE)
+        }
+
         fname <- file.path(userDir, paste0(polyName, ".shp"))
         raster::shapefile(userPoly, filename = fname)
         raster::shapefile(fname)
@@ -103,13 +110,23 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, ...) {
   })
 
   rctUserPolyList <- reactive({
-    if (is.null(rctUserPoly())) {
+    ## TODO: allow a user to remove old uploaded polygons
+    userShpFiles <- list.files(userDir, pattern = ".shp", full.names = TRUE)
+    userPolyList <- lapply(userShpFiles, raster::shapefile)
+    userPolyNames <- vapply(userShpFiles, function(x) {
+      basename(x) %>% tools::file_path_sans_ext() %>% paste0("uploaded_", .)
+    }, character(1))
+    names(userPolyList) <- userPolyNames
+
+    newUploadPoly <- if (is.null(rctUserPoly())) {
       NULL
     } else {
       out <- list(rctUserPoly())
       names(out) <- paste0("uploaded_", polyName)
       out
     }
+
+    SpaDES.core::updateList(userPolyList, newUploadPoly)
   })
 
   # return the cleaned-up/verified polygon [outside the module: add this poly to the polygonList]

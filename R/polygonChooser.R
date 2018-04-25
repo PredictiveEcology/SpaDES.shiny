@@ -27,8 +27,11 @@ polygonChooserUI <- function(id) {
 #' @param uploadOpts      A list of options for use with file uploads:
 #'                        \code{auth} logical indicating whether user is authorized to upload;
 #'                        \code{path} a directory path to use for file uploads;
-#'                        \code{user} the current username (used for creating user-specific paths).
+#'                        \code{user} the current username (used for creating user-specific paths);
 #'                        The default for all options is \code{NULL}, which means do not use.
+#' @param studyArea       A \code{Spatial} object used as a template for post-processing
+#'                        the uploaded polygon, which is cropped, reprojected, etc.
+#'                        to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.
 #'
 #' @return A reactive list with elements \code{polygons} (a list of polygons) and
 #'         \code{selected} (the name of the selected polygon).
@@ -93,7 +96,7 @@ polygonChooserUI <- function(id) {
 #'
 polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly = NULL,
                            uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                           ...) {
+                           studyArea = NULL) {
 
   rctPolygonListUser <- reactive({
     assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
@@ -107,7 +110,7 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
         auth <- uploadOpts$auth
         userDir <- file.path(uploadOpts$path, uploadOpts$user)
 
-        rctUploadedPolygonList <- callModule(uploadPolygon, "uploadPolygon", auth, userDir)
+        rctUploadedPolygonList <- callModule(uploadPolygon, "uploadPolygon", auth, userDir, studyArea)
 
         append(rctPolygonList(), rctUploadedPolygonList())
       } else {
