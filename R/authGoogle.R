@@ -147,7 +147,7 @@ authGoogle <- function(input, output, session, appURL, authFile) {
   })
 
   observe({
-    if (session$userData$userLoggedIn()) {
+    if (isTRUE(session$userData$userLoggedIn())) {
       auth_status <- with_shiny(auth_drive, shiny_access_token = accessToken(), file = authFile)
       ifelse(auth_status, session$userData$userAuthorized(TRUE), session$userData$userAuthorized(FALSE))
 

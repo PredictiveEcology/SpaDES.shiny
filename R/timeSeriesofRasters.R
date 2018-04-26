@@ -15,7 +15,6 @@
 timeSeriesofRastersUI <- function(id) {
   ns <- NS(id)
 
-
   fluidRow(
     shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime"))),
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
@@ -56,6 +55,8 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @importFrom sp SpatialPoints spTransform
 #' @importFrom SpaDES.core paddedFloatToChar
+#' @include polygonChooser.R
+#' @include rastersOverTime.R
 #' @rdname timeSeriesofRasters
 #'
 timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
@@ -64,14 +65,17 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                ...) {
-
-  ## this module will return a reactive character value:
-  rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolygonList,
-                                 defaultPolyName, uploadOpts)
+                                studyArea = NULL) {
+  rctPolySubList <- reactive({
+    lapply(rctPolygonList(), function(x) {
+      x$crsSR$shpSubStudyRegion
+    })
+  })
+  rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
+                                 defaultPolyName, uploadOpts, studyArea = studyArea)
 
   observeEvent(rctChosenPolyOut(), {
-    polyList <- rctChosenPolyOut()$polygons
+    polyList <- append(rctPolygonList(), polygonList(rctChosenPolyOut()$polygons))
     polyName <- rctChosenPolyOut()$selected
 
     ## the full study region, using leaflet projection (used for map only here)
@@ -126,7 +130,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                mapTitle = mapTitle,
                nPolygons = nPolygons,
                nRasters = nRasters,
-               rasterStepSize = rasterStepSize) # from global variable summaryInterval
+               rasterStepSize = rasterStepSize)
   })
 
   return(rctChosenPolyOut)

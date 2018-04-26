@@ -37,6 +37,7 @@ polygonChooserUI <- function(id) {
 #'         \code{selected} (the name of the selected polygon).
 #'
 #' @export
+#' @include uploadPolygon.R
 #' @importFrom shiny need validate
 #' @importFrom shinyWidgets pickerInput
 #' @rdname polygonChooser
@@ -99,9 +100,10 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
                            studyArea = NULL) {
 
   rctPolygonListUser <- reactive({
-    assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
-      is(x, "SpatialPolygons")
-    }, logical(1))))
+    # assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
+    #   inherits(x, "SpatialPolygons")
+    # }, logical(1))))
+    ## TODO: restore this assertion/check
 
     ns <- session$ns
 
@@ -163,9 +165,6 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
 
   return(reactive({
     validate(need(input$polyLayer, message = "Please select a polygon layer."))
-    list(
-      polygons = rctPolygonListUser(),
-      selected = input$polyLayer
-    )
+    list(selected = input$polyLayer, polygons = rctPolygonListUser())
   }))
 }

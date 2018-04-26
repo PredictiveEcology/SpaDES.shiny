@@ -24,6 +24,7 @@ uploadPolygonUI <- function(id) {
 #' @return               Reactive object containing the uploaded polygon.
 #'
 #' @export
+#' @include polygonList.R
 #' @importFrom raster extension shapefile
 #' @importFrom rgeos gBuffer
 #' @importFrom shiny fileInput modalDialog p renderUI showModal tagList textInput
@@ -90,10 +91,12 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
         ## TODO: check that attribute 'LABEL' exists for use as shinyLabel, if not, create it.
+        #polys[[layerNamesIndex]]@data[[labelColumn]] <- polys[[layerNamesIndex]]$NSRNAME
 
         if (!is.null(studyArea)) {
           studyAreaLFLT <- spTransform(studyArea, proj4stringLFLT)
           userPolyLFLT <- SpaDES.tools::postProcess(userPoly, studyArea = studyAreaLFLT, useSAcrs = TRUE)
+          ## TODO: thin the lflt polygons
         }
 
         # save polygon to the user's upload dir
@@ -142,6 +145,8 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
 
     SpaDES.core::updateList(userPolyList, newUploadPoly)
   })
+
+  #session$userData$polygonList <- reactiveVal(list())
 
   # return the cleaned-up/verified polygon [outside the module: add this poly to the polygonList]
   return(rctUserPolyList)
