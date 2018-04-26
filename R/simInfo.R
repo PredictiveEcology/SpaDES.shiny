@@ -67,11 +67,20 @@ simModuleDiagramUI <- function(id) {
 #'
 #' @export
 #' @importFrom shiny renderPlot
+#' @importFrom igraph graph_from_data_frame layout_in_circle
 #' @importFrom SpaDES.core moduleDiagram
 #' @rdname simModuleDiagram
 simModuleDiagram <- function(input, output, session, sim) {
   output$modDiag <- renderPlot({
-    moduleDiagram(sim, vertex.size = 30)
+    clearPlot()
+    moduleDiagram(sim#, #vertex.size = vertexSize, 
+                  #vertex.size2 = 25, vertex.label.cex = 1.2, 
+                  #vertex.label.family = "sans",
+                  #layout = layout_in_circle, 
+                  #vertex.shape = "rectangle", 
+                  #margin = -0.25
+                  )
+    #moduleDiagram(sim, vertex.size = 30)
   })
 }
 

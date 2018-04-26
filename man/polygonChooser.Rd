@@ -8,7 +8,8 @@
 polygonChooserUI(id)
 
 polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL,
-  uploadOpts = list(auth = NULL, path = NULL, user = NULL), ...)
+  uploadOpts = list(auth = NULL, path = NULL, user = NULL),
+  studyArea = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -27,8 +28,12 @@ polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL,
 \item{uploadOpts}{A list of options for use with file uploads:
 \code{auth} logical indicating whether user is authorized to upload;
 \code{path} a directory path to use for file uploads;
-\code{user} the current username (used for creating user-specific paths).
+\code{user} the current username (used for creating user-specific paths);
 The default for all options is \code{NULL}, which means do not use.}
+
+\item{studyArea}{A \code{Spatial} object used as a template for post-processing
+the uploaded polygon, which is cropped, reprojected, etc.
+to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.}
 }
 \value{
 A reactive list with elements \code{polygons} (a list of polygons) and
