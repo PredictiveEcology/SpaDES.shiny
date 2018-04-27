@@ -125,7 +125,7 @@ authGoogle <- function(input, output, session, appURL, authFile) {
 
   output$username <- renderText({
     validate(
-      need(userDetails(), "Getting user details...")
+      need(userDetails(), "Please log in using your Google account.")
     )
     paste("Logged in as:", userDetails()$displayName)
   })
