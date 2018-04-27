@@ -35,6 +35,7 @@ timeSeriesofRastersUI <- function(id) {
 #'                            \code{path} a directory path to use for file uploads;
 #'                            \code{user} the current username (used for creating user-specific paths).
 #'                            The default for all options is \code{NULL}, which means do not use.
+#' @param studyArea           A \code{SpatialPolygons*} object defining the whole study area region.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword

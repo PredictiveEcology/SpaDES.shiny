@@ -59,6 +59,8 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \code{path} a directory path to use for file uploads;
 \code{user} the current username (used for creating user-specific paths).
 The default for all options is \code{NULL}, which means do not use.}
+
+\item{studyArea}{A \code{SpatialPolygons*} object defining the whole study area region.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.
