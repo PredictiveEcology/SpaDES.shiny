@@ -96,12 +96,6 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
 
         userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
-        if (!is.null(studyArea)) {
-          studyAreaLFLT <- spTransform(studyArea, proj4stringLFLT)
-          userPolyLFLT <- SpaDES.tools::postProcess(userPoly, studyArea = studyAreaLFLT, useSAcrs = TRUE)
-          ## TODO: thin the lflt polygons
-        }
-
         # save polygon to the user's upload dir
         raster::shapefile(userPoly, filename = polyFilename)
 

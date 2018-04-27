@@ -54,7 +54,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
 #' @importFrom shinydashboard box
 #' @importFrom sp SpatialPoints spTransform
-#' @importFrom SpaDES.core paddedFloatToChar
+#' @importFrom SpaDES.core paddedFloatToChar updateList
 #' @include polygonChooser.R
 #' @include rastersOverTime.R
 #' @rdname timeSeriesofRasters
@@ -68,16 +68,19 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 studyArea = NULL) {
 
   rctPolySubList <- reactive({
-    lapply(rctPolygonList(), function(x) {
-      x$crsSR$shpSubStudyRegion
-    })
+    lapply(rctPolygonList(), function(x) x$crsSR$shpStudyRegion)
   })
   rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
                                  defaultPolyName, uploadOpts, studyArea = studyArea)
 
   observeEvent(rctChosenPolyOut(), {
-    browser()
-    polyList <- append(rctPolygonList(), polygonList(rctChosenPolyOut()$polygons))
+    prevPolyList <- rmNulls.polygonList(rctPolygonList())
+
+    polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons, list(studyArea = studyArea)))
+    polyList <- rmNulls.polygonList(polyList)
+    class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
+
+    polyList <- SpaDES.core::updateList(prevPolyList, polyList)
     polyName <- rctChosenPolyOut()$selected
 
     ## the full study region, using leaflet projection (used for map only here)
