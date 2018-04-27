@@ -66,6 +66,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
                                 studyArea = NULL) {
+
   rctPolySubList <- reactive({
     lapply(rctPolygonList(), function(x) {
       x$crsSR$shpSubStudyRegion
@@ -75,6 +76,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                  defaultPolyName, uploadOpts, studyArea = studyArea)
 
   observeEvent(rctChosenPolyOut(), {
+    browser()
     polyList <- append(rctPolygonList(), polygonList(rctChosenPolyOut()$polygons))
     polyName <- rctChosenPolyOut()$selected
 

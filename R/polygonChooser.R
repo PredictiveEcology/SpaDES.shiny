@@ -38,7 +38,7 @@ polygonChooserUI <- function(id) {
 #'
 #' @export
 #' @include uploadPolygon.R
-#' @importFrom shiny need validate
+#' @importFrom shiny isTruthy need validate
 #' @importFrom shinyWidgets pickerInput
 #' @rdname polygonChooser
 #'
@@ -100,15 +100,13 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
                            studyArea = NULL) {
 
   rctPolygonListUser <- reactive({
-    # assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
-    #   inherits(x, "SpatialPolygons")
-    # }, logical(1))))
-    ## TODO: restore this assertion/check
+    assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
+     inherits(x, "SpatialPolygons")
+    }, logical(1))))
 
     ns <- session$ns
-
-    if (!all(vapply(uploadOpts, is.null, logical(1)))) {
-      if (isTRUE(uploadOpts$auth)) {
+    if (all(vapply(uploadOpts, isTruthy, logical(1)))) {
+      if (isTruthy(uploadOpts$auth)) {
         auth <- uploadOpts$auth
         userDir <- file.path(uploadOpts$path, uploadOpts$user)
 
@@ -126,7 +124,7 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
   output$polyChooser <- renderUI({
     ns <- session$ns
 
-    # TODO: display in alphabetical order
+    # TODO: display in alphabetical order?
     #selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()), selected = selectedPoly)
     shinyWidgets::pickerInput(
       inputId = ns("polyLayer"),

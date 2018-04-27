@@ -7,7 +7,7 @@
 \usage{
 uploadPolygonUI(id)
 
-uploadPolygon(input, output, session, authStatus, userDir, ...)
+uploadPolygon(input, output, session, authStatus, userDir, studyArea)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -21,6 +21,10 @@ uploadPolygon(input, output, session, authStatus, userDir, ...)
 \item{authStatus}{Logical indicating whether a user can upload files.}
 
 \item{userDir}{User-specific directory in which to store uploaded files.}
+
+\item{studyArea}{A \code{Spatial} object used as a template for postprocessing
+the uploaded polygon, which is cropped, reprojected, etc.
+to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.}
 }
 \value{
 Reactive object containing the uploaded polygon.

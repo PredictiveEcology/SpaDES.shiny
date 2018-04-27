@@ -43,6 +43,8 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         tags$hr(),
         actionButton(ns("showUploadModal"), "Upload...")
       )
+    } else {
+      NULL
     }
   })
 
@@ -54,7 +56,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
 
       tagList(
         p("Upload a shapefile by selecting .shp and its associated files (or upload a single .zip file)."),
-        p("Each polygon should have a \"LABEL\" attribute, otherwise a generic default will be used."),
+        p("Each polygon should have a \"shinyLabel\" attribute, otherwise a generic default will be used."),
         fileInput(ns("shpFiles"), "Upload shapefile:", multiple = TRUE,
                   accept = c(".dbf", ".prj", ".sbn", ".sbx", ".shp", ".shx", ".zip"))
       )
@@ -88,10 +90,11 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
       ## perform basic checks on the user-uploaded polygon
       checkPoly <- function(shpFile, studyArea, polyFilename) {
         userPoly <- raster::shapefile(shpFile)
-        userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
         ## TODO: check that attribute 'LABEL' exists for use as shinyLabel, if not, create it.
-        #polys[[layerNamesIndex]]@data[[labelColumn]] <- polys[[layerNamesIndex]]$NSRNAME
+        #userPoly[[layerNamesIndex]]@data[["shinyLabel"]] <- userPoly[[layerNamesIndex]]$COLNAME
+
+        userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
 
         if (!is.null(studyArea)) {
           studyAreaLFLT <- spTransform(studyArea, proj4stringLFLT)
@@ -127,26 +130,28 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
   })
 
   rctUserPolyList <- reactive({
-    ## TODO: allow a user to remove old uploaded polygons
-    userShpFiles <- list.files(userDir, pattern = ".shp", full.names = TRUE)
-    userPolyList <- lapply(userShpFiles, raster::shapefile)
-    userPolyNames <- vapply(userShpFiles, function(x) {
-      basename(x) %>% tools::file_path_sans_ext() %>% paste0("uploaded_", .)
-    }, character(1))
-    names(userPolyList) <- userPolyNames
+    if (isTRUE(authStatus)) {
+      ## TODO: allow a user to remove old uploaded polygons
+      userShpFiles <- list.files(userDir, pattern = ".shp", full.names = TRUE)
+      userPolyList <- lapply(userShpFiles, raster::shapefile)
+      userPolyNames <- vapply(userShpFiles, function(x) {
+        basename(x) %>% tools::file_path_sans_ext() %>% paste0("uploaded_", .)
+      }, character(1))
+      names(userPolyList) <- userPolyNames
 
-    newUploadPoly <- if (is.null(rctUserPoly())) {
-      NULL
+      newUploadPoly <- if (is.null(rctUserPoly())) {
+        NULL
+      } else {
+        out <- list(rctUserPoly())
+        names(out) <- paste0("uploaded_", polyName)
+        out
+      }
+
+      SpaDES.core::updateList(userPolyList, newUploadPoly)
     } else {
-      out <- list(rctUserPoly())
-      names(out) <- paste0("uploaded_", polyName)
-      out
+      list()
     }
-
-    SpaDES.core::updateList(userPolyList, newUploadPoly)
   })
-
-  #session$userData$polygonList <- reactiveVal(list())
 
   # return the cleaned-up/verified polygon [outside the module: add this poly to the polygonList]
   return(rctUserPolyList)

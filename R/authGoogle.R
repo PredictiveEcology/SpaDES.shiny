@@ -115,11 +115,12 @@ authGoogle <- function(input, output, session, appURL, authFile) {
 
   ## Google user information
   userDetails <- reactive({
-    validate(
-      need(accessToken(), "Please log in with your Google account.")
-    )
-    session$userData$userLoggedIn(TRUE)
-    with_shiny(get_user_info, shiny_access_token = accessToken())
+    if (isTruthy(accessToken())) {
+      session$userData$userLoggedIn(TRUE)
+      with_shiny(get_user_info, shiny_access_token = accessToken())
+    } else {
+      NULL
+    }
   })
 
   output$username <- renderText({

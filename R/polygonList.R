@@ -12,7 +12,7 @@
 polygonList <- function(studyArea, ...) {
   dots <- list(...)
 
-  stopifnot(is(studyArea, "Spatial"), all(vapply(dots, is, logical(1), class2 = "Spatial")))
+  stopifnot(inherits(studyArea, "SpatialPolygon"), all(vapply(dots, is, logical(1), class2 = "Spatial")))
 
   polyList <- lapply(dots, function(x) {
     polySR <- x
