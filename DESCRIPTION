@@ -36,6 +36,7 @@ Imports:
     googleID,
     graphics,
     grDevices,
+    igraph,
     leaflet,
     magrittr,
     memoise,

@@ -88,7 +88,7 @@ polygonChooserUI <- function(id) {
 #'       output$map <- renderLeaflet({
 #'         leaflet() %>%
 #'           addTiles() %>%
-#'           addPolygons(data = chosenPoly())
+#'           addPolygons(data = spTransform(chosenPoly(), CRSobj = proj4stringLFLT))
 #'       })
 #'     }
 #'   )
