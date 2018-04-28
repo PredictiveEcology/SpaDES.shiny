@@ -9,14 +9,14 @@
 #' @importFrom SpaDES.tools maskInputs
 #' @importFrom raster crs
 #' @rdname newPolygonList
-polygonList <- function(studyArea, ...) {
+polygonList <- function(studyArea, subStudyArea, ...) {
   dots <- list(...)
   stopifnot(inherits(studyArea, "SpatialPolygons"),
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
-    polyList <- mapply(x = dots, n = names(dots), FUN = function(x, n) {
+    polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
     polySR <- x
-    polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = studyArea),
+    polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = subStudyArea),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")
                             NULL
@@ -39,7 +39,7 @@ polygonList <- function(studyArea, ...) {
       crsSR = list(shpStudyRegion = polySR, shpStudySubRegion = polySRsub),
       crsLFLT = list(shpStudyRegion = polyLFLT, shpStudySubRegion = polyLFLTsub)
     )
-  }, SIMPLIFY = FALSE)
+  })
 
   class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
   polyList
