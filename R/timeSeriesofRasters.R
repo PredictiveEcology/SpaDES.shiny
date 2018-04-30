@@ -36,6 +36,7 @@ timeSeriesofRastersUI <- function(id) {
 #'                            \code{user} the current username (used for creating user-specific paths).
 #'                            The default for all options is \code{NULL}, which means do not use.
 #' @param studyArea           A \code{SpatialPolygons*} object defining the whole study area region.
+#' @param subStudyArea        Optional \code{SpatialPolygons*} object defining a smaller sub study area.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -66,7 +67,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                studyArea = NULL) {
+                                studyArea = NULL, subStudyArea = NULL) {
 
   rctPolySubList <- reactive({
     lapply(rctPolygonList(), function(x) x$crsSR$shpStudyRegion)
@@ -77,7 +78,9 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
   observeEvent(rctChosenPolyOut(), {
     prevPolyList <- rmNulls.polygonList(rctPolygonList())
 
-    polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons, list(studyArea = studyArea)))
+    polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
+                                            list(studyArea = studyArea,
+                                                 subStudyArea = subStudyArea)))
     polyList <- rmNulls.polygonList(polyList)
     class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
 
@@ -93,9 +96,9 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
 
     ## the sub study region, using leaflet projection (used for map only here)
     subRegion <- if (is.null(shpStudyRegionName)) {
-      polyList[[1]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polyList[[1]][["crsLFLT"]][["shpStudySubRegion"]]
     } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpSubStudyRegion"]]
+      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpStudySubRegion"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
