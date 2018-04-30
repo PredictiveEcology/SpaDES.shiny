@@ -1,3 +1,16 @@
+#' @keywords internal
+.polygonList <- function() {
+  polyList <- list(
+    list(
+      crsSR = list(shpStudyRegion = NULL, shpStudySubRegion = NULL),
+      crsLFLT = list(shpStudyRegion = NULL, shpStudySubRegion = NULL)
+    )
+  )
+
+  class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
+  polyList
+}
+
 #' Create a new \code{polygonList} object
 #'
 #' @param studyArea  A template \code{Spatial*} object whose projection, extent,

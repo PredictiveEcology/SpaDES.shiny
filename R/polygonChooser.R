@@ -48,6 +48,7 @@ polygonChooserUI <- function(id) {
 #'   library(leaflet)
 #'   library(magrittr)
 #'   library(shiny)
+#'   library(sp)
 #'
 #'   shinyApp(
 #'     ui = fluidPage(
