@@ -14,7 +14,7 @@ polygonList <- function(studyArea, subStudyArea, ...) {
   stopifnot(inherits(studyArea, "SpatialPolygons"),
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
-    polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
+  polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
     polySR <- x
     polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = subStudyArea),
                           error = function(e) {

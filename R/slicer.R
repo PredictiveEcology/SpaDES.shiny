@@ -120,7 +120,7 @@ slicerUI <- function(id) {
 #' @author Alex Chubaty
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom data.table data.table is.data.table
+#' @importFrom data.table data.table is.data.table set
 #' @importFrom magrittr %>%
 #' @importFrom shiny callModule fluidRow is.reactive mainPanel NS observeEvent renderUI tabPanel
 #' @importFrom shinydashboard box tabBox
@@ -138,6 +138,11 @@ slicer <- function(input, output, session, datatable, uiSequence,
     possibleValues <- uiSequence$possibleValues
 
     dtFull <- datatable()
+    hasColNames <- categories %in% colnames(dtFull)
+    if (!all(hasColNames )) {
+      for (colName in categories[!hasColNames])
+        set(dtFull, , colName, NA)
+    }
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
 
     ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
