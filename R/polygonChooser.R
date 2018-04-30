@@ -48,6 +48,7 @@ polygonChooserUI <- function(id) {
 #'   library(leaflet)
 #'   library(magrittr)
 #'   library(shiny)
+#'   library(sp)
 #'
 #'   shinyApp(
 #'     ui = fluidPage(
@@ -101,7 +102,7 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
 
   rctPolygonListUser <- reactive({
     assertthat::assert_that(all(vapply(rctPolygonList(), function(x) {
-     inherits(x, "SpatialPolygons")
+      inherits(x, "SpatialPolygons")
     }, logical(1))))
 
     ns <- session$ns

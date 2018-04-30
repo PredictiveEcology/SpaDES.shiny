@@ -1,3 +1,16 @@
+#' @keywords internal
+.polygonList <- function() {
+  polyList <- list(
+    list(
+      crsSR = list(shpStudyRegion = NULL, shpStudySubRegion = NULL),
+      crsLFLT = list(shpStudyRegion = NULL, shpStudySubRegion = NULL)
+    )
+  )
+
+  class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
+  polyList
+}
+
 #' Create a new \code{polygonList} object
 #'
 #' @param studyArea  A template \code{Spatial*} object whose projection, extent,
@@ -14,8 +27,12 @@ polygonList <- function(studyArea, subStudyArea, ...) {
   stopifnot(inherits(studyArea, "SpatialPolygons"),
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
-    polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
-    polySR <- x
+  polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
+    polySR <- tryCatch(Cache(maskInputs, x = x, studyArea = studyArea),
+                       error = function(e) {
+                         message("Error intersecting polygon ", n, " with studyArea.")
+                         NULL
+                       })
     polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = subStudyArea),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")

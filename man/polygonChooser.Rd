@@ -48,6 +48,7 @@ if require(SpaDES.tools) {
   library(leaflet)
   library(magrittr)
   library(shiny)
+  library(sp)
 
   shinyApp(
     ui = fluidPage(
