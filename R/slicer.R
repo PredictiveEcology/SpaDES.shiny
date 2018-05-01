@@ -157,20 +157,19 @@ slicer <- function(input, output, session, datatable, uiSequence,
       names(dtList)
     } else {
       possibleValues[[1]]
-    }
-
+    } %>% as.character()
     lapply(level1names, function(x) {
       level2names <- if (is.null(possibleValues[[2]])) {
         names(dtList[[x]])
       } else {
         possibleValues[[2]]
-      }
+      } %>% as.character()
       lapply(level2names, function(y) {
         level3names <- if (is.null(possibleValues[[3]])) {
           names(dtList[[x]][[y]])
         } else {
           possibleValues[[3]]
-        }
+        } %>% as.character()
         lapply(level3names, function(z) {
           currentValues <- list(x, y, z) %>% setNames(categories)
           ### `get` doesn't work correctly in shiny modules
