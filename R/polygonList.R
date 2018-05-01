@@ -2,8 +2,8 @@
 .polygonList <- function() {
   polyList <- list(
     list(
-      crsSR = list(shpStudyRegion = NULL, shpStudySubRegion = NULL),
-      crsLFLT = list(shpStudyRegion = NULL, shpStudySubRegion = NULL)
+      crsSR = NULL
+      crsLFLT = NULL
     )
   )
 
