@@ -22,35 +22,27 @@
 #' @importFrom SpaDES.tools maskInputs
 #' @importFrom raster crs
 #' @rdname newPolygonList
-polygonList <- function(studyArea, subStudyArea, ...) {
+polygonList <- function(studyArea, ...) {
   dots <- list(...)
   stopifnot(inherits(studyArea, "SpatialPolygons"),
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
   polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
-    polySR <- x
-    polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = subStudyArea),
+    browser()
+    polySR <- tryCatch(Cache(postProcess, x = x, studyArea = studyArea, useSAcrs = TRUE),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")
                             NULL
                           })
 
-    ## TODO: thin the lflt polygons
-    polyLFLT <- tryCatch(Cache(spTransform, x = x, CRSobj = proj4stringLFLT),
+    polyLFLT <- tryCatch(Cache(spTransform, x = polySR, CRSobj = proj4stringLFLT),
                          error = function(e) {
                            message("Error transforming polygon ", n, " to leaflet projection.")
                            NULL
                          })
-    polyLFLTsub <- tryCatch(Cache(spTransform, x = polySRsub, CRSobj = proj4stringLFLT),
-                            error = function(e) {
-                              message("Error transforming intersected polygon ", n,
-                                      " to leaflet projection.")
-                              NULL
-                            })
-
     list(
-      crsSR = list(shpStudyRegion = polySR, shpStudySubRegion = polySRsub),
-      crsLFLT = list(shpStudyRegion = polyLFLT, shpStudySubRegion = polyLFLTsub)
+      crsSR = polySR,
+      crsLFLT = polyLFLT
     )
   })
 
