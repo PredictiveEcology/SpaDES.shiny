@@ -12,7 +12,7 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   colorPalette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
   sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user =
-  NULL), studyArea = NULL, subStudyArea = NULL)
+  NULL), rctStudyArea = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}

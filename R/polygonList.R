@@ -22,65 +22,30 @@
 #' @importFrom SpaDES.tools maskInputs
 #' @importFrom raster crs
 #' @rdname newPolygonList
-polygonList <- function(studyArea, subStudyArea, ...) {
+polygonList <- function(studyArea, ...) {
   dots <- list(...)
   stopifnot(inherits(studyArea, "SpatialPolygons"),
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
   polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
-    polySR <- tryCatch(Cache(maskInputs, x = x, studyArea = studyArea),
-                       error = function(e) {
-                         message("Error intersecting polygon ", n, " with studyArea.")
-                         NULL
-                       })
-    polySRsub <- tryCatch(Cache(maskInputs, x = x, studyArea = subStudyArea),
+    polySR <- tryCatch(Cache(postProcess, x = x, studyArea = studyArea, useSAcrs = TRUE,
+                             postProcessedFilename = FALSE),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")
                             NULL
                           })
 
-    ## TODO: thin the lflt polygons
-    polyLFLT <- tryCatch(Cache(spTransform, x = x, CRSobj = proj4stringLFLT),
+    polyLFLT <- tryCatch(Cache(spTransform, x = polySR, CRSobj = proj4stringLFLT),
                          error = function(e) {
                            message("Error transforming polygon ", n, " to leaflet projection.")
                            NULL
                          })
-    polyLFLTsub <- tryCatch(Cache(spTransform, x = polySRsub, CRSobj = proj4stringLFLT),
-                            error = function(e) {
-                              message("Error transforming intersected polygon ", n,
-                                      " to leaflet projection.")
-                              NULL
-                            })
-
     list(
-      crsSR = list(shpStudyRegion = polySR, shpStudySubRegion = polySRsub),
-      crsLFLT = list(shpStudyRegion = polyLFLT, shpStudySubRegion = polyLFLTsub)
+      crsSR = polySR,
+      crsLFLT = polyLFLT
     )
   })
 
   class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
   polyList
-}
-
-#' Remove elements of a list whose subelements contain a NULL value
-#'
-#' @param x   A named list.
-#' @param ... Additonal arguments for specific methods.
-#'
-#' @author Alex Chubaty
-#' @export
-rmNulls <- function(x, ...) UseMethod("rmNulls")
-
-rmNulls.polygonList <- function(x) {
-  plout <- x
-  sapply(names(x), function(n1) {
-    sapply(names(x[[n1]]), function(n2) {
-      sapply(names(x[[n1]][[n2]]), function(n3) {
-        if (is.null(x[[n1]][[n2]][[n3]])) {
-          plout[[n1]] <<- NULL
-        }
-      })
-    })
-  })
-  plout
 }

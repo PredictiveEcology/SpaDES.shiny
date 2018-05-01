@@ -4,7 +4,7 @@
 \alias{polygonList}
 \title{Create a new \code{polygonList} object}
 \usage{
-polygonList(studyArea, subStudyArea, ...)
+polygonList(studyArea, ...)
 }
 \arguments{
 \item{studyArea}{A template \code{Spatial*} object whose projection, extent,

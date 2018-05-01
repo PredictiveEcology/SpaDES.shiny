@@ -67,21 +67,21 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                studyArea = NULL, subStudyArea = NULL) {
+                                rctStudyArea = NULL) {
 
   rctPolySubList <- reactive({
-    lapply(rctPolygonList(), function(x) x$crsSR$shpStudyRegion)
+    lapply(rctPolygonList(), function(x) x$crsSR)
   })
+
   rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
-                                 defaultPolyName, uploadOpts, studyArea = studyArea)
+                                 defaultPolyName, uploadOpts, studyArea = rctStudyArea)
+
 
   observeEvent(rctChosenPolyOut(), {
-    prevPolyList <- rmNulls.polygonList(rctPolygonList())
+    prevPolyList <- rctPolygonList()
 
     polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
-                                            list(studyArea = studyArea,
-                                                 subStudyArea = subStudyArea)))
-    polyList <- rmNulls.polygonList(polyList)
+                                            list(studyArea = rctStudyArea())))
     class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
 
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
@@ -89,16 +89,16 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
 
     ## the full study region, using leaflet projection (used for map only here)
     shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-      polyList[[1]][["crsLFLT"]][["shpStudyRegion"]]
+      polyList[[1]][["crsLFLT"]]
     } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpStudyRegion"]]
+      polyList[[shpStudyRegionName]][["crsLFLT"]]
     }
 
     ## the sub study region, using leaflet projection (used for map only here)
     subRegion <- if (is.null(shpStudyRegionName)) {
-      polyList[[1]][["crsLFLT"]][["shpStudySubRegion"]]
+      polyList[[1]][["crsLFLT"]]
     } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]][["shpStudySubRegion"]]
+      polyList[[shpStudyRegionName]][["crsLFLT"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
