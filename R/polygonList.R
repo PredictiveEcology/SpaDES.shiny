@@ -28,8 +28,9 @@ polygonList <- function(studyArea, ...) {
             all(vapply(dots, is, logical(1), class2 = "SpatialPolygons")))
 
   polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
-    browser()
-    polySR <- tryCatch(Cache(postProcess, x = x, studyArea = studyArea, useSAcrs = TRUE),
+
+    polySR <- tryCatch(Cache(postProcess, x = x, studyArea = studyArea, useSAcrs = TRUE,
+                             postProcessedFilename = FALSE),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")
                             NULL
