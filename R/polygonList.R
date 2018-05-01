@@ -2,7 +2,7 @@
 .polygonList <- function() {
   polyList <- list(
     list(
-      crsSR = NULL
+      crsSR = NULL,
       crsLFLT = NULL
     )
   )

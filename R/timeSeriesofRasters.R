@@ -83,7 +83,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
     polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
                                             list(studyArea = rctStudyArea())))
     class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
-
+browser()
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
     polyName <- rctChosenPolyOut()$selected
 
