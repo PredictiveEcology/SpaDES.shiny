@@ -124,16 +124,16 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                             mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
                             zoom, ")}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      addPolygons(data = shpStudyArea, color = "blue", 
+      addPolygons(data = shpStudyArea, color = "blue",
                   group = "Selected Polygon",
-                  fillOpacity = 0.0, weight = 2#,
+                  fillOpacity = 0.0, weight = 3#, ## be consistent with polygonUpdater module
                   #fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)
                   ) %>% #,
       #addLayersControl(#options = layersControlOptions(autoZIndex = TRUE,
       #                 #                               collapsed = FALSE),
       #                 baseGroups = c("Open Cycle Map", "ESRI World Imagery")#, #"Toner Lite"),
       #                 overlayGroups = c("selectedPolygon", "tilesS")
-      #                 ) %>% 
+      #                 ) %>%
       fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
 
     callModule(rastersOverTime, "rastersOverTime",
