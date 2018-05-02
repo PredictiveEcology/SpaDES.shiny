@@ -94,10 +94,10 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
     }
 
     ## the sub study region, using leaflet projection (used for map only here)
-    subRegion <- if (is.null(shpStudyRegionName)) {
+    shpStudyArea <- if (is.null(defaultPolyName)) {
       polyList[[1]][["crsLFLT"]]
     } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]]
+      polyList[[defaultPolyName]][["crsLFLT"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -115,8 +115,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       addEasyButton(easyButton(
         icon = "fa-map", title = "Zoom to focal area",
         onClick = JS(paste0("function(btn, map){ map.fitBounds([[",
-                            ymin(subRegion), ", ", xmin(subRegion), "], [",
-                            ymax(subRegion), ", ", xmax(subRegion), "]])}")))) %>%
+                            ymin(shpStudyArea), ", ", xmin(shpStudyArea), "], [",
+                            ymax(shpStudyArea), ", ", xmax(shpStudyArea), "]])}")))) %>%
       addEasyButton(easyButton(
         icon = "fa-globe", title = "Zoom out to full study area",
         onClick = JS(paste0("function(btn, map){ map.setView([",
@@ -124,7 +124,17 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                             mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
                             zoom, ")}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      fitBounds(xmin(subRegion), ymin(subRegion), xmax(subRegion), ymax(subRegion))
+      addPolygons(data = shpStudyArea, color = "blue", 
+                  group = "Selected Polygon",
+                  fillOpacity = 0.0, weight = 2#,
+                  #fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)
+                  ) %>% #,
+      #addLayersControl(#options = layersControlOptions(autoZIndex = TRUE,
+      #                 #                               collapsed = FALSE),
+      #                 baseGroups = c("Open Cycle Map", "ESRI World Imagery")#, #"Toner Lite"),
+      #                 overlayGroups = c("selectedPolygon", "tilesS")
+      #                 ) %>% 
+      fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
 
     callModule(rastersOverTime, "rastersOverTime",
                rctRasterList = rctRasterList,
