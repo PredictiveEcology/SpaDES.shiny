@@ -76,14 +76,13 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
   rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
                                  defaultPolyName, uploadOpts, studyArea = rctStudyArea)
 
-
   observeEvent(rctChosenPolyOut(), {
     prevPolyList <- rctPolygonList()
 
     polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
                                             list(studyArea = rctStudyArea())))
     class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
-browser()
+
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
     polyName <- rctChosenPolyOut()$selected
 
@@ -95,10 +94,10 @@ browser()
     }
 
     ## the sub study region, using leaflet projection (used for map only here)
-    subRegion <- if (is.null(shpStudyRegionName)) {
+    shpStudyArea <- if (is.null(defaultPolyName)) {
       polyList[[1]][["crsLFLT"]]
     } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]]
+      polyList[[defaultPolyName]][["crsLFLT"]]
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
