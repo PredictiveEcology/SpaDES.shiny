@@ -75,7 +75,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   rctPoly4Map <- reactive({
     polyList <- rctPolygonList()
-    polyList[[rctChosenPolyName()]][["crsLFLT"]][["shpSubStudyRegion"]]
+    polyList[[rctChosenPolyName()]][["crsLFLT"]]
   })
 
   rctRasterIndexValue <- callModule(slider, "rastersSlider", label = sliderTitle,
@@ -104,9 +104,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
       mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
                                           ymin = mb$south, ymax = mb$north)
       sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
-      sp2 <- spTransform(sp1, crs(rasts()$crsSR))
-      tryCatch(crop(rasts()$crsSR, sp2), error = function(x) NULL)
-      #tryCatch(Cache(crop, rasts()$crsSR, sp2), error = function(x) NULL)
+      rasts1 <- rasts()
+      sp2 <- spTransform(sp1, crs(rasts1$crsSR))
+      #tryCatch(crop(rasts1$crsSR, sp2), error = function(x) NULL)
+      tryCatch(Cache(crop, rasts()$crsSR, sp2), error = function(x) NULL)
     }
 
     ret <- if (!is.null(ras)) {
@@ -131,8 +132,15 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   addTilesParameters <- list(
-    option = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
+    options = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
   )
+  
+  tilesGroup <- "Time since fire" # session$ns("tiles")
+  
+  addLayersControlParameters <- 
+    list(overlayGroups = c(tilesGroup, "Selected Polygon"),
+         options = layersControlOptions(autoZIndex = TRUE,
+                                        collapsed = FALSE))
 
   click <- reactive(input$map_shape_click)
 
@@ -141,14 +149,16 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
 
+  
   ## TODO: fix the raster control layer tile swiicher in top right corner of map
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, session$ns("tiles"), ## don't change ns
-             addTilesParameters = addTilesParameters, addLayersControlParameters = NULL)
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, tilesGroup, ## don't change ns
+             addTilesParameters = addTilesParameters, 
+             addLayersControlParameters = addLayersControlParameters)
 
   callModule(summaryPopups, "popups", mapProxy, click, reactive(rasts()$crsLFLT), rctPoly4Map)
 
   callModule(polygonsUpdater, "polygonsUpdater", mapProxy, rctPoly4Map,
-             fillOpacity = 0.0, weight = 0.5)
+             fillOpacity = 0.0, weight = 3, group = "Selected Polygon")
 
   callModule(histogramForRaster, "histogram", sampledRasterVals,
              rctHistogramBreaks = xAxisBreaks,

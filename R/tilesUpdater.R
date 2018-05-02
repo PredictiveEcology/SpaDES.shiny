@@ -46,9 +46,7 @@ tilesUpdater <- function(input, output, session, proxy, rctUrlTemplateSingleRast
                                         urlTemplate = rctUrlTemplateSingleRaster(),
                                         group = tilesGroup)
     addTilesParameters[names(addTilesNecessaryParameters)] <- NULL
-    addTilesParametersCombined <- c(list(map = proxy, #clearGroup(proxy, tilesGroup),
-                                         urlTemplate = rctUrlTemplateSingleRaster(),
-                                         group = tilesGroup), addTilesParameters)
+    addTilesParametersCombined <- c(addTilesNecessaryParameters, addTilesParameters)
     layersControlParamsCombined <- c(
       list(map = do.call(addTiles, addTilesParametersCombined)),
       addLayersControlParameters
