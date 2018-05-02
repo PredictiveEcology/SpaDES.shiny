@@ -142,12 +142,20 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE)
   )
 
+  tilesGroup <- "Time since fire" # session$ns("tiles")
+
+  addLayersControlParameters <-
+    list(overlayGroups = c(tilesGroup, "Selected Polygon"),
+         options = layersControlOptions(autoZIndex = TRUE,
+                                        collapsed = FALSE))
+
   click <- reactive(input$map_shape_click)
 
   rctUrlTemplateSingleFile <- reactive({
     rasterFilename <- strsplit(basename(filename(rasts()$crsLFLT)), "\\.")[[1]][[1]]
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
+
 
   ## TODO: fix the raster control layer tile swiicher in top right corner of map
   callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, tilesGroup, ## don't change ns
