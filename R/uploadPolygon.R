@@ -108,6 +108,9 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
           }
         }
 
+        ## TODO: capture warnings/messages from postProcess and tell user if something went wrong (#29)
+        ## currently, if e.g. userPoly doesn't intersect with studyArea, user gets no feedback
+        ## but the userPoly isn't added to the list of selectable polygons
         SpaDES.tools::postProcess(userPoly, postProcessedFilename = polyFilename,
                                   studyArea = studyArea, useSAcrs = TRUE)
       }
