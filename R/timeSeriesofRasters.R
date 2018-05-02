@@ -74,7 +74,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
   })
 
   rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
-                                 defaultPolyName, uploadOpts, studyArea = rctStudyArea)
+                                 defaultPolyName, uploadOpts, studyArea = rctStudyArea())
 
   observeEvent(rctChosenPolyOut(), {
     prevPolyList <- rctPolygonList()
