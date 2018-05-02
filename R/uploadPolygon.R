@@ -26,6 +26,7 @@ uploadPolygonUI <- function(id) {
 #' @export
 #' @include polygonList.R
 #' @importFrom raster extension shapefile
+#' @importFrom reproducible checkPath
 #' @importFrom rgeos gBuffer
 #' @importFrom shiny fileInput modalDialog p renderUI showModal tagList textInput
 #' @importFrom SpaDES.core updateList
@@ -63,7 +64,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
     ))
   })
 
-  if (!dir.exists(userDir)) dir.create(userDir, recursive = TRUE)
+  reproducible::checkPath(userDir, create = TRUE)
 
   polyName <- format(Sys.time(), "%Y-%m-%d-%Hh%Mm%S")
   polyFilename <- file.path(userDir, paste0(polyName, ".shp"))
@@ -75,11 +76,11 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
     } else {
       filenames <- input$shpFiles$datapath
 
-      tmpDir <- unique(dirname(filenames))
+      tmpdir <- unique(dirname(filenames))
       filenames <- vapply(filenames, function(x) {
         fname <- "shp_upload"
         fext <- raster::extension(x)
-        fullname <- file.path(tmpDir, paste0(fname, fext))
+        fullname <- file.path(tmpdir, paste0(fname, fext))
         file.rename(x, fullname)
         unname(fullname)
       }, character(1))
@@ -91,16 +92,24 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
       checkPoly <- function(shpFile, studyArea, polyFilename) {
         userPoly <- raster::shapefile(shpFile)
 
-        ## TODO: check that attribute 'LABEL' exists for use as shinyLabel, if not, create it.
-        #userPoly[[layerNamesIndex]]@data[["shinyLabel"]] <- userPoly[[layerNamesIndex]]$COLNAME
+        ## check that attribute 'shinyLabel' exists; if not, create it.
+        if (is.null(userPoly@data[["shinyLabel"]])) {
+          label <- colnames(userPoly@data) %>%
+            grep("name", ., ignore.case = TRUE, value = TRUE)
 
-        userPolySR <- SpaDES.tools::postProcess(userPoly, studyArea = studyArea, useSAcrs = TRUE)
+          if (length(label) == 0)
+            label <- colnames(userPoly@data) %>%
+              grep("id", ., ignore.case = TRUE, value = TRUE)
 
-        # save polygon to the user's upload dir
-        raster::shapefile(userPoly, filename = polyFilename)
+          userPoly@data[["shinyLabel"]] <- if (length(label) == 0) {
+            row.names(userPoly)
+          } else {
+            userPoly@data[[label[1]]]
+          }
+        }
 
-        # return the polygon, loaded from the user's upload directory
-        raster::shapefile(polyFilename)
+        SpaDES.tools::postProcess(userPoly, postProcessedFilename = polyFilename,
+                                  studyArea = studyArea, useSAcrs = TRUE)
       }
 
       if (length(zipFile)) {
@@ -108,15 +117,17 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         utils::unzip(zipFile, exdir = tmpUnzipDir, overwrite = TRUE, junkpaths = TRUE)
         on.exit(unlink(tmpUnzipDir, recursive = TRUE), add = TRUE)
 
-        shpfile <- list.files(tmpUnzipDir, pattern = ".shp", full.names = TRUE)
+        shpfilez <- list.files(tmpUnzipDir, pattern = ".shp", full.names = TRUE)
 
-        if (length(shpfile) == 0) warning("No shapefile found in uploaded zip archive.")
-        if (length(shpfile) > 1) warning("Multiple shapefiles found in uploaded zip archive.\n",
+        if (length(shpfilez) == 0) warning("No shapefile found in uploaded zip archive.")
+        if (length(shpfilez) > 1) warning("Multiple shapefiles found in uploaded zip archive.\n",
                                          "Only the first one wll be used.")
 
-        checkPoly(shpfile[1], studyArea, polyFilename)
+        checkPoly(shpfilez[1], studyArea, polyFilename)
       } else if (length(shpFile)) {
-        checkPoly(shpFile, studyArea, polyFilename)
+        if (length(shpFile) > 1) warning("Multiple shapefiles uploaded.\n",
+                                         "Only the first one wll be used.")
+        checkPoly(shpFile[1], studyArea, polyFilename)
       } else {
         warning("Invalid or missing shopefile (.shp).")
       }
