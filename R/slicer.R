@@ -150,8 +150,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
     ##       because of this, the examples currently do not work because they have 2 levels
 
     ## server elements
-    .slicer(dtFull, dtList, dtListShort, categories, possibleValues,
-            serverFunction, uiSequence, ...)
+    .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
 
     ## UI elements
     output$slicedUI <- renderUI({
@@ -202,8 +201,11 @@ slicer <- function(input, output, session, datatable, uiSequence,
   paste("slicedUI", x, y, z, sep = "-")
 }
 
-.slicer <- function(dtFull, dtList, dtListShort, categories, possibleValues,
-                    serverFunction, uiSequence, ...) {
+.slicer <- function(dtFull, categories, possibleValues, serverFunction, uiSequence, ...) {
+
+  dtList <- split(dtFull, by = categories, flatten = FALSE)
+  dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
+
   level1names <- if (is.null(possibleValues[[1]])) {
     names(dtList)
   } else {
