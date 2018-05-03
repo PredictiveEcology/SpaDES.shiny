@@ -149,12 +149,8 @@ slicer <- function(input, output, session, datatable, uiSequence,
     ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
     ##       because of this, the examples currently do not work because they have 2 levels
 
-    getID <- function(x, y, z) {
-      paste("slicedUI", x, y, z, sep = "-")
-    }
-
     ## server elements
-    .slicer(dtFull, dtList, dtListShort, categories, possibleValues, getID,
+    .slicer(dtFull, dtList, dtListShort, categories, possibleValues,
             serverFunction, uiSequence, ...)
 
     ## UI elements
@@ -185,7 +181,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
               lapply(level3names, function(z) {
                 shinydashboard::box(
                   width = 4, solidHeader = TRUE, collapsible = TRUE,
-                  title = z, uiFunction(session$ns(getID(x, y, z)))
+                  title = z, uiFunction(session$ns(.getID(x, y, z)))
                 )
               })
             )
@@ -202,8 +198,12 @@ slicer <- function(input, output, session, datatable, uiSequence,
   })
 }
 
+.getID <- function(x, y, z) {
+  paste("slicedUI", x, y, z, sep = "-")
+}
+
 .slicer <- function(dtFull, dtList, dtListShort, categories, possibleValues,
-                    getID, serverFunction, uiSequence, ...) {
+                    serverFunction, uiSequence, ...) {
   level1names <- if (is.null(possibleValues[[1]])) {
     names(dtList)
   } else {
@@ -231,7 +231,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
         #               get(categories[3]) == z]
         subdt <- dtList[[x]][[y]][[z]]
         if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-        serverFunction(datatable = subdt, id = getID(x, y, z),
+        serverFunction(datatable = subdt, id = .getID(x, y, z),
                        uiSequence = uiSequence, ...,
                        .current = currentValues, .dtFull = dtFull,
                        .dtInner = dtInner)
