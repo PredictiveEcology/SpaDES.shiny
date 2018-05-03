@@ -142,15 +142,13 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
   observeEvent(rctPolygonListUser(), {
     origChoices <- names(rctPolygonList())
     userChoices <- names(rctPolygonListUser())
-    choices <- if (identical(origChoices, userChoices)) {
-      origChoices
+
+    if (identical(origChoices, userChoices)) {
+      choices <- origChoices
+      selected <- selectedPoly
     } else {
-      userChoices
-    }
-    selected <- if (identical(origChoices, userChoices)) {
-      selectedPoly
-    } else {
-      userChoices[[length(userChoices)]]
+      choices <- userChoices
+      selected <- userChoices[[length(userChoices)]]
     }
 
     shinyWidgets::updatePickerInput(
