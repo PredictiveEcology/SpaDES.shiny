@@ -61,21 +61,21 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
     }
     assertthat::assert_that(is.numeric(hst))
 
-    doPlot <- function(file = NULL) {
-      if (!is.null(file)) png(file, width = 200, height = 200, units = "px")
-      barplot(hst, ...)
-
-      if (!is.null(addAxisParams)) {
-        axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
-        do.call(axis, axps)
-      }
-      if (!is.null(verticalBar)) {
-        abline(v = verticalBar, col = "red", lwd = 3)
-      }
-      if (!is.null(file)) dev.off()
+    axps <- if (!is.null(addAxisParams)) {
+      if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
+    } else {
+      NULL
     }
 
-    if (!is.null(file)) doPlot(file = file) ## plot once to file
-    doPlot(file = NULL) ## plot normally to display
+    if (!is.null(file)) .doPlotHistogram(hst, axps, verticalBar, file, ...) ## plot once to file
+    .doPlotHistogram(hst, axps, verticalBar, NULL, ...) ## plot normally to display
   })
+}
+
+.doPlotHistogram <- function(hst, axps = NULL, verticalBar = NULL, file = NULL, ...) {
+  if (!is.null(file)) png(file, width = 200, height = 200, units = "px")
+  barplot(hst, ...)
+  if (!is.null(axps)) do.call(axis, axps)
+  if (!is.null(verticalBar))  abline(v = verticalBar, col = "red", lwd = 3)
+  if (!is.null(file)) dev.off()
 }
