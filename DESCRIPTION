@@ -94,6 +94,7 @@ Collate:
     'export.R'
     'footers.R'
     'generator.R'
+    'helpers.R'
     'histogram.R'
     'histogramForRaster.R'
     'leaflet.R'

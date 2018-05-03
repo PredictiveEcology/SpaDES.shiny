@@ -69,11 +69,11 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
 
     if (!is.null(file)) .doPlotHistogram(hst, axps, verticalBar, file, ...) ## plot once to file
     .doPlotHistogram(hst, axps, verticalBar, NULL, ...) ## plot normally to display
-  })
+  }, height = 300, width = 300)
 }
 
 .doPlotHistogram <- function(hst, axps = NULL, verticalBar = NULL, file = NULL, ...) {
-  if (!is.null(file)) png(file, width = 200, height = 200, units = "px")
+  if (!is.null(file)) png(file, width = 400, height = 400, units = "px")
   barplot(hst, ...)
   if (!is.null(axps)) do.call(axis, axps)
   if (!is.null(verticalBar))  abline(v = verticalBar, col = "red", lwd = 3)
