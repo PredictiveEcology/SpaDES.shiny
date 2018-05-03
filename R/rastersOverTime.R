@@ -98,25 +98,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   sampledRasterVals <- reactive({
     mb <- input$map_bounds
 
-    ras <- if (is.null(mb) ) {
-      rasts()$crsSR
-    } else {
-      mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
-                                          ymin = mb$south, ymax = mb$north)
-      sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
-      rasts1 <- rasts()
-      sp2 <- spTransform(sp1, crs(rasts1$crsSR))
-      #tryCatch(crop(rasts1$crsSR, sp2), error = function(x) NULL)
-      tryCatch(Cache(crop, rasts()$crsSR, sp2), error = function(x) NULL)
-    }
-
-    ret <- if (!is.null(ras)) {
-      # Cache(.sampleRasterToRAM, ras)
-      .sampleRasterToRAM(ras)
-    } else {
-      NULL
-    }
-    ret
+    rast1 <- rasts()$crsSR # faster if we get the object, pass into Cache like this
+    Cache(sampleAndCropRaster, mb, rast1)
   })
 
   xAxisBreaks <- reactive({
@@ -185,6 +168,27 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
                          plotParameters = list(height = 600), solidHeader = TRUE,
                          collapsible = TRUE, width = 4)
   })
+}
+
+sampleAndCropRaster <- function(mb, rast) {
+  ras <- if (is.null(mb) ) {
+    rast
+  } else {
+    mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
+                                        ymin = mb$south, ymax = mb$north)
+    sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
+    sp2 <- spTransform(sp1, crs(rast))
+    #tryCatch(crop(rctRasts1$crsSR, sp2), error = function(x) NULL)
+    tryCatch(crop(rast, sp2), error = function(x) NULL)
+  }
+  
+  ret <- if (!is.null(ras)) {
+    # Cache(.sampleRasterToRAM, ras)
+    .sampleRasterToRAM(ras)
+  } else {
+    NULL
+  }
+  
 }
 
 .sampleRasterToRAM <- function(ras) {
