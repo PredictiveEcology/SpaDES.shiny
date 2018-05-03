@@ -127,10 +127,10 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   tilesGroup <- "Time since fire" # session$ns("tiles")
 
-  addLayersControlParameters <-
-    list(overlayGroups = c(tilesGroup, "Selected Polygon"),
-         options = layersControlOptions(autoZIndex = TRUE,
-                                        collapsed = FALSE))
+  addLayersControlParameters <- list(
+    overlayGroups = c(tilesGroup, "Selected Polygon"),
+    options = layersControlOptions(autoZIndex = TRUE, collapsed = FALSE)
+  )
 
   click <- reactive(input$map_shape_click)
 
@@ -181,14 +181,14 @@ sampleAndCropRaster <- function(mb, rast) {
     #tryCatch(crop(rctRasts1$crsSR, sp2), error = function(x) NULL)
     tryCatch(crop(rast, sp2), error = function(x) NULL)
   }
-  
+
   ret <- if (!is.null(ras)) {
     # Cache(.sampleRasterToRAM, ras)
     .sampleRasterToRAM(ras)
   } else {
     NULL
   }
-  
+
 }
 
 .sampleRasterToRAM <- function(ras) {
