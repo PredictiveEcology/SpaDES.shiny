@@ -144,6 +144,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
         set(dtFull, , colName, NA)
     }
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
+    dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
 
     ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
     ##       because of this, the examples currently do not work because they have 2 levels
@@ -170,6 +171,8 @@ slicer <- function(input, output, session, datatable, uiSequence,
         } else {
           possibleValues[[3]]
         } %>% as.character()
+        dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
+
         lapply(level3names, function(z) {
           currentValues <- list(x, y, z) %>% setNames(categories)
           ### `get` doesn't work correctly in shiny modules
@@ -178,8 +181,10 @@ slicer <- function(input, output, session, datatable, uiSequence,
           #               get(categories[3]) == z]
           subdt <- dtList[[x]][[y]][[z]]
           if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-          serverFunction(datatable = subdt, id = getID(x, y, z), ...,
-                         .current = currentValues, .dtFull = dtFull)
+          serverFunction(datatable = subdt, id = getID(x, y, z),
+                         uiSequence = uiSequence, ...,
+                         .current = currentValues, .dtFull = dtFull,
+                         dtInner = dtInner)
         })
       })
     })
