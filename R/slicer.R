@@ -154,40 +154,8 @@ slicer <- function(input, output, session, datatable, uiSequence,
     }
 
     ## server elements
-    level1names <- if (is.null(possibleValues[[1]])) {
-      names(dtList)
-    } else {
-      possibleValues[[1]]
-    } %>% as.character()
-    lapply(level1names, function(x) {
-      level2names <- if (is.null(possibleValues[[2]])) {
-        names(dtList[[x]])
-      } else {
-        possibleValues[[2]]
-      } %>% as.character()
-      lapply(level2names, function(y) {
-        level3names <- if (is.null(possibleValues[[3]])) {
-          names(dtList[[x]][[y]])
-        } else {
-          possibleValues[[3]]
-        } %>% as.character()
-        dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
-
-        lapply(level3names, function(z) {
-          currentValues <- list(x, y, z) %>% setNames(categories)
-          ### `get` doesn't work correctly in shiny modules
-          # subdt <- dt[get(categories[1]) == x &
-          #               get(categories[2]) == y &
-          #               get(categories[3]) == z]
-          subdt <- dtList[[x]][[y]][[z]]
-          if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-          serverFunction(datatable = subdt, id = getID(x, y, z),
-                         uiSequence = uiSequence, ...,
-                         .current = currentValues, .dtFull = dtFull,
-                         dtInner = dtInner)
-        })
-      })
-    })
+    .slicer(dtFull, dtList, dtListShort, categories, possibleValues, getID,
+            serverFunction, uiSequence, ...)
 
     ## UI elements
     output$slicedUI <- renderUI({
@@ -230,6 +198,44 @@ slicer <- function(input, output, session, datatable, uiSequence,
         )
       })
       fluidRow(width = 12, do.call(tabBox, append(outerTabPanels, list(width = 12))))
+    })
+  })
+}
+
+.slicer <- function(dtFull, dtList, dtListShort, categories, possibleValues,
+                    getID, serverFunction, uiSequence, ...) {
+  level1names <- if (is.null(possibleValues[[1]])) {
+    names(dtList)
+  } else {
+    possibleValues[[1]]
+  } %>% as.character()
+  lapply(level1names, function(x) {
+    level2names <- if (is.null(possibleValues[[2]])) {
+      names(dtList[[x]])
+    } else {
+      possibleValues[[2]]
+    } %>% as.character()
+    lapply(level2names, function(y) {
+      level3names <- if (is.null(possibleValues[[3]])) {
+        names(dtList[[x]][[y]])
+      } else {
+        possibleValues[[3]]
+      } %>% as.character()
+      dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
+
+      lapply(level3names, function(z) {
+        currentValues <- list(x, y, z) %>% setNames(categories)
+        ### `get` doesn't work correctly in shiny modules
+        # subdt <- dt[get(categories[1]) == x &
+        #               get(categories[2]) == y &
+        #               get(categories[3]) == z]
+        subdt <- dtList[[x]][[y]][[z]]
+        if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
+        serverFunction(datatable = subdt, id = getID(x, y, z),
+                       uiSequence = uiSequence, ...,
+                       .current = currentValues, .dtFull = dtFull,
+                       .dtInner = dtInner)
+      })
     })
   })
 }
