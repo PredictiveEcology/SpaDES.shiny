@@ -2,7 +2,8 @@
 #'
 #' Modified from \url{https://groups.google.com/forum/#!topic/shiny-discuss/F-EwQGELS1c}.
 #'
-#' @param
+#' @param id       Module id.
+#' @param session  The current shiny server session.
 #'
 #' @author Andrew Sali and Joe Cheng
 #' @export
