@@ -139,8 +139,6 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
 
-
-  ## TODO: fix the raster control layer tile swiicher in top right corner of map
   callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, tilesGroup, ## don't change ns
              addTilesParameters = addTilesParameters,
              addLayersControlParameters = addLayersControlParameters)

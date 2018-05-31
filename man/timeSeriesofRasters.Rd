@@ -12,7 +12,7 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   colorPalette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
   sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user =
-  NULL), rctStudyArea = NULL)
+  NULL), rctStudyArea = NULL, omitPolys = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -60,9 +60,9 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \code{user} the current username (used for creating user-specific paths).
 The default for all options is \code{NULL}, which means do not use.}
 
-\item{studyArea}{A \code{SpatialPolygons*} object defining the whole study area region.}
+\item{rctStudyArea}{A reactive \code{SpatialPolygons*} object defining the whole study area region.}
 
-\item{subStudyArea}{Optional \code{SpatialPolygons*} object defining a smaller sub study area.}
+\item{omitPolys}{Character vector of polygon names to omit from the list.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.

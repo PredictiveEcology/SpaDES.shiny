@@ -35,8 +35,8 @@ timeSeriesofRastersUI <- function(id) {
 #'                            \code{path} a directory path to use for file uploads;
 #'                            \code{user} the current username (used for creating user-specific paths).
 #'                            The default for all options is \code{NULL}, which means do not use.
-#' @param studyArea           A \code{SpatialPolygons*} object defining the whole study area region.
-#' @param subStudyArea        Optional \code{SpatialPolygons*} object defining a smaller sub study area.
+#' @param rctStudyArea        A reactive \code{SpatialPolygons*} object defining the whole study area region.
+#' @param omitPolys           Character vector of polygon names to omit from the list.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -67,10 +67,14 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                rctStudyArea = NULL) {
+                                rctStudyArea = NULL, omitPolys = NULL) {
 
   rctPolySubList <- reactive({
-    lapply(rctPolygonList(), function(x) x$crsSR)
+    sublist <- lapply(rctPolygonList(), function(x) x$crsSR)
+    if (!is.null(omitPolys)) {
+      lapply(omitPolys, function(x) sublist[[x]] <<- NULL)
+    }
+    sublist
   })
 
   rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
