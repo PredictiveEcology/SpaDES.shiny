@@ -7,7 +7,7 @@
 \usage{
 authGoogleUI(id)
 
-authGoogle(input, output, session, appURL, authFile)
+authGoogle(input, output, session, appURL, authFile, icon = "google")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -21,6 +21,10 @@ authGoogle(input, output, session, appURL, authFile)
 \item{appURL}{URL to the hosted app.}
 
 \item{authFile}{Private url to a Google Drive file with access control.}
+
+\item{icon}{Default \code{"google"}. Name of icon to display beside the login button.
+Use of an icon with \pkg{shinydashboard} may produce undesired results.
+Disable use of the icon with \code{icon = NULL}.}
 }
 \value{
 A list of the user's Google profile details (name, email, etc.)

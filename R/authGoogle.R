@@ -53,6 +53,9 @@ authGoogleUI <- function(id) {
 #' @param session   shiny server session
 #' @param appURL    URL to the hosted app.
 #' @param authFile  Private url to a Google Drive file with access control.
+#' @param icon      Default \code{"google"}. Name of icon to display beside the login button.
+#'                  Use of an icon with \pkg{shinydashboard} may produce undesired results.
+#'                  Disable use of the icon with \code{icon = NULL}.
 #'
 #' @return          A list of the user's Google profile details (name, email, etc.)
 #'
@@ -64,7 +67,7 @@ authGoogleUI <- function(id) {
 #' @importFrom shinyjs onclick runjs useShinyjs
 #' @importFrom utils getFromNamespace
 #' @rdname authGoogle
-authGoogle <- function(input, output, session, appURL, authFile) {
+authGoogle <- function(input, output, session, appURL, authFile, icon = "google") {
   ns <- session$ns
   authReturnCode <- getFromNamespace("authReturnCode", "googleAuthR")
   gar_api_generator <- getFromNamespace("gar_api_generator", "googleAuthR")
@@ -139,7 +142,7 @@ authGoogle <- function(input, output, session, appURL, authFile) {
       actionLink(
         ns("sign_in"),
         a(login_text, href = auth_url, class = login_class, role = "button"),
-        icon = icon("google")
+        icon = icon(icon)
       )
     } else {
       shiny_url <- gar_shiny_getUrl(session)
