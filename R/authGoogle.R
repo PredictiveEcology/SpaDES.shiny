@@ -22,7 +22,7 @@
 #'
 #' @section Additional requirements:
 #' Your \file{global.R} file should set the following options:
-#' 1. `googleAuthR.scopes.selected`: `c("https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")`.
+#' 1. `googleAuthR.scopes.selected`: `"https://www.googleapis.com/auth/drive.readonly"`.
 #' 2. `googleAuthR.webapp.client_id`: your Google app oauth id.
 #' 3. `googleAuthR.webapp.client_secret`: your Google app oauth "secret".
 #'
@@ -62,7 +62,6 @@ authGoogleUI <- function(id) {
 #' @export
 #' @importFrom googleAuthR Authentication with_shiny
 #' @importFrom googledrive as_id
-#' @importFrom googleID get_user_info
 #' @importFrom shiny a icon isolate need reactive reactiveVal updateActionButton validate
 #' @importFrom shinyjs onclick runjs useShinyjs
 #' @importFrom utils getFromNamespace
@@ -164,4 +163,19 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
   }, label = "observer__login_status")
 
   return(userDetails)
+}
+
+#' Get a uner's Google User info
+#'
+#' Get the Google user's name and email address.
+#'
+#' Based on \code{\link[googleID]{get_user_info}}, but uses the Drive API instead of Google+
+#'
+#' @export
+#' @importFrom googleAuthR gar_api_generator
+getUserInfo <- function(id = "me") {
+  url <- "https://www.googleapis.com/drive/v3/about"
+  g <- googleAuthR::gar_api_generator(url, "GET", pars_args = list(field = "user(displayName,CemailAddress)"))
+  req <- g()
+  req$content
 }

@@ -51,8 +51,8 @@ This vignette explains how to do these.
 
   Complete the setup, and after a few seconds, you will be redirected to the Google API manager.
 
-3. Next, we need to enable the 'Google+' and 'Google Drive' APIs for this project.
-  Click on "Enable APIs and Services", search for 'Google+' and 'Google Drive', and enable.
+3. Next, we need to enable the 'Google Drive' APIs for this project.
+  Click on "Enable APIs and Services", search for 'Google Drive', and enable.
   
   ![](google-api-dashboard-enable1.png)
 
@@ -60,7 +60,7 @@ This vignette explains how to do these.
 
   ![](google-api-dashboard-credentials.png)
 
-5. Navigate to "OAuth consent screen" and fill in the “Product name shown to users” form with the name of your `shiny` application.
+5. Navigate to "OAuth consent screen" and fill in the "Product name shown to users" form with the name of your `shiny` application.
 
   ![](google-api-dashboard-credentials-oauth.png)
   
@@ -91,13 +91,8 @@ Ensure each these files contain all of the necessary components described below.
 ```{r global.R, eval=FALSE}
 library(googleAuthR)
 library(googledrive)
-library(googleID)
 
-options(googleAuthR.scopes.selected = c(
-  "https://www.googleapis.com/auth/drive.readonly",
-  "https://www.googleapis.com/auth/userinfo.email",
-  "https://www.googleapis.com/auth/userinfo.profile"
-))
+options(googleAuthR.scopes.selected = "https://www.googleapis.com/auth/drive.readonly")
 options(googleAuthR.webapp.client_id = "YOUR-GOOGLE-APP-ID-STRING")
 options(googleAuthR.webapp.client_secret = "YOUR-GOOGLE-APP-SECRET")
 
