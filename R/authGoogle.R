@@ -119,7 +119,7 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
   userDetails <- reactive({
     if (isTruthy(accessToken())) {
       session$userData$userLoggedIn(TRUE)
-      with_shiny(get_user_info, shiny_access_token = accessToken())
+      with_shiny(getUserInfo, shiny_access_token = accessToken())
     } else {
       NULL
     }
@@ -129,7 +129,7 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
     validate(
       need(userDetails(), "Please log in using your Google account.")
     )
-    paste("Logged in as:", userDetails()$displayName)
+    paste("Logged in as:", userDetails()$user$displayName)
   })
 
   ## the UI components
@@ -162,10 +162,10 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
     }
   }, label = "observer__login_status")
 
-  return(userDetails)
+  return(reactive(userDetails()$user))
 }
 
-#' Get a uner's Google User info
+#' Get a user's Google User info
 #'
 #' Get the Google user's name and email address.
 #'
@@ -173,9 +173,9 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
 #'
 #' @export
 #' @importFrom googleAuthR gar_api_generator
-getUserInfo <- function(id = "me") {
+getUserInfo <- function() {
   url <- "https://www.googleapis.com/drive/v3/about"
-  g <- googleAuthR::gar_api_generator(url, "GET", pars_args = list(field = "user(displayName,CemailAddress)"))
-  req <- g()
+  g <- googleAuthR::gar_api_generator(url, "GET", pars_args = list(fields = "user(displayName,emailAddress)"))
+  req <- try(g())
   req$content
 }
