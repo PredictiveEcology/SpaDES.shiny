@@ -7,7 +7,7 @@
 \usage{
 authGoogleUI(id)
 
-authGoogle(input, output, session, appURL, authFile, icon = "google")
+authGoogle(input, output, session, appURL, authUsers, icon = "google")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -20,7 +20,7 @@ authGoogle(input, output, session, appURL, authFile, icon = "google")
 
 \item{appURL}{URL to the hosted app.}
 
-\item{authFile}{Private url to a Google Drive file with access control.}
+\item{authUsers}{A character vector of authorized user email addresses.}
 
 \item{icon}{Default \code{"google"}. Name of icon to display beside the login button.
 Use of an icon with \pkg{shinydashboard} may produce undesired results.
@@ -38,15 +38,8 @@ Allows app content to be made conditionally available to 3 classes of user:
 2. Logged in users who are not autheticated against a whitelist;
 3. Logged in and authenticated users.
 
-This mechanism relies on the file permissions set on a file in Google Drive.
-Simply create a blank text file (e.g., name_of_your_app.txt) in Google Drive
-and edit the access control settings to allow only authorized users to download/view
-this file.
-You will need the private URL (link) to this file.
-Assign this URL to a variable in your \file{global.R} and pass that as the
-\code{authFile} argument when calling the \code{authGoogle} module.
-
-This allows access control to be managed via Google rather than locally on the shiny server.
+This allows authentication to be managed via Google rather than locally on the shiny server.
+Only the whitelist of approved users is kept locally.
 
 Login status is stored in \code{session$userData$userLoggedIn()}, a reactive value.
 Authentication status is stored in \code{session$userData$userAuthorized()}, a reactive value.
@@ -57,17 +50,15 @@ Based on \code{googleAuthR::googleAuth} and \code{googleAuthR::googleAuthUI}.
 \section{Additional requirements}{
 
 Your \file{global.R} file should set the following options:
-1. `googleAuthR.scopes.selected`: `"https://www.googleapis.com/auth/drive.readonly"`.
+1. `googleAuthR.scopes.selected`: `c("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")`.
 2. `googleAuthR.webapp.client_id`: your Google app oauth id.
 3. `googleAuthR.webapp.client_secret`: your Google app oauth "secret".
 
-Be sure to also set \code{appURL} and \code{authFile} in \file{global.R}.
+Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
 
 See the authentication vignette (\code{vignette("authentication", "SpaDES.shiny")}).
 }
 
 \author{
 Alex Chubaty
-
-Mark Edmondson
 }

@@ -7,26 +7,19 @@
 #' 2. Logged in users who are not autheticated against a whitelist;
 #' 3. Logged in and authenticated users.
 #'
-#' This mechanism relies on the file permissions set on a file in Google Drive.
-#' Simply create a blank text file (e.g., name_of_your_app.txt) in Google Drive
-#' and edit the access control settings to allow only authorized users to download/view
-#' this file.
-#' You will need the private URL (link) to this file.
-#' Assign this URL to a variable in your \file{global.R} and pass that as the
-#' \code{authFile} argument when calling the \code{authGoogle} module.
-#'
-#' This allows access control to be managed via Google rather than locally on the shiny server.
+#' This allows authentication to be managed via Google rather than locally on the shiny server.
+#' Only the whitelist of approved users is kept locally.
 #'
 #' Login status is stored in \code{session$userData$userLoggedIn()}, a reactive value.
 #' Authentication status is stored in \code{session$userData$userAuthorized()}, a reactive value.
 #'
 #' @section Additional requirements:
 #' Your \file{global.R} file should set the following options:
-#' 1. `googleAuthR.scopes.selected`: `"https://www.googleapis.com/auth/drive.readonly"`.
+#' 1. `googleAuthR.scopes.selected`: `c("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")`.
 #' 2. `googleAuthR.webapp.client_id`: your Google app oauth id.
 #' 3. `googleAuthR.webapp.client_secret`: your Google app oauth "secret".
 #'
-#' Be sure to also set \code{appURL} and \code{authFile} in \file{global.R}.
+#' Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
 #'
 #' See the authentication vignette (\code{vignette("authentication", "SpaDES.shiny")}).
 #'
@@ -35,7 +28,6 @@
 #' @param id  An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
-#' @author Mark Edmondson
 #' @export
 #' @importFrom shiny actionButton
 #' @rdname authGoogle
@@ -44,7 +36,7 @@ authGoogleUI <- function(id) {
 
   tagList(
     p(textOutput(ns("username"))),
-    uiOutput(ns("button"))
+    googleAuthUI(ns("loginButton"))
   )
 }
 
@@ -52,7 +44,7 @@ authGoogleUI <- function(id) {
 #' @param output    shiny server output
 #' @param session   shiny server session
 #' @param appURL    URL to the hosted app.
-#' @param authFile  Private url to a Google Drive file with access control.
+#' @param authUsers A character vector of authorized user email addresses.
 #' @param icon      Default \code{"google"}. Name of icon to display beside the login button.
 #'                  Use of an icon with \pkg{shinydashboard} may produce undesired results.
 #'                  Disable use of the icon with \code{icon = NULL}.
@@ -62,64 +54,25 @@ authGoogleUI <- function(id) {
 #' @export
 #' @importFrom googleAuthR Authentication with_shiny
 #' @importFrom googledrive as_id
+#' @importFrom googleID get_user_info whitelist
 #' @importFrom shiny a icon isolate need reactive reactiveVal updateActionButton validate
 #' @importFrom shinyjs onclick runjs useShinyjs
 #' @importFrom utils getFromNamespace
 #' @rdname authGoogle
-authGoogle <- function(input, output, session, appURL, authFile, icon = "google") {
+authGoogle <- function(input, output, session, appURL, authUsers, icon = "google") {
   ns <- session$ns
-  authReturnCode <- getFromNamespace("authReturnCode", "googleAuthR")
-  gar_api_generator <- getFromNamespace("gar_api_generator", "googleAuthR")
-  gar_shiny_getAuthUrl <- getFromNamespace("gar_shiny_getAuthUrl", "googleAuthR")
-  gar_shiny_getToken <- getFromNamespace("gar_shiny_getToken", "googleAuthR")
-  gar_shiny_getUrl <- getFromNamespace("gar_shiny_getUrl", "googleAuthR")
-
-  auth_drive <- function(file) {
-    authFileID <- as.character(googledrive::as_id(file))
-    api_url <- "https://www.googleapis.com/drive/v3/files/"
-    g <- gar_api_generator(paste0(api_url, authFileID), "GET")
-    req <- try(g())
-
-    if (!is(req, "try-error")) {
-      if (req$status_code == "200") {
-        return(TRUE) # status 200 means authenticated correctly
-      } else {
-        return(FALSE)
-      }
-    } else {
-      return(FALSE)
-    }
-  }
-
-  login_text <- "Login via Google"   ##
-  logout_text <- "Logout"            ##
-  login_class <- "btn btn-primary"   ##
-  logout_class <- "btn btn-default"  ##
-  access_type <- "online"            ## match.arg(access_type)
-  approval_prompt <- "auto"          ## match.arg(approval_prompt)
 
   session$userData$userAuthorized <- reactiveVal(FALSE)
   session$userData$userLoggedIn <- reactiveVal(FALSE)
-  tmpf <- normalizePath(tempfile(fileext = ".txt"), winslash = "/", mustWork = FALSE)
 
   ## Google authentication token
-  accessToken <- reactive({
-    if (!is.null(authReturnCode(session))) {
-      app_url <- gar_shiny_getUrl(session)
-      access_token <- gar_shiny_getToken(authReturnCode(session), app_url)
-      Authentication$set("public", "app_url", app_url, overwrite = TRUE)
-      Authentication$set("public", "shiny", TRUE, overwrite = TRUE)
-      access_token
-    } else {
-      NULL
-    }
-  })
+  accessToken <- callModule(googleAuth, "loginButton", login_text = "Login via Google")
 
   ## Google user information
   userDetails <- reactive({
     if (isTruthy(accessToken())) {
       session$userData$userLoggedIn(TRUE)
-      with_shiny(getUserInfo, shiny_access_token = accessToken())
+      with_shiny(googleID::get_user_info, shiny_access_token = accessToken())
     } else {
       NULL
     }
@@ -129,29 +82,12 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
     validate(
       need(userDetails(), "Please log in using your Google account.")
     )
-    paste("Logged in as:", userDetails()$user$displayName)
-  })
-
-  ## the UI components
-  output$button <- renderUI({
-    if (is.null(isolate(accessToken()))) {
-      auth_url <- gar_shiny_getAuthUrl(gar_shiny_getUrl(session),
-                                       access_type = access_type,
-                                       approval_prompt = approval_prompt)
-      actionLink(
-        ns("sign_in"),
-        a(login_text, href = auth_url, class = login_class, role = "button"),
-        icon = icon(icon)
-      )
-    } else {
-      shiny_url <- gar_shiny_getUrl(session)
-      a(logout_text, id = ns("sign_out"), href = shiny_url, class = logout_class, role = "button")
-    }
+    paste("Logged in as:", userDetails()$displayName)
   })
 
   observe({
     if (isTRUE(session$userData$userLoggedIn())) {
-      auth_status <- with_shiny(auth_drive, shiny_access_token = accessToken(), file = authFile)
+      auth_status <- googleID::whitelist(userDetails(), authUsers)
       ifelse(auth_status, session$userData$userAuthorized(TRUE), session$userData$userAuthorized(FALSE))
 
       ## Workaround to avoid shinyaps.io URL problems
@@ -162,20 +98,5 @@ authGoogle <- function(input, output, session, appURL, authFile, icon = "google"
     }
   }, label = "observer__login_status")
 
-  return(reactive(userDetails()$user))
-}
-
-#' Get a user's Google User info
-#'
-#' Get the Google user's name and email address.
-#'
-#' Based on \code{\link[googleID]{get_user_info}}, but uses the Drive API instead of Google+
-#'
-#' @export
-#' @importFrom googleAuthR gar_api_generator
-getUserInfo <- function() {
-  url <- "https://www.googleapis.com/drive/v3/about"
-  g <- googleAuthR::gar_api_generator(url, "GET", pars_args = list(fields = "user(displayName,emailAddress)"))
-  req <- try(g())
-  req$content
+  return(userDetails)
 }
