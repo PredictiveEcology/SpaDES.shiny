@@ -16,6 +16,8 @@ cache:
 
 version: 1.0.{build}-{branch}
 
+platform: x64
+
 environment:
   global:
     R_ARCH: x64
