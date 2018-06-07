@@ -24,7 +24,6 @@ Depends:
     R (>= 3.3.0)
 Imports:
     assertthat,
-    archivist,
     data.table,
     DiagrammeR (>= 0.8.2),
     dplyr,
@@ -61,7 +60,6 @@ Imports:
     SpaDES.core (>= 0.1.0),
     SpaDES.tools,
     stats,
-    stringi (>= 1.1.3),
     stringr,
     tools,
     utils,

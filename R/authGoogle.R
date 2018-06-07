@@ -29,6 +29,7 @@
 #'
 #' @author Alex Chubaty
 #' @export
+#' @importFrom googleAuthR googleAuthUI
 #' @importFrom shiny actionButton
 #' @rdname authGoogle
 authGoogleUI <- function(id) {
@@ -52,7 +53,7 @@ authGoogleUI <- function(id) {
 #' @return          A list of the user's Google profile details (name, email, etc.)
 #'
 #' @export
-#' @importFrom googleAuthR Authentication with_shiny
+#' @importFrom googleAuthR Authentication googleAuth with_shiny
 #' @importFrom googledrive as_id
 #' @importFrom googleID get_user_info whitelist
 #' @importFrom shiny a icon isolate need reactive reactiveVal updateActionButton validate

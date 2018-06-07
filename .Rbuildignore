@@ -10,6 +10,7 @@
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^docs$
+^\.httr-oauth$
 ^LICENSE$
 ^README\.md$
 ^README-DEVELOPMENT\.md$
