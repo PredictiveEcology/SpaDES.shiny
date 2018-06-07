@@ -21,6 +21,7 @@ platform: x64
 environment:
   global:
     R_ARCH: x64
+    R_CHECK_ARGS: "--no-multiarch"
     USE_RTOOLS: true
     WARNINGS_ARE_ERRORS: 1
 
