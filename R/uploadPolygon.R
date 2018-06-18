@@ -26,11 +26,10 @@ uploadPolygonUI <- function(id) {
 #' @export
 #' @include polygonList.R
 #' @importFrom raster extension shapefile
-#' @importFrom reproducible checkPath
+#' @importFrom reproducible checkPath postProcess
 #' @importFrom rgeos gBuffer
 #' @importFrom shiny fileInput modalDialog p renderUI showModal tagList textInput
 #' @importFrom SpaDES.core updateList
-#' @importFrom SpaDES.tools postProcess
 #' @importFrom tools file_path_sans_ext
 #' @importFrom utils unzip
 #' @rdname uploadPolygon

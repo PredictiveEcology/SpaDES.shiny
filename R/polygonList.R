@@ -19,7 +19,7 @@
 #'
 #' @export
 #' @importFrom sp spTransform
-#' @importFrom SpaDES.tools maskInputs
+#' @importFrom reproducible maskInputs
 #' @importFrom raster crs
 #' @rdname newPolygonList
 polygonList <- function(studyArea, ...) {
