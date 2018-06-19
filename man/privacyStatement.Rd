@@ -18,7 +18,8 @@ privacyStatement(input, output, session, file = "PRIVACY.md", status = NULL)
 
 \item{session}{shiny server session object}
 
-\item{file}{Path to a markdown file containing the Privacy Statement (default: \code{"PRIVACY.md"})}
+\item{file}{Path to a markdown file containing the Privacy Statement
+(default: \code{"PRIVACY.md"}).}
 
 \item{status}{The status (color) of the box in which the \code{file} is rendered.
 See \code{\link[shinydashboard]{box}}.}

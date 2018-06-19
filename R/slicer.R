@@ -139,15 +139,16 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
     dtFull <- datatable()
     hasColNames <- categories %in% colnames(dtFull)
-    if (!all(hasColNames )) {
+    if (!all(hasColNames)) {
       for (colName in categories[!hasColNames])
         set(dtFull, , colName, NA)
     }
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
     dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
 
-    ## TODO: this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
-    ##       because of this, the examples currently do not work because they have 2 levels
+    ## TODO:
+    ## this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
+    ## because of this, the examples currently do not work because they have 2 levels
 
     ## server elements
     .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
@@ -210,19 +211,22 @@ slicer <- function(input, output, session, datatable, uiSequence,
     names(dtList)
   } else {
     possibleValues[[1]]
-  } %>% as.character()
+  } %>%
+    as.character()
   lapply(level1names, function(x) {
     level2names <- if (is.null(possibleValues[[2]])) {
       names(dtList[[x]])
     } else {
       possibleValues[[2]]
-    } %>% as.character()
+    } %>%
+      as.character()
     lapply(level2names, function(y) {
       level3names <- if (is.null(possibleValues[[3]])) {
         names(dtList[[x]][[y]])
       } else {
         possibleValues[[3]]
-      } %>% as.character()
+      } %>%
+        as.character()
       dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
 
       lapply(level3names, function(z) {

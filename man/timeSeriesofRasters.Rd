@@ -60,7 +60,7 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \code{user} the current username (used for creating user-specific paths).
 The default for all options is \code{NULL}, which means do not use.}
 
-\item{rctStudyArea}{A reactive \code{SpatialPolygons*} object defining the whole study area region.}
+\item{rctStudyArea}{A reactive \code{SpatialPolygons*} object for the whole study area region.}
 
 \item{omitPolys}{Character vector of polygon names to omit from the list.}
 }

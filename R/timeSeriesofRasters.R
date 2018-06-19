@@ -30,13 +30,13 @@ timeSeriesofRastersUI <- function(id) {
 #' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
-#' @param uploadOpts          A list of options for use with file uploads:
-#'                            \code{auth} logical indicating whether user is authorized to upload;
-#'                            \code{path} a directory path to use for file uploads;
-#'                            \code{user} the current username (used for creating user-specific paths).
-#'                            The default for all options is \code{NULL}, which means do not use.
-#' @param rctStudyArea        A reactive \code{SpatialPolygons*} object defining the whole study area region.
-#' @param omitPolys           Character vector of polygon names to omit from the list.
+#' @param uploadOpts    A list of options for use with file uploads:
+#'                      \code{auth} logical indicating whether user is authorized to upload;
+#'                      \code{path} a directory path to use for file uploads;
+#'                      \code{user} the current username (used for creating user-specific paths).
+#'                      The default for all options is \code{NULL}, which means do not use.
+#' @param rctStudyArea  A reactive \code{SpatialPolygons*} object for the whole study area region.
+#' @param omitPolys     Character vector of polygon names to omit from the list.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -85,7 +85,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
 
     polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
                                             list(studyArea = rctStudyArea())))
-    class(polyList) <- "list" ## TODO: remove this temp workaround; need to properly inherit list class
+    class(polyList) <- "list" ## TODO: remove this temp workaround; properly inherit list class
 
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
     polyName <- rctChosenPolyOut()$selected
@@ -109,7 +109,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addLegend(position = "bottomright", pal = colorPalette, values = 1:maxAge, title = mapLegend) %>%
+      addLegend(position = "bottomright", pal = colorPalette, values = 1:maxAge,
+                title = mapLegend) %>%
       addMeasure(
         position = "bottomleft",
         primaryLengthUnit = "kilometers",
@@ -130,14 +131,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
       addPolygons(data = shpStudyArea, color = "blue",
                   group = "Selected Polygon",
-                  fillOpacity = 0.0, weight = 3#, ## be consistent with polygonUpdater module
-                  #fillColor = ~colorFactor("Spectral", fireReturnInterval)(fireReturnInterval)
-                  ) %>% #,
-      #addLayersControl(#options = layersControlOptions(autoZIndex = TRUE,
-      #                 #                               collapsed = FALSE),
-      #                 baseGroups = c("Open Cycle Map", "ESRI World Imagery")#, #"Toner Lite"),
-      #                 overlayGroups = c("selectedPolygon", "tilesS")
-      #                 ) %>%
+                  ## use weight = 3 to be consistent with polygonUpdater module
+                  fillOpacity = 0.0, weight = 3) %>%
       fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
 
     callModule(rastersOverTime, "rastersOverTime",

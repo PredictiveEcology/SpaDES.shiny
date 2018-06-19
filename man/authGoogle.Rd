@@ -50,9 +50,13 @@ Based on \code{googleAuthR::googleAuth} and \code{googleAuthR::googleAuthUI}.
 \section{Additional requirements}{
 
 Your \file{global.R} file should set the following options:
-1. `googleAuthR.scopes.selected`: `c("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")`.
-2. `googleAuthR.webapp.client_id`: your Google app oauth id.
-3. `googleAuthR.webapp.client_secret`: your Google app oauth "secret".
+\enumerate{
+  \item \code{googleAuthR.scopes.selected}:
+  \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/userinfo.profile")}
+  \item \code{googleAuthR.webapp.client_id}: your Google app oauth id
+  \item \code{googleAuthR.webapp.client_secret}: your Google app oauth "secret"
+}
 
 Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
 

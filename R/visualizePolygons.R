@@ -40,7 +40,7 @@ visualizePolygons <- function(input, output, session, poly, proxy = NULL) {
     })
 
     proxy <- leafletProxy("map")
-    callModule(polygonsUpdater, "updater", proxy, poly, group = session$ns("group")) ## don't change ns
+    callModule(polygonsUpdater, "updater", proxy, poly, group = session$ns("group")) ## don't change ns #nolint
   } else {
     callModule(polygonsUpdater, "updater", proxy, poly)
   }

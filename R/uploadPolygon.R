@@ -107,9 +107,10 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
           }
         }
 
-        ## TODO: capture warnings/messages from postProcess and tell user if something went wrong (#29)
-        ## currently, if e.g. userPoly doesn't intersect with studyArea, user gets no feedback
-        ## but the userPoly isn't added to the list of selectable polygons
+        ## TODO: capture warnings/messages from postProcess and tell user if
+        ## something went wrong (#29). Currently, if e.g. userPoly doesn't
+        ## intersect with studyArea, user gets no feedback but the userPoly isn't
+        ## added to the list of selectable polygons.
         SpaDES.tools::postProcess(userPoly, postProcessedFilename = polyFilename,
                                   studyArea = studyArea, useSAcrs = TRUE)
       }
@@ -142,7 +143,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
       userShpFiles <- list.files(userDir, pattern = ".shp", full.names = TRUE)
       userPolyList <- lapply(userShpFiles, raster::shapefile)
       userPolyNames <- vapply(userShpFiles, function(x) {
-        basename(x) %>% tools::file_path_sans_ext() %>% paste0("uploaded_", .)
+        basename(x) %>% tools::file_path_sans_ext() %>% paste0("uploaded_", .) #nolint
       }, character(1))
       names(userPolyList) <- userPolyNames
 

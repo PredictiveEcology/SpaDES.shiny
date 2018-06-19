@@ -68,7 +68,11 @@ polygonChooserUI <- function(id) {
 #'       tmpf <- tempfile(fileext = ".shp")
 #'       raster::shapefile(dummyPoly4, filename = tmpf)
 #'
-#'       polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
+#'       polygonList <- reactive(list(
+#'         caribou = dummyPoly1,
+#'         ecozones = dummyPoly2,
+#'         fmu = dummyPoly3
+#'       ))
 #'       out <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones",
 #'                         uploadOpts = list(
 #'                           auth = TRUE,
@@ -111,7 +115,8 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
         auth <- uploadOpts$auth
         userDir <- file.path(uploadOpts$path, uploadOpts$user)
 
-        rctUploadedPolygonList <- callModule(uploadPolygon, "uploadPolygon", auth, userDir, studyArea)
+        rctUploadedPolygonList <- callModule(uploadPolygon, "uploadPolygon", auth,
+                                             userDir, studyArea)
 
         append(rctPolygonList(), rctUploadedPolygonList())
       } else {
@@ -126,7 +131,8 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
     ns <- session$ns
 
     # TODO: display in alphabetical order?
-    #selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()), selected = selectedPoly)
+    # selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()),
+    #             selected = selectedPoly)
     shinyWidgets::pickerInput(
       inputId = ns("polyLayer"),
       label = "Polygon layer:",

@@ -18,7 +18,8 @@ termsOfService(input, output, session, file = "TERMS.md", status = NULL)
 
 \item{session}{shiny server session object}
 
-\item{file}{Path to a markdown file containing the Terms of Service (default: \code{"TERMS.md"})}
+\item{file}{Path to a markdown file containing the Terms of Service
+(default: \code{"TERMS.md"})}
 
 \item{status}{The status (color) of the box in which the \code{file} is rendered.
 See \code{\link[shinydashboard]{box}}.}

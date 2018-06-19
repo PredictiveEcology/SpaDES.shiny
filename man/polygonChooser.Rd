@@ -68,7 +68,11 @@ if require(SpaDES.tools) {
       tmpf <- tempfile(fileext = ".shp")
       raster::shapefile(dummyPoly4, filename = tmpf)
 
-      polygonList <- reactive(list(caribou = dummyPoly1, ecozones = dummyPoly2, fmu = dummyPoly3))
+      polygonList <- reactive(list(
+        caribou = dummyPoly1,
+        ecozones = dummyPoly2,
+        fmu = dummyPoly3
+      ))
       out <- callModule(polygonChooser, "polyPicker", polygonList, "ecozones",
                         uploadOpts = list(
                           auth = TRUE,

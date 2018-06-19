@@ -18,15 +18,14 @@
 #' @importFrom shiny getDefaultReactiveDomain NS observe outputOptions
 unsuspendModule <- function(id, session = getDefaultReactiveDomain()) {
   observe({
-    output_names <- names(session$clientData) %>%
-      {.[grepl(NS(session$ns(id))(""), ., fixed = TRUE)]} %>%
-      {gsub("^output[_]", "", ., fixed = FALSE)} %>%
-      {gsub("[_]hidden$", "", ., fixed = FALSE)}
+    outputNames <- names(session$clientData) %>%
+      {.[grepl(NS(session$ns(id))(""), ., fixed = TRUE)]} %>%  #nolint
+      {gsub("^output[_]", "", ., fixed = FALSE)} %>%           #nolint
+      {gsub("[_]hidden$", "", ., fixed = FALSE)}               #nolint
 
-    for (output_id in output_names) {
-      #print(output_id)
+    for (outputId in outputNames) {
       try({
-        outputOptions(session$output, output_id, suspendWhenHidden = FALSE)
+        outputOptions(session$output, outputId, suspendWhenHidden = FALSE)
       }, silent = TRUE)
     }
   })

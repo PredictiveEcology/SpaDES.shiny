@@ -81,7 +81,7 @@ histogramForRaster <- function(input, output, session, rctRasterVals, rctHistogr
 
     barHeights <- histogram$counts * scale
     dots <- list(...)
-    dots$col <- if (!is.null(dots$col)) { #
+    dots$col <- if (!is.null(dots$col)) {
       dots$col[histogram$mids]
     } else {
       NULL
@@ -92,7 +92,6 @@ histogramForRaster <- function(input, output, session, rctRasterVals, rctHistogr
     if (!is.null(addAxisParams)) {
       axps <- if (is.reactive(addAxisParams)) addAxisParams() else addAxisParams
       do.call(axis, axps)
-
     }
   })
 }

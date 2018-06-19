@@ -248,9 +248,9 @@ renderCallModuleDirectives <- function(modules) {
 #' @importFrom purrr pmap
 renderSimInitDirective <- function(modules) {
   if ("spades_simInit" %in% modules$name) {
-    ID <- which(modules$name == "spades_simInit")
+    id <- which(modules$name == "spades_simInit")
     directive <- purrr::pmap(
-      list(modules$name[ID], modules$id[ID], modules$parameters[ID]),
+      list(modules$name[id], modules$id[id], modules$parameters[id]),
       renderCallModuleDirective
     )
     directive <- paste("mySim <-", directive)
@@ -277,9 +277,9 @@ renderSimInitDirective <- function(modules) {
 #' @importFrom purrr pmap
 renderExperimentDirectives <- function(modules) {
   if ("spades_expt" %in% modules$name) {
-    ID <- which(modules$name == "spades_expt")
+    id <- which(modules$name == "spades_expt")
     directive <- purrr::pmap(
-      list(modules$name[ID], modules$id[ID], modules$parameters[ID]),
+      list(modules$name[id], modules$id[id], modules$parameters[id]),
       renderCallModuleDirective
     )
     directive <- paste("mySimOut <-", directive)

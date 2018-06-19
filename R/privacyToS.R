@@ -17,7 +17,8 @@ privacyStatementUI <- function(id) {
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
-#' @param file     Path to a markdown file containing the Privacy Statement (default: \code{"PRIVACY.md"})
+#' @param file     Path to a markdown file containing the Privacy Statement
+#'                 (default: \code{"PRIVACY.md"}).
 #' @param status   The status (color) of the box in which the \code{file} is rendered.
 #'                 See \code{\link[shinydashboard]{box}}.
 #'
@@ -64,7 +65,8 @@ termsOfServiceUI <- function(id) {
 #' @param input    shiny server input object
 #' @param output   shiny server output object
 #' @param session  shiny server session object
-#' @param file     Path to a markdown file containing the Terms of Service (default: \code{"TERMS.md"})
+#' @param file     Path to a markdown file containing the Terms of Service
+#'                 (default: \code{"TERMS.md"})
 #' @param status   The status (color) of the box in which the \code{file} is rendered.
 #'                 See \code{\link[shinydashboard]{box}}.
 #'

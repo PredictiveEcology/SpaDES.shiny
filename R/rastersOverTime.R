@@ -139,7 +139,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
     grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
   })
 
-  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile, tilesGroup, ## don't change ns
+  callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile,
+             tilesGroup, ## don't change ns
              addTilesParameters = addTilesParameters,
              addLayersControlParameters = addLayersControlParameters)
 
@@ -169,7 +170,7 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 }
 
 sampleAndCropRaster <- function(mb, rast) {
-  ras <- if (is.null(mb) ) {
+  ras <- if (is.null(mb)) {
     rast
   } else {
     mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
@@ -186,7 +187,6 @@ sampleAndCropRaster <- function(mb, rast) {
   } else {
     NULL
   }
-
 }
 
 .sampleRasterToRAM <- function(ras) {

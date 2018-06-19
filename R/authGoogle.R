@@ -15,9 +15,13 @@
 #'
 #' @section Additional requirements:
 #' Your \file{global.R} file should set the following options:
-#' 1. `googleAuthR.scopes.selected`: `c("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")`.
-#' 2. `googleAuthR.webapp.client_id`: your Google app oauth id.
-#' 3. `googleAuthR.webapp.client_secret`: your Google app oauth "secret".
+#' \enumerate{
+#'   \item \code{googleAuthR.scopes.selected}:
+#'   \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
+#'   "https://www.googleapis.com/auth/userinfo.profile")}
+#'   \item \code{googleAuthR.webapp.client_id}: your Google app oauth id
+#'   \item \code{googleAuthR.webapp.client_secret}: your Google app oauth "secret"
+#' }
 #'
 #' Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
 #'
@@ -88,8 +92,9 @@ authGoogle <- function(input, output, session, appURL, authUsers, icon = "google
 
   observe({
     if (isTRUE(session$userData$userLoggedIn())) {
-      auth_status <- googleID::whitelist(userDetails(), authUsers)
-      ifelse(auth_status, session$userData$userAuthorized(TRUE), session$userData$userAuthorized(FALSE))
+      authStatus <- googleID::whitelist(userDetails(), authUsers)
+      ifelse(authStatus, session$userData$userAuthorized(TRUE),
+             session$userData$userAuthorized(FALSE))
 
       ## Workaround to avoid shinyaps.io URL problems
       shinyjs::onclick("sign_out",

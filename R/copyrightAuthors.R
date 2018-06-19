@@ -34,7 +34,8 @@ copyrightAuthorsUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @rdname copyrightAuthors
 copyrightAuthors <- function(input, output, session, appName, authorInfo,
-                             copyrightInfo, fundingInfo, licenseFile = "LICENSE", status = "primary") {
+                             copyrightInfo, fundingInfo, licenseFile = "LICENSE",
+                             status = "primary") {
   output$authors <- renderUI({
     if (is.null(appName)) appName <- ""
     if (is.na(appName)) appName <- ""
