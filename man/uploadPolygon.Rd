@@ -24,7 +24,7 @@ uploadPolygon(input, output, session, authStatus, userDir, studyArea)
 
 \item{studyArea}{A \code{Spatial} object used as a template for postprocessing
 the uploaded polygon, which is cropped, reprojected, etc.
-to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.}
+to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.}
 }
 \value{
 Reactive object containing the uploaded polygon.

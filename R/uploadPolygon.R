@@ -19,7 +19,7 @@ uploadPolygonUI <- function(id) {
 #' @param userDir        User-specific directory in which to store uploaded files.
 #' @param studyArea      A \code{Spatial} object used as a template for postprocessing
 #'                       the uploaded polygon, which is cropped, reprojected, etc.
-#'                       to match \code{studyArea}. See \code{\link[SpaDES.tools]{postProcess}}.
+#'                       to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.
 #'
 #' @return               Reactive object containing the uploaded polygon.
 #'
@@ -111,7 +111,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         ## something went wrong (#29). Currently, if e.g. userPoly doesn't
         ## intersect with studyArea, user gets no feedback but the userPoly isn't
         ## added to the list of selectable polygons.
-        SpaDES.tools::postProcess(userPoly, postProcessedFilename = polyFilename,
+        reproducible::postProcess(userPoly, postProcessedFilename = polyFilename,
                                   studyArea = studyArea, useSAcrs = TRUE)
       }
 
