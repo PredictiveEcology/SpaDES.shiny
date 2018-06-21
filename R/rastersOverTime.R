@@ -175,17 +175,20 @@ sampleAndCropRaster <- function(mb, rast) {
   } else {
     mapBoundsAsExtent <- raster::extent(x = mb$west, xmax = mb$east,
                                         ymin = mb$south, ymax = mb$north)
-    sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
-    sp2 <- spTransform(sp1, crs(rast))
-    #tryCatch(crop(rctRasts1$crsSR, sp2), error = function(x) NULL)
-    tryCatch(crop(rast, sp2), error = function(x) NULL)
+    #sp1 <- SpatialPoints(t(bbox(mapBoundsAsExtent)), proj4string = CRS(proj4stringLFLT))
+    #sp2 <- spTransform(sp1, crs(rast))
+    #tryCatch(crop(rast, sp2), error = function(x) NULL) ## TODO: why error? why NULL?
+    sp1a <- as(mapBoundsAsExtent, "SpatialPoints")
+    crs(sp1a) <- crs(proj4stringLFLT)
+    sp2a <- spTransform(sp1a, crs(rast))
+    tryCatch(crop(rast, sp2a), error = function(x) NULL)
   }
 
-  ret <- if (!is.null(ras)) {
+  ret <- if (is.null(ras)) {
+    NULL
+  } else {
     # Cache(.sampleRasterToRAM, ras)
     .sampleRasterToRAM(ras)
-  } else {
-    NULL
   }
 }
 
@@ -195,6 +198,6 @@ sampleAndCropRaster <- function(mb, rast) {
   } else {
     sampledRasterVals <- ras[]
   }
-  sampledRasterVals[sampledRasterVals == 0] <- NA
-  sampledRasterVals
+  sampledRasterVals[sampledRasterVals == 0] <- NA_real_
+  as.numeric(sampledRasterVals)
 }
