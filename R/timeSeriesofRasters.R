@@ -105,7 +105,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
     }
 
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
-      addProviderTiles("Thunderforest.OpenCycleMap", group = "Open Cycle Map",
+      addProviderTiles("Stamen.Terrain", group = "Terrain Map",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
