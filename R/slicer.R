@@ -133,7 +133,6 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
   observeEvent(datatable(), {
     #assertthat::assert_that(is.data.table(datatable()))
-
     categories <- uiSequence$category
     possibleValues <- uiSequence$possibleValues
 
@@ -161,19 +160,19 @@ slicer <- function(input, output, session, datatable, uiSequence,
         names(dtList)
       } else {
         possibleValues[[1]]
-      }
+      } %>% unique()
       outerTabPanels <- lapply(level1names, function(x) {
         level2names <- if (is.null(possibleValues[[2]])) {
           names(dtList[[x]])
         } else {
           possibleValues[[2]]
-        }
+        } %>% unique()
         innerTabPanels <- lapply(level2names, function(y) {
           level3names <- if (is.null(possibleValues[[3]])) {
             names(dtList[[x]][[y]])
           } else {
             possibleValues[[3]]
-          }
+          } %>% unique()
 
           tabPanel(
             title = y,
