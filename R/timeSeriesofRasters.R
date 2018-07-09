@@ -53,6 +53,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
 #' @importFrom raster rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
+#' @importFrom rmapshaper check_sys_mapshaper ms_simplify
 #' @importFrom shiny animationOptions br callModule h4 isolate observe reactive renderPlot tagList
 #' @importFrom shinydashboard box
 #' @importFrom sp SpatialPoints spTransform
@@ -104,6 +105,11 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       polyList[[defaultPolyName]][["crsLFLT"]]
     }
 
+    #shpStudyAreaThinned <- Cache(rgeos::gSimplify, spgeom = shpStudyArea,
+    #                             tol = 0.01, topologyPreserve = TRUE) # TODO: see #24
+    shpStudyAreaThinned <- Cache(rmapshaper::ms_simplify, input = shpStudyArea,
+                                 sys = rmapshaper::check_sys_mapshaper(verbose = FALSE)) # TODO: see #24
+
     leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
       addProviderTiles("Stamen.Terrain", group = "Terrain Map",
                        options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
@@ -129,7 +135,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                             mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
                             zoom, ")}")))) %>%
       addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      addPolygons(data = shpStudyArea, color = "blue",
+      addPolygons(data = shpStudyAreaThinned, color = "blue",
                   group = "Selected Polygon",
                   ## use weight = 3 to be consistent with polygonUpdater module
                   fillOpacity = 0.0, weight = 3) %>%
