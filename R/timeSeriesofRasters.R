@@ -64,8 +64,8 @@ timeSeriesofRastersUI <- function(id) {
 #'
 timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
                                 rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-                                colorPalette, maxAge, zoom = 5, mapLegend = "",
-                                mapTitle = "", sliderTitle = "", histTitle = "",
+                                colorPalette, maxAge, zoom = 5, mapTilesDir = "www/",
+                                mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
                                 rctStudyArea = NULL, omitPolys = NULL) {
@@ -147,6 +147,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                rctPolygonList = reactive(polyList),
                rctChosenPolyName = reactive(polyName),
                map = leafMap,
+               mapTilesDir = mapTilesDir,
                colorPalette = colorPalette(0:maxAge),
                histTitle = histTitle,
                sliderTitle = sliderTitle,

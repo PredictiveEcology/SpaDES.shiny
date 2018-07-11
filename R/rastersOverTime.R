@@ -39,6 +39,12 @@ rastersOverTimeUI <- function(id) {
 #' @param rctChosenPolyName Reactive containing the name of the selected polygon (character).
 #' @param defaultPolyName The name fo the default selected polygon.
 #' @param map             Leaflet map to show raster and polygons on.
+#' @param mapTilesDir     Directory where pre-generated map tiles are stored
+#'                        (default \code{"www/}; note the trailing slash).
+#'                        Be sure to add this dir as 'tiles' using \code{shiny::addResourcePath}
+#'                        in your \file{global.R}.
+#'                        E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
+#'                        (note we don't need the trailing slash here).
 #' @param colorPalette    Colour palette to use.
 #' @param histTitle       Title to be shown above the histogram.
 #' @param mapTitle        Title to be shown above the map.
@@ -63,7 +69,7 @@ rastersOverTimeUI <- function(id) {
 rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplate,
                             rctPolygonList, rctChosenPolyName,
                             defaultPolyName = NULL,
-                            map = leaflet(),
+                            map = leaflet(), mapTilesDir = "www/",
                             colorPalette,
                             histTitle = "",
                             sliderTitle = "",
@@ -136,7 +142,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
   rctUrlTemplateSingleFile <- reactive({
     rasterFilename <- strsplit(basename(filename(rasts()$crsLFLT)), "\\.")[[1]][[1]]
-    grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
+    #grep(rasterFilename, gsub("www/", "", rctUrlTemplate()), value = TRUE)
+    grep(rasterFilename, gsub(mapTilesDir, "tiles/", rctUrlTemplate()), value = TRUE)
   })
 
   callModule(tilesUpdater, "tilesUpdater", mapProxy, rctUrlTemplateSingleFile,

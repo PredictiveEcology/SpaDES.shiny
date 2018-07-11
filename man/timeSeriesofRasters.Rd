@@ -9,8 +9,8 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-  colorPalette, maxAge, zoom = 5, mapLegend = "", mapTitle = "",
-  sliderTitle = "", histTitle = "", nPolygons, nRasters,
+  colorPalette, maxAge, zoom = 5, mapTilesDir = "www/", mapLegend = "",
+  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons, nRasters,
   rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user =
   NULL), rctStudyArea = NULL, omitPolys = NULL)
 }
@@ -39,6 +39,13 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \item{maxAge}{Maximum simulation age.}
 
 \item{zoom}{Initial leaflet zoom.}
+
+\item{mapTilesDir}{Directory where pre-generated map tiles are stored
+(default \code{"www/}; note the trailing slash).
+Be sure to add this dir as 'tiles' using \code{shiny::addResourcePath}
+in your \file{global.R}.
+E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
+(note we don't need the trailing slash here).}
 
 \item{mapLegend}{The legend text to add to the leaflet map.}
 

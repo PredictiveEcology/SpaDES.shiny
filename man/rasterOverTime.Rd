@@ -9,8 +9,9 @@ rastersOverTimeUI(id)
 
 rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, rctChosenPolyName, defaultPolyName = NULL,
-  map = leaflet(), colorPalette, histTitle = "", sliderTitle = "",
-  mapTitle = "", nPolygons, nRasters, rasterStepSize = 10)
+  map = leaflet(), mapTilesDir = "www/", colorPalette, histTitle = "",
+  sliderTitle = "", mapTitle = "", nPolygons, nRasters,
+  rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -33,6 +34,13 @@ rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
 \item{defaultPolyName}{The name fo the default selected polygon.}
 
 \item{map}{Leaflet map to show raster and polygons on.}
+
+\item{mapTilesDir}{Directory where pre-generated map tiles are stored
+(default \code{"www/}; note the trailing slash).
+Be sure to add this dir as 'tiles' using \code{shiny::addResourcePath}
+in your \file{global.R}.
+E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
+(note we don't need the trailing slash here).}
 
 \item{colorPalette}{Colour palette to use.}
 
