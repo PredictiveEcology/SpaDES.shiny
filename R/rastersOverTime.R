@@ -40,7 +40,7 @@ rastersOverTimeUI <- function(id) {
 #' @param defaultPolyName The name fo the default selected polygon.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param mapTilesDir     Directory where pre-generated map tiles are stored
-#'                        (default \code{"www/}; note the trailing slash).
+#'                        (default \code{"www/"}; note the trailing slash).
 #'                        Be sure to add this dir as 'tiles' using \code{shiny::addResourcePath}
 #'                        in your \file{global.R}.
 #'                        E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
