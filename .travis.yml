@@ -6,7 +6,7 @@ matrix:
   include:
   - os: linux
     dist: trusty
-    r: 3.3.0
+    r: 3.3
     addons:
       apt:
         sources:
@@ -17,14 +17,17 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
+        - libprotobuf
         - libudunits2-dev
+        - libv8-dev
         - gdal-bin
+        - protobuf-compiler
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
   - os: linux
     dist: trusty
-    r: 3.4.0
+    r: 3.4
     addons:
       apt:
         sources:
@@ -35,8 +38,11 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
+        - libprotobuf
         - libudunits2-dev
+        - libv8-dev
         - gdal-bin
+        - protobuf-compiler
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
@@ -53,8 +59,11 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
+        - libprotobuf
         - libudunits2-dev
+        - libv8-dev
         - gdal-bin
+        - protobuf-compiler
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
@@ -73,8 +82,11 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
+        - libprotobuf
         - libudunits2-dev
+        - libv8-dev
         - gdal-bin
+        - protobuf-compiler
     r_github_packages:
       - jimhester/lintr
     before_install:
@@ -98,8 +110,11 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
+        - libprotobuf
         - libudunits2-dev
+        - libv8-dev
         - gdal-bin
+        - protobuf-compiler
     before_install:
       - export DISPLAY=:99.0
       - sh -e /etc/init.d/xvfb start

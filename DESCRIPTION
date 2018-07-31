@@ -76,7 +76,6 @@ Suggests:
     Rserve,
     testthat (>= 1.0.2)
 Remotes:
-    ateucher/rmapshaper,
     MarkEdmondson1234/googleID,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/quickPlot@development,
