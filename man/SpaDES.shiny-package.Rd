@@ -6,7 +6,7 @@
 \alias{SpaDES.shiny-package}
 \title{The \pkg{SpaDES.shiny} package}
 \description{
-The \pkg{SpaDES.shiny} package
+Create 'shiny' app interfaces for 'SpaDES' models.
 }
 \seealso{
 Useful links:

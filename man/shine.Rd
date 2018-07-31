@@ -6,7 +6,8 @@
 \alias{shine,simList-method}
 \title{Display a simple, interactive shiny app of the \code{simList}}
 \usage{
-shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE, ...)
+shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE,
+  ...)
 
 \S4method{shine}{simList}(sim, title = "SpaDES App", debug = FALSE,
   filesOnly = FALSE, ...)

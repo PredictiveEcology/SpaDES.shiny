@@ -176,6 +176,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 }
 
+#' @importFrom raster crop crs crs<- extent
+#' @importFrom sp spTransform
 sampleAndCropRaster <- function(mb, rast) {
   ras <- if (is.null(mb)) {
     rast

@@ -7,9 +7,9 @@
 \usage{
 polygonChooserUI(id)
 
-polygonChooser(input, output, session, rctPolygonList, selectedPoly = NULL,
-  uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-  studyArea = NULL)
+polygonChooser(input, output, session, rctPolygonList,
+  selectedPoly = NULL, uploadOpts = list(auth = NULL, path = NULL, user
+  = NULL), studyArea = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}

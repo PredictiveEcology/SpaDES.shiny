@@ -7,7 +7,8 @@
 \usage{
 termsOfServiceUI(id)
 
-termsOfService(input, output, session, file = "TERMS.md", status = NULL)
+termsOfService(input, output, session, file = "TERMS.md",
+  status = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}

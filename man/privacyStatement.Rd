@@ -7,7 +7,8 @@
 \usage{
 privacyStatementUI(id)
 
-privacyStatement(input, output, session, file = "PRIVACY.md", status = NULL)
+privacyStatement(input, output, session, file = "PRIVACY.md",
+  status = NULL)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}

@@ -9,9 +9,9 @@ rastersOverTimeUI(id)
 
 rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, rctChosenPolyName, defaultPolyName = NULL,
-  map = leaflet(), mapTilesDir = "www/", colorPalette, histTitle = "",
-  sliderTitle = "", mapTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10)
+  map = leaflet(), mapTilesDir = "www/", colorPalette,
+  histTitle = "", sliderTitle = "", mapTitle = "", nPolygons,
+  nRasters, rasterStepSize = 10)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}

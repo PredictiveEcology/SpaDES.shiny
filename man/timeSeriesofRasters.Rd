@@ -9,10 +9,11 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-  colorPalette, maxAge, zoom = 5, mapTilesDir = "www/", mapLegend = "",
-  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user =
-  NULL), rctStudyArea = NULL, omitPolys = NULL)
+  colorPalette, maxAge, zoom = 5, mapTilesDir = "www/",
+  mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
+  nPolygons, nRasters, rasterStepSize = 10, uploadOpts = list(auth =
+  NULL, path = NULL, user = NULL), rctStudyArea = NULL,
+  omitPolys = NULL, thinKeep = 0.05)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -70,6 +71,9 @@ The default for all options is \code{NULL}, which means do not use.}
 \item{rctStudyArea}{A reactive \code{SpatialPolygons*} object for the whole study area region.}
 
 \item{omitPolys}{Character vector of polygon names to omit from the list.}
+
+\item{thinKeep}{Proportion of points in polygons to keep when thinning or plotting.
+See \code{\link[rmapshaper]{ms_simplify}}.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.

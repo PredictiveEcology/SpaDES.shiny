@@ -37,6 +37,8 @@ timeSeriesofRastersUI <- function(id) {
 #'                      The default for all options is \code{NULL}, which means do not use.
 #' @param rctStudyArea  A reactive \code{SpatialPolygons*} object for the whole study area region.
 #' @param omitPolys     Character vector of polygon names to omit from the list.
+#' @param thinKeep      Proportion of points in polygons to keep when thinning or plotting.
+#'                      See \code{\link[rmapshaper]{ms_simplify}}.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
@@ -44,12 +46,14 @@ timeSeriesofRastersUI <- function(id) {
 #' @author Mateusz Wyszynski
 #' @author Alex Chubaty
 #' @export
+#' @importFrom future future
 #' @importFrom graphics axis barplot
 #' @importFrom leaflet addEasyButton addLegend addMeasure addMiniMap addPolygons
 #' @importFrom leaflet addLayersControl addPopups addProviderTiles
 #' @importFrom leaflet clearPopups colorFactor easyButton JS
 #' @importFrom leaflet fitBounds layersControlOptions leaflet leafletOptions leafletOutput
 #' @importFrom leaflet leafletProxy providerTileOptions renderLeaflet tileOptions
+#' @importFrom promises %...>%
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
 #' @importFrom raster rowColFromCell xmax xmin ymax ymin
 #' @importFrom reproducible asPath Cache
@@ -68,7 +72,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                rctStudyArea = NULL, omitPolys = NULL) {
+                                rctStudyArea = NULL, omitPolys = NULL, thinKeep = 0.05) {
 
   rctPolySubList <- reactive({
     sublist <- lapply(rctPolygonList(), function(x) x$crsSR)
@@ -105,56 +109,59 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       polyList[[defaultPolyName]][["crsLFLT"]]
     }
 
-    #shpStudyAreaThinned <- Cache(rgeos::gSimplify, spgeom = shpStudyArea,
-    #                             tol = 0.01, topologyPreserve = TRUE) # TODO: see #24
-    shpStudyAreaThinned <- Cache(rmapshaper::ms_simplify, input = shpStudyArea,
-                                 sys = rmapshaper::check_sys_mapshaper(verbose = FALSE)) # TODO: see #24
+    ## thin the study area polygon in a seperate process and create leaflet map
+    future({
+      Cache(rmapshaper::ms_simplify,
+            input = shpStudyArea,
+            keep = thinKeep,
+            sys = rmapshaper::check_sys_mapshaper(verbose = FALSE)) # TODO: see #24
+    }) %...>% (function(shpStudyAreaThinned) {
+      leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
+        addProviderTiles("Stamen.Terrain", group = "Terrain Map",
+                         options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+        addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
+                         options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
+        addLegend(position = "bottomright", pal = colorPalette, values = 1:maxAge,
+                  title = mapLegend) %>%
+        addMeasure(
+          position = "bottomleft",
+          primaryLengthUnit = "kilometers",
+          primaryAreaUnit = "hectares",
+          activeColor = "#3D535D",
+          completedColor = "#7D4479") %>%
+        addEasyButton(easyButton(
+          icon = "fa-map", title = "Zoom to focal area",
+          onClick = JS(paste0("function(btn, map){ map.fitBounds([[",
+                              ymin(shpStudyArea), ", ", xmin(shpStudyArea), "], [",
+                              ymax(shpStudyArea), ", ", xmax(shpStudyArea), "]])}")))) %>%
+        addEasyButton(easyButton(
+          icon = "fa-globe", title = "Zoom out to full study area",
+          onClick = JS(paste0("function(btn, map){ map.setView([",
+                              mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
+                              mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
+                              zoom, ")}")))) %>%
+        addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
+        addPolygons(data = shpStudyAreaThinned, color = "blue",
+                    group = "Selected Polygon",
+                    ## use weight = 3 to be consistent with polygonUpdater module
+                    fillOpacity = 0.0, weight = 3) %>%
+        fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
 
-    leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
-      addProviderTiles("Stamen.Terrain", group = "Terrain Map",
-                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
-                       options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
-      addLegend(position = "bottomright", pal = colorPalette, values = 1:maxAge,
-                title = mapLegend) %>%
-      addMeasure(
-        position = "bottomleft",
-        primaryLengthUnit = "kilometers",
-        primaryAreaUnit = "hectares",
-        activeColor = "#3D535D",
-        completedColor = "#7D4479") %>%
-      addEasyButton(easyButton(
-        icon = "fa-map", title = "Zoom to focal area",
-        onClick = JS(paste0("function(btn, map){ map.fitBounds([[",
-                            ymin(shpStudyArea), ", ", xmin(shpStudyArea), "], [",
-                            ymax(shpStudyArea), ", ", xmax(shpStudyArea), "]])}")))) %>%
-      addEasyButton(easyButton(
-        icon = "fa-globe", title = "Zoom out to full study area",
-        onClick = JS(paste0("function(btn, map){ map.setView([",
-                            mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
-                            mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
-                            zoom, ")}")))) %>%
-      addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
-      addPolygons(data = shpStudyAreaThinned, color = "blue",
-                  group = "Selected Polygon",
-                  ## use weight = 3 to be consistent with polygonUpdater module
-                  fillOpacity = 0.0, weight = 3) %>%
-      fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
-
-    callModule(rastersOverTime, "rastersOverTime",
-               rctRasterList = rctRasterList,
-               rctUrlTemplate = rctUrlTemplate,
-               rctPolygonList = reactive(polyList),
-               rctChosenPolyName = reactive(polyName),
-               map = leafMap,
-               mapTilesDir = mapTilesDir,
-               colorPalette = colorPalette(0:maxAge),
-               histTitle = histTitle,
-               sliderTitle = sliderTitle,
-               mapTitle = mapTitle,
-               nPolygons = nPolygons,
-               nRasters = nRasters,
-               rasterStepSize = rasterStepSize)
+      callModule(rastersOverTime, "rastersOverTime",
+                 rctRasterList = rctRasterList,
+                 rctUrlTemplate = rctUrlTemplate,
+                 rctPolygonList = reactive(polyList),
+                 rctChosenPolyName = reactive(polyName),
+                 map = leafMap,
+                 mapTilesDir = mapTilesDir,
+                 colorPalette = colorPalette(0:maxAge),
+                 histTitle = histTitle,
+                 sliderTitle = sliderTitle,
+                 mapTitle = mapTitle,
+                 nPolygons = nPolygons,
+                 nRasters = nRasters,
+                 rasterStepSize = rasterStepSize)
+    })
   })
 
   return(rctChosenPolyOut)

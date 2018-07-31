@@ -7,8 +7,8 @@
 \usage{
 histogramForRasterUI(id, title = "", plotParameters, ...)
 
-histogramForRaster(input, output, session, rctRasterVals, rctHistogramBreaks,
-  scale = 1, addAxisParams = NULL, ...)
+histogramForRaster(input, output, session, rctRasterVals,
+  rctHistogramBreaks, scale = 1, addAxisParams = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -54,6 +54,4 @@ None. Invoked for the side-effect of rendering histogram plot.
 }
 \description{
 A shiny module creating histogram of data contained in a raster.
-
-Histogram for Raster Shiny Module
 }

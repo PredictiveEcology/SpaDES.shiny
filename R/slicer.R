@@ -150,7 +150,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
     ## because of this, the examples currently do not work because they have 2 levels
 
     ## server elements
-    .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
+    Cache(.slicer, dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
 
     ## UI elements
     output$slicedUI <- renderUI({
@@ -236,9 +236,12 @@ slicer <- function(input, output, session, datatable, uiSequence,
         #               get(categories[3]) == z]
         subdt <- dtList[[x]][[y]][[z]]
         if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-        serverFunction(datatable = subdt, id = .getID(x, y, z),
-                       uiSequence = uiSequence, ...,
-                       .current = currentValues, .dtFull = dtFull,
+        serverFunction(datatable = subdt,
+                       id = .getID(x, y, z),
+                       uiSequence = uiSequence,
+                       ...,
+                       .current = currentValues,
+                       .dtFull = dtFull,
                        .dtInner = dtInner)
       })
     })

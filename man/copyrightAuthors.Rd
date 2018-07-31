@@ -7,8 +7,9 @@
 \usage{
 copyrightAuthorsUI(id)
 
-copyrightAuthors(input, output, session, appName, authorInfo, copyrightInfo,
-  fundingInfo, licenseFile = "LICENSE", status = "primary")
+copyrightAuthors(input, output, session, appName, authorInfo,
+  copyrightInfo, fundingInfo, licenseFile = "LICENSE",
+  status = "primary")
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}

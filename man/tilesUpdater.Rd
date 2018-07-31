@@ -5,7 +5,8 @@
 \title{Tiles updater (shiny module)}
 \usage{
 tilesUpdater(input, output, session, proxy, rctUrlTemplateSingleRaster,
-  tilesGroup, addTilesParameters = NULL, addLayersControlParameters = NULL)
+  tilesGroup, addTilesParameters = NULL,
+  addLayersControlParameters = NULL)
 }
 \arguments{
 \item{input}{Shiny server input object.}
