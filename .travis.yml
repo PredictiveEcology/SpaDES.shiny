@@ -11,10 +11,12 @@ matrix:
       apt:
         sources:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
+        - libjq-dev
         - libnlopt-dev
         - libproj-dev
         - libprotobuf-dev
@@ -32,10 +34,12 @@ matrix:
       apt:
         sources:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
+        - libjq-dev
         - libnlopt-dev
         - libproj-dev
         - libprotobuf-dev
@@ -53,10 +57,12 @@ matrix:
       apt:
         sources:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
+        - libjq-dev
         - libnlopt-dev
         - libproj-dev
         - libprotobuf-dev
@@ -76,10 +82,12 @@ matrix:
       apt:
         sources:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
+        - libjq-dev
         - libnlopt-dev
         - libproj-dev
         - libprotobuf-dev
@@ -104,10 +112,12 @@ matrix:
       apt:
         sources:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
+        - libjq-dev
         - libnlopt-dev
         - libproj-dev
         - libprotobuf-dev
