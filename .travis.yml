@@ -129,3 +129,4 @@ branches:
     - development
     - develop
     - testing
+    - generalize-modules
