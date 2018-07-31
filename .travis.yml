@@ -17,7 +17,7 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
-        - libprotobuf
+        - libprotobuf-dev
         - libudunits2-dev
         - libv8-dev
         - gdal-bin
@@ -38,7 +38,7 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
-        - libprotobuf
+        - libprotobuf-dev
         - libudunits2-dev
         - libv8-dev
         - gdal-bin
@@ -59,7 +59,7 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
-        - libprotobuf
+        - libprotobuf-dev
         - libudunits2-dev
         - libv8-dev
         - gdal-bin
@@ -82,7 +82,7 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
-        - libprotobuf
+        - libprotobuf-dev
         - libudunits2-dev
         - libv8-dev
         - gdal-bin
@@ -110,7 +110,7 @@ matrix:
         - libgeos-dev
         - libnlopt-dev
         - libproj-dev
-        - libprotobuf
+        - libprotobuf-dev
         - libudunits2-dev
         - libv8-dev
         - gdal-bin
