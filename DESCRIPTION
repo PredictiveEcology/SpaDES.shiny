@@ -9,9 +9,9 @@ Date: 2018-08-07
 Version: 0.1.0.9007
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
-             role = c("aut", "cre")),
+             role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
       person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
-             role = c("aut")),
+             role = c("aut"), comment = c(ORCID = "https://orcid.org/0000-0002-6914-8316")),
       person("Damian", "Rodziewicz", role = c("aut")),
       person("Mateusz", "Wyszynski", role = c("aut")),
       person("Olivia", "Sung", role = c("ctb")),
