@@ -312,7 +312,7 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
           fluidRow(
             lapply(level2names, function(y) {
               shinydashboard::box(
-                width = 4, solidHeader = TRUE, collapsible = TRUE,
+                width = 6, solidHeader = TRUE, collapsible = TRUE,
                 title = y, uiFunction(session$ns(.getID2(x, y)))
               )
             })
@@ -347,6 +347,7 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
     } %>%
       as.character()
     lapply(level2names, function(y) {
+      dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
       currentValues <- list(x, y) %>% setNames(categories)
       ### `get` doesn't work correctly in shiny modules
       # subdt <- dt[get(categories[1]) == x &
