@@ -92,7 +92,7 @@ authGoogle <- function(input, output, session, appURL, authUsers, icon = "google
 
   observe({
     if (isTRUE(session$userData$userLoggedIn())) {
-      authStatus <- googleID::whitelist(tolower(userDetails()), tolower(authUsers))
+      authStatus <- googleID::whitelist(userDetails(), tolower(authUsers))
       ifelse(authStatus, session$userData$userAuthorized(TRUE),
              session$userData$userAuthorized(FALSE))
 
