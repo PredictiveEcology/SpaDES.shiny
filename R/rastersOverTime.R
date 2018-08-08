@@ -121,7 +121,8 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
   })
 
   addTilesParameters <- list(
-    options = tileOptions(tms = TRUE, minZoom = 1, maxZoom = 10, opacity = 1)
+    options = tileOptions(useCache = TRUE, crossOrigin = TRUE, tms = TRUE,
+                          minZoom = 1, maxZoom = 10, opacity = 1)
   )
 
   tilesGroup <- "Time since fire" # session$ns("tiles")

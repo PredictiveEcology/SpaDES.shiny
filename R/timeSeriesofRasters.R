@@ -48,6 +48,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @importFrom leaflet clearPopups colorFactor easyButton JS
 #' @importFrom leaflet fitBounds layersControlOptions leaflet leafletOptions leafletOutput
 #' @importFrom leaflet leafletProxy providerTileOptions renderLeaflet tileOptions
+#' @importFrom leaflet.extras enableTileCaching
 #' @importFrom promises %...>%
 #' @importFrom raster cellFromXY crs extract filename hist maxValue ncell
 #' @importFrom raster rowColFromCell xmax xmin ymax ymin
@@ -103,6 +104,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                    sys = rmapshaper::check_sys_mapshaper(verbose = FALSE))
 
       leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
+        enableTileCaching() %>%
         addProviderTiles("Stamen.Terrain", group = "Terrain Map",
                          options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
         addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
