@@ -5,8 +5,8 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2018-07-30
-Version: 0.1.0.9006
+Date: 2018-08-07
+Version: 0.1.0.9007
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
              role = c("aut", "cre")),
@@ -18,10 +18,10 @@ Authors@R: c(
       person("Alex", "Tso", role = c("ctb")),
       person("Greyson", "Wang", role = c("ctb")),
       person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
-            role = "cph")
-    )
+             role = "cph")
+   )
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.3)
 Imports:
     assertthat,
     data.table,

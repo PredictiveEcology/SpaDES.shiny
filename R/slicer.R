@@ -247,3 +247,118 @@ slicer <- function(input, output, session, datatable, uiSequence,
     })
   })
 }
+
+################################################################################
+
+#' Slicer2 shiny module
+#'
+#' A 2-D version of slicer.
+#'
+#' @export
+#' @inheritParams slicer
+#' @rdname slicer2
+slicer2UI <- function(id) {
+  ns <- NS(id)
+
+  shinycssloaders::withSpinner(uiOutput(ns("sliced2UI")))
+}
+
+#' @export
+#' @rdname slicer2
+slicer2 <- function(input, output, session, datatable, uiSequence,
+                    serverFunction, uiFunction, ...) {
+
+  observeEvent(datatable(), {
+    #assertthat::assert_that(is.data.table(datatable()))
+    categories <- uiSequence$category
+    possibleValues <- uiSequence$possibleValues
+
+    dtFull <- datatable()
+    hasColNames <- categories %in% colnames(dtFull)
+    if (!all(hasColNames)) {
+      for (colName in categories[!hasColNames])
+        set(dtFull, , colName, NA)
+    }
+    dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
+    dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
+
+    ## TODO:
+    ## this is currently fixed at 2 levels but needs to be made general WITHOUT using recursion!!!
+    ## the examples currently only work with this one because they have 2 levels
+
+    ## server elements
+    Cache(.slicer2, dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
+
+    ## UI elements
+    output$sliced2UI <- renderUI({
+      ns <- session$ns
+
+      level1names <- if (is.null(possibleValues[[1]])) {
+        names(dtList)
+      } else {
+        possibleValues[[1]]
+      } %>% unique()
+      outerTabPanels <- lapply(level1names, function(x) {
+        level2names <- if (is.null(possibleValues[[2]])) {
+          names(dtList[[x]])
+        } else {
+          possibleValues[[2]]
+        } %>% unique()
+
+        tabPanel(
+          title = y,
+          fluidRow(
+            lapply(level2names, function(y) {
+              shinydashboard::box(
+                width = 4, solidHeader = TRUE, collapsible = TRUE,
+                title = y, uiFunction(session$ns(.getID2(x, y)))
+              )
+            })
+          )
+        )
+      })
+      fluidRow(width = 12, do.call(tabBox, append(outerTabPanels, list(width = 12))))
+    })
+  })
+}
+
+.getID2 <- function(x, y) {
+  paste("slicedUI2", x, y, sep = "-")
+}
+
+.slicer2 <- function(dtFull, categories, possibleValues, serverFunction, uiSequence, ...) {
+
+  dtList <- split(dtFull, by = categories, flatten = FALSE)
+  dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
+
+  level1names <- if (is.null(possibleValues[[1]])) {
+    names(dtList)
+  } else {
+    possibleValues[[1]]
+  } %>%
+    as.character()
+  lapply(level1names, function(x) {
+    level2names <- if (is.null(possibleValues[[2]])) {
+      names(dtList[[x]])
+    } else {
+      possibleValues[[2]]
+    } %>%
+      as.character()
+    lapply(level2names, function(y) {
+        currentValues <- list(x, y) %>% setNames(categories)
+        ### `get` doesn't work correctly in shiny modules
+        # subdt <- dt[get(categories[1]) == x &
+        #               get(categories[2]) == y &
+        #               get(categories[3]) == z]
+        subdt <- dtList[[x]][[y]]
+        if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
+        serverFunction(datatable = subdt,
+                       id = .getID2(x, y),
+                       uiSequence = uiSequence,
+                       ...,
+                       .current = currentValues,
+                       .dtFull = dtFull,
+                       .dtInner = dtInner)
+    })
+  })
+}
