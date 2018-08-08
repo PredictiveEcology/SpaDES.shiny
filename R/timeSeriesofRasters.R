@@ -96,12 +96,13 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
 
     ## thin the study area polygon in a seperate process and create leaflet map
     future({
-      Cache(rmapshaper::ms_simplify,
-            input = shpStudyArea,
-            keep = thinKeep,
-            sys = rmapshaper::check_sys_mapshaper(verbose = FALSE)) # TODO: see #24
-    }) %...>% (function(shpStudyAreaThinned) {
-      leafMap <- leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
+      # TODO: speed up polygon mapping in leaflet (see #24)
+      shpStudyAreaThinned <- Cache(rmapshaper::ms_simplify,
+                                   input = shpStudyArea,
+                                   keep = thinKeep,
+                                   sys = rmapshaper::check_sys_mapshaper(verbose = FALSE))
+
+      leaflet(options = leafletOptions(minZoom = 1, maxZoom = 10)) %>%
         addProviderTiles("Stamen.Terrain", group = "Terrain Map",
                          options = providerTileOptions(minZoom = 1, maxZoom = 10)) %>%
         addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "ESRI World Imagery",
@@ -131,7 +132,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                     ## use weight = 3 to be consistent with polygonUpdater module
                     fillOpacity = 0.0, weight = 3) %>%
         fitBounds(xmin(shpStudyArea), ymin(shpStudyArea), xmax(shpStudyArea), ymax(shpStudyArea))
-
+    }) %...>% (function(leafMap) {
       callModule(rastersOverTime, "rastersOverTime",
                  rctRasterList = rctRasterList,
                  rctUrlTemplate = rctUrlTemplate,

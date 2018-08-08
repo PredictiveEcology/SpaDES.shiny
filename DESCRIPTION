@@ -6,7 +6,7 @@ URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
 Date: 2018-08-08
-Version: 0.1.0.9008
+Version: 0.1.0.9009
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
              role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
