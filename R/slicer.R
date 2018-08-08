@@ -308,7 +308,7 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
         } %>% unique()
 
         tabPanel(
-          title = y,
+          title = x,
           fluidRow(
             lapply(level2names, function(y) {
               shinydashboard::box(
@@ -347,20 +347,20 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
     } %>%
       as.character()
     lapply(level2names, function(y) {
-        currentValues <- list(x, y) %>% setNames(categories)
-        ### `get` doesn't work correctly in shiny modules
-        # subdt <- dt[get(categories[1]) == x &
-        #               get(categories[2]) == y &
-        #               get(categories[3]) == z]
-        subdt <- dtList[[x]][[y]]
-        if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
-        serverFunction(datatable = subdt,
-                       id = .getID2(x, y),
-                       uiSequence = uiSequence,
-                       ...,
-                       .current = currentValues,
-                       .dtFull = dtFull,
-                       .dtInner = dtInner)
+      currentValues <- list(x, y) %>% setNames(categories)
+      ### `get` doesn't work correctly in shiny modules
+      # subdt <- dt[get(categories[1]) == x &
+      #               get(categories[2]) == y &
+      #               get(categories[3]) == z]
+      subdt <- dtList[[x]][[y]]
+      if (is.null(subdt)) subdt <- na.omit(dtFull[NA])
+      serverFunction(datatable = subdt,
+                     id = .getID2(x, y),
+                     uiSequence = uiSequence,
+                     ...,
+                     .current = currentValues,
+                     .dtFull = dtFull,
+                     .dtInner = dtInner)
     })
   })
 }

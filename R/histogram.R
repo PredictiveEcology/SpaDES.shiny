@@ -41,7 +41,7 @@ histogramUI <- function(id, ...) {
 #'
 #' @param verticalBar  Numeric value at which to add an \code{abline} to the histogram.
 #'
-#' @param file optional filepath to save png outputs
+#' @param fname optional filepath to save png outputs
 #'
 #' @export
 #' @importFrom assertthat assert_that
@@ -51,7 +51,7 @@ histogramUI <- function(id, ...) {
 #' @importFrom utils head
 #' @rdname histogram
 histogram <- function(input, output, session, histdata, addAxisParams = NULL,
-                      verticalBar = NULL, file = NULL, ...) {
+                      verticalBar = NULL, fname = NULL, ...) {
 
   output$histogram <- renderPlot({
     if (is.reactive(histdata)) {
@@ -67,15 +67,15 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
       NULL
     }
 
-    if (!is.null(file)) .doPlotHistogram(hst, axps, verticalBar, file, ...) ## plot once to file
+    if (!is.null(fname)) .doPlotHistogram(hst, axps, verticalBar, fname, ...) ## plot once to file
     .doPlotHistogram(hst, axps, verticalBar, NULL, ...) ## plot normally to display
   }, height = 300, width = 300)
 }
 
-.doPlotHistogram <- function(hst, axps = NULL, verticalBar = NULL, file = NULL, ...) {
-  if (!is.null(file)) png(file, width = 400, height = 400, units = "px")
+.doPlotHistogram <- function(hst, axps = NULL, verticalBar = NULL, fname = NULL, ...) {
+  if (!is.null(fname)) png(fname, width = 400, height = 400, units = "px")
   barplot(hst, ...)
   if (!is.null(axps)) do.call(axis, axps)
   if (!is.null(verticalBar))  abline(v = verticalBar, col = "red", lwd = 3)
-  if (!is.null(file)) dev.off()
+  if (!is.null(fname)) dev.off()
 }
