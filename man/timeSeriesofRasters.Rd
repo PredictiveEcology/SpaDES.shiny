@@ -8,12 +8,12 @@
 timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
-  rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
-  colorPalette, maxAge, zoom = 5, mapTilesDir = "www/",
-  mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
-  nPolygons, nRasters, rasterStepSize = 10, uploadOpts = list(auth =
-  NULL, path = NULL, user = NULL), rctStudyArea = NULL,
-  omitPolys = NULL, thinKeep = 0.05)
+  rctPolygonList, rctChosenPoly, defaultPolyName = NULL,
+  shpStudyRegionName = NULL, colorPalette, maxAge, zoom = 5,
+  mapTilesDir = "www/", mapLegend = "", mapTitle = "",
+  sliderTitle = "", histTitle = "", nPolygons, nRasters,
+  rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user
+  = NULL), rctStudyArea = NULL, thinKeep = 0.05)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -30,6 +30,8 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
 # TODO: decribe the format of the list!}
+
+\item{rctChosenPoly}{The user-selected polygon.}
 
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
@@ -69,8 +71,6 @@ E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
 The default for all options is \code{NULL}, which means do not use.}
 
 \item{rctStudyArea}{A reactive \code{SpatialPolygons*} object for the whole study area region.}
-
-\item{omitPolys}{Character vector of polygon names to omit from the list.}
 
 \item{thinKeep}{Proportion of points in polygons to keep when thinning or plotting.
 See \code{\link[rmapshaper]{ms_simplify}}.}

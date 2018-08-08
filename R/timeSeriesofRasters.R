@@ -15,16 +15,12 @@
 timeSeriesofRastersUI <- function(id) {
   ns <- NS(id)
 
-  fluidRow(
-    shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime"))),
-    box(width = 8, solidHeader = TRUE, collapsible = TRUE,
-        polygonChooserUI(ns("polyDropdown"))
-    )
-  )
+  shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime")))
 }
 
 #' @inheritParams rastersOverTime
 #'
+#' @param rctChosenPoly       The user-selected polygon.
 #' @param defaultPolyName     Name of the polygon to use as the default for mapping.
 #' @param mapLegend           The legend text to add to the leaflet map.
 #' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
@@ -36,7 +32,6 @@ timeSeriesofRastersUI <- function(id) {
 #'                      \code{user} the current username (used for creating user-specific paths).
 #'                      The default for all options is \code{NULL}, which means do not use.
 #' @param rctStudyArea  A reactive \code{SpatialPolygons*} object for the whole study area region.
-#' @param omitPolys     Character vector of polygon names to omit from the list.
 #' @param thinKeep      Proportion of points in polygons to keep when thinning or plotting.
 #'                      See \code{\link[rmapshaper]{ms_simplify}}.
 #'
@@ -67,33 +62,23 @@ timeSeriesofRastersUI <- function(id) {
 #' @rdname timeSeriesofRasters
 #'
 timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
-                                rctPolygonList, defaultPolyName = NULL, shpStudyRegionName = NULL,
+                                rctPolygonList, rctChosenPoly, defaultPolyName = NULL,
+                                shpStudyRegionName = NULL,
                                 colorPalette, maxAge, zoom = 5, mapTilesDir = "www/",
                                 mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
                                 uploadOpts = list(auth = NULL, path = NULL, user = NULL),
-                                rctStudyArea = NULL, omitPolys = NULL, thinKeep = 0.05) {
+                                rctStudyArea = NULL, thinKeep = 0.05) {
 
-  rctPolySubList <- reactive({
-    sublist <- lapply(rctPolygonList(), function(x) x$crsSR)
-    if (!is.null(omitPolys)) {
-      lapply(omitPolys, function(x) sublist[[x]] <<- NULL)
-    }
-    sublist
-  })
-
-  rctChosenPolyOut <- callModule(polygonChooser, "polyDropdown", rctPolySubList,
-                                 defaultPolyName, uploadOpts, studyArea = rctStudyArea())
-
-  observeEvent(rctChosenPolyOut(), {
+  observeEvent(rctChosenPoly(), {
     prevPolyList <- rctPolygonList()
 
-    polyList <- do.call(polygonList, append(rctChosenPolyOut()$polygons,
+    polyList <- do.call(polygonList, append(rctChosenPoly()$polygons,
                                             list(studyArea = rctStudyArea())))
     class(polyList) <- "list" ## TODO: remove this temp workaround; properly inherit list class
 
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
-    polyName <- rctChosenPolyOut()$selected
+    polyName <- rctChosenPoly()$selected
 
     ## the full study region, using leaflet projection (used for map only here)
     shpStudyRegion <- if (is.null(shpStudyRegionName)) {
@@ -163,6 +148,4 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                  rasterStepSize = rasterStepSize)
     })
   })
-
-  return(rctChosenPolyOut)
 }
