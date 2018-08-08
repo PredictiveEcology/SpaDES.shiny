@@ -8,7 +8,7 @@
 histogramUI(id, ...)
 
 histogram(input, output, session, histdata, addAxisParams = NULL,
-  verticalBar = NULL, file = NULL, ...)
+  verticalBar = NULL, fname = NULL, ...)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
@@ -33,7 +33,7 @@ If \code{NULL} (default) then no axis is drawn.}
 
 \item{verticalBar}{Numeric value at which to add an \code{abline} to the histogram.}
 
-\item{file}{optional filepath to save png outputs}
+\item{fname}{optional filepath to save png outputs}
 }
 \value{
 None. Invoked for the side-effect of rendering bar plot.
