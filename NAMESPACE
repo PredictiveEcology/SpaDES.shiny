@@ -2,6 +2,8 @@
 
 export(adminLogs)
 export(adminLogsUI)
+export(appNews)
+export(appNewsUI)
 export(authGoogle)
 export(authGoogleUI)
 export(cloneApp)
