@@ -122,10 +122,10 @@ slicerUI <- function(id) {
 #' @importFrom assertthat assert_that
 #' @importFrom data.table data.table is.data.table set
 #' @importFrom magrittr %>%
+#' @importFrom purrr map
 #' @importFrom shiny callModule fluidRow is.reactive mainPanel NS observeEvent renderUI tabPanel
 #' @importFrom shinydashboard box tabBox
 #' @importFrom stats setNames
-#' @importFrom purrr map
 #' @rdname slicer
 #'
 slicer <- function(input, output, session, datatable, uiSequence,
@@ -140,7 +140,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
     hasColNames <- categories %in% colnames(dtFull)
     if (!all(hasColNames)) {
       for (colName in categories[!hasColNames])
-        set(dtFull, , colName, NA)
+        set(dtFull, NULL, colName, NA)
     }
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
     dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
@@ -148,10 +148,6 @@ slicer <- function(input, output, session, datatable, uiSequence,
     ## TODO:
     ## this is currently fixed at 3 levels but needs to be made general WITHOUT using recursion!!!
     ## because of this, the examples currently do not work because they have 2 levels
-
-    ## server elements
-    #Cache(.slicer, dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
-    .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
 
     ## UI elements
     output$slicedUI <- renderUI({
@@ -195,6 +191,10 @@ slicer <- function(input, output, session, datatable, uiSequence,
       })
       fluidRow(width = 12, do.call(tabBox, append(outerTabPanels, list(width = 12))))
     })
+
+    ## server elements
+    #Cache(.slicer, dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
+    .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
   })
 }
 
@@ -213,14 +213,14 @@ slicer <- function(input, output, session, datatable, uiSequence,
     possibleValues[[1]]
   } %>%
     as.character()
-  lapply(level1names, function(x) {
+  purrr::map(level1names, function(x) {
     level2names <- if (is.null(possibleValues[[2]])) {
       names(dtList[[x]])
     } else {
       possibleValues[[2]]
     } %>%
       as.character()
-    lapply(level2names, function(y) {
+    purrr::map(level2names, function(y) {
       level3names <- if (is.null(possibleValues[[3]])) {
         names(dtList[[x]][[y]])
       } else {
@@ -229,7 +229,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
         as.character()
       dtInner <- dtListShort[[x]][[y]] # this should be in order it is received
 
-      lapply(level3names, function(z) {
+      purrr::map(level3names, function(z) {
         currentValues <- list(x, y, z) %>% setNames(categories)
         ### `get` doesn't work correctly in shiny modules
         # subdt <- dt[get(categories[1]) == x &
@@ -278,7 +278,7 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
     hasColNames <- categories %in% colnames(dtFull)
     if (!all(hasColNames)) {
       for (colName in categories[!hasColNames])
-        set(dtFull, , colName, NA)
+        set(dtFull, NULL, colName, NA)
     }
     dtList <- split(dtFull, by = categories, flatten = FALSE) ## nested list
     dtListShort <- split(dtFull, by = categories[-length(categories)], flatten = FALSE)
