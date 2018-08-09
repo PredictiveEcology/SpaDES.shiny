@@ -111,7 +111,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         ## something went wrong (#29). Currently, if e.g. userPoly doesn't
         ## intersect with studyArea, user gets no feedback but the userPoly isn't
         ## added to the list of selectable polygons.
-        reproducible::postProcess(userPoly, postProcessedFilename = polyFilename,
+        reproducible::postProcess(userPoly, filename2 = polyFilename,
                                   studyArea = studyArea, useSAcrs = TRUE)
       }
 

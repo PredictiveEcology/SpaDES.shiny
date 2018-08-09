@@ -19,7 +19,7 @@
 #'
 #' @export
 #' @importFrom sp spTransform
-#' @importFrom reproducible maskInputs
+#' @importFrom reproducible maskInputs postProcess
 #' @importFrom raster crs
 #' @rdname newPolygonList
 polygonList <- function(studyArea, ...) {
@@ -29,7 +29,7 @@ polygonList <- function(studyArea, ...) {
 
   polyList <- Cache(Map, x = dots, n = names(dots), f = function(x, n) {
     polySR <- tryCatch(Cache(postProcess, x = x, studyArea = studyArea, useSAcrs = TRUE,
-                             postProcessedFilename = FALSE),
+                             filename2 = FALSE),
                           error = function(e) {
                             message("Error intersecting polygon ", n, " with studyArea.")
                             NULL
