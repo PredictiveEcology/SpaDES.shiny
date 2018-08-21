@@ -155,7 +155,7 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
         out
       }
 
-      SpaDES.core::updateList(userPolyList, newUploadPoly)
+      updateList(userPolyList, newUploadPoly)
     } else {
       list()
     }

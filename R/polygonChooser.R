@@ -131,7 +131,7 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
     ns <- session$ns
 
     # TODO: display in alphabetical order?
-    # selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonList()),
+    # selectInput(ns("polyLayer"), "Polygon layer:", names(rctPolygonListUser()),
     #             selected = selectedPoly)
     shinyWidgets::pickerInput(
       inputId = ns("polyLayer"),
@@ -145,7 +145,7 @@ polygonChooser <- function(input, output, session, rctPolygonList, selectedPoly 
     )
   })
 
-  observeEvent(rctPolygonListUser(), {
+  observe({
     origChoices <- names(rctPolygonList())
     userChoices <- names(rctPolygonListUser())
 

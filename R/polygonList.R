@@ -1,3 +1,5 @@
+setOldClass("polygonList")
+
 #' @keywords internal
 .polygonList <- function() {
   polyList <- list(
@@ -7,9 +9,35 @@
     )
   )
 
-  class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
+  class(polyList) <- "polygonList"
   polyList
 }
+
+#' Update polygon list
+#'
+#'
+#' @param x   a named list
+#' @param y   a named list
+#'
+#' @return A named list, with elements sorted by name.
+#'          The values of matching elements in list \code{y}
+#'          replace the values in list \code{x}.
+#'
+#' @note This is a temporary workaroud until we resolve inheritance of s3 classes (see \code{.polygonList}).
+#'
+#' @author Alex Chubaty
+#' @export
+#' @importFrom SpaDES.core updateList
+#' @rdname updateList
+setMethod("updateList",
+          signature = c("polygonList", "polygonList"),
+          definition = function(x, y) {
+            class(x) <- "list"
+            class(y) <- "list"
+            z <- updateList(x, y)
+            class(z) <- "polygonList"
+            return(z)
+})
 
 #' Create a new \code{polygonList} object
 #'
@@ -46,6 +74,6 @@ polygonList <- function(studyArea, ...) {
     )
   })
 
-  class(polyList) <- c("polygonList", is(list())) ## TODO: how to properly inherit S3 classes??
+  class(polyList) <- "polygonList"
   polyList
 }

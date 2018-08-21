@@ -76,7 +76,6 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
 
     polyList <- do.call(polygonList, append(rctChosenPoly()$polygons,
                                             list(studyArea = rctStudyArea())))
-    class(polyList) <- "list" ## TODO: remove this temp workaround; properly inherit list class
 
     polyList <- SpaDES.core::updateList(prevPolyList, polyList)
     polyName <- rctChosenPoly()$selected
