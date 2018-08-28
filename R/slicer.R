@@ -121,6 +121,7 @@ slicerUI <- function(id) {
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom data.table data.table is.data.table set
+#' @importFrom future future
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
 #' @importFrom shiny callModule fluidRow is.reactive mainPanel NS observeEvent renderUI tabPanel
@@ -194,7 +195,9 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
     ## server elements
     #Cache(.slicer, dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
-    .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
+    #future({
+      .slicer(dtFull, categories, possibleValues, serverFunction, uiSequence, ...)
+    #})
   })
 }
 
