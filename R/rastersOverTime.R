@@ -57,6 +57,7 @@ rastersOverTimeUI <- function(id) {
 #'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
 #'
 #' @export
+#' @importFrom future future
 #' @importFrom leaflet JS layersControlOptions leaflet leafletOptions leafletOutput leafletProxy
 #' @importFrom leaflet providerTileOptions renderLeaflet setView tileOptions
 #' @importFrom raster cellFromXY crop crs extent extract filename hist maxValue ncell
@@ -98,14 +99,17 @@ rastersOverTime <- function(input, output, session, rctRasterList, rctUrlTemplat
 
     rst <- lapply(rctRasterList(), function(x) x[[rasterIndex]]) # get both crs
 
-    return(rst);
+    return(rst)
   })
 
   sampledRasterVals <- reactive({
     mb <- input$map_bounds
 
-    rast1 <- rasts()$crsSR # faster if we get the object, pass into Cache like this
-    Cache(sampleAndCropRaster, mb, rast1)
+    rast1 <- rasts()$crsSR
+
+    ##future({
+      Cache(sampleAndCropRaster, mb, rast1)
+    #})
   })
 
   xAxisBreaks <- reactive({

@@ -71,7 +71,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 histogramForRaster <- function(input, output, session, rctRasterVals, rctHistogramBreaks,
                                scale = 1, addAxisParams = NULL,  ...) {
   output$hist4rast <- renderPlot({
-    rasVals <- as.numeric(rctRasterVals())
+    rasVals <- rctRasterVals() %>% as.numeric()
     # rasVals <- if (!is(ras, "Raster")) {
     #   numeric()
     # } else {

@@ -94,7 +94,7 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
       polyList[[defaultPolyName]][["crsLFLT"]]
     }
 
-    ## thin the study area polygon in a seperate process and create leaflet map
+    ## thin the study area polygon in a separate process and create leaflet map
     future({
       # TODO: speed up polygon mapping in leaflet (see #24)
       shpStudyAreaThinned <- Cache(rmapshaper::ms_simplify,
