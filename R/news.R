@@ -24,6 +24,7 @@ appNewsUI <- function(id) {
 #'                 See \code{\link[shinydashboard]{box}}.
 #'
 #' @export
+#' @importFrom future future
 #' @importFrom shiny fluidRow includeMarkdown renderUI tagList
 #' @importFrom shinydashboard box
 #' @rdname appNews
@@ -34,15 +35,17 @@ appNews <- function(input, output, session, file = "NEWS.md", status = NULL) {
   output$appNewsUI <- renderUI({
     ns <- session$ns
 
-    tagList(
-      fluidRow(
-        shinydashboard::box(
-          title = "News & Updates", status = status,
-          solidHeader = TRUE, collapsible = TRUE, width = 12,
+    future({
+      tagList(
+        fluidRow(
+          shinydashboard::box(
+            title = "News & Updates", status = status,
+            solidHeader = TRUE, collapsible = TRUE, width = 12,
 
-          includeMarkdown(file)
+            includeMarkdown(file)
+          )
         )
       )
-    )
+    })
   })
 }

@@ -23,6 +23,7 @@ privacyStatementUI <- function(id) {
 #'                 See \code{\link[shinydashboard]{box}}.
 #'
 #' @export
+#' @importFrom future future
 #' @importFrom shiny fluidRow includeMarkdown renderUI tagList
 #' @importFrom shinydashboard box
 #' @rdname privacyStatement
@@ -33,16 +34,18 @@ privacyStatement <- function(input, output, session, file = "PRIVACY.md", status
   output$appPrivacyUI <- renderUI({
     ns <- session$ns
 
-    tagList(
-      fluidRow(
-        shinydashboard::box(
-          title = "Privacy Statement", status = status,
-          solidHeader = TRUE, collapsible = TRUE, width = 12,
+    future({
+      tagList(
+        fluidRow(
+          shinydashboard::box(
+            title = "Privacy Statement", status = status,
+            solidHeader = TRUE, collapsible = TRUE, width = 12,
 
-          includeMarkdown(file)
+            includeMarkdown(file)
+          )
         )
       )
-    )
+    })
   })
 }
 
@@ -71,6 +74,7 @@ termsOfServiceUI <- function(id) {
 #'                 See \code{\link[shinydashboard]{box}}.
 #'
 #' @export
+#' @importFrom future future
 #' @importFrom shiny fluidRow includeMarkdown renderUI tagList
 #' @importFrom shinydashboard box
 #' @rdname termsOfService
@@ -78,15 +82,17 @@ termsOfService <- function(input, output, session, file = "TERMS.md", status = N
   output$appToSUI <- renderUI({
     ns <- session$ns
 
-    tagList(
-      fluidRow(
-        shinydashboard::box(
-          title = "Terms of Service", status = status,
-          solidHeader = TRUE, collapsible = TRUE, width = 12,
+    future({
+      tagList(
+        fluidRow(
+          shinydashboard::box(
+            title = "Terms of Service", status = status,
+            solidHeader = TRUE, collapsible = TRUE, width = 12,
 
-          includeMarkdown(file)
+            includeMarkdown(file)
+          )
         )
       )
-    )
+    })
   })
 }

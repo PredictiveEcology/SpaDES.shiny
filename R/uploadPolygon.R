@@ -25,6 +25,7 @@ uploadPolygonUI <- function(id) {
 #'
 #' @export
 #' @include polygonList.R
+#' @importFrom future future
 #' @importFrom raster extension shapefile
 #' @importFrom reproducible checkPath postProcess
 #' @importFrom rgeos gBuffer
@@ -115,25 +116,27 @@ uploadPolygon <- function(input, output, session, authStatus, userDir, studyArea
                                   studyArea = studyArea, useSAcrs = TRUE)
       }
 
-      if (length(zipFile)) {
-        tmpUnzipDir <- file.path(userDir, "unzip") %>% checkPath(., create = TRUE)
-        utils::unzip(zipFile, exdir = tmpUnzipDir, overwrite = TRUE, junkpaths = TRUE)
-        on.exit(unlink(tmpUnzipDir, recursive = TRUE), add = TRUE)
+      #future({
+        if (length(zipFile)) {
+          tmpUnzipDir <- file.path(userDir, "unzip") %>% checkPath(., create = TRUE)
+          utils::unzip(zipFile, exdir = tmpUnzipDir, overwrite = TRUE, junkpaths = TRUE)
+          on.exit(unlink(tmpUnzipDir, recursive = TRUE), add = TRUE)
 
-        shpfilez <- list.files(tmpUnzipDir, pattern = ".shp", full.names = TRUE)
+          shpfilez <- list.files(tmpUnzipDir, pattern = ".shp", full.names = TRUE)
 
-        if (length(shpfilez) == 0) warning("No shapefile found in uploaded zip archive.")
-        if (length(shpfilez) > 1) warning("Multiple shapefiles found in uploaded zip archive.\n",
-                                         "Only the first one wll be used.")
+          if (length(shpfilez) == 0) warning("No shapefile found in uploaded zip archive.")
+          if (length(shpfilez) > 1) warning("Multiple shapefiles found in uploaded zip archive.\n",
+                                           "Only the first one wll be used.")
 
-        checkPoly(shpfilez[1], studyArea, polyFilename)
-      } else if (length(shpFile)) {
-        if (length(shpFile) > 1) warning("Multiple shapefiles uploaded.\n",
-                                         "Only the first one wll be used.")
-        checkPoly(shpFile[1], studyArea, polyFilename)
-      } else {
-        warning("Invalid or missing shopefile (.shp).")
-      }
+          checkPoly(shpfilez[1], studyArea, polyFilename)
+        } else if (length(shpFile)) {
+          if (length(shpFile) > 1) warning("Multiple shapefiles uploaded.\n",
+                                           "Only the first one wll be used.")
+          checkPoly(shpFile[1], studyArea, polyFilename)
+        } else {
+          warning("Invalid or missing shopefile (.shp).")
+        }
+      #})
     }
   })
 
