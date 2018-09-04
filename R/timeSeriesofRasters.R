@@ -24,6 +24,7 @@ timeSeriesofRastersUI <- function(id) {
 #' @param defaultPolyName     Name of the polygon to use as the default for mapping.
 #' @param mapLegend           The legend text to add to the leaflet map.
 #' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
+#' @param shpStudyRegionLFLT  \code{SpatialPolygonDataFrame} for the study region.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
 #' @param uploadOpts    A list of options for use with file uploads:
@@ -64,7 +65,7 @@ timeSeriesofRastersUI <- function(id) {
 #'
 timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTemplate,
                                 rctPolygonList, rctChosenPoly, defaultPolyName = NULL,
-                                shpStudyRegionName = NULL,
+                                shpStudyRegionName = NULL, shpStudyRegionLFLT = NULL,
                                 colorPalette, maxAge, zoom = 5, mapTilesDir = "www/",
                                 mapLegend = "", mapTitle = "", sliderTitle = "", histTitle = "",
                                 nPolygons, nRasters, rasterStepSize = 10,
@@ -72,27 +73,9 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
                                 rctStudyArea = NULL, thinKeep = 0.05) {
 
   observe({
-    prevPolyList <- rctPolygonList()
-
-    polyList <- do.call(polygonList, append(rctChosenPoly()$polygons,
-                                            list(studyArea = rctStudyArea())))
-
-    polyList <- SpaDES.core::updateList(prevPolyList, polyList)
+    polyList <- rctPolygonList()
     polyName <- rctChosenPoly()$selected
-
-    ## the full study region, using leaflet projection (used for map only here)
-    shpStudyRegion <- if (is.null(shpStudyRegionName)) {
-      polyList[[1]][["crsLFLT"]]
-    } else {
-      polyList[[shpStudyRegionName]][["crsLFLT"]]
-    }
-
-    ## the sub study region, using leaflet projection (used for map only here)
-    shpStudyArea <- if (is.null(defaultPolyName)) {
-      polyList[[1]][["crsLFLT"]]
-    } else {
-      polyList[[defaultPolyName]][["crsLFLT"]]
-    }
+    shpStudyArea <- polyList[[1]][["crsLFLT"]]
 
     ## thin the study area polygon in a separate process and create leaflet map
     future({
