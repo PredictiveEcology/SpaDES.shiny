@@ -107,8 +107,8 @@ timeSeriesofRasters <- function(input, output, session, rctRasterList, rctUrlTem
         addEasyButton(easyButton(
           icon = "fa-globe", title = "Zoom out to full study area",
           onClick = JS(paste0("function(btn, map){ map.setView([",
-                              mean(c(ymin(shpStudyRegion), ymax(shpStudyRegion))), ", ",
-                              mean(c(xmin(shpStudyRegion), xmax(shpStudyRegion))), "],",
+                              mean(c(ymin(shpStudyRegionLFLT), ymax(shpStudyRegionLFLT))), ", ",
+                              mean(c(xmin(shpStudyRegionLFLT), xmax(shpStudyRegionLFLT))), "],",
                               zoom, ")}")))) %>%
         addMiniMap(tiles = leaflet::providers$OpenStreetMap, toggleDisplay = TRUE) %>%
         addPolygons(data = shpStudyAreaThinned, color = "blue",

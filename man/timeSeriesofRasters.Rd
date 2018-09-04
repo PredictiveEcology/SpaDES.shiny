@@ -9,11 +9,11 @@ timeSeriesofRastersUI(id)
 
 timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
   rctPolygonList, rctChosenPoly, defaultPolyName = NULL,
-  shpStudyRegionName = NULL, colorPalette, maxAge, zoom = 5,
-  mapTilesDir = "www/", mapLegend = "", mapTitle = "",
-  sliderTitle = "", histTitle = "", nPolygons, nRasters,
-  rasterStepSize = 10, uploadOpts = list(auth = NULL, path = NULL, user
-  = NULL), rctStudyArea = NULL, thinKeep = 0.05)
+  shpStudyRegionName = NULL, shpStudyRegionLFLT = NULL, colorPalette,
+  maxAge, zoom = 5, mapTilesDir = "www/", mapLegend = "",
+  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons,
+  nRasters, rasterStepSize = 10, uploadOpts = list(auth = NULL, path =
+  NULL, user = NULL), rctStudyArea = NULL, thinKeep = 0.05)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module server function.}
@@ -36,6 +36,8 @@ timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
 \item{defaultPolyName}{Name of the polygon to use as the default for mapping.}
 
 \item{shpStudyRegionName}{Name of the study area region (from \code{rctRasterList}).}
+
+\item{shpStudyRegionLFLT}{\code{SpatialPolygonDataFrame} for the study region.}
 
 \item{colorPalette}{Colour palette to use.}
 
