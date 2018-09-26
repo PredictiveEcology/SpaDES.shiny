@@ -186,7 +186,7 @@ setMethod(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
                 multiple = FALSE,
-                choices = moduleParams[["min"]][[1]]
+                choices = moduleParams[["default"]][[1]]
               )
             }
             # To do make ones for logical, character, functions, text etc.
