@@ -203,7 +203,7 @@ spatialPolygons <- function(mapList) {
 #' @export
 spatialPoints <- function(mapList) {
   lsObjs <- ls(ml@maps)
-  logicalRasters <- unlist(lapply(mget(lsObjs, ml@maps), is, "spatialPoints"))
+  logicalRasters <- unlist(lapply(mget(lsObjs, ml@maps), is, "SpatialPoints"))
   if (any(logicalRasters)) {
     mget(names(logicalRasters)[logicalRasters], ml@maps)
   } else {
