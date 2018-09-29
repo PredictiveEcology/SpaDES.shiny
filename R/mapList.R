@@ -177,9 +177,43 @@ studyArea <- function(mapList, layer = 1) {
   }
 }
 
+#' @export
+rasters <- function(mapList) {
+  lsObjs <- ls(ml@maps)
+  logicalRasters <- unlist(lapply(mget(lsObjs, ml@maps), is, "RasterLayer"))
+  if (any(logicalRasters)) {
+    mget(names(logicalRasters)[logicalRasters], ml@maps)
+  } else {
+    NULL
+  }
+}
+
+
+#' @export
+spatialPolygons <- function(mapList) {
+  lsObjs <- ls(ml@maps)
+  logicalRasters <- unlist(lapply(mget(lsObjs, ml@maps), is, "SpatialPolygons"))
+  if (any(logicalRasters)) {
+    mget(names(logicalRasters)[logicalRasters], ml@maps)
+  } else {
+    NULL
+  }
+}
+
+#' @export
+spatialPoints <- function(mapList) {
+  lsObjs <- ls(ml@maps)
+  logicalRasters <- unlist(lapply(mget(lsObjs, ml@maps), is, "spatialPoints"))
+  if (any(logicalRasters)) {
+    mget(names(logicalRasters)[logicalRasters], ml@maps)
+  } else {
+    NULL
+  }
+}
 .singleMetadataNAEntry <-
   data.table::data.table(layerName = NA_character_, layerType = NA_character_,
              sourceURL = NA_character_,
              columnNameForLabels = NA_character_,
              leafletVisible = TRUE, studyArea = FALSE)
+
 
