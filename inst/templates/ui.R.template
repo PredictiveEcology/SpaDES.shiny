@@ -1,0 +1,23 @@
+library(shiny)
+library(shinydashboard)
+library(shinyBS)
+
+dashboardPage(
+  skin = "green",
+  dashboardHeader(title = {{{title}}}),
+  dashboardSidebar(
+    width = {{{sidebarWidth}}},
+    sidebarMenu(
+      id = "wholeThing",
+      {{{menuItems}}}
+    ),
+    sidebarFooterUI("sidebarInfo")
+  ),
+  dashboardBody(
+    useShinyjs(),
+    tabItems(
+      {{{tabItems}}}
+    ),
+    copyrightFooterUI("copyright")
+  )
+)

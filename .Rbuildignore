@@ -6,7 +6,11 @@
 ^\.lintr$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^appveyor_cache\.txt$
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^docs$
+^\.httr-oauth$
 ^LICENSE$
+^README\.md$
+^README-DEVELOPMENT\.md$

@@ -6,12 +6,70 @@ matrix:
   include:
   - os: linux
     dist: trusty
+    r: 3.3
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
+        packages:
+        - libgdal-dev
+        - libgdal1-dev
+        - libgeos-dev
+        - libjq-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libprotobuf-dev
+        - libudunits2-dev
+        - libv8-dev
+        - gdal-bin
+        - protobuf-compiler
+    before_install:
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+  - os: linux
+    dist: trusty
+    r: 3.4
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
+        packages:
+        - libgdal-dev
+        - libgdal1-dev
+        - libgeos-dev
+        - libjq-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libprotobuf-dev
+        - libudunits2-dev
+        - libv8-dev
+        - gdal-bin
+        - protobuf-compiler
+    before_install:
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+  - os: linux
+    dist: trusty
     r: oldrel
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
-          - libgdal1-dev
-          - libproj-dev
+        - libgdal-dev
+        - libgdal1-dev
+        - libgeos-dev
+        - libjq-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libprotobuf-dev
+        - libudunits2-dev
+        - libv8-dev
+        - gdal-bin
+        - protobuf-compiler
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
@@ -22,9 +80,21 @@ matrix:
     r: release
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
-          - libgdal1-dev
-          - libproj-dev
+        - libgdal-dev
+        - libgdal1-dev
+        - libgeos-dev
+        - libjq-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libprotobuf-dev
+        - libudunits2-dev
+        - libv8-dev
+        - gdal-bin
+        - protobuf-compiler
     r_github_packages:
       - jimhester/lintr
     before_install:
@@ -40,19 +110,35 @@ matrix:
     r: devel
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        - sourceline: 'ppa:opencpu/jq'
         packages:
-          - libgdal1-dev
-          - libproj-dev
+        - libgdal-dev
+        - libgdal1-dev
+        - libgeos-dev
+        - libjq-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libprotobuf-dev
+        - libudunits2-dev
+        - libv8-dev
+        - gdal-bin
+        - protobuf-compiler
     before_install:
       - export DISPLAY=:99.0
       - sh -e /etc/init.d/xvfb start
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_packages:
+    - devtools
   - os: osx
-    osx_image: xcode8.2
+    osx_image: xcode9.2
     latex: false
     r_build_args: '--no-build-vignettes'
     r_check_args: '--as-cran --ignore-vignettes --no-examples'
+    before_install:
+    - sudo R CMD javareconf
     before_script:
       - Rscript -e "install.packages('rgdal', type = 'source')"
 r_build_args: " "
@@ -66,4 +152,6 @@ branches:
   only:
     - master
     - development
+    - develop
     - testing
+    - generalize-modules

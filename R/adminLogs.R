@@ -1,13 +1,11 @@
-#' Generate Admin Log File Viewer
+#' Admin log file viewer shiny module
 #'
 #' View app-specific logs at a specific path (default is \file{/var/log/shiny-server}).
 #'
-#' @details Generates a fluidRow consisting of two columns:
-#' one containing a file selector dropdown menu and the other displaying the
-#' text output from the selected log file.
+#' Generates a fluidRow consisting of two columns: one containing a file selector
+#' dropdown menu and the other displaying the text output from the selected log file.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -35,7 +33,6 @@ adminLogsUI <- function(id) {
 #' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
 #' @param path     file path of the server log files (usually \file{/var/log/shiny-server})
 #'
-#' @author Alex Chubaty
 #' @export
 #' @importFrom shiny isolate reactiveFileReader renderText renderUI req selectInput
 #' @rdname adminLogs

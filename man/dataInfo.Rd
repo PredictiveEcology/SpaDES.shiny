@@ -10,8 +10,7 @@ dataInfoUI(id)
 dataInfo(input, output, session, sim)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's
-UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -22,7 +21,8 @@ UI function}
 \item{sim}{A \code{simList} object}
 }
 \description{
-TO DO: needs to be generalized
+Display the rendered Rmarkdown content of the module's data description file
+(\file{moduleName/moduleName_data.Rmd}).
 }
 \author{
 Alex Chubaty

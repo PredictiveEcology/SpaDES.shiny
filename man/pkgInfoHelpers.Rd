@@ -36,8 +36,6 @@ This is simply a wrapper around \code{tools::package_dependencies}
 This is simply a wrapper around \code{utils::packageVersion} to 1) allow a
 vector of package names to be passed as an argument; 2) to warn instead of error
 when a package is not installed; and 3) return versions as character strings.
-
-Get authors from a package's DESCRIPTION
 }
 \author{
 Alex Chubaty

@@ -6,23 +6,25 @@
 \alias{SpaDES.shiny-package}
 \title{The \pkg{SpaDES.shiny} package}
 \description{
-The \pkg{SpaDES.shiny} package
+Create 'shiny' app interfaces for 'SpaDES' models.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://spades.shiny.predictiveecology.org/}
+  \item \url{http://spades-shiny.predictiveecology.org/}
   \item \url{https://github.com/PredictiveEcology/SpaDES.shiny}
   \item Report bugs at \url{https://github.com/PredictiveEcology/SpaDES.shiny/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Alex M Chubaty \email{alexander.chubaty@canada.ca}
+\strong{Maintainer}: Alex M Chubaty \email{alex.chubaty@gmail.com} (https://orcid.org/0000-0001-7146-8135)
 
 Authors:
 \itemize{
-  \item Eliot J B McIntire \email{eliot.mcintire@canada.ca}
+  \item Eliot J B McIntire \email{eliot.mcintire@canada.ca} (https://orcid.org/0000-0002-6914-8316)
+  \item Damian Rodziewicz
+  \item Mateusz Wyszynski
 }
 
 Other contributors:

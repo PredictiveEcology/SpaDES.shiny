@@ -3,15 +3,14 @@
 \name{adminLogsUI}
 \alias{adminLogsUI}
 \alias{adminLogs}
-\title{Generate Admin Log File Viewer}
+\title{Admin log file viewer shiny module}
 \usage{
 adminLogsUI(id)
 
 adminLogs(input, output, session, config, path = "/var/log/shiny-server")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's
-UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -27,12 +26,9 @@ UI function}
 View app-specific logs at a specific path (default is \file{/var/log/shiny-server}).
 }
 \details{
-Generates a fluidRow consisting of two columns:
-one containing a file selector dropdown menu and the other displaying the
-text output from the selected log file.
+Generates a fluidRow consisting of two columns: one containing a file selector
+dropdown menu and the other displaying the text output from the selected log file.
 }
 \author{
-Alex Chubaty
-
 Alex Chubaty
 }

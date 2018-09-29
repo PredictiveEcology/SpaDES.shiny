@@ -1,3 +1,7 @@
+##
+## SpaDES.shiny app configuration file
+##
+
 # site configuration
 title: "\u2660 template app"
 logo: "images/spades_logo.png"
@@ -23,7 +27,7 @@ RservePorts:                # list of user and port
 dbtype: postgres
 dbname:
 host:
-port: 5432
+port:   5432
 user:
 password:
 

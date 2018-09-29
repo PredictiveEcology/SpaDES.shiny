@@ -3,15 +3,14 @@
 \name{simEventDiagramUI}
 \alias{simEventDiagramUI}
 \alias{simEventDiagram}
-\title{Simulation event diagram module}
+\title{Simulation event diagram shiny module}
 \usage{
 simEventDiagramUI(id)
 
 simEventDiagram(input, output, session, sim)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's
-UI function}
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -22,7 +21,7 @@ UI function}
 \item{sim}{A \code{simList} object}
 }
 \description{
-Simulation event diagram module
+Simulation event diagram shiny module
 }
 \author{
 Alex Chubaty and Greyson Wang (module)

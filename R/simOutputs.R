@@ -2,8 +2,7 @@
 #'
 #' TO DO: needs description
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -39,8 +38,7 @@ simOutputs <- function(input, output, session, sim) {
 #'
 #' TO DO: need description
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -64,6 +62,7 @@ initialMapUI <- function(id) {
 #' @export
 #' @importFrom quickPlot clearPlot Plot setColors<-
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom SpaDES.core start
 #' @rdname initialMap
 initialMap <- function(input, output, session, sim, mapID) {
   output$mapInit <- renderPlot({
@@ -88,6 +87,6 @@ initialMap <- function(input, output, session, sim, mapID) {
 
     clearPlot()
     Plot(map, title = mapTitle)
-    Plot(demoArea, addTo = "map") ## TO DO: use studyArea from inside simList
+    #Plot(demoArea, addTo = "map") ## TO DO: use study area from inside simList
   })
 }

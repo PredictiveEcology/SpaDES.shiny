@@ -58,13 +58,15 @@ if (getRversion() >= "3.1.0") {
 #' @include environment.R
 #' @examples
 #' \dontrun{
+#'  library(SpaDES)
+#'  library(SpaDES.shiny)
 #'  mySim <- simInit(
 #'    times <- list(start = 0.0, end = 20.0),
 #'    params = list(
 #'      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
 #'    ),
 #'    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES"))
+#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
 #'  )
 #'
 #' shine(mySim)
@@ -109,7 +111,7 @@ setMethod(
       ),
       mainPanel(
         tabsetPanel(id = "topTabsetPanel",
-          tabPanel("Preview", plotOutput("spadesPlot", height = "800px")),
+          tabPanel("Preview", plotOutput("quickPlot", height = "800px")),
           tabPanel("Module diagram", uiOutput("moduleDiagramUI")),
           tabPanel("Object diagram", uiOutput("objectDiagramUI")),
           tabPanel("Event diagram", uiOutput("eventDiagramUI")),
@@ -124,7 +126,7 @@ setMethod(
     # Some cases there may be an error due to a previous plot still existing - this should clear
     curDev <- dev.cur()
     if (exists(".pkgEnv"))
-      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
+      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("quickPlot", curDev))
     else
       alreadyPlotted <- FALSE
 
@@ -184,7 +186,7 @@ setMethod(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
                 multiple = FALSE,
-                choices = moduleParams[["min"]][[1]]
+                choices = moduleParams[["default"]][[1]]
               )
             }
             # To do make ones for logical, character, functions, text etc.
@@ -228,7 +230,7 @@ setMethod(
     simReset <- eventReactive(input$resetSimInit, {
       # Update simInit with values obtained from UI
       clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
-      rm(list = ls(sim), envir = sim@.envir)
+      rm(list = ls.simList(sim), envir = sim@.envir)
       sim <<- simOrig
       for (i in names(simOrig1@.list)) {
         sim[[i]]  <<- simOrig1@.list[[i]]
@@ -262,10 +264,10 @@ setMethod(
     })
 
     # Main plot
-    output$spadesPlot <- renderPlot({
+    output$quickPlot <- renderPlot({
       curDev <- dev.cur()
       alreadyPlotted <- if (exists(".pkgEnv")) {
-        grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
+        grepl(ls(quickPlot:::.quickPlotEnv), pattern = paste0("quickPlot", curDev))
       } else {
         FALSE
       }
@@ -310,7 +312,7 @@ setMethod(
       if (v$time <= start(sim)) {
         return()
       } else {
-        DiagrammeROutput("objectDiagram", height = max(600, length(ls(sim)) * 30))
+        DiagrammeROutput("objectDiagram", height = max(600, length(ls.simList(sim)) * 30))
       }
     })
 

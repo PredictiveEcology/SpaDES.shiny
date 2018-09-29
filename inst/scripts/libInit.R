@@ -2,6 +2,9 @@
 #'
 #' @author Alex Chubaty
 #'
+#' @importFrom devtools install_github
+#' @importFrom packrat init snapshot
+#' @importFrom utils install.packages
 args <- commandArgs(TRUE)
 local({
   stopifnot(length(args) == 1)

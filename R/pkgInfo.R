@@ -73,9 +73,7 @@ pkgAuthors <- function(x) {
 #' @details Generates a box containing a data table with \pkg{SpaDES.shiny} package
 #' dependency version information (i.e., all the packages required or used by \pkg{SpaDES.shiny}.)
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's
-#'   UI function
-#'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #'
 #' @author Alex Chubaty
 #' @export
