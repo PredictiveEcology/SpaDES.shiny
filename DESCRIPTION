@@ -101,6 +101,7 @@ Collate:
     'histogramForRaster.R'
     'leaflet.R'
     'libInit.R'
+    'mapList.R'
     'news.R'
     'pkgInfo.R'
     'polygonList.R'

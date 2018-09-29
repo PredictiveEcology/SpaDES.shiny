@@ -49,7 +49,8 @@ Many module parameters are only accessed by modules at the start of a
 }
 \examples{
 \dontrun{
- library(SpaDES.core)
+ library(SpaDES)
+ library(SpaDES.shiny)
  mySim <- simInit(
    times <- list(start = 0.0, end = 20.0),
    params = list(
