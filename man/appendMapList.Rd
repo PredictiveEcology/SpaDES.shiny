@@ -4,7 +4,7 @@
 \alias{appendMapList}
 \title{Append a spatial object to mapList}
 \usage{
-appendMapList(object, ...)
+appendMapList(object, mapList, layerName, overwrite = FALSE, ...)
 }
 \description{
 Append a spatial object to mapList

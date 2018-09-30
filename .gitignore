@@ -37,3 +37,5 @@ vignettes/*.R
 *.utf8.md
 *.knit.md
 
+
+desktop\.ini

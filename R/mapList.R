@@ -72,12 +72,14 @@ setClass(
 #' ml <- new("mapList")
 #' appendMapList(StudyArea, ml, studyArea = TRUE, layerName = "newPoly")
 #'
-appendMapList <- function(object, ...) UseMethod("appendMapList")
+appendMapList <- function(object, mapList, layerName, overwrite = FALSE, ...)
+  UseMethod("appendMapList")
 
 #' @export
 #' @importFrom reproducible prepInputs
 appendMapList.default <- function(object = NULL, mapList = NULL,
-                                  layerName = NULL, sourceURL = NULL,
+                                  layerName = NULL, overwrite = FALSE,
+                                  sourceURL = NULL,
                                   columnNameForLabels = character(),
                                   leafletVisible = TRUE, studyArea = FALSE, ...) {
   if (is.null(mapList)) {
@@ -90,8 +92,9 @@ appendMapList.default <- function(object = NULL, mapList = NULL,
       object <- prepInputs(url = sourceURL)
     }
     mapList <- appendMapList(object, mapList = mapList, layerName = layerName,
-                  sourceURL = sourceURL, columnNameForLabels = columnNameForLabels,
-                  leafletVisible = leafletVisible, studyArea = studyArea)
+                             overwrite = overwrite,
+                             sourceURL = sourceURL, columnNameForLabels = columnNameForLabels,
+                             leafletVisible = leafletVisible, studyArea = studyArea)
   }
 
   mapList
@@ -100,33 +103,54 @@ appendMapList.default <- function(object = NULL, mapList = NULL,
 #' @export
 #' @importFrom reproducible fixErrors projectInputs postProcess
 #' @importFrom data.table rbindlist
+#' @param ... passed to reproducible::postProcess and reproducible::projectInputs and
+#'            reproducible::fixErrors
 appendMapList.SpatialPolygons <- function(object, mapList = NULL, layerName = NULL,
-                                          sourceURL = NULL,
+                                          overwrite = FALSE, sourceURL = NULL,
                                           columnNameForLabels = NULL,
                                           leafletVisible = TRUE, studyArea = NULL, ...) {
-  if (is.null(studyArea(mapList))) {
-    if (is.na(crs(mapList))) {
-      warning("There is no studyArea and no CRS")
+  mustOverwrite <- if (isTRUE(layerName %in% ls(mapList@maps))) {
+    if (isTRUE(overwrite)) {
+      message(layerName, " already in mapList; overwriting")
     } else {
-      object <- fixErrors(object)
-      object <- projectInputs(object, targetCRS = crs(mapList))
+      stop(layerName, " already in mapList; stopping. Want overwrite = TRUE?")
+    }
+    TRUE
+  } else {
+    FALSE
+  }
+  if (is.null(studyArea(mapList))) {
+    object <- fixErrors(object, ...)
+    if (isFALSE(studyArea)) {
+      message("There is no studyArea in mapList; consider adding one with 'studyArea = TRUE'")
+    }
+    if (is.na(crs(mapList))) {
+      message("No crs already in mapList, so no reprojection")
+    } else {
+      object <- projectInputs(object, targetCRS = crs(mapList), ...)
     }
   } else {
     if (is.na(crs(mapList))) {
-      warning("There is no studyArea and no CRS")
+      message("There is no CRS already in mapList; using the studyArea CRS and adding that to mapList")
     } else {
-      object <- postProcess(object, studyArea = studyArea(mapList))
+      object <- postProcess(object, studyArea = studyArea(mapList), ...)
     }
   }
 
   # Put map into map slot
-  assign(layerName, object, envir = mapList@maps)
+  assign(layerName, object, envir = mapList@maps) # this overwrites, if same name
+  if (mustOverwrite) {
+    ln <- layerName
+    mapList@metadata <- mapList@metadata[!(layerName %in% ln)]
+  }
 
   b <- .singleMetadataNAEntry
   if (isTRUE(studyArea)) {
     if (!is.null(studyArea(mapList))) {
-      message("mapList already has a studyArea; adding another one at rank ", length(studyArea(mapList)))
+      message("mapList already has a studyArea; adding another one as study area ",
+              1 + NROW(mapList@metadata[studyArea == TRUE]))
     } else {
+      message("Setting mapList CRS to this layer because it is the (first) studyArea inserted")
       mapList@CRS <- raster::crs(object)
     }
     set(b, , "studyArea", TRUE)
@@ -145,6 +169,30 @@ appendMapList.SpatialPolygons <- function(object, mapList = NULL, layerName = NU
 
   mapList@metadata <- rbindlist(list(mapList@metadata, b), use.names = TRUE, fill = TRUE)
   return(mapList)
+}
+
+
+
+#' @export
+removeMap <- function(mapList, layer, ask = TRUE, ...)
+  UseMethod("removeMap")
+
+removeMap.default <- function(mapList = NULL,
+                              layer = NULL, ask = TRUE, ...) {
+  if (is.null(mapList)) {
+    stop("Must pass a mapList")
+  }
+  if (is.character(layer))
+    layer <- mapList@metadata[, which(layerName %in% layer) ]
+
+  layerName <- unique(mapList@metadata[ layer , layerName])
+  if (length(layer > 1))
+    stop("There are more than object in mapList with that layer name, '",
+         layerName,"'. Please indicate layer ",
+         "by row number in mapList@metadata")
+
+  rm(layerName)
+  browser()
 }
 
 #' @importMethodsFrom raster crs
@@ -210,6 +258,13 @@ spatialPoints <- function(mapList) {
     NULL
   }
 }
+
+#' @export
+maps <- function(mapList) {
+  lsObjs <- ls(ml@maps)
+  mget(lsObjs, ml@maps)
+}
+
 .singleMetadataNAEntry <-
   data.table::data.table(layerName = NA_character_, layerType = NA_character_,
              sourceURL = NA_character_,
