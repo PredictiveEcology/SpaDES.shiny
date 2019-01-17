@@ -37,25 +37,8 @@ if (getRversion() >= "3.1.0") {
 #' @param ... additional arguments. Currently not used
 #'
 #' @export
-#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
-#' @importFrom DT renderDataTable dataTableOutput
-#' @importFrom grDevices dev.cur
-#' @importFrom magrittr %>%
-#' @importFrom quickPlot clearPlot rePlot
-#' @importFrom reproducible checkPath
-#' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
-#' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
-#' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
-#' @importFrom shiny reactiveValues renderPlot renderPrint renderUI runApp
-#' @importFrom shiny selectInput sliderInput sidebarLayout sidebarPanel
-#' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
-#' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
-#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
-#' @importFrom SpaDES.core spades start time<-
-#' @importFrom stats time
-#' @importFrom utils browseURL
 #' @include environment.R
+#'
 #' @examples
 #' \dontrun{
 #'  library(SpaDES)
@@ -82,6 +65,24 @@ setGeneric("shine", function(sim, title = "SpaDES App", debug = FALSE, filesOnly
 })
 
 #' @export
+#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
+#' @importFrom DT renderDataTable dataTableOutput
+#' @importFrom grDevices dev.cur
+#' @importFrom magrittr %>%
+#' @importFrom reproducible checkPath
+#' @importFrom quickPlot clearPlot rePlot
+#' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
+#' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
+#' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
+#' @importFrom shiny reactiveValues renderPlot renderPrint renderUI runApp
+#' @importFrom shiny selectInput sidebarLayout sidebarPanel sliderInput
+#' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
+#' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
+#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
+#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
+#' @importFrom SpaDES.core spades start time<-
+#' @importFrom stats time
+#' @importFrom utils browseURL getFromNamespace
 #' @rdname shine
 setMethod(
   "shine",
@@ -228,9 +229,10 @@ setMethod(
     })
 
     simReset <- eventReactive(input$resetSimInit, {
-      # Update simInit with values obtained from UI
+      ## Update simInit with values obtained from UI
       clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
-      rm(list = ls.simList(sim), envir = sim@.envir)
+
+      rm(list = ls(sim), envir = sim@.envir)
       sim <<- simOrig
       for (i in names(simOrig1@.list)) {
         sim[[i]]  <<- simOrig1@.list[[i]]
@@ -267,7 +269,8 @@ setMethod(
     output$quickPlot <- renderPlot({
       curDev <- dev.cur()
       alreadyPlotted <- if (exists(".pkgEnv")) {
-        grepl(ls(quickPlot:::.quickPlotEnv), pattern = paste0("quickPlot", curDev))
+        grepl(ls(getFromNamespace(".quickPlotEnv", "quickPlot")),
+                 pattern = paste0("quickPlot", curDev))
       } else {
         FALSE
       }
@@ -312,7 +315,7 @@ setMethod(
       if (v$time <= start(sim)) {
         return()
       } else {
-        DiagrammeROutput("objectDiagram", height = max(600, length(ls.simList(sim)) * 30))
+        DiagrammeROutput("objectDiagram", height = max(600, length(ls(sim)) * 30))
       }
     })
 
