@@ -137,7 +137,7 @@ setMethod(
 
     # Left side module tabs
     output$moduleTabs <- renderUI({
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       nTabs <- length(mods)
       myTabs <- lapply(mods, function(x) {
         tabPanel(x, h4("Parameters"), uiOutput(outputId = x))
@@ -146,7 +146,7 @@ setMethod(
     })
 
     # Sliders in module tabs
-    for (k in unlist(modules(sim))) {
+    for (k in unname(unlist(modules(sim)))) {
       local({
         # local is needed because it must force evaluation, avoid lazy evaluation
         kLocal <- k
@@ -198,7 +198,7 @@ setMethod(
 
     spadesCallFull <- function() {
       # Update simInit with values obtained from UI
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       for (m in mods) {
         for (i in names(params(sim)[[m]])) {
           if (!is.null(input[[paste0(m, "$", i)]])) # only if it is not null
@@ -216,7 +216,7 @@ setMethod(
     # Needs cleaning up - This should just be a subset of above
     spadesCall <- eventReactive(input$oneTimestepSpaDESButton, {
       # Update simInit with values obtained from UI
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       for (m in mods) {
         for (i in names(params(sim)[[m]])) {
           if (!is.null(input[[paste0(m, "$", i)]])) {
