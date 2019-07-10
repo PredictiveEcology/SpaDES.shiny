@@ -5,53 +5,7 @@ cran: https://cran.rstudio.com/
 matrix:
   include:
   - os: linux
-    dist: trusty
-    r: 3.3
-    addons:
-      apt:
-        sources:
-        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-        - sourceline: 'ppa:opencpu/jq'
-        packages:
-        - libgdal-dev
-        - libgdal1-dev
-        - libgeos-dev
-        - libjq-dev
-        - libnlopt-dev
-        - libproj-dev
-        - libprotobuf-dev
-        - libudunits2-dev
-        - libv8-dev
-        - gdal-bin
-        - protobuf-compiler
-    before_install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-  - os: linux
-    dist: trusty
-    r: 3.4
-    addons:
-      apt:
-        sources:
-        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-        - sourceline: 'ppa:opencpu/jq'
-        packages:
-        - libgdal-dev
-        - libgdal1-dev
-        - libgeos-dev
-        - libjq-dev
-        - libnlopt-dev
-        - libproj-dev
-        - libprotobuf-dev
-        - libudunits2-dev
-        - libv8-dev
-        - gdal-bin
-        - protobuf-compiler
-    before_install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-  - os: linux
-    dist: trusty
+    dist: xenial
     r: oldrel
     addons:
       apt:
@@ -75,8 +29,11 @@ matrix:
     - sh -e /etc/init.d/xvfb start
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - raster
   - os: linux
-    dist: trusty
+    dist: xenial
     r: release
     addons:
       apt:
@@ -102,11 +59,14 @@ matrix:
       - sh -e /etc/init.d/xvfb start
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - raster
     after_success:
     - Rscript -e 'covr::coveralls(package_coverage(type = "all", quiet = FALSE)))'
     - Rscript -e 'lintr::lint_package()'
   - os: linux
-    dist: trusty
+    dist: xenial
     r: devel
     addons:
       apt:
@@ -130,6 +90,9 @@ matrix:
       - sh -e /etc/init.d/xvfb start
     before_script:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - raster
     r_packages:
     - devtools
   - os: osx

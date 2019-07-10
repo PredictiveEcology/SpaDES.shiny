@@ -78,8 +78,6 @@ Suggests:
     testthat (>= 1.0.2)
 Remotes:
     MarkEdmondson1234/googleID,
-    PredictiveEcology/reproducible@development,
-    PredictiveEcology/quickPlot@development,
     PredictiveEcology/SpaDES.core@development,
     PredictiveEcology/SpaDES.tools@development
 Encoding: UTF-8
