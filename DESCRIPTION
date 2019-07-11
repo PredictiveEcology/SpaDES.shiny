@@ -21,7 +21,7 @@ Authors@R: c(
              role = "cph")
    )
 Depends:
-    R (>= 3.3)
+    R (>= 3.5)
 Imports:
     assertthat,
     data.table,
@@ -50,7 +50,7 @@ Imports:
     RColorBrewer,
     raster,
     rasterVis,
-    reproducible (>= 0.2.0),
+    reproducible (>= 0.2.9),
     rgeos,
     rmapshaper,
     shiny (>= 0.13),
@@ -77,9 +77,7 @@ Suggests:
     Rserve,
     testthat (>= 1.0.2)
 Remotes:
-    MarkEdmondson1234/googleID,
-    PredictiveEcology/SpaDES.core@development,
-    PredictiveEcology/SpaDES.tools@development
+    MarkEdmondson1234/googleID
 Encoding: UTF-8
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown

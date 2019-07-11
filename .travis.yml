@@ -59,7 +59,11 @@ matrix:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     r_binary_packages:
       - BH
+      - dplyr
+      - git2r
+      - igraph
       - raster
+      - RSQlite
     after_success:
     - Rscript -e 'covr::coveralls(package_coverage(type = "all", quiet = FALSE)))'
     - Rscript -e 'lintr::lint_package()'
@@ -89,7 +93,11 @@ matrix:
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     r_binary_packages:
       - BH
+      - dplyr
+      - git2r
+      - igraph
       - raster
+      - RSQlite
     r_packages:
     - devtools
   - os: osx
