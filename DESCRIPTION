@@ -83,6 +83,7 @@ License: GPL-3
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
+StagedInstall: no
 Collate: 
     'adminLogs.R'
     'authGoogle.R'
