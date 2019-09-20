@@ -76,6 +76,6 @@ histogram <- function(input, output, session, histdata, addAxisParams = NULL,
   if (!is.null(fname)) png(fname, width = 400, height = 400, units = "px")
   barplot(hst, ...)
   if (!is.null(axps)) do.call(axis, axps)
-  if (!is.null(verticalBar))  abline(v = verticalBar, col = "red", lwd = 3)
+  if (!is.null(verticalBar)) abline(v = verticalBar, col = "red", lwd = 3)
   if (!is.null(fname)) dev.off()
 }
