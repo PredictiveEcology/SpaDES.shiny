@@ -57,7 +57,7 @@ authGoogleUI <- function(id) {
 #' @return          A list of the user's Google profile details (name, email, etc.)
 #'
 #' @export
-#' @importFrom googleAuthR Authentication googleAuth with_shiny
+#' @importFrom googleAuthR googleAuth with_shiny
 #' @importFrom googledrive as_id
 #' @importFrom googleID get_user_info whitelist
 #' @importFrom shiny a icon isolate need reactive reactiveVal updateActionButton validate
