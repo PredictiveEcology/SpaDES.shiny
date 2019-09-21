@@ -1,6 +1,6 @@
 #' Upload a shapefile
 #'
-#' @param id An ID string that corresponds with the ID used to call the module server function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -12,9 +12,9 @@ uploadPolygonUI <- function(id) {
   uiOutput(ns("uploader"))
 }
 
-#' @param input          shiny server input object
-#' @param output         shiny server output object
-#' @param session        shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #' @param authStatus     Logical indicating whether a user can upload files.
 #' @param userDir        User-specific directory in which to store uploaded files.
 #' @param studyArea      A \code{Spatial} object used as a template for postprocessing

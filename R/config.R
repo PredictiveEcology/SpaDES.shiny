@@ -1,6 +1,6 @@
-#' Read an app's yaml config file
+#' Read an app's YAML config file
 #'
-#' @param file Filepath to a yaml config file (\file{_config.yml})
+#' @param file path to a YAML config file (\file{_config.yml})
 #'
 #' @return Invisibly return the config list.
 #'
@@ -50,10 +50,10 @@ readConfig <- function(file) {
   return(config)
 }
 
-#' Write yaml config file
+#' Write YAML config file
 #'
 #' @param config    List of configuration variables to write to file
-#' @param file      Path to yaml config file
+#' @param file      Path to YAML config file
 #'
 #' @export
 #' @importFrom reproducible checkPath
@@ -89,12 +89,12 @@ newConfig <- function(APP_DIR, ...) { # nolint
   return(invisible(config))
 }
 
-#' Update yaml config file
+#' Update YAML config file
 #'
 #' E.g., copy updated config from git repo to app config without clobbering
 #'
-#' @param fileFrom  Path to yaml config file to update from
-#' @param fileTo    Path to yaml config file
+#' @param fileFrom  Path to YAML config file to update from
+#' @param fileTo    Path to YAML config file
 #'
 #' @author Alex Chubaty
 #' @export
@@ -119,8 +119,8 @@ updateConfig <- function(fileFrom, fileTo) {
 #' Setup the necessary directory structure for a new app, and create a new app
 #' based on a template.
 #'
-#' The optional argument RLIB_DIR may be set to override the default of using a
-#' \code{packrat} library managing the app's package dependencies.
+#' The optional argument \code{RLIB_DIR} may be set to override the default of using a
+#' \pkg{packrat} library managing the app's package dependencies.
 #'
 #' @inheritParams newConfig
 #'
@@ -203,7 +203,7 @@ newAppDeprecated <- function(APP_DIR, ...) { # nolint
 #'                  directories, including \file{app_data/}, \file{modules/},
 #'                  and \file{packrat/}. Using symlinks speeds up app cloning.
 #'
-#' @return None. Invoked for the side-effect of copyin an existing app.
+#' @return None. Invoked for the side-effect of copying an existing app.
 #'
 #' @author Alex Chubaty
 #' @export

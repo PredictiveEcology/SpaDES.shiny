@@ -10,9 +10,7 @@ moduleParamsUI(id)
 moduleParams(input, output, session, sim)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.
-
-TO DO: needs documentation}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -23,7 +21,7 @@ TO DO: needs documentation}
 \item{sim}{A \code{simList} object}
 }
 \description{
-\code{SpaDES} module parameter values module
+TODO: needs documentation
 }
 \author{
 Alex Chubaty

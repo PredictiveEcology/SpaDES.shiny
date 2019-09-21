@@ -58,7 +58,7 @@ getSubtableMem <- memoise::memoise(getSubtable)
 #' Hence, summary can be based on implicitly determined subtable, but also based
 #' on entire \code{data.table} or some subtable determined by a subset of chosen values.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @return Shiny module UI.
 #'
@@ -73,11 +73,9 @@ slicerUI <- function(id) {
   shinycssloaders::withSpinner(uiOutput(ns("slicedUI")))
 }
 
-#' @param input          Shiny server input object.
-#'
-#' @param output         Shiny server output object.
-#'
-#' @param session        Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #'
 #' @param datatable      A reactive \code{data.table}.
 #'
@@ -98,7 +96,7 @@ slicerUI <- function(id) {
 #' @param serverFunction A summary module server function.
 #'                       This function should take, at minimum, the following arguments:
 #'                       \code{datatable} and \code{id}.
-#'                       Additonal named arguments are passed via \code{...}.
+#'                       Additional named arguments are passed via \code{...}.
 #'                       Users have access to the full data.table if they need it
 #'                       (e.g., to calculate histogram breaks) via \code{.dtFull},
 #'                       as well as a list of the currently selected category values
@@ -254,9 +252,9 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
 ################################################################################
 
-#' Slicer2 shiny module
+#' \code{slicer2} shiny module
 #'
-#' A 2-D version of slicer.
+#' A 2-D version of \code{slicer}.
 #'
 #' @export
 #' @inheritParams slicer

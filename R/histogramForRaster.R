@@ -2,7 +2,7 @@
 #'
 #' @description A shiny module creating histogram of data contained in a raster.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module server function.
+#' @template id
 #'
 #' @param title Optional title for the histogram. Any shiny tag can be used.
 #'
@@ -35,11 +35,11 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 
 #' Histogram for Raster Shiny Module
 #'
-#' @param input Shiny server input object
+#' @template input
 #'
-#' @param output Shiny server output object
+#' @template output
 #'
-#' @param session Shiny server session object
+#' @template session
 #'
 #' @param rctRasterVals Reactive values (likely extracted from a raster)
 #'

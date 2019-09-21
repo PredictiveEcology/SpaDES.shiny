@@ -2,7 +2,7 @@
 #'
 #' Display a level plot for a raster.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @param ... Additional UI parameters passed to \code{link[shiny]{plotOutput}},
 #'            or server parameters passed to \code{link[rasterVis]{levelplot}}.
@@ -18,11 +18,11 @@ visualizeRasterUI <- function(id, ...) {
   plotOutput(ns("rasterVisualization"), ...)
 }
 
-#' @param input Shiny server input object.
+#' @template input
 #'
-#' @param output Shiny server output object.
+#' @template output
 #'
-#' @param session Shiny server session object.
+#' @template session
 #'
 #' @param raster Raster which should be visualized.
 #'               Might be a reactive value containing raster.

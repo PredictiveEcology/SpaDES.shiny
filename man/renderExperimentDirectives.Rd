@@ -2,18 +2,19 @@
 % Please edit documentation in R/generator.R
 \name{renderExperimentDirectives}
 \alias{renderExperimentDirectives}
-\title{Render callModule directives for experiment module if provided.}
+\title{Render \code{callModule} directives for experiment module if provided.}
 \usage{
 renderExperimentDirectives(modules)
 }
 \arguments{
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
+\item{modules}{\code{tibble} with modules metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 }
 \value{
-Rendered callModule directives.
+Rendered \code{callModule} directives.
 }
 \description{
-Additonal customizations can be provided via two files: \file{pre_experiment.R}
+Additional customizations can be provided via two files: \file{pre_experiment.R}
 and \file{post_experiment.R}.
 }
 \author{

@@ -1,7 +1,7 @@
 #' Get simulation-specific log filepath
 #'
-#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
-#' @param session  The current session
+#' @template config
+#' @template session
 #' @param simID    The simulation ID
 #'
 #' @author Alex Chubaty
@@ -17,7 +17,7 @@ simLogFile <- function(config, session, simID) {
 #'
 #' @details Generates a tab consisting of the text output from the log file.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Olivia Sung, Alex Chubaty, Alex Tso
 #' @export
@@ -29,10 +29,10 @@ debuggingUI <- function(id) {
   verbatimTextOutput(ns("simLogText"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
+#' @template input
+#' @template output
+#' @template session
+#' @template config
 #' @param simID   The simulation number
 #'
 #' @export

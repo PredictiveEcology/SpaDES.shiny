@@ -10,15 +10,15 @@ visualizeDataTableUI(id, ...)
 visualizeDataTable(input, output, session, data)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{...}{Additional parameters passed to \code{link[DT]{dataTableOutput}}}
 
-\item{input}{Shiny server input object}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object}
+\item{session}{shiny server session object}
 
 \item{data}{Data table which should be displayed.}
 }

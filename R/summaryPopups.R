@@ -47,9 +47,9 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input            Shiny server input object.
-#' @param output           Shiny server output object.
-#' @param session          Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param proxy            Leaflet proxy which manages a connected leaflet map.
 #' @param click            Reactive value with click on shape input from leaflet map.
 #' @param rast             Reactive value with raster to summarize by.

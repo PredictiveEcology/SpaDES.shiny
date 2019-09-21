@@ -12,13 +12,13 @@ polygonChooser(input, output, session, rctPolygonList,
   = NULL), studyArea = NULL)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{rctPolygonList}{A reactive nested list with the following structure:
 # TODO: fill this in}

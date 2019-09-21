@@ -2,7 +2,7 @@
 #'
 #' TO DO: needs description
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -19,10 +19,10 @@ simOutputsUI <- function(id) {
   )
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom graphics plot
@@ -38,7 +38,7 @@ simOutputs <- function(input, output, session, sim) {
 #'
 #' TO DO: need description
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -52,12 +52,11 @@ initialMapUI <- function(id) {
   )
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
-#' @param mapID    Character string indicating the name of the map in the
-#'                 \code{simList} object.
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
+#' @param mapID    Character string indicating the name of the map in the \code{simList} object.
 #'
 #' @export
 #' @importFrom quickPlot clearPlot Plot setColors<-

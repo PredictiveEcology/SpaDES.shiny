@@ -3,12 +3,12 @@
 \docType{data}
 \name{proj4stringLFLT}
 \alias{proj4stringLFLT}
-\title{Leaflet proj.4 string}
+\title{Leaflet \code{proj.4} string}
 \format{An object of class \code{character} of length 1.}
 \usage{
 proj4stringLFLT
 }
 \description{
-This is the projection needed to plot on leaflet maps.
+This is the projection needed to plot on \pkg{leaflet} maps.
 }
 \keyword{datasets}

@@ -11,7 +11,7 @@ termsOfService(input, output, session, file = "TERMS.md",
   status = NULL)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -22,7 +22,7 @@ termsOfService(input, output, session, file = "TERMS.md",
 \item{file}{Path to a markdown file containing the Terms of Service
 (default: \code{"TERMS.md"})}
 
-\item{status}{The status (color) of the box in which the \code{file} is rendered.
+\item{status}{The status (colour) of the box in which the \code{file} is rendered.
 See \code{\link[shinydashboard]{box}}.}
 }
 \description{

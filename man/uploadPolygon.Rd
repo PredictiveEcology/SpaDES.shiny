@@ -10,7 +10,7 @@ uploadPolygonUI(id)
 uploadPolygon(input, output, session, authStatus, userDir, studyArea)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 

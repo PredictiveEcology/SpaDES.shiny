@@ -11,7 +11,7 @@ histogramForRaster(input, output, session, rctRasterVals,
   rctHistogramBreaks, scale = 1, addAxisParams = NULL, ...)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{title}{Optional title for the histogram. Any shiny tag can be used.}
 
@@ -21,11 +21,11 @@ histogramForRaster(input, output, session, rctRasterVals,
 in \code{histogramForRasterUI}, and \code{\link[graphics]{barplot}}
 in \code{histogramForRaster}.}
 
-\item{input}{Shiny server input object}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object}
+\item{session}{shiny server session object}
 
 \item{rctRasterVals}{Reactive values (likely extracted from a raster)}
 

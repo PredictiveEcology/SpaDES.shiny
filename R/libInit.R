@@ -1,9 +1,9 @@
 #' Initialize a \pkg{SpaDES.shiny} app's \pkg{packrat} library
 #'
 #' Spawns a new \code{Rscript} process to setup an app's package library using
-#' \pkg{packrat}. It initializes the packrat library inside the application
+#' \pkg{packrat}. It initializes the \code{packrat} library inside the application
 #' directory, and proceeds to install all \pkg{SpaDES.shiny} package dependencies,
-#' plus \code{devtools}.
+#' plus \pkg{devtools}.
 #' \strong{WARNING: this may take a while to complete!}
 #'
 #' @note This spawns and runs in another R process, during which time your
@@ -29,8 +29,7 @@ libInit <- function(APP_DIR) { # nolint
   if (substr(tolower(response), 1, 1) != "n") {
     result <- system2(
       "Rscript",
-      paste(file.path(system.file(package = "SpaDES.shiny"), "scripts/libInit.R"),
-            APP_DIR),
+      paste(file.path(system.file(package = "SpaDES.shiny"), "scripts/libInit.R"), APP_DIR),
       wait = TRUE
     )
     return(invisible(result))

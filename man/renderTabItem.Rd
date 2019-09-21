@@ -9,7 +9,8 @@ renderTabItem(tabName, module, moduleUIParameters)
 \arguments{
 \item{tabName}{Name of the tab that this item corresponds to.}
 
-\item{module}{Tibble with module metadata. Tibble format: type, name, id, parameters.}
+\item{module}{\code{tibble} with module metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 
 \item{moduleUIParameters}{Module UI parameters.}
 }

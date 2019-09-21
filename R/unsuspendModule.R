@@ -10,8 +10,8 @@
 #' and not any function calls inside the \code{renderPlot} code block).
 #' For example, \code{renderPlot({...}, width=400, height=300)}"
 #'
-#' @param id       Module id.
-#' @param session  The current shiny server session.
+#' @template id
+#' @template session
 #'
 #' @author Andrew Sali and Joe Cheng
 #' @export

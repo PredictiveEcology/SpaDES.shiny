@@ -8,11 +8,11 @@ spades_expt(input, output, session, sim, reps, seed, objectsToHash,
   cacheDebug = "complete", spadesDebug = getOption("spades.debug"))
 }
 \arguments{
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{sim}{A reactive \code{simList} object (e.g., pass \code{sim = sim()}).}
 

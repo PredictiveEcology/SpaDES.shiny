@@ -2,18 +2,18 @@
 % Please edit documentation in R/config.R
 \name{readConfig}
 \alias{readConfig}
-\title{Read an app's yaml config file}
+\title{Read an app's YAML config file}
 \usage{
 readConfig(file)
 }
 \arguments{
-\item{file}{Filepath to a yaml config file (\file{_config.yml})}
+\item{file}{path to a YAML config file (\file{_config.yml})}
 }
 \value{
 Invisibly return the config list.
 }
 \description{
-Read an app's yaml config file
+Read an app's YAML config file
 }
 \author{
 Alex Chubaty

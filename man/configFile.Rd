@@ -2,15 +2,15 @@
 % Please edit documentation in R/config.R
 \name{writeConfig}
 \alias{writeConfig}
-\title{Write yaml config file}
+\title{Write YAML config file}
 \usage{
 writeConfig(config, file)
 }
 \arguments{
 \item{config}{List of configuration variables to write to file}
 
-\item{file}{Path to yaml config file}
+\item{file}{Path to YAML config file}
 }
 \description{
-Write yaml config file
+Write YAML config file
 }

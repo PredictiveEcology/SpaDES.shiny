@@ -2,7 +2,7 @@
 #'
 #' Renders a markdown file containing your app's Privacy Statement.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -14,13 +14,12 @@ privacyStatementUI <- function(id) {
   uiOutput(ns("appPrivacyUI"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #' @param file     Path to a markdown file containing the Privacy Statement
 #'                 (default: \code{"PRIVACY.md"}).
-#' @param status   The status (color) of the box in which the \code{file} is rendered.
-#'                 See \code{\link[shinydashboard]{box}}.
+#' @template status
 #'
 #' @export
 #' @importFrom future future
@@ -53,7 +52,7 @@ privacyStatement <- function(input, output, session, file = "PRIVACY.md", status
 #'
 #' Renders a markdown file containing your app's Terms of Service.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -65,13 +64,12 @@ termsOfServiceUI <- function(id) {
   uiOutput(ns("appToSUI"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #' @param file     Path to a markdown file containing the Terms of Service
 #'                 (default: \code{"TERMS.md"})
-#' @param status   The status (color) of the box in which the \code{file} is rendered.
-#'                 See \code{\link[shinydashboard]{box}}.
+#' @template status
 #'
 #' @export
 #' @importFrom future future

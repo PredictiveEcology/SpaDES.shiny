@@ -10,7 +10,7 @@ initialMapUI(id)
 initialMap(input, output, session, sim, mapID)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -20,8 +20,7 @@ initialMap(input, output, session, sim, mapID)
 
 \item{sim}{A \code{simList} object}
 
-\item{mapID}{Character string indicating the name of the map in the
-\code{simList} object.}
+\item{mapID}{Character string indicating the name of the map in the \code{simList} object.}
 }
 \description{
 TO DO: need description

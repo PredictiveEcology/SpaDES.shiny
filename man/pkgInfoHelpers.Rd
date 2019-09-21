@@ -15,8 +15,8 @@ pkgAuthors(x)
 \arguments{
 \item{x}{An installed package name.}
 
-\item{type}{One of "Depends", "Imports", "LinkingTo", "Suggests", "Enhances",
-or "all". Default is \code{NULL}, which returns all.}
+\item{type}{One of \code{"Depends"}, \code{"Imports"}, \code{"LinkingTo"}, \code{"Suggests"},
+\code{"Enhances"}, or \code{"all"}. Default is \code{NULL}, which returns all.}
 
 \item{lib.loc}{a character vector of directory names of R libraries, or NULL.
 The default value of NULL corresponds to all libraries currently known.

@@ -2,18 +2,19 @@
 % Please edit documentation in R/generator.R
 \name{renderSimInitDirective}
 \alias{renderSimInitDirective}
-\title{Render callModule directives for simInit module if provided.}
+\title{Render \code{callModule} directives for \code{simInit} module if provided.}
 \usage{
 renderSimInitDirective(modules)
 }
 \arguments{
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
+\item{modules}{\code{tibble} with modules metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 }
 \value{
-Rendered callModule directives.
+Rendered \code{callModule} directives.
 }
 \description{
-Render callModule directives for simInit module if provided.
+Render \code{callModule} directives for \code{simInit} module if provided.
 }
 \author{
 Alex Chubaty

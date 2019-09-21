@@ -5,17 +5,16 @@
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input    Shiny server input object.
+#' @template input
 #'
-#' @param output   Shiny server output object.
+#' @template output
 #'
-#' @param session  Shiny server session object.
+#' @template session
 #'
-#' @param proxy    Leaflet proxy which manages a connected leaflet map.
+#' @param proxy    leaflet proxy which manages a connected leaflet map.
 #'
-#' @param rctUrlTemplateSingleRaster Reactive value which contains the URL template
-#'                    with the tiles (for a single raster)
-#'                    that should be added to the leaflet map as a result.
+#' @param rctUrlTemplateSingleRaster Reactive value which contains the URL template with the tiles
+#'                    (for a single raster) that should be added to the leaflet map as a result.
 #'
 #' @param tilesGroup  Group of rasters/tiles we want to update.
 #'

@@ -19,8 +19,8 @@ Setup the necessary directory structure for a new app, and create a new app
 based on a template.
 }
 \details{
-The optional argument RLIB_DIR may be set to override the default of using a
-\code{packrat} library managing the app's package dependencies.
+The optional argument \code{RLIB_DIR} may be set to override the default of using a
+\pkg{packrat} library managing the app's package dependencies.
 }
 \author{
 Alex Chubaty

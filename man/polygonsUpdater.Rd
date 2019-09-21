@@ -8,11 +8,11 @@ polygonsUpdater(input, output, session, proxy, poly, group = "group",
   ...)
 }
 \arguments{
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{proxy}{Leaflet proxy which manages a connected leaflet map.}
 

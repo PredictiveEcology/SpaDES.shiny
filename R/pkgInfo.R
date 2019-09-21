@@ -3,8 +3,8 @@
 #' This is simply a wrapper around \code{tools::package_dependencies}
 #'
 #' @param x     An installed package name.
-#' @param type  One of "Depends", "Imports", "LinkingTo", "Suggests", "Enhances",
-#'              or "all". Default is \code{NULL}, which returns all.
+#' @param type  One of \code{"Depends"}, \code{"Imports"}, \code{"LinkingTo"}, \code{"Suggests"},
+#'              \code{"Enhances"}, or \code{"all"}. Default is \code{NULL}, which returns all.
 #'
 #' @return A character vector of package dependencies.
 #'
@@ -73,7 +73,7 @@ pkgAuthors <- function(x) {
 #' @details Generates a box containing a data table with \pkg{SpaDES.shiny} package
 #' dependency version information (i.e., all the packages required or used by \pkg{SpaDES.shiny}.)
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -85,10 +85,10 @@ pkgInformationUI <- function(id) {
   uiOutput(ns("pkgInfo"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
+#' @template input
+#' @template output
+#' @template session
+#' @template config
 #'
 #' @export
 #' @importFrom DT dataTableOutput renderDataTable

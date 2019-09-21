@@ -7,12 +7,12 @@
 renderMenuItems(layout, modules)
 }
 \arguments{
-\item{layout}{Tibble with layout metadata.
-Tibble format: \code{tabName}, \code{menuItemName}, \code{icon},
+\item{layout}{\code{tibble} with layout metadata.
+\code{tibble} format: \code{tabName}, \code{menuItemName}, \code{icon},
 \code{moduleName}.}
 
-\item{modules}{Tibble with modules metadata.
-Tibble format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
+\item{modules}{\code{tibble} with modules metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 }
 \value{
 Rendered menu items.

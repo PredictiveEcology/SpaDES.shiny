@@ -2,7 +2,7 @@
 % Please edit documentation in R/generator.R
 \name{renderSpadesShinyUI}
 \alias{renderSpadesShinyUI}
-\title{Render and save ui.R file.}
+\title{Render and save \file{ui.R} file.}
 \usage{
 renderSpadesShinyUI(appDir, appMetadata)
 }
@@ -15,7 +15,7 @@ renderSpadesShinyUI(appDir, appMetadata)
 None. Invoked for the side-effect of writing rendered template to file.
 }
 \description{
-Render and save ui.R file.
+Render and save \file{ui.R} file.
 }
 \author{
 Damian Rodziewicz

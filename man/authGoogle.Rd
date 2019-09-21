@@ -10,13 +10,13 @@ authGoogleUI(id)
 authGoogle(input, output, session, appURL, authUsers, icon = "google")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
-\item{input}{shiny server input}
+\item{input}{shiny server input object}
 
-\item{output}{shiny server output}
+\item{output}{shiny server output object}
 
-\item{session}{shiny server session}
+\item{session}{shiny server session object}
 
 \item{appURL}{URL to the hosted app.}
 
@@ -35,7 +35,7 @@ Allows app content to be made conditionally available to 3 classes of user:
 }
 \details{
 1. Anonymous (non-logged in) users;
-2. Logged in users who are not autheticated against a whitelist;
+2. Logged in users who are not authenticated against a whitelist;
 3. Logged in and authenticated users.
 
 This allows authentication to be managed via Google rather than locally on the shiny server.
@@ -54,8 +54,8 @@ Your \file{global.R} file should set the following options:
   \item \code{googleAuthR.scopes.selected}:
   \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/userinfo.profile")}
-  \item \code{googleAuthR.webapp.client_id}: your Google app oauth id
-  \item \code{googleAuthR.webapp.client_secret}: your Google app oauth "secret"
+  \item \code{googleAuthR.webapp.client_id}: your Google app OAuth id
+  \item \code{googleAuthR.webapp.client_secret}: your Google app OAuth "secret"
 }
 
 Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.

@@ -2,18 +2,19 @@
 % Please edit documentation in R/generator.R
 \name{renderCallModuleDirectives}
 \alias{renderCallModuleDirectives}
-\title{Render callModule directives for provided modules.}
+\title{Render \code{callModule} directives for provided modules.}
 \usage{
 renderCallModuleDirectives(modules)
 }
 \arguments{
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
+\item{modules}{\code{tibble} with modules metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 }
 \value{
-Rendered callModule directives.
+Rendered \code{callModule} directives.
 }
 \description{
-Render callModule directives for provided modules.
+Render \code{callModule} directives for provided modules.
 }
 \note{
 \code{spades_simInit} and \code{spades_expt} modules are omitted,

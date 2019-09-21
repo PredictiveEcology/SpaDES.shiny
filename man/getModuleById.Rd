@@ -7,12 +7,13 @@
 getModuleById(modules, moduleId)
 }
 \arguments{
-\item{modules}{Tibble with modules metadata. Tibble format: type, name, id, parameters.}
+\item{modules}{\code{tibble} with modules metadata.
+\code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.}
 
-\item{moduleId}{Id of the module to retrieve.}
+\item{moduleId}{id of the module to retrieve.}
 }
 \value{
-Tibble containing the module if it was found. Empty tibble otherwise.
+\code{tibble} containing the module if it was found. Empty \code{tibble} otherwise.
 }
 \description{
 Retrieve a module metadata from modules tibble.

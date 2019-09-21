@@ -2,22 +2,22 @@
 % Please edit documentation in R/generator.R
 \name{renderCallModuleDirective}
 \alias{renderCallModuleDirective}
-\title{Render a callModule directive.}
+\title{Render a \code{callModule} directive.}
 \usage{
 renderCallModuleDirective(name, id, parameters)
 }
 \arguments{
 \item{name}{Module name.}
 
-\item{id}{Module id.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{parameters}{Server parameters used when calling the module.}
 }
 \value{
-Rendered callModule directive.
+Rendered \code{callModule} directive.
 }
 \description{
-Render a callModule directive.
+Render a \code{callModule} directive.
 }
 \author{
 Damian Rodziewicz

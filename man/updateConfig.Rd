@@ -2,14 +2,14 @@
 % Please edit documentation in R/config.R
 \name{updateConfig}
 \alias{updateConfig}
-\title{Update yaml config file}
+\title{Update YAML config file}
 \usage{
 updateConfig(fileFrom, fileTo)
 }
 \arguments{
-\item{fileFrom}{Path to yaml config file to update from}
+\item{fileFrom}{Path to YAML config file to update from}
 
-\item{fileTo}{Path to yaml config file}
+\item{fileTo}{Path to YAML config file}
 }
 \description{
 E.g., copy updated config from git repo to app config without clobbering

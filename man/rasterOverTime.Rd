@@ -14,24 +14,24 @@ rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
   nRasters, rasterStepSize = 10)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module server function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{rctRasterList}{A reactive that gives a list of rasters to be displayed.}
 
 \item{rctUrlTemplate}{The reactive url template for leaflet map tiles}
 
 \item{rctPolygonList}{Reactive list with sets of polygons to be displayed on a leaflet map.
-# TODO: decribe the format of the list!}
+# TODO: describe the format of the list!}
 
 \item{rctChosenPolyName}{Reactive containing the name of the selected polygon (character).}
 
-\item{defaultPolyName}{The name fo the default selected polygon.}
+\item{defaultPolyName}{The name of the default selected polygon.}
 
 \item{map}{Leaflet map to show raster and polygons on.}
 
@@ -60,7 +60,7 @@ E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
 None. Invoked for the side-effect of creating a shiny UI.
 
 Reactive polygon selected by the user with the \code{polygonChooser} module.
-         Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
+        Invoked for the side-effect of creating shiny server and UI components.
 }
 \description{
 A shiny module showing the values from a raster in time on a predefined map.

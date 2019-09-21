@@ -10,7 +10,7 @@ adminLogsUI(id)
 adminLogs(input, output, session, config, path = "/var/log/shiny-server")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -26,7 +26,7 @@ adminLogs(input, output, session, config, path = "/var/log/shiny-server")
 View app-specific logs at a specific path (default is \file{/var/log/shiny-server}).
 }
 \details{
-Generates a fluidRow consisting of two columns: one containing a file selector
+Generates a \code{fluidRow} consisting of two columns: one containing a file selector
 dropdown menu and the other displaying the text output from the selected log file.
 }
 \author{

@@ -4,7 +4,7 @@
 #' Allows changing polygons and rasters via slider.
 #' Additionally, a histogram summary for each raster choice is shown.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module server function.
+#' @template id
 #'
 #' @return None. Invoked for the side-effect of creating a shiny UI.
 #'
@@ -29,15 +29,15 @@ rastersOverTimeUI <- function(id) {
   )
 }
 
-#' @param input           Shiny server input object.
-#' @param output          Shiny server output object.
-#' @param session         Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param rctRasterList   A reactive that gives a list of rasters to be displayed.
 #' @param rctUrlTemplate  The reactive url template for leaflet map tiles
 #' @param rctPolygonList  Reactive list with sets of polygons to be displayed on a leaflet map.
-#'                        # TODO: decribe the format of the list!
+#'                        # TODO: describe the format of the list!
 #' @param rctChosenPolyName Reactive containing the name of the selected polygon (character).
-#' @param defaultPolyName The name fo the default selected polygon.
+#' @param defaultPolyName The name of the default selected polygon.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param mapTilesDir     Directory where pre-generated map tiles are stored
 #'                        (default \code{"www/"}; note the trailing slash).
@@ -54,7 +54,7 @@ rastersOverTimeUI <- function(id) {
 #' @param rasterStepSize  Size of step in the raster slider.
 #'
 #' @return Reactive polygon selected by the user with the \code{polygonChooser} module.
-#'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
+#'         Invoked for the side-effect of creating shiny server and UI components.
 #'
 #' @export
 #' @importFrom future future

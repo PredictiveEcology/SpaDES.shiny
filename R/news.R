@@ -1,9 +1,9 @@
-#' Generate a page displaying your app's NEWS file
+#' Generate a page displaying your app's \file{NEWS} file
 #'
-#' Renders a markdown file containing your app's NEWS file, which can be used as
+#' Renders a markdown file containing your app's \file{NEWS} file, which can be used as
 #' an updates feed for users to see what has changed in the app.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -15,13 +15,11 @@ appNewsUI <- function(id) {
   uiOutput(ns("appNewsUI"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param file     Path to a markdown file containing the NEWS
-#'                 (default: \code{"NEWS.md"}).
-#' @param status   The status (color) of the box in which the \code{file} is rendered.
-#'                 See \code{\link[shinydashboard]{box}}.
+#' @template input
+#' @template output
+#' @template session
+#' @param file  Path to a markdown file containing the NEWS (default: \code{"NEWS.md"}).
+#' @template status
 #'
 #' @export
 #' @importFrom future future

@@ -2,7 +2,7 @@
 #'
 #' Display a \code{SpatialPolygons*} objects on a leaflet map.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @param ... Additional parameters passed to \code{link[leaflet]{leafletOutput}}.
 #'
@@ -18,9 +18,9 @@ visualizePolygonsUI <- function(id, ...) {
   leafletOutput(ns("map"), ...)
 }
 
-#' @param input     Shiny server input object.
-#' @param output    Shiny server output object.
-#' @param session   Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param poly      Reactive value with polygon to visualize.
 #' @param proxy     Proxy to a leaflet map on which polygons should be displayed.
 #'                  See \code{\link[leaflet]{leafletProxy}}

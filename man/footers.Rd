@@ -17,7 +17,7 @@ sidebarFooterUI(id)
 sidebarFooter(input, output, session, footer = NULL)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -32,7 +32,7 @@ in the app metadata sued my \code{newApp}.}
 \item{year}{Character string indicating the copyright date.
 Defaults to the current year.}
 
-\item{footer}{Custom text to appear in footer above the SpaDES and Appsilon logos.}
+\item{footer}{Custom text to appear in footer above the 'SpaDES' and 'Appsilon' logos.}
 }
 \description{
 App copyright info can be inserted into a footer in the dashboard body using

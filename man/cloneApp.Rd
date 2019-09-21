@@ -16,7 +16,7 @@ directories, including \file{app_data/}, \file{modules/},
 and \file{packrat/}. Using symlinks speeds up app cloning.}
 }
 \value{
-None. Invoked for the side-effect of copyin an existing app.
+None. Invoked for the side-effect of copying an existing app.
 }
 \description{
 Setup the necessary directory structure for a new app, if not already present.

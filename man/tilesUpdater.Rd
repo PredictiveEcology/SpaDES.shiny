@@ -9,17 +9,16 @@ tilesUpdater(input, output, session, proxy, rctUrlTemplateSingleRaster,
   addLayersControlParameters = NULL)
 }
 \arguments{
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
-\item{proxy}{Leaflet proxy which manages a connected leaflet map.}
+\item{proxy}{leaflet proxy which manages a connected leaflet map.}
 
-\item{rctUrlTemplateSingleRaster}{Reactive value which contains the URL template
-with the tiles (for a single raster)
-that should be added to the leaflet map as a result.}
+\item{rctUrlTemplateSingleRaster}{Reactive value which contains the URL template with the tiles
+(for a single raster) that should be added to the leaflet map as a result.}
 
 \item{tilesGroup}{Group of rasters/tiles we want to update.}
 

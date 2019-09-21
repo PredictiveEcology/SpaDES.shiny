@@ -3,7 +3,7 @@
 #' App copyright info can be inserted into a footer in the dashboard body using
 #' \code{copyrightFooter} module.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -15,9 +15,9 @@ copyrightFooterUI <- function(id) {
   uiOutput(ns("copyrightInfo"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #' @param cph      Character string indicating the copyright holder name.
 #'                 This is automatically generated from the \code{copyright} item
 #'                 in the app metadata sued my \code{newApp}.
@@ -49,7 +49,7 @@ sidebarFooterUI <- function(id) {
   uiOutput(ns("sidebarInfo"))
 }
 
-#' @param footer Custom text to appear in footer above the SpaDES and Appsilon logos.
+#' @param footer Custom text to appear in footer above the 'SpaDES' and 'Appsilon' logos.
 #' @export
 #' @importFrom shiny br HTML
 #' @rdname footers

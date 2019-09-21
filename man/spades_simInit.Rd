@@ -7,11 +7,11 @@
 spades_simInit(input, output, session, ...)
 }
 \arguments{
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{...}{Additional arguments passed to \code{simInit}.}
 }

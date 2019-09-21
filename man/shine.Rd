@@ -13,7 +13,7 @@ shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE,
   filesOnly = FALSE, ...)
 }
 \arguments{
-\item{sim}{A \code{simList} object.}
+\item{sim}{A \code{simList} object}
 
 \item{title}{character string. The title of the shiny page.}
 

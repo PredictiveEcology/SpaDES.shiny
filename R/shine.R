@@ -21,7 +21,7 @@ if (getRversion() >= "3.1.0") {
 #'   (e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
 #'   overlaid layers is ignored.
 #'
-#' @param sim   A \code{simList} object.
+#' @template sim
 #'
 #' @param title character string. The title of the shiny page.
 #'

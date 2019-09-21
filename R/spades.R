@@ -4,9 +4,9 @@
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input    Shiny server input object.
-#' @param output   Shiny server output object.
-#' @param session  Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param ...      Additional arguments passed to \code{simInit}.
 #'
 #' @return A reactive \code{simList} object
@@ -28,9 +28,9 @@ spades_simInit <- function(input, output, session, ...) {
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input    Shiny server input object.
-#' @param output   Shiny server output object.
-#' @param session  Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param sim      A reactive \code{simList} object (e.g., pass \code{sim = sim()}).
 #' @param reps     A reactive indicating the number of replicates (e.g., pass \code{reps = reps()}).
 #' @param seed     An integer to pass to \code{set.seed} for the simulation experiment.

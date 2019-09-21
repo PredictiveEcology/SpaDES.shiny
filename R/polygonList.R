@@ -23,7 +23,7 @@ setOldClass("polygonList")
 #'          The values of matching elements in list \code{y}
 #'          replace the values in list \code{x}.
 #'
-#' @note This is a temporary workaroud until we resolve inheritance of s3 classes (see \code{.polygonList}).
+#' @note This is a temporary workaround until we resolve inheritance of S3 classes (see \code{.polygonList}).
 #'
 #' @author Alex Chubaty
 #' @export

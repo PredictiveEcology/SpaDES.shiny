@@ -3,7 +3,7 @@
 \name{slicer2UI}
 \alias{slicer2UI}
 \alias{slicer2}
-\title{Slicer2 shiny module}
+\title{\code{slicer2} shiny module}
 \usage{
 slicer2UI(id)
 
@@ -11,13 +11,13 @@ slicer2(input, output, session, datatable, uiSequence, serverFunction,
   uiFunction, ...)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
-\item{input}{Shiny server input object.}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object.}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object.}
+\item{session}{shiny server session object}
 
 \item{datatable}{A reactive \code{data.table}.}
 
@@ -38,7 +38,7 @@ which both make use of \pkg{shinydashboard}.}
 \item{serverFunction}{A summary module server function.
 This function should take, at minimum, the following arguments:
 \code{datatable} and \code{id}.
-Additonal named arguments are passed via \code{...}.
+Additional named arguments are passed via \code{...}.
 Users have access to the full data.table if they need it
 (e.g., to calculate histogram breaks) via \code{.dtFull},
 as well as a list of the currently selected category values
@@ -55,5 +55,5 @@ See example section.}
 \item{...}{Additional arguments passed to \code{serverFunction}.}
 }
 \description{
-A 2-D version of slicer.
+A 2-D version of \code{slicer}.
 }

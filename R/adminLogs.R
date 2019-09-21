@@ -2,10 +2,10 @@
 #'
 #' View app-specific logs at a specific path (default is \file{/var/log/shiny-server}).
 #'
-#' Generates a fluidRow consisting of two columns: one containing a file selector
+#' Generates a \code{fluidRow} consisting of two columns: one containing a file selector
 #' dropdown menu and the other displaying the text output from the selected log file.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -27,10 +27,10 @@ adminLogsUI <- function(id) {
   )
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param config   \pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})
+#' @template input
+#' @template output
+#' @template session
+#' @template config
 #' @param path     file path of the server log files (usually \file{/var/log/shiny-server})
 #'
 #' @export

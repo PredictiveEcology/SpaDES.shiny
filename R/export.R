@@ -1,6 +1,6 @@
 #' Export module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #' @param availableTypes list of types that user can select from and export to
 #'
 #' @importFrom shiny downloadButton NS selectInput tagList
@@ -48,9 +48,9 @@ exportToFile <- function(file, data, device) {
 
 #' Export module server
 #'
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #' @param data     data to be downloaded
 #' @param filename name of the downloaded file
 #'

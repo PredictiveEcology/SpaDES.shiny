@@ -12,5 +12,6 @@
 ^docs$
 ^\.httr-oauth$
 ^LICENSE$
+man-roxygen/
 ^README\.md$
 ^README-DEVELOPMENT\.md$

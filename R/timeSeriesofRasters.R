@@ -4,7 +4,7 @@
 #' with the user choosing which raster should be displayed by using the slider.
 #' A histogram summary for each raster choice is also shown.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module server function.
+#' @template id
 #'
 #' @return Invoked for the side-effect of creating a shiny UI.
 #'
@@ -37,7 +37,7 @@ timeSeriesofRastersUI <- function(id) {
 #'                      See \code{\link[rmapshaper]{ms_simplify}}.
 #'
 #' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
-#'          Invoked for the side-effect of creating shiny server and ui components. # TODO: reword
+#'          Invoked for the side-effect of creating shiny server and UI components. # TODO: reword
 #'
 #' @author Mateusz Wyszynski
 #' @author Alex Chubaty

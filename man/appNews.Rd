@@ -3,14 +3,14 @@
 \name{appNewsUI}
 \alias{appNewsUI}
 \alias{appNews}
-\title{Generate a page displaying your app's NEWS file}
+\title{Generate a page displaying your app's \file{NEWS} file}
 \usage{
 appNewsUI(id)
 
 appNews(input, output, session, file = "NEWS.md", status = NULL)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -18,14 +18,13 @@ appNews(input, output, session, file = "NEWS.md", status = NULL)
 
 \item{session}{shiny server session object}
 
-\item{file}{Path to a markdown file containing the NEWS
-(default: \code{"NEWS.md"}).}
+\item{file}{Path to a markdown file containing the NEWS (default: \code{"NEWS.md"}).}
 
-\item{status}{The status (color) of the box in which the \code{file} is rendered.
+\item{status}{The status (colour) of the box in which the \code{file} is rendered.
 See \code{\link[shinydashboard]{box}}.}
 }
 \description{
-Renders a markdown file containing your app's NEWS file, which can be used as
+Renders a markdown file containing your app's \file{NEWS} file, which can be used as
 an updates feed for users to see what has changed in the app.
 }
 \author{

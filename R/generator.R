@@ -61,10 +61,11 @@ renderSidebar <- function(text) {
 
 #' Retrieve a module metadata from modules tibble.
 #'
-#' @param modules   Tibble with modules metadata. Tibble format: type, name, id, parameters.
-#' @param moduleId  Id of the module to retrieve.
+#' @param modules   \code{tibble} with modules metadata.
+#'                  \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
+#' @param moduleId  id of the module to retrieve.
 #'
-#' @return Tibble containing the module if it was found. Empty tibble otherwise.
+#' @return \code{tibble} containing the module if it was found. Empty \code{tibble} otherwise.
 #'
 #' @author Damian Rodziewicz
 #' @importFrom dplyr filter
@@ -95,8 +96,9 @@ renderParameters <- function(parameters) {
 
 #' Render a tab item.
 #'
-#' @param tabName            Name of the tab that this item corresponds to.
-#' @param module             Tibble with module metadata. Tibble format: type, name, id, parameters.
+#' @param tabName   Name of the tab that this item corresponds to.
+#' @param module    \code{tibble} with module metadata.
+#'                  \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #' @param moduleUIParameters Module UI parameters.
 #'
 #' @return Rendered tab item.
@@ -116,12 +118,12 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
 
 #' Render tab items for provided layout and available modules.
 #'
-#' @param layout    Tibble with layout metadata.
-#'                  Tibble format: \code{tabName}, \code{menuItemName}, \code{icon},
+#' @param layout    \code{tibble} with layout metadata.
+#'                  \code{tibble} format: \code{tabName}, \code{menuItemName}, \code{icon},
 #'                  \code{moduleName}.
 #'
-#' @param modules   Tibble with modules metadata.
-#'                  Tibble format: \code{type}, \code{name}, \code{id}, \code{parameters}.
+#' @param modules   \code{tibble} with modules metadata.
+#'                  \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
 #' @return Rendered tab items.
 #'
@@ -172,7 +174,7 @@ renderMenuItems <- function(layout, modules) {
   return(paste(menuItems, collapse = ",\n      "))
 }
 
-#' Render and save ui.R file.
+#' Render and save \file{ui.R} file.
 #'
 #' @param appDir         The directory path to use for the new app.
 #' @param appMetadata    Application metadata.
@@ -194,13 +196,13 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
   writeLines(renderedContent, uiPath)
 }
 
-#' Render a callModule directive.
+#' Render a \code{callModule} directive.
 #'
 #' @param name             Module name.
-#' @param id               Module id.
+#' @template id
 #' @param parameters       Server parameters used when calling the module.
 #'
-#' @return Rendered callModule directive.
+#' @return Rendered \code{callModule} directive.
 #'
 #' @author Damian Rodziewicz
 renderCallModuleDirective <- function(name, id, parameters) {
@@ -214,15 +216,16 @@ renderCallModuleDirective <- function(name, id, parameters) {
   return(callModuleDirective)
 }
 
-#' Render callModule directives for provided modules.
+#' Render \code{callModule} directives for provided modules.
 #'
 #' @note \code{spades_simInit} and \code{spades_expt} modules are omitted,
 #'       as they are rendered separately using \code{\link{renderSimInitDirective}}
 #'       and \code{\link{renderExperimentDirectives}}, respectively.
 #'
-#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param modules  \code{tibble} with modules metadata.
+#'                 \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
-#' @return Rendered callModule directives.
+#' @return Rendered \code{callModule} directives.
 #'
 #' @author Damian Rodziewicz
 #' @importFrom purrr pmap
@@ -238,11 +241,12 @@ renderCallModuleDirectives <- function(modules) {
   return(paste(callModuleDirectives, collapse = "\n  "))
 }
 
-#' Render callModule directives for simInit module if provided.
+#' Render \code{callModule} directives for \code{simInit} module if provided.
 #'
-#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param modules  \code{tibble} with modules metadata.
+#'                 \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
-#' @return Rendered callModule directives.
+#' @return Rendered \code{callModule} directives.
 #'
 #' @author Alex Chubaty
 #' @importFrom purrr pmap
@@ -264,14 +268,15 @@ renderSimInitDirective <- function(modules) {
   }
 }
 
-#' Render callModule directives for experiment module if provided.
+#' Render \code{callModule} directives for experiment module if provided.
 #'
-#' Additonal customizations can be provided via two files: \file{pre_experiment.R}
+#' Additional customizations can be provided via two files: \file{pre_experiment.R}
 #' and \file{post_experiment.R}.
 #'
-#' @param modules  Tibble with modules metadata. Tibble format: type, name, id, parameters.
+#' @param modules  \code{tibble} with modules metadata.
+#'                 \code{tibble} format: \code{type}, \code{name}, \code{id}, \code{parameters}.
 #'
-#' @return Rendered callModule directives.
+#' @return Rendered \code{callModule} directives.
 #'
 #' @author Alex Chubaty
 #' @importFrom purrr pmap

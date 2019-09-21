@@ -3,7 +3,7 @@
 #' @description UI function of a shiny module which creates a histogram
 #'              using barplot based on the data received
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @param ... Additional UI parameters passed to \code{link[shiny]{plotOutput}},
 #'            or additional server arguments passed to \code{\link[graphics]{barplot}}.
@@ -24,11 +24,9 @@ histogramUI <- function(id, ...) {
 #' @description Server function of a shiny module which creates a histogram
 #'              using barplot based on the data received.
 #'
-#' @param input Shiny server input object
-#'
-#' @param output Shiny server output object
-#'
-#' @param session Shiny server session object
+#' @template input
+#' @template output
+#' @template session
 #'
 #' @param histdata  Reactive value containing a numeric vector of proportions corresponding
 #'                  to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)}
@@ -41,7 +39,7 @@ histogramUI <- function(id, ...) {
 #'
 #' @param verticalBar  Numeric value at which to add an \code{abline} to the histogram.
 #'
-#' @param fname optional filepath to save png outputs
+#' @param fname optional filepath to save \code{.png} outputs
 #'
 #' @export
 #' @importFrom assertthat assert_that

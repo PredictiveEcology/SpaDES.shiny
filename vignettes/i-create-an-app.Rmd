@@ -23,10 +23,10 @@ Lorem ipsum ...
 
 Users may wish to familiarize themselves with `shiny` apps more generally:
 
-- http://shiny.rstudio.com/tutorial/
-- http://shiny.rstudio.com/articles/
+- <http://shiny.rstudio.com/tutorial/>
+- <http://shiny.rstudio.com/articles/>
 
-Once you understand the basics of how to build a simple shiny app, it's fairly straightforward to customize more complex apps using this package.
+Once you understand the basics of how to build a simple `shiny` app, it's fairly straightforward to customize more complex apps using this package.
 
 ### Using this package
 
@@ -34,14 +34,14 @@ Lorem ipsum ...
 
 ### Getting help
 
-SpaDES users Q&A forum: https://groups.google.com/forum/#!forum/spades-users
+`SpaDES` users Q&A forum: <https://groups.google.com/forum/#!forum/spades-users>
 
 This is the place to ask for help on setting up and running simulations, as well as module development.
 Please do not file bug reports here.
 
 #### Bug Reports
 
-https://github.com/PredictiveEcology/SpaDES.shiny/issues
+<https://github.com/PredictiveEcology/SpaDES.shiny/issues>
 
 ## Application structure
 
@@ -59,11 +59,11 @@ A character string denoting the name of the app copyright holder (appears in foo
 
 A `data.frame` defining how the modules should be displayed.
 
-| tabName        | menuItemName   | icon         | moduleId  |
-| -------------- | -------------- | ------------ | --------- |
-| sliderTabName  | Slider Module  | map          | mySlider1 |
-| sliderTabName2 | Another Slider | sliders      | mySlider2 |
-| export         | My Export      | file-image-o | myExport3 |
+| `tabName`        | `menuItemName` | `icon`         | `moduleId`  |
+| ---------------- | -------------- | -------------- | ----------- |
+| `sliderTabName`  | Slider Module  | `map`          | `mySlider1` |
+| `sliderTabName2` | Another Slider | `sliders`      | `mySlider2` |
+| `export`         | My Export      | `file-image-o` | `myExport3` |
 
 - `tabName` tells UI the name of the tab corresponding to the menu item.
 - `menuItemName` defines the text label to use for that menu item.
@@ -72,15 +72,19 @@ A `data.frame` defining how the modules should be displayed.
 
 **modules:**
 
-| type          | name          | id            | parameters                                    |
-| ------------- | ------------- | ------------- | --------------------------------------------- |
-| shinyModule   | slider        | mySlider1     | list("\\"Slider label\\"", 0, 100, 50, 1)     |
-| shinyModule   | slider        | mySlider2     | list("\\"Slider label 2\\"", 0, 200, 100, 10) |
-| shinyModule   | export        | myExport3     | list("data.frame(x = 1:5, y = 6:10)"))        |
+| `type`          | `name`        | `id`            | `parameters`                                    |
+| --------------- | ------------- | --------------- | ----------------------------------------------- |
+| `shinyModule`   | slider        | `mySlider1`     | `list("\\"Slider label\\"", 0, 100, 50, 1)`     |
+| `shinyModule`   | slider        | `mySlider2`     | `list("\\"Slider label 2\\"", 0, 200, 100, 10)` |
+| `shinyModule`   | export        | `myExport3`     | `list("data.frame(x = 1:5, y = 6:10)"))`        |
 
 In `metadata$modules` you define modules that you want to be used in your app.
-Right now the only `type` is "shinyModule".
-(TODO: After it is implemented add information about "customShinyModule" which creates a new empty module for user to implement in the app).
+Right now the only `type` is `"shinyModule"`.
+
+<!--
+TODO: After it is implemented add information about "customShinyModule" which creates a new empty module for user to implement in the app)
+-->
+
 - `name` corresponds to the name of the module and the `id` assigns unique identifier for that module instance.
 - `parameters` define the parameters that should be passed to the module.
 
@@ -90,7 +94,7 @@ The generator on server side will build `callModule(<type>, "<id>", <parameters>
 
 A named list specifying the following:
 
-- `footer` optional additional text to put in the sidebar footer, above the SpaDES and Appsilon logos.
+- `footer` optional additional text to put in the sidebar footer, above the `SpaDES` and Appsilon logos.
 - `width` specify the width of the sidebar in pixels (default `300`).
 
 ### Code example
@@ -178,7 +182,7 @@ A default app configuration file ships with the `inSpaDES` package and can be fo
 system.file(package = 'inSpaDES', '_config/_config.yml')
 ```
 
-This is a standard yaml file.
+This is a standard YAML file.
 
 -----
 

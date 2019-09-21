@@ -4,9 +4,9 @@
 #'
 #' @note This is a server-only module with no UI component.
 #'
-#' @param input    Shiny server input object.
-#' @param output   Shiny server output object.
-#' @param session  Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param proxy    Leaflet proxy which manages a connected leaflet map.
 #' @param group    Group of polygons we want to update.
 #' @param poly     A reactive containing a polygon to be displayed on the leaflet map.

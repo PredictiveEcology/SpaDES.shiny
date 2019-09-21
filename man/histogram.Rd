@@ -11,16 +11,16 @@ histogram(input, output, session, histdata, addAxisParams = NULL,
   verticalBar = NULL, fname = NULL, ...)
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{...}{Additional UI parameters passed to \code{link[shiny]{plotOutput}},
 or additional server arguments passed to \code{\link[graphics]{barplot}}.}
 
-\item{input}{Shiny server input object}
+\item{input}{shiny server input object}
 
-\item{output}{Shiny server output object}
+\item{output}{shiny server output object}
 
-\item{session}{Shiny server session object}
+\item{session}{shiny server session object}
 
 \item{histdata}{Reactive value containing a numeric vector of proportions corresponding
 to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)}
@@ -33,7 +33,7 @@ If \code{NULL} (default) then no axis is drawn.}
 
 \item{verticalBar}{Numeric value at which to add an \code{abline} to the histogram.}
 
-\item{fname}{optional filepath to save png outputs}
+\item{fname}{optional filepath to save \code{.png} outputs}
 }
 \value{
 None. Invoked for the side-effect of rendering bar plot.

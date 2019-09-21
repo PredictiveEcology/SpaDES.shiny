@@ -21,7 +21,7 @@ A named list, with elements sorted by name.
 Update polygon list
 }
 \note{
-This is a temporary workaroud until we resolve inheritance of s3 classes (see \code{.polygonList}).
+This is a temporary workaround until we resolve inheritance of S3 classes (see \code{.polygonList}).
 }
 \author{
 Alex Chubaty

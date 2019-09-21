@@ -11,9 +11,9 @@ libInit(APP_DIR)
 }
 \description{
 Spawns a new \code{Rscript} process to setup an app's package library using
-\pkg{packrat}. It initializes the packrat library inside the application
+\pkg{packrat}. It initializes the \code{packrat} library inside the application
 directory, and proceeds to install all \pkg{SpaDES.shiny} package dependencies,
-plus \code{devtools}.
+plus \pkg{devtools}.
 \strong{WARNING: this may take a while to complete!}
 }
 \note{

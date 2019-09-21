@@ -12,7 +12,7 @@ copyrightAuthors(input, output, session, appName, authorInfo,
   status = "primary")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{input}{shiny server input object}
 
@@ -20,17 +20,16 @@ copyrightAuthors(input, output, session, appName, authorInfo,
 
 \item{session}{shiny server session object}
 
-\item{appName}{Character string giving the name of your SpaDES.shiny app.}
+\item{appName}{Character string giving the name of your \code{SpaDES.shiny} app.}
 
-\item{authorInfo}{Character string or person list containing your app's
-authorship info.}
+\item{authorInfo}{Character string or person list containing your app's authorship info.}
 
 \item{copyrightInfo}{Character string containing your app's copyright info.}
 
 \item{fundingInfo}{Character string containing your app's funding/partner info.}
 
-\item{licenseFile}{Filepath to your app's LICENSE file
-(default is \file{LICENSE} in your shiny app dir).}
+\item{licenseFile}{Path to your app's \file{LICENSE} file (default is \file{LICENSE} in
+the shiny app dir).}
 
 \item{status}{The boxes' status, passed to \code{\link[shinydashboard]{box}}
 (default \code{"primary"}, which results in dark blue).}
@@ -39,7 +38,7 @@ authorship info.}
 Generate Authors and Copyright Information
 }
 \details{
-Generates a fluidRow containing two boxes
+Generates a \code{fluidRow} containing two boxes
 about the app's Authors and Contributors and the Copyright and License.
 }
 \author{

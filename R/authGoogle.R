@@ -4,7 +4,7 @@
 #' Allows app content to be made conditionally available to 3 classes of user:
 #'
 #' 1. Anonymous (non-logged in) users;
-#' 2. Logged in users who are not autheticated against a whitelist;
+#' 2. Logged in users who are not authenticated against a whitelist;
 #' 3. Logged in and authenticated users.
 #'
 #' This allows authentication to be managed via Google rather than locally on the shiny server.
@@ -19,8 +19,8 @@
 #'   \item \code{googleAuthR.scopes.selected}:
 #'   \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
 #'   "https://www.googleapis.com/auth/userinfo.profile")}
-#'   \item \code{googleAuthR.webapp.client_id}: your Google app oauth id
-#'   \item \code{googleAuthR.webapp.client_secret}: your Google app oauth "secret"
+#'   \item \code{googleAuthR.webapp.client_id}: your Google app OAuth id
+#'   \item \code{googleAuthR.webapp.client_secret}: your Google app OAuth "secret"
 #' }
 #'
 #' Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
@@ -29,7 +29,7 @@
 #'
 #' @note Based on \code{googleAuthR::googleAuth} and \code{googleAuthR::googleAuthUI}.
 #'
-#' @param id  An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -45,9 +45,9 @@ authGoogleUI <- function(id) {
   )
 }
 
-#' @param input     shiny server input
-#' @param output    shiny server output
-#' @param session   shiny server session
+#' @template input
+#' @template output
+#' @template session
 #' @param appURL    URL to the hosted app.
 #' @param authUsers A character vector of authorized user email addresses.
 #' @param icon      Default \code{"google"}. Name of icon to display beside the login button.

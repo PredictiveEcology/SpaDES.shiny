@@ -13,17 +13,17 @@ gdal2Tiles(raster, outputPath, zoomRange, colorTableFile)
 
 \item{zoomRange}{List of numbers representing zoom value to generate tiles for.}
 
-\item{colorTableFile}{Table file that contains color values for tiles.}
+\item{colorTableFile}{Table file that contains colour values for tiles.}
 }
 \value{
-Leafet map url template path. # TODO: improve description
+Leaflet map url template path. # TODO: improve description
 }
 \description{
-Important: `gdalUtils_gdalPath` environment variable must point to
+Important: \code{gdalUtils_gdalPath} environment variable must point to
              path where GDAL is installed.
 }
 \note{
-Requires GDAL (>=2) and python are found on the system PATH.
+Requires GDAL (>=2) and python are found on the system \code{PATH}.
 }
 \author{
 Damian Rodziewicz

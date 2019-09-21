@@ -11,7 +11,7 @@ exportUI(id, availableTypes = c("csv", "txt", "xls", "png", "pdf",
 export(input, output, session, data, filename = "download")
 }
 \arguments{
-\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{availableTypes}{list of types that user can select from and export to}
 

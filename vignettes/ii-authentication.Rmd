@@ -1,5 +1,5 @@
 ---
-title: "Autheticating with Google"
+title: "Authenticating with Google"
 author: "Alex Chubaty"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -20,22 +20,22 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-By default, `shiny` does not have a mechanism for logging in users, so this level of app personalization isn't possible using standard `shiny`.
+By default, `shiny` does not have a mechanism for logging in users, so this level of app personalization is not possible using standard `shiny`.
 However, using the `googleAuth` module we allow app content to be made conditionally available to 3 classes of user:
 
 1. anonymous (non-logged in) users;
-2. logged in users who are not autheticated against a whitelist;
+2. logged in users who are not authenticated against a whitelist;
 3. logged in and authenticated (whitelisted) users.
 
-This module presents the user a "Login" button which redirects to a Google authenication page.
-After authenticating, an oauth token (user- and session-specific) is used by the app to determine the user's Google email address, display name, and whether they are on the app's access-control whitelist.
+This module presents the user a "Login" button which redirects to a Google authentication page.
+After authenticating, an OAuth token (user- and session-specific) is used by the app to determine the user's Google email address, display name, and whether they are on the app's access-control whitelist.
 
 This has the advantage of using Google for access control management rather than locally on the shiny server.
 
-In order to use this module for authetication, your app must:
+In order to use this module for authentication, your app must:
 
 1. be configured as a server app via Google apps;
-2. refer to a file managed by Google Drive for user acces control;
+2. refer to a file managed by Google Drive for user access control;
 3. be correctly configured to connect to the Google APIs.
 
 This vignette explains how to do these.
@@ -74,7 +74,7 @@ This vignette explains how to do these.
   Fill in any descriptive name for this client, and in the URLs field add the URL to your app (*e.g.*, `http://youApp.example.com`).
   To facilitate testing, also add URLs for `http://127.0.0.1:5621` (for use with `shiny::runApp(..., port = 5621)`, and `http://127.0.0.1:3838` (for use with shiny-server running on port 3838).
 
-## Create a file to use with authetication (whitelist)
+## Create a file to use with authentication (whitelist)
 
 The authentication mechanism used by the `googleAuth` module relies on the file permissions set on a file in Google Drive.
 Simply create a blank text file (*e.g.*, name_of_your_app.txt) in Google Drive and edit the access control settings to allow only authorized users to download/view this file.
@@ -104,11 +104,11 @@ appURL <- "http://yourapp.example.com"
 authUsers <- c("user1@email.com", "user2@domain.org")
 ```
 
-### server.R
+### `server.R`
 
 - `callModule(authGoogle, "auth_google", appURL, authFile)`
 
-### ui.R
+### `ui.R`
 
 - `useShinyjs()` in the `dashboardBody()`
 - `authGoogleUI("auth_google")` in `sidebarPanel()`
@@ -135,10 +135,10 @@ if (session$userData$userAuthorized()) {
 
 ## References
 
-1. [googleAuthR: Google Authentication Within Shiny](https://cran.r-project.org/web/packages/googleAuthR/vignettes/google-authentication-types.html#Authentication within Shiny)
+1. [`googleAuthR`: Google Authentication Within Shiny](https://cran.r-project.org/web/packages/googleAuthR/vignettes/google-authentication-types.html#Authentication within Shiny)
 2. [Creating a Shiny app with Google login](https://lesliemyint.wordpress.com/2017/01/01/creating-a-shiny-app-with-google-login/)
-3. [Oauth Scopes: Google Drive](https://developers.google.com/identity/protocols/googlescopes#drivev3)
-4. [Oauth Scopes: Google+](https://developers.google.com/identity/protocols/googlescopes#plusv1)
+3. [OAuth Scopes: Google Drive](https://developers.google.com/identity/protocols/googlescopes#drivev3)
+4. [OAuth Scopes: Google+](https://developers.google.com/identity/protocols/googlescopes#plusv1)
 5. [Google Drive API: `files:get`](https://developers.google.com/drive/v3/reference/files/get)
 
 **NOTE:** the `gargle` package should eventually supercede the solution here (see https://github.com/r-lib/gargle/issues/14)

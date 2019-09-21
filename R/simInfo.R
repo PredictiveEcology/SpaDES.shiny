@@ -1,6 +1,6 @@
 #' \code{SpaDES} simulation information (parent) module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Olivia Sung, Alex Chubaty, Greyson Wang
 #' @export
@@ -20,10 +20,10 @@ simInfoUI <- function(id) {
   )
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom shiny callModule
@@ -36,7 +36,7 @@ simInfo <- function(input, output, session, sim) {
 
 #' \code{SpaDES} module diagram module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -60,10 +60,10 @@ simModuleDiagramUI <- function(id) {
   return(uiOut)
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom shiny renderPlot
@@ -79,7 +79,7 @@ simModuleDiagram <- function(input, output, session, sim) {
 
 #' \code{SpaDES} object diagram
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -105,10 +105,10 @@ simObjectDiagramUI <- function(id) {
   return(uiOut)
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom DiagrammeR renderDiagrammeR
@@ -122,7 +122,7 @@ simObjectDiagram <- function(input, output, session, sim) {
 
 #' Simulation event diagram shiny module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
@@ -152,10 +152,10 @@ simEventDiagramUI <- function(id) {
   return(out)
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom DiagrammeR renderDiagrammeR
@@ -168,9 +168,9 @@ simEventDiagram <- function(input, output, session, sim) {
 
 #' Detailed \code{SpaDES} module info module
 #'
-#' TO DO: needs documentation
+#' TODO: needs documentation
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -182,10 +182,10 @@ moduleInfoUI <- function(id) {
   uiOutput(ns("allModuleInfo"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object.
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #' @param data     Logical. \code{TRUE} indicates to use the Rmd file for the
 #'                 module's data (\file{moduleName/moduleName_data.Rmd}), if present.
 #'                 \code{FALSE} uses the module's Rmd file (\file{moduleName/moduleName.Rmd}).
@@ -228,9 +228,9 @@ moduleInfo <- function(input, output, session, sim, data = FALSE) {
 
 #' \code{SpaDES} module parameter values module
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' TODO: needs documentation
 #'
-#' TO DO: needs documentation
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -242,10 +242,10 @@ moduleParamsUI <- function(id) {
   uiOutput(ns("moduleParamValues"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom DT dataTableOutput renderDataTable
@@ -274,7 +274,7 @@ moduleParams <- function(input, output, session, sim) {
 #' Display the rendered Rmarkdown content of the module's data description file
 #' (\file{moduleName/moduleName_data.Rmd}).
 #'
-#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -287,10 +287,10 @@ dataInfoUI <- function(id) {
   moduleInfoUI(ns("allDataInfo"))
 }
 
-#' @param input    shiny server input object
-#' @param output   shiny server output object
-#' @param session  shiny server session object
-#' @param sim      A \code{simList} object
+#' @template input
+#' @template output
+#' @template session
+#' @template sim
 #'
 #' @export
 #' @importFrom shiny callModule

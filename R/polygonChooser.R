@@ -2,7 +2,7 @@
 #'
 #' Provides a dropdown list of polygons available for mapping, sorted alphabetically.
 #'
-#' @param id An ID string that corresponds with the ID used to call the module server function.
+#' @template id
 #'
 #' @author Alex Chubaty
 #' @export
@@ -18,9 +18,9 @@ polygonChooserUI <- function(id) {
   )
 }
 
-#' @param input           Shiny server input object.
-#' @param output          Shiny server output object.
-#' @param session         Shiny server session object.
+#' @template input
+#' @template output
+#' @template session
 #' @param rctPolygonList  A reactive nested list with the following structure:
 #'                        # TODO: fill this in
 #' @param selectedPoly    The name of the polygon to select by default.

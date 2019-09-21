@@ -9,7 +9,7 @@ simLogFile(config, session, simID)
 \arguments{
 \item{config}{\pkg{SpaDES.shiny} app configuration object (e.g., from \code{\link{readConfig}})}
 
-\item{session}{The current session}
+\item{session}{shiny server session object}
 
 \item{simID}{The simulation ID}
 }

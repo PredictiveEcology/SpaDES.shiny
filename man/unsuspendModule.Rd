@@ -7,9 +7,9 @@
 unsuspendModule(id, session = getDefaultReactiveDomain())
 }
 \arguments{
-\item{id}{Module id.}
+\item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
-\item{session}{The current shiny server session.}
+\item{session}{shiny server session object}
 }
 \description{
 Modified from \url{https://groups.google.com/forum/#!topic/shiny-discuss/F-EwQGELS1c}.

@@ -1,23 +1,23 @@
-#' Leaflet proj.4 string
+#' Leaflet \code{proj.4} string
 #'
-#' This is the projection needed to plot on leaflet maps.
+#' This is the projection needed to plot on \pkg{leaflet} maps.
 #'
 #' @export
 proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
 #' Convert a raster to tile images
 #'
-#' @description Important: `gdalUtils_gdalPath` environment variable must point to
+#' @description Important: \code{gdalUtils_gdalPath} environment variable must point to
 #'              path where GDAL is installed.
 #'
-#' @note Requires GDAL (>=2) and python are found on the system PATH.
+#' @note Requires GDAL (>=2) and python are found on the system \code{PATH}.
 #'
 #' @param raster Raster to generate tiles from.
 #' @param outputPath Output folder path.
 #' @param zoomRange List of numbers representing zoom value to generate tiles for.
-#' @param colorTableFile Table file that contains color values for tiles.
+#' @param colorTableFile Table file that contains colour values for tiles.
 #'
-#' @return Leafet map url template path. # TODO: improve description
+#' @return Leaflet map url template path. # TODO: improve description
 #'
 #' @author Damian Rodziewicz
 #' @author Alex Chubaty
@@ -27,8 +27,7 @@ proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 #' @importFrom reproducible checkPath
 #' @rdname gdal2Tiles
 gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
-
-  message("  Making leaflet tiles")
+  message("  Making leaflet tiles...")
   filePaths <- unlist(lapply(raster, function(rstInner) {
     filename1 <- filename(rstInner)
     message("    ", filename1)
@@ -72,6 +71,4 @@ gdal2Tiles <- function(raster, outputPath, zoomRange, colorTableFile) {
     unlink(filename2)
     return(file.path(foldername, "{z}", "{x}", "{y}.png"))
   }))
-
-
 }
