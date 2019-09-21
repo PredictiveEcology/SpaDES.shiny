@@ -2,12 +2,6 @@ if (getRversion() >= "3.1.0") {
   utils::globalVariables(c("id"))
 }
 
-globalTemplatePath <- system.file(package = "SpaDES.shiny", "templates/global.R.template")
-menuItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/menuItem.template")
-serverTemplatePath <- system.file(package = "SpaDES.shiny", "templates/server.R.template")
-tabItemTemplatePath <- system.file(package = "SpaDES.shiny", "templates/tabItem.template")
-uiTemplatePath <- system.file(package = "SpaDES.shiny", "templates/ui.R.template")
-
 #' Render a template using \pkg{whisker} package.
 #'
 #' @param templatePath     Path to the template file.
@@ -111,7 +105,8 @@ renderTabItem <- function(tabName, module, moduleUIParameters) {
   parameters <- renderParameters(moduleUIParameters)
   tabContent <- paste0(module$name, "UI(\"", module$id, "\"", parameters, ")")
   #tabContent <- paste0(module$name, "UI(\"", ns(module$id), "\"", parameters, ")")
-  tabItem <- renderTemplate(tabItemTemplatePath, list(tabName = tabName, tabContent = tabContent))
+  tabItem <- renderTemplate(.pkgEnv$tabItemTemplatePath,
+                            list(tabName = tabName, tabContent = tabContent))
 
   return(tabItem)
 }
@@ -152,7 +147,7 @@ renderTabItems <- function(layout, modules) {
 #'
 #' @author Damian Rodziewicz
 renderMenuItem <- function(tabName, menuItemName, icon) {
-  menuItem <- renderTemplate(menuItemTemplatePath,
+  menuItem <- renderTemplate(.pkgEnv$menuItemTemplatePath,
                              list(tabName = tabName,
                                   menuItemName = menuItemName, icon = icon))
 
@@ -192,7 +187,7 @@ renderSpadesShinyUI <- function(appDir, appMetadata) {
     sidebarWidth = ifelse(is.null(appMetadata$sidebar$width), 300, appMetadata$sidebar$width)
   )
 
-  renderedContent <- renderTemplate(uiTemplatePath, data)
+  renderedContent <- renderTemplate(.pkgEnv$uiTemplatePath, data)
   writeLines(renderedContent, uiPath)
 }
 
@@ -323,7 +318,7 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
     sidebarFooter = renderSidebar(appMetadata$sidebar$footer)
   )
 
-  renderedContent <- renderTemplate(serverTemplatePath, data)
+  renderedContent <- renderTemplate(.pkgEnv$serverTemplatePath, data)
   writeLines(renderedContent, serverPath)
 }
 
@@ -338,7 +333,7 @@ renderSpadesShinyServer <- function(appDir, appMetadata) {
 renderSpadesShinyGlobal <- function(appDir, appMetadata) {
   globalPath <- file.path(appDir, "global.R")
 
-  renderedContent <- renderTemplate(globalTemplatePath, appMetadata)
+  renderedContent <- renderTemplate(.pkgEnv$globalTemplatePath, appMetadata)
   writeLines(renderedContent, globalPath)
 }
 

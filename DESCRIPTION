@@ -84,7 +84,6 @@ License: GPL-3
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
-StagedInstall: no
 Collate: 
     'adminLogs.R'
     'authGoogle.R'
@@ -121,5 +120,6 @@ Collate:
     'visualizeDataTable.R'
     'visualizePolygons.R'
     'visualizeRaster.R'
+    'zzz.R'
 RoxygenNote: 6.1.1
 Language: en-CA
