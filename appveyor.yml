@@ -51,6 +51,7 @@ notifications:
   - provider: Email
     to:
       - alex.chubaty@gmail.com
+      - '{{commitAuthorEmail}}'
     subject: 'SpaDES.shiny: r-appveyor build {{status}}'
     message: 'https://ci.appveyor.com/project/achubaty/SpaDES-shiny'
     on_build_success: false
