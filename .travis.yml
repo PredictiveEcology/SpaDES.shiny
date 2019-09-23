@@ -32,6 +32,8 @@ matrix:
     r_binary_packages:
       - BH
       - raster
+    r_packages:
+      - fs
   - os: linux
     dist: xenial
     r: release
