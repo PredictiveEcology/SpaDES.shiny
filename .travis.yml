@@ -28,7 +28,7 @@ matrix:
     services:
       - xvfb
     before_install:
-      - Rscript -e 'if (isTRUE(find.package("fs", quiet = TRUE))) remove.packages("fs")'
+      - Rscript -e 'try(remove.packages("fs"))'
     before_script:
       - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     r_binary_packages:
