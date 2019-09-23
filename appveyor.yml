@@ -5,15 +5,12 @@ init:
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
-
 install:
   ps: Bootstrap
-
 cache:
   - C:\RLibrary -> appveyor_cache.txt
 
 # Adapt as necessary starting from here
-
 version: 1.0.{build}-{branch}
 platform: x64
 environment:
@@ -51,11 +48,11 @@ artifacts:
   - path: '\*_*.zip'
     name: Bits
 notifications:
- - provider: Email
-   to:
-     - alex.chubaty@gmail.com
-   subject: 'SpaDES.shiny: r-appveyor build {{status}}'
-   message: 'https://ci.appveyor.com/project/achubaty/SpaDES-shiny'
-   on_build_success: false
-   on_build_failure: false
-   on_build_status_changed: true
+  - provider: Email
+    to:
+      - alex.chubaty@gmail.com
+    subject: 'SpaDES.shiny: r-appveyor build {{status}}'
+    message: 'https://ci.appveyor.com/project/achubaty/SpaDES-shiny'
+    on_build_success: false
+    on_build_failure: false
+    on_build_status_changed: true
