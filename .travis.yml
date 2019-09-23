@@ -13,6 +13,7 @@ matrix:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         - sourceline: 'ppa:opencpu/jq'
         packages:
+        - hunspell-en-ca
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
@@ -40,6 +41,7 @@ matrix:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         - sourceline: 'ppa:opencpu/jq'
         packages:
+        - hunspell-en-ca
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
@@ -76,6 +78,7 @@ matrix:
         - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         - sourceline: 'ppa:opencpu/jq'
         packages:
+        - hunspell-en-ca
         - libgdal-dev
         - libgdal1-dev
         - libgeos-dev
