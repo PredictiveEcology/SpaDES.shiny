@@ -15,60 +15,47 @@ cache:
 # Adapt as necessary starting from here
 
 version: 1.0.{build}-{branch}
-
 platform: x64
-
 environment:
   global:
     R_ARCH: x64
     R_CHECK_ARGS: "--no-multiarch"
     USE_RTOOLS: true
     WARNINGS_ARE_ERRORS: 1
-
   matrix:
   - R_VERSION: devel
-
   - R_VERSION: release
-
   - R_VERSION: oldrel
     RTOOLS_VERSION: 35
-
 clone_depth: 5
-
 build_script:
-  - Rscript -e "install.packages(c('devtools', 'data.table'), repos = 'https://cran.rstudio.com', type = 'source')"
+  - Rscript -e 'install.packages(c("devtools"", "data.table""), repos = "https://cran.rstudio.com", type = "source")'
+  - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
   - travis-tool.sh install_deps
-
 test_script:
   - travis-tool.sh run_tests
-
 on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
-
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
-
   - path: '*.Rcheck\**\*.out'
     name: Logs
-
   - path: '*.Rcheck\**\*.fail'
     name: Logs
-
   - path: '*.Rcheck\**\*.Rout'
     name: Logs
-
   - path: '\*_*.tar.gz'
     name: Bits
-
   - path: '\*_*.zip'
     name: Bits
-
 notifications:
  - provider: Email
+   to:
+     - alex.chubaty@gmail.com
    subject: 'SpaDES.shiny: r-appveyor build {{status}}'
-   message: "https://ci.appveyor.com/project/achubaty/SpaDES-shiny"
+   message: 'https://ci.appveyor.com/project/achubaty/SpaDES-shiny'
    on_build_success: false
    on_build_failure: false
    on_build_status_changed: true
