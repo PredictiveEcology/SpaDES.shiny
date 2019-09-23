@@ -28,12 +28,11 @@ matrix:
     services:
       - xvfb
     before_script:
+    - Rscript -e 'if (isTRUE(find.package("fs", quiet = TRUE))) remove.packages("fs")'
     - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     r_binary_packages:
       - BH
       - raster
-    r_packages:
-      - fs
   - os: linux
     dist: xenial
     r: release
