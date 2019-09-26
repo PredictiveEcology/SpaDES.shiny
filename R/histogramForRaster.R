@@ -15,6 +15,7 @@
 #' @return None. Invoked for the side-effect of creating shiny UI.
 #'
 #' @export
+#' @importFrom magrittr %>%
 #' @importFrom shiny NS plotOutput
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shinydashboard box

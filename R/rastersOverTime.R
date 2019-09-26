@@ -12,6 +12,7 @@
 #' @author Alex Chubaty
 #' @export
 #' @importFrom leaflet leafletOutput
+#' @importFrom magrittr %>%
 #' @importFrom shiny fluidRow br htmlOutput NS uiOutput
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shinydashboard box
@@ -22,7 +23,7 @@ rastersOverTimeUI <- function(id) {
   fluidRow(
     box(width = 8, solidHeader = TRUE, collapsible = TRUE,
         htmlOutput(ns("title")),
-        shinycssloaders::withSpinner(leaflet::leafletOutput(ns("map"), height = 600)),
+        leaflet::leafletOutput(ns("map"), height = 600) %>% withSpinner(),
         sliderUI(ns("rastersSlider"))
     ),
     uiOutput(ns("histUI"))

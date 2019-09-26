@@ -9,13 +9,14 @@
 #' @return Invoked for the side-effect of creating a shiny UI.
 #'
 #' @export
+#' @importFrom magrittr %>%
 #' @importFrom shiny NS
 #' @importFrom shinycssloaders withSpinner
 #' @rdname timeSeriesofRasters
 timeSeriesofRastersUI <- function(id) {
   ns <- NS(id)
 
-  shinycssloaders::withSpinner(rastersOverTimeUI(ns("rastersOverTime")))
+  rastersOverTimeUI(ns("rastersOverTime")) %>% withSpinner()
 }
 
 #' @inheritParams rastersOverTime

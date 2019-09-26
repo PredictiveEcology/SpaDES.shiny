@@ -58,7 +58,9 @@ simInfo <- function(input, output, session, sim, elements = NULL) {
 #'
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
+#' @importFrom magrittr %>%
 #' @importFrom shiny h3 imageOutput NS p tagList
+#' @importFrom shinycssloaders withSpinner
 #' @rdname simModuleDiagram
 simModuleDiagramUI <- function(id) {
   ns <- NS(id)
@@ -73,7 +75,7 @@ simModuleDiagramUI <- function(id) {
     "Arrows between modules indicate at least one data object",
     "passed from one module to the other."))
 
-  uiOut$diagram <- imageOutput(ns("modDiag"), height = 750)
+  uiOut$diagram <- imageOutput(ns("modDiag"), height = 750) %>% withSpinner()
 
   return(uiOut)
 }
@@ -102,7 +104,9 @@ simModuleDiagram <- function(input, output, session, sim) {
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
 #' @importFrom DiagrammeR DiagrammeROutput
+#' @importFrom magrittr %>%
 #' @importFrom shiny h3 NS p tagList
+#' @importFrom shinycssloaders withSpinner
 #' @rdname simObjectDiagram
 simObjectDiagramUI <- function(id) {
   ns <- NS(id)
@@ -118,7 +122,8 @@ simObjectDiagramUI <- function(id) {
     "passed from one module to the other."
   ))
 
-  uiOut$diagram <- DiagrammeR::DiagrammeROutput(ns("objectDiagram"), height = 1500)
+  uiOut$diagram <- DiagrammeR::DiagrammeROutput(ns("objectDiagram"), height = 1500) %>%
+    withSpinner()
 
   return(uiOut)
 }
@@ -129,7 +134,6 @@ simObjectDiagramUI <- function(id) {
 #' @template sim
 #'
 #' @export
-#' @importFrom DiagrammeR renderDiagrammeR
 #' @importFrom SpaDES.core objectDiagram
 #' @rdname simObjectDiagram
 simObjectDiagram <- function(input, output, session, sim) {
@@ -145,7 +149,9 @@ simObjectDiagram <- function(input, output, session, sim) {
 #' @author Alex Chubaty and Greyson Wang (module)
 #' @export
 #' @importFrom DiagrammeR DiagrammeROutput
+#' @importFrom magrittr %>%
 #' @importFrom shiny h3 NS p tagList
+#' @importFrom shinycssloaders withSpinner
 #' @rdname simEventDiagram
 simEventDiagramUI <- function(id) {
   ns <- NS(id)
@@ -165,7 +171,7 @@ simEventDiagramUI <- function(id) {
     "event DOES NOT correspond to an event's 'duration'."
   ))
 
-  out$diagram <- DiagrammeROutput(ns("eventDiagram"), height = 1500)
+  out$diagram <- DiagrammeROutput(ns("eventDiagram"), height = 1500) %>% withSpinner()
 
   return(out)
 }

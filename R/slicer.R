@@ -64,13 +64,14 @@ getSubtableMem <- memoise::memoise(getSubtable)
 #'
 #' @author Mateusz Wyszynski
 #' @export
+#' @importFrom magrittr %>%
 #' @importFrom shiny NS uiOutput
 #' @importFrom shinycssloaders withSpinner
 #' @rdname slicer
 slicerUI <- function(id) {
   ns <- NS(id)
 
-  shinycssloaders::withSpinner(uiOutput(ns("slicedUI")))
+  uiOutput(ns("slicedUI")) %>% withSpinner()
 }
 
 #' @template input
@@ -262,7 +263,7 @@ slicer <- function(input, output, session, datatable, uiSequence,
 slicer2UI <- function(id) {
   ns <- NS(id)
 
-  shinycssloaders::withSpinner(uiOutput(ns("sliced2UI")))
+  uiOutput(ns("sliced2UI")) %>% withSpinner()
 }
 
 #' @export
