@@ -7,7 +7,7 @@
 \usage{
 simInfoUI(id)
 
-simInfo(input, output, session, sim)
+simInfo(input, output, session, sim, elements = NULL)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}
@@ -19,6 +19,9 @@ simInfo(input, output, session, sim)
 \item{session}{shiny server session object}
 
 \item{sim}{A \code{simList} object}
+
+\item{elements}{Character vector describing which simulation diagrams to include as tabs.
+Default \code{NULL}, for all diagrams (i.e., \code{c("modules", "objects", "events")}).}
 }
 \description{
 \code{SpaDES} simulation information (parent) module

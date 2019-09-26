@@ -4,34 +4,52 @@
 #'
 #' @author Olivia Sung, Alex Chubaty, Greyson Wang
 #' @export
-#' @importFrom shiny fluidRow NS tabPanel
-#' @importFrom shinydashboard tabBox
+#' @importFrom shiny NS uiOutput
 #' @rdname simInfo
 simInfoUI <- function(id) {
   ns <- NS(id)
-
-  fluidRow(
-    tabBox(
-      width = 12,
-      tabPanel("Module Diagram", simModuleDiagramUI(ns("moduleDiagram"))),
-      tabPanel("Object Diagram", simObjectDiagramUI(ns("objectDiagram"))),
-      tabPanel("Event Diagram", simEventDiagramUI(ns("eventDiagram")))
-    )
-  )
+  uiOutput(ns("simInfo"))
 }
 
 #' @template input
 #' @template output
 #' @template session
 #' @template sim
+#' @param elements  Character vector describing which simulation diagrams to include as tabs.
+#'                  Default \code{NULL}, for all diagrams (i.e., \code{c("modules", "objects", "events")}).
 #'
 #' @export
-#' @importFrom shiny callModule
+#' @importFrom shiny callModule fluidRow tabPanel
+#' @importFrom shinydashboard tabBox
 #' @rdname simInfo
-simInfo <- function(input, output, session, sim) {
-  callModule(simModuleDiagram, "moduleDiagram", sim)
-  callModule(simObjectDiagram, "objectDiagram", sim)
-  callModule(simEventDiagram, "eventDiagram", sim)
+simInfo <- function(input, output, session, sim, elements = NULL) {
+  output$simInfo <- renderUI({
+    ns <- session$ns
+
+    if (is.null(elements))
+      elements <- c("modules", "objects", "events")
+
+    if ("modules" %in% elements)
+      callModule(simModuleDiagram, "moduleDiagram", sim)
+
+    if ("objects" %in% elements)
+      callModule(simObjectDiagram, "objectDiagram", sim)
+
+    if ("events" %in% elements)
+      callModule(simEventDiagram, "eventDiagram", sim)
+
+    fluidRow(
+      tabBox(
+        width = 12,
+        if ("modules" %in% elements)
+          tabPanel("Module Diagram", simModuleDiagramUI(ns("moduleDiagram"))),
+        if ("objects" %in% elements)
+          tabPanel("Object Diagram", simObjectDiagramUI(ns("objectDiagram"))),
+        if ("events" %in% elements)
+          tabPanel("Event Diagram", simEventDiagramUI(ns("eventDiagram")))
+      )
+    )
+  })
 }
 
 #' \code{SpaDES} module diagram module
