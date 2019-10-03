@@ -201,7 +201,10 @@ slicer <- function(input, output, session, datatable, uiSequence,
 }
 
 .getID <- function(x, y, z) {
-  paste("slicedUI", x, y, z, sep = "-")
+  #browser()
+  paste("slicedUI", x, y, z, sep = "-") %>%
+    gsub(" ", "_", .) %>%
+    gsub("\\(|\\)|[.]", "", .) ## get rid of characters that cause javascript syntax errors
 }
 
 .slicer <- function(dtFull, categories, possibleValues, serverFunction, uiSequence, ...) {
@@ -327,7 +330,9 @@ slicer2 <- function(input, output, session, datatable, uiSequence,
 }
 
 .getID2 <- function(x, y) {
-  paste("slicedUI2", x, y, sep = "-")
+  paste("slicedUI2", x, y, sep = "-") %>%
+    gsub(" ", "_", .) %>%
+    gsub("\\(|\\)|[.]", "", .) ## get rid of characters that cause javascript syntax errors
 }
 
 .slicer2 <- function(dtFull, categories, possibleValues, serverFunction, uiSequence, ...) {
