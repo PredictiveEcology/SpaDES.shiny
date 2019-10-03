@@ -21,7 +21,7 @@ if (getRversion() >= "3.1.0") {
 #'   (e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
 #'   overlaid layers is ignored.
 #'
-#' @param sim   A \code{simList} object.
+#' @template sim
 #'
 #' @param title character string. The title of the shiny page.
 #'
@@ -37,34 +37,19 @@ if (getRversion() >= "3.1.0") {
 #' @param ... additional arguments. Currently not used
 #'
 #' @export
-#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
-#' @importFrom DT renderDataTable dataTableOutput
-#' @importFrom grDevices dev.cur
-#' @importFrom magrittr %>%
-#' @importFrom quickPlot clearPlot rePlot
-#' @importFrom reproducible checkPath
-#' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
-#' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
-#' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
-#' @importFrom shiny reactiveValues renderPlot renderPrint renderUI runApp
-#' @importFrom shiny selectInput sliderInput sidebarLayout sidebarPanel
-#' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
-#' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
-#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
-#' @importFrom SpaDES.core spades start time<-
-#' @importFrom stats time
-#' @importFrom utils browseURL
 #' @include environment.R
+#'
 #' @examples
 #' \dontrun{
+#'  library(SpaDES)
+#'  library(SpaDES.shiny)
 #'  mySim <- simInit(
 #'    times <- list(start = 0.0, end = 20.0),
 #'    params = list(
 #'      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
 #'    ),
 #'    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES"))
+#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
 #'  )
 #'
 #' shine(mySim)
@@ -80,6 +65,24 @@ setGeneric("shine", function(sim, title = "SpaDES App", debug = FALSE, filesOnly
 })
 
 #' @export
+#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
+#' @importFrom DT renderDataTable dataTableOutput
+#' @importFrom grDevices dev.cur
+#' @importFrom magrittr %>%
+#' @importFrom reproducible checkPath
+#' @importFrom quickPlot clearPlot rePlot
+#' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
+#' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
+#' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
+#' @importFrom shiny reactiveValues renderPlot renderPrint renderUI runApp
+#' @importFrom shiny selectInput sidebarLayout sidebarPanel sliderInput
+#' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
+#' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
+#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
+#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
+#' @importFrom SpaDES.core spades start time<-
+#' @importFrom stats time
+#' @importFrom utils browseURL getFromNamespace
 #' @rdname shine
 setMethod(
   "shine",
@@ -109,7 +112,7 @@ setMethod(
       ),
       mainPanel(
         tabsetPanel(id = "topTabsetPanel",
-          tabPanel("Preview", plotOutput("spadesPlot", height = "800px")),
+          tabPanel("Preview", plotOutput("quickPlot", height = "800px")),
           tabPanel("Module diagram", uiOutput("moduleDiagramUI")),
           tabPanel("Object diagram", uiOutput("objectDiagramUI")),
           tabPanel("Event diagram", uiOutput("eventDiagramUI")),
@@ -124,7 +127,7 @@ setMethod(
     # Some cases there may be an error due to a previous plot still existing - this should clear
     curDev <- dev.cur()
     if (exists(".pkgEnv"))
-      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
+      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("quickPlot", curDev))
     else
       alreadyPlotted <- FALSE
 
@@ -134,7 +137,7 @@ setMethod(
 
     # Left side module tabs
     output$moduleTabs <- renderUI({
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       nTabs <- length(mods)
       myTabs <- lapply(mods, function(x) {
         tabPanel(x, h4("Parameters"), uiOutput(outputId = x))
@@ -143,7 +146,7 @@ setMethod(
     })
 
     # Sliders in module tabs
-    for (k in unlist(modules(sim))) {
+    for (k in unname(unlist(modules(sim)))) {
       local({
         # local is needed because it must force evaluation, avoid lazy evaluation
         kLocal <- k
@@ -184,7 +187,7 @@ setMethod(
                 inputId = paste0(kLocal, "$", i),
                 label = i,
                 multiple = FALSE,
-                choices = moduleParams[["min"]][[1]]
+                choices = moduleParams[["default"]][[1]]
               )
             }
             # To do make ones for logical, character, functions, text etc.
@@ -195,7 +198,7 @@ setMethod(
 
     spadesCallFull <- function() {
       # Update simInit with values obtained from UI
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       for (m in mods) {
         for (i in names(params(sim)[[m]])) {
           if (!is.null(input[[paste0(m, "$", i)]])) # only if it is not null
@@ -213,7 +216,7 @@ setMethod(
     # Needs cleaning up - This should just be a subset of above
     spadesCall <- eventReactive(input$oneTimestepSpaDESButton, {
       # Update simInit with values obtained from UI
-      mods <- unlist(modules(sim))
+      mods <- unname(unlist(modules(sim)))
       for (m in mods) {
         for (i in names(params(sim)[[m]])) {
           if (!is.null(input[[paste0(m, "$", i)]])) {
@@ -226,8 +229,9 @@ setMethod(
     })
 
     simReset <- eventReactive(input$resetSimInit, {
-      # Update simInit with values obtained from UI
+      ## Update simInit with values obtained from UI
       clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
+
       rm(list = ls(sim), envir = sim@.envir)
       sim <<- simOrig
       for (i in names(simOrig1@.list)) {
@@ -262,10 +266,11 @@ setMethod(
     })
 
     # Main plot
-    output$spadesPlot <- renderPlot({
+    output$quickPlot <- renderPlot({
       curDev <- dev.cur()
       alreadyPlotted <- if (exists(".pkgEnv")) {
-        grepl(ls(.pkgEnv), pattern = paste0("spadesPlot", curDev))
+        grepl(ls(getFromNamespace(".quickPlotEnv", "quickPlot")),
+                 pattern = paste0("quickPlot", curDev))
       } else {
         FALSE
       }

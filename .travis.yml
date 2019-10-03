@@ -1,86 +1,121 @@
-# Sample .travis.yml for R projects.
-#
-# See README.md for instructions, or for more configuration options,
-# see the wiki:
-#   https://github.com/craigcitro/r-travis/wiki
-
 sudo: required
-
 language: r
-
 cache: packages
-
 cran: https://cran.rstudio.com/
-
 matrix:
   include:
-
   - os: linux
-    dist: trusty
+    dist: xenial
     r: oldrel
     addons:
       apt:
+        sources:
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:opencpu/jq'
         packages:
+          - hunspell-en-ca
+          - libgdal-dev
           - libgdal1-dev
+          - libgeos-dev
+          - libjq-dev
+          - libnlopt-dev
           - libproj-dev
-    before_install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-
+          - libprotobuf-dev
+          - libudunits2-dev
+          - libv8-dev
+          - gdal-bin
+          - protobuf-compiler
+    services:
+      - xvfb
+    before_script:
+      - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - raster
   - os: linux
-    dist: trusty
+    dist: xenial
     r: release
     addons:
       apt:
+        sources:
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:opencpu/jq'
         packages:
+          - hunspell-en-ca
+          - libgdal-dev
           - libgdal1-dev
+          - libgeos-dev
+          - libjq-dev
+          - libnlopt-dev
           - libproj-dev
+          - libprotobuf-dev
+          - libudunits2-dev
+          - libv8-dev
+          - gdal-bin
+          - protobuf-compiler
     r_github_packages:
       - jimhester/lintr
-    before_install:
-      - export DISPLAY=:99.0
-      - sh -e /etc/init.d/xvfb start
-      - Rscript -e 'install.packages("dplyr", dependencies = TRUE)'
+    services:
+      - xvfb
+    before_script:
+      - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - dplyr
+      - git2r
+      - igraph
+      - raster
+      - RSQlite
     after_success:
-      - ./_push_vignettes.sh
-      - Rscript -e 'library(covr); coveralls(coverage = print(package_coverage(quiet = FALSE)))'
-      - Rscript -e 'library(lintr); lint_package()'
-
+      - Rscript -e 'covr::coveralls(package_coverage(type = "all", quiet = FALSE)))'
+      - Rscript -e 'lintr::lint_package()'
   - os: linux
-    dist: trusty
+    dist: xenial
     r: devel
     addons:
       apt:
+        sources:
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:opencpu/jq'
         packages:
+          - hunspell-en-ca
+          - libgdal-dev
           - libgdal1-dev
+          - libgeos-dev
+          - libjq-dev
+          - libnlopt-dev
           - libproj-dev
-    before_install:
-      - export DISPLAY=:99.0
-      - sh -e /etc/init.d/xvfb start
-      - Rscript -e 'install.packages("dplyr", dependencies = TRUE)'
-
+          - libprotobuf-dev
+          - libudunits2-dev
+          - libv8-dev
+          - gdal-bin
+          - protobuf-compiler
+    services:
+      - xvfb
+    before_script:
+      - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+    r_binary_packages:
+      - BH
+      - dplyr
+      - git2r
+      - igraph
+      - raster
+      - RSQlite
+    r_packages:
+      - devtools
   - os: osx
-    osx_image: xcode8.2
+    osx_image: xcode9.4
     latex: false
     r_build_args: '--no-build-vignettes'
     r_check_args: '--as-cran --ignore-vignettes --no-examples'
+    before_install:
+      - sudo R CMD javareconf
     before_script:
       - Rscript -e "install.packages('rgdal', type = 'source')"
-
 r_build_args: " "
-
 r_check_args: "--as-cran"
-
 warnings_are_errors: true
-
 notifications:
   email:
     on_success: change
     on_failure: change
-
-branches:
-  only:
-    - master
-    - development
-    - testing
-

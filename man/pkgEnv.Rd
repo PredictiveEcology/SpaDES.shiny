@@ -3,8 +3,8 @@
 \docType{data}
 \name{.pkgEnv}
 \alias{.pkgEnv}
-\title{The \code{SpaDES.shiny} package environment}
-\format{An object of class \code{environment} of length 0.}
+\title{The \pkg{SpaDES.shiny} package environment}
+\format{An object of class \code{environment} of length 5.}
 \usage{
 .pkgEnv
 }

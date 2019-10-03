@@ -6,13 +6,14 @@
 \alias{shine,simList-method}
 \title{Display a simple, interactive shiny app of the \code{simList}}
 \usage{
-shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE, ...)
+shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE,
+  ...)
 
 \S4method{shine}{simList}(sim, title = "SpaDES App", debug = FALSE,
   filesOnly = FALSE, ...)
 }
 \arguments{
-\item{sim}{A \code{simList} object.}
+\item{sim}{A \code{simList} object}
 
 \item{title}{character string. The title of the shiny page.}
 
@@ -48,13 +49,15 @@ Many module parameters are only accessed by modules at the start of a
 }
 \examples{
 \dontrun{
+ library(SpaDES)
+ library(SpaDES.shiny)
  mySim <- simInit(
    times <- list(start = 0.0, end = 20.0),
    params = list(
      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
    ),
    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-   paths = list(modulePath = system.file("sampleModules", package = "SpaDES"))
+   paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
  )
 
 shine(mySim)

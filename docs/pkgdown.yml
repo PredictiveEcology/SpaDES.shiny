@@ -1,5 +1,11 @@
+pandoc: 2.3.1
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  i-create-an-app: i-create-an-app.html
+  ii-authentication: ii-authentication.html
+  iii-package-devel: iii-package-devel.html
 urls:
-  reference: https://predictiveecology.github.io/SpaDES.shiny/reference
-  article: https://predictiveecology.github.io/SpaDES.shiny/articles
-articles: {}
+  reference: http://spades-shiny.predictiveecology.org/reference
+  article: http://spades-shiny.predictiveecology.org/articles
 

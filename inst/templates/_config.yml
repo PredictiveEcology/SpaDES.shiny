@@ -1,0 +1,37 @@
+##
+## SpaDES.shiny app configuration file
+##
+
+# site configuration
+title: "\u2660 template app"
+logo: "images/spades_logo.png"
+
+theme:  # A theme can be chosen by removing one of the # below
+  [blue, btn-primary, btn-success, btn-danger]
+  #[black, btn-primary, btn-success, btn-danger]
+  #[purple, btn-purple, btn-success, btn-danger]
+  #[green, btn-success, btn-success, btn-danger]
+  #[red, btn-danger, btn-success, btn-warning]
+  #[yellow, btn-warning, btn-success, btn-danger]
+
+sidebarWidth: 230           # default 230
+
+APP_DIR:                    # application directory inside /srv/shiny-server
+RLIB_DIR:                   # application R library location
+
+USE_CACHE: TRUE             # cache simulation results
+Rserve: FALSE               # use Rserve to run simulations?
+RservePorts:                # list of user and port
+
+# database parameters
+dbtype: postgres
+dbname:
+host:
+port:   5432
+user:
+password:
+
+# UI settings
+MAX_PLOTS_SAVES: 10       # max number of plots and saves for any simulation
+MAX_REPS: 10              # max number of allowed replications
+
