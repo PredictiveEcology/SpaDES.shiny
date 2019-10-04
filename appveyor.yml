@@ -32,6 +32,7 @@ environment:
 clone_depth: 5
 
 build_script:
+  - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
   - travis-tool.sh install_deps
 
 test_script:
