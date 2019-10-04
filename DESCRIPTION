@@ -71,7 +71,6 @@ Imports:
     xlsx,
     yaml
 Suggests:
-    hunspell,
     knitr,
     rmarkdown,
     Rserve,
