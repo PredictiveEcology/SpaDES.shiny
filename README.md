@@ -25,7 +25,7 @@ Utilities for building `shiny`-based apps for `SpaDES` simulations.
 **Install from CRAN:**
 
 ```r
-install.packages("SpaDES.shiny")
+#install.packages("SpaDES.shiny") ## not yet on CRAN. Install via GitHub per below.
 ```
 
 **Install from GitHub:**
