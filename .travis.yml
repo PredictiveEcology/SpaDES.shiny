@@ -31,7 +31,6 @@ matrix:
       - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
     r_binary_packages:
       - BH
-      - raster
   - os: linux
     dist: xenial
     r: release

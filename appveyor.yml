@@ -32,7 +32,7 @@ environment:
 clone_depth: 5
 
 build_script:
-  - Rscript -e 'install.packages("Rserve", repos = "https://cran.rstudio.com", configure.args = "--without-server")'
+  - Rscript -e "install.packages('Rserve', repos = 'https://cran.rstudio.com', configure.args = '--without-server')"
   - travis-tool.sh install_deps
 
 test_script:
@@ -45,14 +45,19 @@ on_failure:
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
+
   - path: '*.Rcheck\**\*.out'
     name: Logs
+
   - path: '*.Rcheck\**\*.fail'
     name: Logs
+
   - path: '*.Rcheck\**\*.Rout'
     name: Logs
+
   - path: '\*_*.tar.gz'
     name: Bits
+
   - path: '\*_*.zip'
     name: Bits
 
