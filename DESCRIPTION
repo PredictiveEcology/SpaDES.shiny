@@ -8,7 +8,7 @@ URL:
 Date: 2020-08-31
 Version: 0.2.0.9000
 Authors@R: c(
-      person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
+      person("Alex M", "Chubaty", email = "achubaty@for-cast.ca",
              role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
       person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
              role = c("aut"), comment = c(ORCID = "https://orcid.org/0000-0002-6914-8316")),
