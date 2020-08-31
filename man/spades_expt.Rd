@@ -4,8 +4,18 @@
 \alias{spades_expt}
 \title{Shiny module to run a \code{SpaDES} simulation experiment}
 \usage{
-spades_expt(input, output, session, sim, reps, seed, objectsToHash,
-  cacheDebug = "complete", spadesDebug = getOption("spades.debug"))
+spades_expt(
+  input,
+  output,
+  session,
+  sim,
+  reps,
+  seed,
+  objectsToHash,
+  cacheDebug = "complete",
+  spadesDebug = getOption("spades.debug"),
+  ...
+)
 }
 \arguments{
 \item{input}{shiny server input object}

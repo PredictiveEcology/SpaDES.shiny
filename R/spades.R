@@ -50,7 +50,7 @@ spades_simInit <- function(input, output, session, ...) {
 #' @importFrom SpaDES.core experiment
 #'
 spades_expt <- function(input, output, session, sim, reps, seed, objectsToHash,
-                        cacheDebug = "complete", spadesDebug = getOption("spades.debug")) {
+                        cacheDebug = "complete", spadesDebug = getOption("spades.debug"), ...) {
 
   runExperiment <- function(sim, nReps, seed, objectsToHash = "") {
     # # Do an initial run for each given study area so that all the data prep can be done once only
