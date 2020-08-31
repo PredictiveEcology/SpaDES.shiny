@@ -4,8 +4,7 @@
 \alias{polygonsUpdater}
 \title{Polygons updater (shiny module)}
 \usage{
-polygonsUpdater(input, output, session, proxy, poly, group = "group",
-  ...)
+polygonsUpdater(input, output, session, proxy, poly, group = "group", ...)
 }
 \arguments{
 \item{input}{shiny server input object}

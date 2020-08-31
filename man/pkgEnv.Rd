@@ -4,7 +4,9 @@
 \name{.pkgEnv}
 \alias{.pkgEnv}
 \title{The \pkg{SpaDES.shiny} package environment}
-\format{An object of class \code{environment} of length 5.}
+\format{
+An object of class \code{environment} of length 5.
+}
 \usage{
 .pkgEnv
 }

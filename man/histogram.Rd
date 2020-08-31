@@ -7,8 +7,16 @@
 \usage{
 histogramUI(id, ...)
 
-histogram(input, output, session, histdata, addAxisParams = NULL,
-  verticalBar = NULL, fname = NULL, ...)
+histogram(
+  input,
+  output,
+  session,
+  histdata,
+  addAxisParams = NULL,
+  verticalBar = NULL,
+  fname = NULL,
+  ...
+)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}

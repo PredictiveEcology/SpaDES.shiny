@@ -4,9 +4,16 @@
 \alias{tilesUpdater}
 \title{Tiles updater (shiny module)}
 \usage{
-tilesUpdater(input, output, session, proxy, rctUrlTemplateSingleRaster,
-  tilesGroup, addTilesParameters = NULL,
-  addLayersControlParameters = NULL)
+tilesUpdater(
+  input,
+  output,
+  session,
+  proxy,
+  rctUrlTemplateSingleRaster,
+  tilesGroup,
+  addTilesParameters = NULL,
+  addLayersControlParameters = NULL
+)
 }
 \arguments{
 \item{input}{shiny server input object}

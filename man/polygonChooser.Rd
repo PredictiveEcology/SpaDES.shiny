@@ -7,9 +7,15 @@
 \usage{
 polygonChooserUI(id)
 
-polygonChooser(input, output, session, rctPolygonList,
-  selectedPoly = NULL, uploadOpts = list(auth = NULL, path = NULL, user
-  = NULL), studyArea = NULL)
+polygonChooser(
+  input,
+  output,
+  session,
+  rctPolygonList,
+  selectedPoly = NULL,
+  uploadOpts = list(auth = NULL, path = NULL, user = NULL),
+  studyArea = NULL
+)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}

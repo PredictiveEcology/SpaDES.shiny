@@ -4,9 +4,6 @@
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^\.lintr$
-^\.travis\.yml$
-^appveyor\.yml$
-^appveyor_cache\.txt$
 ^CONTRIBUTING\.md$
 ^cran-comments\.md$
 ^docs$
@@ -15,3 +12,5 @@
 man-roxygen/
 ^README\.md$
 ^README-DEVELOPMENT\.md$
+^\.github$
+^codecov\.yml$

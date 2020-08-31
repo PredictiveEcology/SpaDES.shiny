@@ -9,8 +9,13 @@
 \usage{
 copyrightFooterUI(id)
 
-copyrightFooter(input, output, session, cph = "Author Name",
-  year = format(Sys.time(), "\%Y"))
+copyrightFooter(
+  input,
+  output,
+  session,
+  cph = "Author Name",
+  year = format(Sys.time(), "\%Y")
+)
 
 sidebarFooterUI(id)
 

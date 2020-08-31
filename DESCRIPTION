@@ -5,8 +5,8 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2019-10-02
-Version: 0.2.0
+Date: 2020-08-31
+Version: 0.2.0.9000
 Authors@R: c(
       person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
              role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
@@ -21,7 +21,7 @@ Authors@R: c(
              role = "cph")
    )
 Depends:
-    R (>= 3.5)
+    R (>= 3.6)
 Imports:
     assertthat,
     data.table,
@@ -71,11 +71,12 @@ Imports:
     xlsx,
     yaml
 Suggests:
+    covr,
     knitr,
     rmarkdown,
     Rserve,
-    testthat (>= 1.0.2),
-    spelling
+    spelling,
+    testthat (>= 1.0.2)
 Remotes:
     MarkEdmondson1234/googleID
 Encoding: UTF-8
@@ -120,5 +121,5 @@ Collate:
     'visualizePolygons.R'
     'visualizeRaster.R'
     'zzz.R'
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Language: en-CA

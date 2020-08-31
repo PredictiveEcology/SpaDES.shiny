@@ -7,13 +7,32 @@
 \usage{
 timeSeriesofRastersUI(id)
 
-timeSeriesofRasters(input, output, session, rctRasterList, rctUrlTemplate,
-  rctPolygonList, rctChosenPoly, defaultPolyName = NULL,
-  shpStudyRegionName = NULL, shpStudyRegionLFLT = NULL, colorPalette,
-  maxAge, zoom = 5, mapTilesDir = "www/", mapLegend = "",
-  mapTitle = "", sliderTitle = "", histTitle = "", nPolygons,
-  nRasters, rasterStepSize = 10, uploadOpts = list(auth = NULL, path =
-  NULL, user = NULL), rctStudyArea = NULL, thinKeep = 0.05)
+timeSeriesofRasters(
+  input,
+  output,
+  session,
+  rctRasterList,
+  rctUrlTemplate,
+  rctPolygonList,
+  rctChosenPoly,
+  defaultPolyName = NULL,
+  shpStudyRegionName = NULL,
+  shpStudyRegionLFLT = NULL,
+  colorPalette,
+  maxAge,
+  zoom = 5,
+  mapTilesDir = "www/",
+  mapLegend = "",
+  mapTitle = "",
+  sliderTitle = "",
+  histTitle = "",
+  nPolygons,
+  nRasters,
+  rasterStepSize = 10,
+  uploadOpts = list(auth = NULL, path = NULL, user = NULL),
+  rctStudyArea = NULL,
+  thinKeep = 0.05
+)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}

@@ -7,11 +7,25 @@
 \usage{
 rastersOverTimeUI(id)
 
-rastersOverTime(input, output, session, rctRasterList, rctUrlTemplate,
-  rctPolygonList, rctChosenPolyName, defaultPolyName = NULL,
-  map = leaflet(), mapTilesDir = "www/", colorPalette,
-  histTitle = "", sliderTitle = "", mapTitle = "", nPolygons,
-  nRasters, rasterStepSize = 10)
+rastersOverTime(
+  input,
+  output,
+  session,
+  rctRasterList,
+  rctUrlTemplate,
+  rctPolygonList,
+  rctChosenPolyName,
+  defaultPolyName = NULL,
+  map = leaflet(),
+  mapTilesDir = "www/",
+  colorPalette,
+  histTitle = "",
+  sliderTitle = "",
+  mapTitle = "",
+  nPolygons,
+  nRasters,
+  rasterStepSize = 10
+)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}

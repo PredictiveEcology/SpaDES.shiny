@@ -1,5 +1,10 @@
 Known issues: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 
+version 0.2.0.9000
+=============
+
+* drop support for R 3.5
+
 version 0.2.0
 =============
 

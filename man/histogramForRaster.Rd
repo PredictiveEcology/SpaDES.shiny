@@ -7,8 +7,16 @@
 \usage{
 histogramForRasterUI(id, title = "", plotParameters, ...)
 
-histogramForRaster(input, output, session, rctRasterVals,
-  rctHistogramBreaks, scale = 1, addAxisParams = NULL, ...)
+histogramForRaster(
+  input,
+  output,
+  session,
+  rctRasterVals,
+  rctHistogramBreaks,
+  scale = 1,
+  addAxisParams = NULL,
+  ...
+)
 }
 \arguments{
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}

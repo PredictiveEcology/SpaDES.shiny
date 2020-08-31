@@ -4,8 +4,17 @@
 \alias{summaryPopups}
 \title{Summary popups (shiny module)}
 \usage{
-summaryPopups(input, output, session, proxy, click, rast, poly,
-  rasterValueLabel = "Raster value: \%s", extractedValues = NULL)
+summaryPopups(
+  input,
+  output,
+  session,
+  proxy,
+  click,
+  rast,
+  poly,
+  rasterValueLabel = "Raster value: \%s",
+  extractedValues = NULL
+)
 }
 \arguments{
 \item{input}{shiny server input object}

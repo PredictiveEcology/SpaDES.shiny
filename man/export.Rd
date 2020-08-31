@@ -5,8 +5,10 @@
 \alias{export}
 \title{Export module}
 \usage{
-exportUI(id, availableTypes = c("csv", "txt", "xls", "png", "pdf",
-  "tiff", "grd", "rds"))
+exportUI(
+  id,
+  availableTypes = c("csv", "txt", "xls", "png", "pdf", "tiff", "grd", "rds")
+)
 
 export(input, output, session, data, filename = "download")
 }
