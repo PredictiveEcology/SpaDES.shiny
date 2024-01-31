@@ -32,8 +32,8 @@ summaryPopups(
 \item{poly}{Reactive value with current polygon on the map.}
 
 \item{rasterValueLabel}{String with description of raster value. Uses \code{sprintf},
-so must include exactly one \code{\%s} in order to display raster value.
-Default is a string \code{"Raster value: \%s"}.}
+so must include exactly one \verb{\\\%s} in order to display raster value.
+Default is a string \code{"Raster value: \\\%s"}.}
 
 \item{extractedValues}{List of attributes from \code{SpatialPolygonDataFrame}
 which should be included in popup summary.

@@ -45,6 +45,4 @@ App copyright info can be inserted into a footer in the dashboard body using
 }
 \author{
 Alex Chubaty
-
-Alex Chubaty
 }

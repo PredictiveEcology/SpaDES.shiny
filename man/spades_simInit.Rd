@@ -19,13 +19,13 @@ spades_simInit(input, output, session, ...)
 A reactive \code{simList} object
 }
 \description{
-Simply a wrapper around \code{\link[SpaDES.core]{simInit}} to be called as a shiny module.
+Simply a wrapper around \code{\link[SpaDES.core:simInit]{SpaDES.core::simInit()}} to be called as a shiny module.
 }
 \note{
 This is a server-only module with no UI component.
 }
 \seealso{
-\code{\link[SpaDES.core]{simInit}}
+\code{\link[SpaDES.core:simInit]{SpaDES.core::simInit()}}
 }
 \author{
 Alex Chubaty

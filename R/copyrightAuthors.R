@@ -1,6 +1,6 @@
 #' Generate Authors and Copyright Information
 #'
-#' @details Generates a \code{fluidRow} containing two boxes
+#' @details Generates a `fluidRow` containing two boxes
 #' about the app's Authors and Contributors and the Copyright and License.
 #'
 #' @template id
@@ -18,14 +18,14 @@ copyrightAuthorsUI <- function(id) {
 #' @template input
 #' @template output
 #' @template session
-#' @param appName        Character string giving the name of your \code{SpaDES.shiny} app.
+#' @param appName        Character string giving the name of your `SpaDES.shiny` app.
 #' @param authorInfo     Character string or person list containing your app's authorship info.
 #' @param copyrightInfo  Character string containing your app's copyright info.
 #' @param fundingInfo    Character string containing your app's funding/partner info.
 #' @param licenseFile    Path to your app's \file{LICENSE} file (default is \file{LICENSE} in
 #'                       the shiny app dir).
-#' @param status         The boxes' status, passed to \code{\link[shinydashboard]{box}}
-#'                       (default \code{"primary"}, which results in dark blue).
+#' @param status         The boxes' status, passed to [shinydashboard::box()]
+#'                       (default `"primary"`, which results in dark blue).
 #'
 #' @export
 #' @importFrom shiny a br column fluidRow h4 hr HTML p renderUI strong tags

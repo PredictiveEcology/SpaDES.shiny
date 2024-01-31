@@ -29,7 +29,7 @@ tilesUpdater(
 
 \item{tilesGroup}{Group of rasters/tiles we want to update.}
 
-\item{addTilesParameters}{Additional parameters of \code{\link[leaflet]{addTiles}} function.
+\item{addTilesParameters}{Additional parameters of \code{\link[leaflet:map-layers]{leaflet::addTiles()}} function.
 Parameters: \code{proxy}/\code{map},
 \code{urlTemplate} and \code{group} should be provided
 directly as \code{tilesUpdater} arguments using
@@ -40,13 +40,13 @@ arguments will be suppressed by the values passed
 directly to \code{tilesUpdater}.}
 
 \item{addLayersControlParameters}{Additional parameters passed to
-\code{\link[leaflet]{addLayersControl}}.}
+\code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}}.}
 }
 \value{
 None. Invoked for the side-effect of sending information to leaflet proxy.
 }
 \description{
-Creates a shiny module which uses \code{\link[leaflet]{leafletProxy}}
+Creates a shiny module which uses \code{\link[leaflet:leafletProxy]{leaflet::leafletProxy()}}
 to update tiles displayed on a leaflet map.
 }
 \note{

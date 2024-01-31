@@ -1,6 +1,6 @@
 #' Slider Module
 #'
-#' @description Function \code{sliderUI} creates a shiny module UI.
+#' @description Function `sliderUI` creates a shiny module UI.
 #'
 #' @template id
 #'
@@ -9,7 +9,7 @@
 #' @export
 #' @importFrom shiny NS sliderInput
 #' @rdname slider
-#' @seealso \code{\link{sliderInput}}
+#' @seealso [sliderInput()]
 sliderUI <- function(id) {
   ns <- NS(id)
 
@@ -18,12 +18,12 @@ sliderUI <- function(id) {
 
 #' Slider Module
 #'
-#' @description Function \code{slider} creates a slider module server function.
+#' @description Function `slider` creates a slider module server function.
 #'
 #' @template input
 #' @template output
 #' @template session
-#' @param ...      Additional arguments passed to \code{\link{sliderInput}}.
+#' @param ...      Additional arguments passed to [sliderInput()].
 #'
 #' @return Reactive value with the current value on the slider.
 #'

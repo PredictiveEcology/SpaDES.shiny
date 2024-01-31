@@ -25,16 +25,16 @@ polygonChooserUI <- function(id) {
 #'                        # TODO: fill this in
 #' @param selectedPoly    The name of the polygon to select by default.
 #' @param uploadOpts      A list of options for use with file uploads:
-#'                        \code{auth} logical indicating whether user is authorized to upload;
-#'                        \code{path} a directory path to use for file uploads;
-#'                        \code{user} the current username (used for creating user-specific paths);
-#'                        The default for all options is \code{NULL}, which means do not use.
-#' @param studyArea       A \code{Spatial} object used as a template for post-processing
+#'                        `auth` logical indicating whether user is authorized to upload;
+#'                        `path` a directory path to use for file uploads;
+#'                        `user` the current username (used for creating user-specific paths);
+#'                        The default for all options is `NULL`, which means do not use.
+#' @param studyArea       A `Spatial` object used as a template for post-processing
 #'                        the uploaded polygon, which is cropped, reprojected, etc.
-#'                        to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.
+#'                        to match `studyArea`. See [reproducible::postProcess()].
 #'
-#' @return A reactive list with elements \code{polygons} (a list of polygons) and
-#'         \code{selected} (the name of the selected polygon).
+#' @return A reactive list with elements `polygons` (a list of polygons) and
+#'         `selected` (the name of the selected polygon).
 #'
 #' @export
 #' @include uploadPolygon.R

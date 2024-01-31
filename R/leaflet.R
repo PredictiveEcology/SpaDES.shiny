@@ -1,4 +1,4 @@
-#' Leaflet \code{proj.4} string
+#' Leaflet `proj.4` string
 #'
 #' This is the projection needed to plot on \pkg{leaflet} maps.
 #'
@@ -7,10 +7,10 @@ proj4stringLFLT <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
 #' Convert a raster to tile images
 #'
-#' @description Important: \code{gdalUtils_gdalPath} environment variable must point to
+#' @description Important: `gdalUtils_gdalPath` environment variable must point to
 #'              path where GDAL is installed.
 #'
-#' @note Requires GDAL (>=2) and python are found on the system \code{PATH}.
+#' @note Requires GDAL (>=2) and python are found on the system `PATH`.
 #'
 #' @param raster Raster to generate tiles from.
 #' @param outputPath Output folder path.

@@ -39,7 +39,7 @@ copyrightAuthors(
 \item{licenseFile}{Path to your app's \file{LICENSE} file (default is \file{LICENSE} in
 the shiny app dir).}
 
-\item{status}{The boxes' status, passed to \code{\link[shinydashboard]{box}}
+\item{status}{The boxes' status, passed to \code{\link[shinydashboard:box]{shinydashboard::box()}}
 (default \code{"primary"}, which results in dark blue).}
 }
 \description{

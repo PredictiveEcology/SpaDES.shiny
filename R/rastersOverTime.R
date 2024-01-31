@@ -41,10 +41,10 @@ rastersOverTimeUI <- function(id) {
 #' @param defaultPolyName The name of the default selected polygon.
 #' @param map             Leaflet map to show raster and polygons on.
 #' @param mapTilesDir     Directory where pre-generated map tiles are stored
-#'                        (default \code{"www/"}; note the trailing slash).
-#'                        Be sure to add this dir as 'tiles' using \code{shiny::addResourcePath}
+#'                        (default `"www/"`; note the trailing slash).
+#'                        Be sure to add this dir as 'tiles' using `shiny::addResourcePath`
 #'                        in your \file{global.R}.
-#'                        E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
+#'                        E.g., `shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")`
 #'                        (note we don't need the trailing slash here).
 #' @param colorPalette    Colour palette to use.
 #' @param histTitle       Title to be shown above the histogram.
@@ -54,7 +54,7 @@ rastersOverTimeUI <- function(id) {
 #' @param nRasters        The number of available rasters.
 #' @param rasterStepSize  Size of step in the raster slider.
 #'
-#' @return Reactive polygon selected by the user with the \code{polygonChooser} module.
+#' @return Reactive polygon selected by the user with the `polygonChooser` module.
 #'         Invoked for the side-effect of creating shiny server and UI components.
 #'
 #' @export

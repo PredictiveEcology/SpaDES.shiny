@@ -1,10 +1,10 @@
 #' Initialize a \pkg{SpaDES.shiny} app's \pkg{packrat} library
 #'
-#' Spawns a new \code{Rscript} process to setup an app's package library using
-#' \pkg{packrat}. It initializes the \code{packrat} library inside the application
+#' Spawns a new `Rscript` process to setup an app's package library using
+#' \pkg{packrat}. It initializes the `packrat` library inside the application
 #' directory, and proceeds to install all \pkg{SpaDES.shiny} package dependencies,
 #' plus \pkg{devtools}.
-#' \strong{WARNING: this may take a while to complete!}
+#' **WARNING: this may take a while to complete!**
 #'
 #' @note This spawns and runs in another R process, during which time your
 #' current R process will wait, and RStudio may appear to hang while it's running.

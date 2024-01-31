@@ -23,10 +23,10 @@ histogramForRaster(
 
 \item{title}{Optional title for the histogram. Any shiny tag can be used.}
 
-\item{plotParameters}{A list of parameters passed to \code{\link[shiny]{plotOutput}}.}
+\item{plotParameters}{A list of parameters passed to \code{\link[shiny:plotOutput]{shiny::plotOutput()}}.}
 
-\item{...}{Additional parameters passed to \code{\link[shinydashboard]{box}}
-in \code{histogramForRasterUI}, and \code{\link[graphics]{barplot}}
+\item{...}{Additional parameters passed to \code{\link[shinydashboard:box]{shinydashboard::box()}}
+in \code{histogramForRasterUI}, and \code{\link[graphics:barplot]{graphics::barplot()}}
 in \code{histogramForRaster}.}
 
 \item{input}{shiny server input object}
@@ -38,7 +38,7 @@ in \code{histogramForRaster}.}
 \item{rctRasterVals}{Reactive values (likely extracted from a raster)}
 
 \item{rctHistogramBreaks}{Reactive value which is responsible for \code{breaks}
-parameter, as in \code{\link[graphics]{hist}}.}
+parameter, as in \code{\link[graphics:hist]{graphics::hist()}}.}
 
 \item{scale}{Number used for scaling heights of histogram bars.
 When set to 1 (default) histogram bar height represents the number
@@ -52,7 +52,7 @@ this will just increase the height of each histogram bar by 2
 So, in this scenario, each histogram's bar height is just count
 times 2 (count times n).}
 
-\item{addAxisParams}{Reactive value with parameters to \code{\link[graphics]{axis}}.
+\item{addAxisParams}{Reactive value with parameters to \code{\link[graphics:axis]{graphics::axis()}}.
 If \code{NULL} (default) then no axis is drawn.}
 }
 \value{

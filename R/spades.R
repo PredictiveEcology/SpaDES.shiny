@@ -1,16 +1,16 @@
-#' Shiny module to initialize a \code{SpaDES} simulation
+#' Shiny module to initialize a `SpaDES` simulation
 #'
-#' Simply a wrapper around \code{\link[SpaDES.core]{simInit}} to be called as a shiny module.
+#' Simply a wrapper around [SpaDES.core::simInit()] to be called as a shiny module.
 #'
 #' @note This is a server-only module with no UI component.
 #'
 #' @template input
 #' @template output
 #' @template session
-#' @param ...      Additional arguments passed to \code{simInit}.
+#' @param ...      Additional arguments passed to `simInit`.
 #'
-#' @return A reactive \code{simList} object
-#' @seealso \code{\link[SpaDES.core]{simInit}}
+#' @return A reactive `simList` object
+#' @seealso [SpaDES.core::simInit()]
 #'
 #' @author Alex Chubaty
 #' @export
@@ -22,26 +22,26 @@ spades_simInit <- function(input, output, session, ...) {
   })
 }
 
-#' Shiny module to run a \code{SpaDES} simulation experiment
+#' Shiny module to run a `SpaDES` simulation experiment
 #'
-#' Simply a wrapper around \code{\link[SpaDES.core]{experiment}} to be called as a shiny module.
+#' Simply a wrapper around [SpaDES.core::experiment()] to be called as a shiny module.
 #'
 #' @note This is a server-only module with no UI component.
 #'
 #' @template input
 #' @template output
 #' @template session
-#' @param sim      A reactive \code{simList} object (e.g., pass \code{sim = sim()}).
-#' @param reps     A reactive indicating the number of replicates (e.g., pass \code{reps = reps()}).
-#' @param seed     An integer to pass to \code{set.seed} for the simulation experiment.
-#' @param objectsToHash  A list of objects to hash (with \code{Cache}).
-#' @param cacheDebug  \code{Cache()} debugging (default \code{"complete"}). See \code{\link{Cache}}.
-#' @param spadesDebug \code{spades()} debugging (default \code{getOption("spades.debug")}).
+#' @param sim      A reactive `simList` object (e.g., pass `sim = sim()`).
+#' @param reps     A reactive indicating the number of replicates (e.g., pass `reps = reps()`).
+#' @param seed     An integer to pass to `set.seed` for the simulation experiment.
+#' @param objectsToHash  A list of objects to hash (with `Cache`).
+#' @param cacheDebug  `Cache()` debugging (default `"complete"`). See [Cache()].
+#' @param spadesDebug `spades()` debugging (default `getOption("spades.debug")`).
 #'                    See \code{link{spades}}.
-#' @param ...      Additional arguments passed to \code{experiment}.
+#' @param ...      Additional arguments passed to `experiment`.
 #'
-#' @return A list of \code{simList} objects.
-#' @seealso \code{\link[SpaDES.core]{experiment}}
+#' @return A list of `simList` objects.
+#' @seealso [SpaDES.core::experiment()]
 #'
 #' @author Alex Chubaty
 #' @export

@@ -1,4 +1,4 @@
-#' \code{SpaDES} simulation information (parent) module
+#' `SpaDES` simulation information (parent) module
 #'
 #' @template id
 #'
@@ -16,7 +16,7 @@ simInfoUI <- function(id) {
 #' @template session
 #' @template sim
 #' @param elements  Character vector describing which simulation diagrams to include as tabs.
-#'                  Default \code{NULL}, for all diagrams (i.e., \code{c("modules", "objects", "events")}).
+#'                  Default `NULL`, for all diagrams (i.e., `c("modules", "objects", "events")`).
 #'
 #' @export
 #' @importFrom shiny callModule fluidRow tabPanel
@@ -52,7 +52,7 @@ simInfo <- function(input, output, session, sim, elements = NULL) {
   })
 }
 
-#' \code{SpaDES} module diagram module
+#' `SpaDES` module diagram module
 #'
 #' @template id
 #'
@@ -97,7 +97,7 @@ simModuleDiagram <- function(input, output, session, sim) {
   })
 }
 
-#' \code{SpaDES} object diagram
+#' `SpaDES` object diagram
 #'
 #' @template id
 #'
@@ -190,7 +190,7 @@ simEventDiagram <- function(input, output, session, sim) {
   })
 }
 
-#' Detailed \code{SpaDES} module info module
+#' Detailed `SpaDES` module info module
 #'
 #' TODO: needs documentation
 #'
@@ -210,9 +210,9 @@ moduleInfoUI <- function(id) {
 #' @template output
 #' @template session
 #' @template sim
-#' @param data     Logical. \code{TRUE} indicates to use the Rmd file for the
+#' @param data     Logical. `TRUE` indicates to use the Rmd file for the
 #'                 module's data (\file{moduleName/moduleName_data.Rmd}), if present.
-#'                 \code{FALSE} uses the module's Rmd file (\file{moduleName/moduleName.Rmd}).
+#'                 `FALSE` uses the module's Rmd file (\file{moduleName/moduleName.Rmd}).
 #'
 #' @export
 #' @importFrom shiny actionLink div fluidRow includeMarkdown p renderUI tagList
@@ -250,7 +250,7 @@ moduleInfo <- function(input, output, session, sim, data = FALSE) {
   })
 }
 
-#' \code{SpaDES} module parameter values module
+#' `SpaDES` module parameter values module
 #'
 #' TODO: needs documentation
 #'

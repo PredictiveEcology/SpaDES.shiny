@@ -2,36 +2,36 @@ if (getRversion() >= "3.1.0") {
   utils::globalVariables(c("."))
 }
 
-#' Display a simple, interactive shiny app of the \code{simList}
+#' Display a simple, interactive shiny app of the `simList`
 #'
 #' Currently, this is quite simple. It creates a side bar with the simulation
 #' times, plus a set of tabs, one for each module, with numeric sliders.
-#' Currently, this does not treat \code{NA} correctly.
+#' Currently, this does not treat `NA` correctly.
 #' Also, it is slow (shiny is not built to be fast out of the box).
-#' There are two buttons, one to run the entire \code{spades} call, the other to
+#' There are two buttons, one to run the entire `spades` call, the other to
 #' do just one time step at a time. It can be repeatedly pressed.
 #'
 #' @note Many module parameters are only accessed by modules at the start of a
 #'   model run. So, even if the user changes them mid run, there won't be an
-#'   effect on the model runs until \code{Reset} is pressed, and one of the Run
+#'   effect on the model runs until `Reset` is pressed, and one of the Run
 #'   buttons is pressed.
 #'
-#' @note \code{.plotInterval} changes will only affect plots that are the base
+#' @note `.plotInterval` changes will only affect plots that are the base
 #'   layer of a given plot image. If there are layers on top of a base layer
-#'   (e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
+#'   (e.g., an agent on top of a raster layer), the `.plotInterval` of the
 #'   overlaid layers is ignored.
 #'
 #' @template sim
 #'
 #' @param title character string. The title of the shiny page.
 #'
-#' @param debug Logical. If \code{TRUE}, then will show \code{spades} event debugger
+#' @param debug Logical. If `TRUE`, then will show `spades` event debugger
 #'              in the console.
 #'
-#' @param filesOnly Logical. If \code{TRUE}, then the \file{server.R}, \file{ui.R} files
+#' @param filesOnly Logical. If `TRUE`, then the \file{server.R}, \file{ui.R} files
 #'                  will be written to a temporary location, with a message indicating
 #'                  where they are.
-#'                  Publishing this to \url{https://shinyapps.io} is currently very buggy,
+#'                  Publishing this to <https://shinyapps.io> is currently very buggy,
 #'                  and will likely not work as desired.
 #'
 #' @param ... additional arguments. Currently not used

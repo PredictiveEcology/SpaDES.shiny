@@ -32,7 +32,7 @@ spades_expt(
 
 \item{objectsToHash}{A list of objects to hash (with \code{Cache}).}
 
-\item{cacheDebug}{\code{Cache()} debugging (default \code{"complete"}). See \code{\link{Cache}}.}
+\item{cacheDebug}{\code{Cache()} debugging (default \code{"complete"}). See \code{\link[=Cache]{Cache()}}.}
 
 \item{spadesDebug}{\code{spades()} debugging (default \code{getOption("spades.debug")}).
 See \code{link{spades}}.}
@@ -43,13 +43,13 @@ See \code{link{spades}}.}
 A list of \code{simList} objects.
 }
 \description{
-Simply a wrapper around \code{\link[SpaDES.core]{experiment}} to be called as a shiny module.
+Simply a wrapper around \code{\link[SpaDES.core:deprecated]{SpaDES.core::experiment()}} to be called as a shiny module.
 }
 \note{
 This is a server-only module with no UI component.
 }
 \seealso{
-\code{\link[SpaDES.core]{experiment}}
+\code{\link[SpaDES.core:deprecated]{SpaDES.core::experiment()}}
 }
 \author{
 Alex Chubaty

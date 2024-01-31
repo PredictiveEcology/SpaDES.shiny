@@ -1,10 +1,10 @@
 #' Get installed package dependencies
 #'
-#' This is simply a wrapper around \code{tools::package_dependencies}
+#' This is simply a wrapper around `tools::package_dependencies`
 #'
 #' @param x     An installed package name.
-#' @param type  One of \code{"Depends"}, \code{"Imports"}, \code{"LinkingTo"}, \code{"Suggests"},
-#'              \code{"Enhances"}, or \code{"all"}. Default is \code{NULL}, which returns all.
+#' @param type  One of `"Depends"`, `"Imports"`, `"LinkingTo"`, `"Suggests"`,
+#'              `"Enhances"`, or `"all"`. Default is `NULL`, which returns all.
 #'
 #' @return A character vector of package dependencies.
 #'
@@ -23,7 +23,7 @@ pkgDeps <- function(x, type = NULL) {
 
 #' Get version from a package's \file{DESCRIPTION}
 #'
-#' This is simply a wrapper around \code{utils::packageVersion} to 1) allow a
+#' This is simply a wrapper around `utils::packageVersion` to 1) allow a
 #' vector of package names to be passed as an argument; 2) to warn instead of error
 #' when a package is not installed; and 3) return versions as character strings.
 #'

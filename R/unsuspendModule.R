@@ -1,13 +1,13 @@
 #' Unsuspend hidden modules
 #'
-#' Modified from \url{https://groups.google.com/forum/#!topic/shiny-discuss/F-EwQGELS1c}.
+#' Modified from <https://groups.google.com/forum/#!topic/shiny-discuss/F-EwQGELS1c>.
 #'
-#' @note "by default, \code{renderPlot} will try to set the plot output size to
-#' the same width/height of the \code{plotOutput}, which will be 0 by 0 pixels
+#' @note "by default, `renderPlot` will try to set the plot output size to
+#' the same width/height of the `plotOutput`, which will be 0 by 0 pixels
 #' when it's not actually visible. You can work around this if necessary by
-#' providing explicit \code{width} and \code{height} arguments to the
-#' \code{renderPlot()} function call itself (NOT the call to \code{plotOutput}
-#' and not any function calls inside the \code{renderPlot} code block).
+#' providing explicit `width` and `height` arguments to the
+#' `renderPlot()` function call itself (NOT the call to `plotOutput`
+#' and not any function calls inside the `renderPlot` code block).
 #' For example, \code{renderPlot({...}, width=400, height=300)}"
 #'
 #' @template id

@@ -3,7 +3,7 @@
 \name{visualizePolygonsUI}
 \alias{visualizePolygonsUI}
 \alias{visualizePolygons}
-\title{Visualize \code{SpatialPolygons*} (shiny module)}
+\title{Visualize \verb{SpatialPolygons*} (shiny module)}
 \usage{
 visualizePolygonsUI(id, ...)
 
@@ -23,7 +23,7 @@ visualizePolygons(input, output, session, poly, proxy = NULL)
 \item{poly}{Reactive value with polygon to visualize.}
 
 \item{proxy}{Proxy to a leaflet map on which polygons should be displayed.
-See \code{\link[leaflet]{leafletProxy}}}
+See \code{\link[leaflet:leafletProxy]{leaflet::leafletProxy()}}}
 }
 \value{
 None. Invoked for the side-effect of generating UI for a leaflet map.
@@ -31,5 +31,5 @@ None. Invoked for the side-effect of generating UI for a leaflet map.
 None. Invoked for the side-effect of rendering leaflet map.
 }
 \description{
-Display a \code{SpatialPolygons*} objects on a leaflet map.
+Display a \verb{SpatialPolygons*} objects on a leaflet map.
 }

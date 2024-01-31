@@ -90,7 +90,5 @@ on entire \code{data.table} or some subtable determined by a subset of chosen va
 \author{
 Mateusz Wyszynski
 
-Mateusz Wyszynski
-
 Alex Chubaty
 }

@@ -18,7 +18,7 @@ slider(input, output, session, ...)
 
 \item{session}{shiny server session object}
 
-\item{...}{Additional arguments passed to \code{\link{sliderInput}}.}
+\item{...}{Additional arguments passed to \code{\link[=sliderInput]{sliderInput()}}.}
 }
 \value{
 None. Invoked for the side-effect of creating a shiny UI.
@@ -31,7 +31,7 @@ Function \code{sliderUI} creates a shiny module UI.
 Function \code{slider} creates a slider module server function.
 }
 \seealso{
-\code{\link{sliderInput}}
+\code{\link[=sliderInput]{sliderInput()}}
 }
 \author{
 Mateusz Wyszynski

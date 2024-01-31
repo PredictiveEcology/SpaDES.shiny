@@ -1,12 +1,12 @@
-#' Get subtable from a \code{data.table}
+#' Get subtable from a `data.table`
 #'
-#' \code{getSubtableMem} provides a memoised version of \code{getSubtable}.
+#' `getSubtableMem` provides a memoised version of `getSubtable`.
 #'
-#' @param datatable         A \code{data.table} object.
+#' @param datatable         A `data.table` object.
 #' @param chosenCategories  ...
 #' @param chosenValues      ...
 #'
-#' @return A \code{data.table} object.
+#' @return A `data.table` object.
 #'
 #' @export
 #' @importFrom assertthat assert_that
@@ -40,10 +40,10 @@ getSubtableMem <- memoise::memoise(getSubtable)
 #' Slicer shiny module
 #'
 #' One can imagine behaviour of this module in the following way:
-#' A tree of height \code{m} is created.
-#' We begin at the top of the tree with the entire \code{data.table}.
-#' A category (column) from a \code{data.table} is chosen via \code{uiSequence}.
-#' Each value of this fixed category determines a subtable of the \code{data.table}.
+#' A tree of height `m` is created.
+#' We begin at the top of the tree with the entire `data.table`.
+#' A category (column) from a `data.table` is chosen via `uiSequence`.
+#' Each value of this fixed category determines a subtable of the `data.table`.
 #' For each value choice a child node is created and receives the value choice.
 #' Therefore, every child node implicitly receives a subtable corresponding to the
 #' received value choice.
@@ -53,10 +53,10 @@ getSubtableMem <- memoise::memoise(getSubtable)
 #' Simultaneously, for each node desired UI (e.g., tabs) is created.
 #' If no information about next category to fix is provided for a node, it assumes it is a leaf.
 #' At the end, at each leaf, a summary function is applied.
-#' Note that each leaf (and each node) receives the entire \code{data.table} and
+#' Note that each leaf (and each node) receives the entire `data.table` and
 #' the information about chosen values leading to this leaf (node).
 #' Hence, summary can be based on implicitly determined subtable, but also based
-#' on entire \code{data.table} or some subtable determined by a subset of chosen values.
+#' on entire `data.table` or some subtable determined by a subset of chosen values.
 #'
 #' @template id
 #'
@@ -78,17 +78,17 @@ slicerUI <- function(id) {
 #' @template output
 #' @template session
 #'
-#' @param datatable      A reactive \code{data.table}.
+#' @param datatable      A reactive `data.table`.
 #'
-#' @param uiSequence     A \code{data.table} with columns \code{category}, \code{uiType},
-#'                       and (optionally) \code{possibleValues}.
+#' @param uiSequence     A `data.table` with columns `category`, `uiType`,
+#'                       and (optionally) `possibleValues`.
 #'                       Both lists should contain elements of type character.
-#'                       The \code{category} column should contain names of the categories
+#'                       The `category` column should contain names of the categories
 #'                       which will be subsequently fixed.
-#'                       The \code{uiType} column should contain corresponding UI
+#'                       The `uiType` column should contain corresponding UI
 #'                       which should be applied for each category choice.
-#'                       The \code{possibleValues} column should contain a list of
-#'                       the possible values for \code{category}.
+#'                       The `possibleValues` column should contain a list of
+#'                       the possible values for `category`.
 #'                       If not supplied, possible values for each level of the list
 #'                       will be determined based on the data.
 #'                       Currently there are two possible UI types to perform: "tab" and "box",
@@ -96,22 +96,22 @@ slicerUI <- function(id) {
 #'
 #' @param serverFunction A summary module server function.
 #'                       This function should take, at minimum, the following arguments:
-#'                       \code{datatable} and \code{id}.
-#'                       Additional named arguments are passed via \code{...}.
+#'                       `datatable` and `id`.
+#'                       Additional named arguments are passed via `...`.
 #'                       Users have access to the full data.table if they need it
-#'                       (e.g., to calculate histogram breaks) via \code{.dtFull},
+#'                       (e.g., to calculate histogram breaks) via `.dtFull`,
 #'                       as well as a list of the currently selected category values
-#'                       via \code{.current}.
+#'                       via `.current`.
 #'                       Inside the function there should be a call to a shiny
-#'                       module server function using the \code{id}.
+#'                       module server function using the `id`.
 #'                       See example section and compare with \code{link[shiny]{callModule}}).
 #'
-#' @param uiFunction     A summary module function UI taking one argument: \code{id}.
-#'                       Note: the \code{id} value is generated internally.
+#' @param uiFunction     A summary module function UI taking one argument: `id`.
+#'                       Note: the `id` value is generated internally.
 #'                       Inside the function there should be a call to shiny module UI function.
 #'                       See example section.
 #'
-#' @param ...            Additional arguments passed to \code{serverFunction}.
+#' @param ...            Additional arguments passed to `serverFunction`.
 #'
 #' @return Shiny module server function.
 #'
@@ -256,9 +256,9 @@ slicer <- function(input, output, session, datatable, uiSequence,
 
 ################################################################################
 
-#' \code{slicer2} shiny module
+#' `slicer2` shiny module
 #'
-#' A 2-D version of \code{slicer}.
+#' A 2-D version of `slicer`.
 #'
 #' @export
 #' @inheritParams slicer

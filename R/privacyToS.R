@@ -18,7 +18,7 @@ privacyStatementUI <- function(id) {
 #' @template output
 #' @template session
 #' @param file     Path to a markdown file containing the Privacy Statement
-#'                 (default: \code{"PRIVACY.md"}).
+#'                 (default: `"PRIVACY.md"`).
 #' @template status
 #'
 #' @export
@@ -68,7 +68,7 @@ termsOfServiceUI <- function(id) {
 #' @template output
 #' @template session
 #' @param file     Path to a markdown file containing the Terms of Service
-#'                 (default: \code{"TERMS.md"})
+#'                 (default: `"TERMS.md"`)
 #' @template status
 #'
 #' @export

@@ -22,7 +22,7 @@ histogram(
 \item{id}{An id string that corresponds with the id used to call the module's UI function.}
 
 \item{...}{Additional UI parameters passed to \code{link[shiny]{plotOutput}},
-or additional server arguments passed to \code{\link[graphics]{barplot}}.}
+or additional server arguments passed to \code{\link[graphics:barplot]{graphics::barplot()}}.}
 
 \item{input}{shiny server input object}
 
@@ -36,7 +36,7 @@ represented as a proportion).
 Desired subtables can be retrieved using \code{chosenCategories}
 and \code{chosenValues} parameters.}
 
-\item{addAxisParams}{Reactive value with parameters to \code{\link[graphics]{axis}}.
+\item{addAxisParams}{Reactive value with parameters to \code{\link[graphics:axis]{graphics::axis()}}.
 If \code{NULL} (default) then no axis is drawn.}
 
 \item{verticalBar}{Numeric value at which to add an \code{abline} to the histogram.}
@@ -48,8 +48,8 @@ None. Invoked for the side-effect of rendering bar plot.
 }
 \description{
 UI function of a shiny module which creates a histogram
-             using barplot based on the data received
+using barplot based on the data received
 
 Server function of a shiny module which creates a histogram
-             using barplot based on the data received.
+using barplot based on the data received.
 }

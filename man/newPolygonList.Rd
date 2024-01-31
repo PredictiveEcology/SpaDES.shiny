@@ -7,7 +7,7 @@
 polygonList(studyArea, ...)
 }
 \arguments{
-\item{studyArea}{A template \code{Spatial*} object whose projection, extent,
+\item{studyArea}{A template \verb{Spatial*} object whose projection, extent,
 etc. will be used for the polygons being added.}
 
 \item{...}{\code{SpatialPolygonsDataFrame} objects to be added.}

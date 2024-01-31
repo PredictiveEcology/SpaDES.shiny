@@ -2,7 +2,7 @@
 #'
 #' View app-specific logs at a specific path (default is \file{/var/log/shiny-server}).
 #'
-#' Generates a \code{fluidRow} consisting of two columns: one containing a file selector
+#' Generates a `fluidRow` consisting of two columns: one containing a file selector
 #' dropdown menu and the other displaying the text output from the selected log file.
 #'
 #' @template id

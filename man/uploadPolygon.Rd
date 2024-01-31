@@ -24,10 +24,11 @@ uploadPolygon(input, output, session, authStatus, userDir, studyArea)
 
 \item{studyArea}{A \code{Spatial} object used as a template for postprocessing
 the uploaded polygon, which is cropped, reprojected, etc.
-to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.}
+to match \code{studyArea}. See \code{\link[reproducible:postProcess]{reproducible::postProcess()}}.}
 }
 \value{
-Reactive object containing the uploaded polygon.
+\if{html}{\out{<div class="sourceCode">}}\preformatted{          Reactive object containing the uploaded polygon.
+}\if{html}{\out{</div>}}
 }
 \description{
 Upload a shapefile

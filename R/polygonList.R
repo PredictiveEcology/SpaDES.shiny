@@ -20,10 +20,10 @@ setOldClass("polygonList")
 #' @param y   a named list
 #'
 #' @return A named list, with elements sorted by name.
-#'          The values of matching elements in list \code{y}
-#'          replace the values in list \code{x}.
+#'          The values of matching elements in list `y`
+#'          replace the values in list `x`.
 #'
-#' @note This is a temporary workaround until we resolve inheritance of S3 classes (see \code{.polygonList}).
+#' @note This is a temporary workaround until we resolve inheritance of S3 classes (see `.polygonList`).
 #'
 #' @author Alex Chubaty
 #' @export
@@ -39,11 +39,11 @@ setMethod("updateList",
             return(z)
 })
 
-#' Create a new \code{polygonList} object
+#' Create a new `polygonList` object
 #'
-#' @param studyArea  A template \code{Spatial*} object whose projection, extent,
+#' @param studyArea  A template `Spatial*` object whose projection, extent,
 #'                   etc. will be used for the polygons being added.
-#' @param ...        \code{SpatialPolygonsDataFrame} objects to be added.
+#' @param ...        `SpatialPolygonsDataFrame` objects to be added.
 #'
 #' @export
 #' @importFrom sp spTransform

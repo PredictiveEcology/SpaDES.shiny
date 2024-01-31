@@ -1,6 +1,6 @@
-#' Visualize \code{SpatialPolygons*} (shiny module)
+#' Visualize `SpatialPolygons*` (shiny module)
 #'
-#' Display a \code{SpatialPolygons*} objects on a leaflet map.
+#' Display a `SpatialPolygons*` objects on a leaflet map.
 #'
 #' @template id
 #'
@@ -23,7 +23,7 @@ visualizePolygonsUI <- function(id, ...) {
 #' @template session
 #' @param poly      Reactive value with polygon to visualize.
 #' @param proxy     Proxy to a leaflet map on which polygons should be displayed.
-#'                  See \code{\link[leaflet]{leafletProxy}}
+#'                  See [leaflet::leafletProxy()]
 #'
 #' @return None. Invoked for the side-effect of rendering leaflet map.
 #'

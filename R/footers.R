@@ -1,7 +1,7 @@
 #' Generate HTML footers for body or sidebar
 #'
 #' App copyright info can be inserted into a footer in the dashboard body using
-#' \code{copyrightFooter} module.
+#' `copyrightFooter` module.
 #'
 #' @template id
 #'
@@ -19,8 +19,8 @@ copyrightFooterUI <- function(id) {
 #' @template output
 #' @template session
 #' @param cph      Character string indicating the copyright holder name.
-#'                 This is automatically generated from the \code{copyright} item
-#'                 in the app metadata sued my \code{newApp}.
+#'                 This is automatically generated from the `copyright` item
+#'                 in the app metadata sued my `newApp`.
 #' @param year     Character string indicating the copyright date.
 #'                 Defaults to the current year.
 #'

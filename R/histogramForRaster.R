@@ -6,11 +6,11 @@
 #'
 #' @param title Optional title for the histogram. Any shiny tag can be used.
 #'
-#' @param plotParameters A list of parameters passed to \code{\link[shiny]{plotOutput}}.
+#' @param plotParameters A list of parameters passed to [shiny::plotOutput()].
 #'
-#' @param ... Additional parameters passed to \code{\link[shinydashboard]{box}}
-#'            in \code{histogramForRasterUI}, and \code{\link[graphics]{barplot}}
-#'            in \code{histogramForRaster}.
+#' @param ... Additional parameters passed to [shinydashboard::box()]
+#'            in `histogramForRasterUI`, and [graphics::barplot()]
+#'            in `histogramForRaster`.
 #'
 #' @return None. Invoked for the side-effect of creating shiny UI.
 #'
@@ -47,7 +47,7 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #' @param scale Number used for scaling heights of histogram bars.
 #'              When set to 1 (default) histogram bar height represents the number
 #'              of raster cells with value from bar interval.
-#'              If the resolution of raster is known, \code{scale} can be used
+#'              If the resolution of raster is known, `scale` can be used
 #'              to transform these heights into the ones representing area covered
 #'              by cells (count).
 #'              When set to 2 (or, more generally, some number n with no further meaning)
@@ -56,11 +56,11 @@ histogramForRasterUI <- function(id, title = "", plotParameters, ...) {
 #'              So, in this scenario, each histogram's bar height is just count
 #'              times 2 (count times n).
 #'
-#' @param rctHistogramBreaks Reactive value which is responsible for \code{breaks}
-#'                        parameter, as in \code{\link[graphics]{hist}}.
+#' @param rctHistogramBreaks Reactive value which is responsible for `breaks`
+#'                        parameter, as in [graphics::hist()].
 #'
-#' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
-#'                      If \code{NULL} (default) then no axis is drawn.
+#' @param addAxisParams Reactive value with parameters to [graphics::axis()].
+#'                      If `NULL` (default) then no axis is drawn.
 #'
 #' @return None. Invoked for the side-effect of rendering histogram plot.
 #'

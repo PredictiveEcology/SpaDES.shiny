@@ -91,16 +91,16 @@ E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
 \code{user} the current username (used for creating user-specific paths).
 The default for all options is \code{NULL}, which means do not use.}
 
-\item{rctStudyArea}{A reactive \code{SpatialPolygons*} object for the whole study area region.}
+\item{rctStudyArea}{A reactive \verb{SpatialPolygons*} object for the whole study area region.}
 
 \item{thinKeep}{Proportion of points in polygons to keep when thinning or plotting.
-See \code{\link[rmapshaper]{ms_simplify}}.}
+See \code{\link[rmapshaper:ms_simplify]{rmapshaper::ms_simplify()}}.}
 }
 \value{
 Invoked for the side-effect of creating a shiny UI.
 
 Reactive polygon selected by the user with the \code{polygonChooser} module.
-         Invoked for the side-effect of creating shiny server and UI components. # TODO: reword
+Invoked for the side-effect of creating shiny server and UI components. # TODO: reword
 }
 \description{
 A shiny module that displays rasters changing in time on a predefined map,

@@ -10,24 +10,24 @@
 #' This allows authentication to be managed via Google rather than locally on the shiny server.
 #' Only the whitelist of approved users is kept locally.
 #'
-#' Login status is stored in \code{session$userData$userLoggedIn()}, a reactive value.
-#' Authentication status is stored in \code{session$userData$userAuthorized()}, a reactive value.
+#' Login status is stored in `session$userData$userLoggedIn()`, a reactive value.
+#' Authentication status is stored in `session$userData$userAuthorized()`, a reactive value.
 #'
 #' @section Additional requirements:
 #' Your \file{global.R} file should set the following options:
 #' \enumerate{
-#'   \item \code{googleAuthR.scopes.selected}:
+#'   \item `googleAuthR.scopes.selected`:
 #'   \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
 #'   "https://www.googleapis.com/auth/userinfo.profile")}
-#'   \item \code{googleAuthR.webapp.client_id}: your Google app OAuth id
-#'   \item \code{googleAuthR.webapp.client_secret}: your Google app OAuth "secret"
+#'   \item `googleAuthR.webapp.client_id`: your Google app OAuth id
+#'   \item `googleAuthR.webapp.client_secret`: your Google app OAuth "secret"
 #' }
 #'
-#' Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.
+#' Be sure to also set `appURL` and `authUsers` in \file{global.R}.
 #'
-#' See the authentication vignette (\code{vignette("authentication", "SpaDES.shiny")}).
+#' See the authentication vignette (`vignette("authentication", "SpaDES.shiny")`).
 #'
-#' @note Based on \code{googleAuthR::googleAuth} and \code{googleAuthR::googleAuthUI}.
+#' @note Based on `googleAuthR::googleAuth` and `googleAuthR::googleAuthUI`.
 #'
 #' @template id
 #'
@@ -50,9 +50,9 @@ authGoogleUI <- function(id) {
 #' @template session
 #' @param appURL    URL to the hosted app.
 #' @param authUsers A character vector of authorized user email addresses.
-#' @param icon      Default \code{"google"}. Name of icon to display beside the login button.
+#' @param icon      Default `"google"`. Name of icon to display beside the login button.
 #'                  Use of an icon with \pkg{shinydashboard} may produce undesired results.
-#'                  Disable use of the icon with \code{icon = NULL}.
+#'                  Disable use of the icon with `icon = NULL`.
 #'
 #' @return          A list of the user's Google profile details (name, email, etc.)
 #'

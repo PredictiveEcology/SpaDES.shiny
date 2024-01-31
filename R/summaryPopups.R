@@ -54,12 +54,12 @@ displayPopupWithSummary <- function(x, y, proxy, raster, polygons,
 #' @param click            Reactive value with click on shape input from leaflet map.
 #' @param rast             Reactive value with raster to summarize by.
 #' @param poly             Reactive value with current polygon on the map.
-#' @param rasterValueLabel String with description of raster value. Uses \code{sprintf},
-#'                         so must include exactly one \code{\%s} in order to display raster value.
-#'                         Default is a string \code{"Raster value: \%s"}.
-#' @param extractedValues List of attributes from \code{SpatialPolygonDataFrame}
+#' @param rasterValueLabel String with description of raster value. Uses `sprintf`,
+#'                         so must include exactly one `\%s` in order to display raster value.
+#'                         Default is a string `"Raster value: \%s"`.
+#' @param extractedValues List of attributes from `SpatialPolygonDataFrame`
 #'                        which should be included in popup summary.
-#'                        When \code{NULL} (default) all attributes are included.
+#'                        When `NULL` (default) all attributes are included.
 #'
 #' @return None. Invoked for the side-effect of creating a shiny observer.
 #'

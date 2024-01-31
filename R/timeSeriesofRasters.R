@@ -24,20 +24,20 @@ timeSeriesofRastersUI <- function(id) {
 #' @param rctChosenPoly       The user-selected polygon.
 #' @param defaultPolyName     Name of the polygon to use as the default for mapping.
 #' @param mapLegend           The legend text to add to the leaflet map.
-#' @param shpStudyRegionName  Name of the study area region (from \code{rctRasterList}).
-#' @param shpStudyRegionLFLT  \code{SpatialPolygonDataFrame} for the study region.
+#' @param shpStudyRegionName  Name of the study area region (from `rctRasterList`).
+#' @param shpStudyRegionLFLT  `SpatialPolygonDataFrame` for the study region.
 #' @param maxAge              Maximum simulation age.
 #' @param zoom                Initial leaflet zoom.
 #' @param uploadOpts    A list of options for use with file uploads:
-#'                      \code{auth} logical indicating whether user is authorized to upload;
-#'                      \code{path} a directory path to use for file uploads;
-#'                      \code{user} the current username (used for creating user-specific paths).
-#'                      The default for all options is \code{NULL}, which means do not use.
-#' @param rctStudyArea  A reactive \code{SpatialPolygons*} object for the whole study area region.
+#'                      `auth` logical indicating whether user is authorized to upload;
+#'                      `path` a directory path to use for file uploads;
+#'                      `user` the current username (used for creating user-specific paths).
+#'                      The default for all options is `NULL`, which means do not use.
+#' @param rctStudyArea  A reactive `SpatialPolygons*` object for the whole study area region.
 #' @param thinKeep      Proportion of points in polygons to keep when thinning or plotting.
-#'                      See \code{\link[rmapshaper]{ms_simplify}}.
+#'                      See [rmapshaper::ms_simplify()].
 #'
-#' @return  Reactive polygon selected by the user with the \code{polygonChooser} module.
+#' @return  Reactive polygon selected by the user with the `polygonChooser` module.
 #'          Invoked for the side-effect of creating shiny server and UI components. # TODO: reword
 #'
 #' @author Mateusz Wyszynski

@@ -27,16 +27,19 @@ Use of an icon with \pkg{shinydashboard} may produce undesired results.
 Disable use of the icon with \code{icon = NULL}.}
 }
 \value{
-A list of the user's Google profile details (name, email, etc.)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{     A list of the user's Google profile details (name, email, etc.)
+}\if{html}{\out{</div>}}
 }
 \description{
 Logs a user into their Google account for authorized use of the app.
 Allows app content to be made conditionally available to 3 classes of user:
 }
 \details{
-1. Anonymous (non-logged in) users;
-2. Logged in users who are not authenticated against a whitelist;
-3. Logged in and authenticated users.
+\enumerate{
+\item Anonymous (non-logged in) users;
+\item Logged in users who are not authenticated against a whitelist;
+\item Logged in and authenticated users.
+}
 
 This allows authentication to be managed via Google rather than locally on the shiny server.
 Only the whitelist of approved users is kept locally.
@@ -51,11 +54,11 @@ Based on \code{googleAuthR::googleAuth} and \code{googleAuthR::googleAuthUI}.
 
 Your \file{global.R} file should set the following options:
 \enumerate{
-  \item \code{googleAuthR.scopes.selected}:
-  \preformatted{c("https://www.googleapis.com/auth/userinfo.email",
+\item \code{googleAuthR.scopes.selected}:
+\preformatted{c("https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/userinfo.profile")}
-  \item \code{googleAuthR.webapp.client_id}: your Google app OAuth id
-  \item \code{googleAuthR.webapp.client_secret}: your Google app OAuth "secret"
+\item \code{googleAuthR.webapp.client_id}: your Google app OAuth id
+\item \code{googleAuthR.webapp.client_secret}: your Google app OAuth "secret"
 }
 
 Be sure to also set \code{appURL} and \code{authUsers} in \file{global.R}.

@@ -18,7 +18,7 @@ appNewsUI <- function(id) {
 #' @template input
 #' @template output
 #' @template session
-#' @param file  Path to a markdown file containing the NEWS (default: \code{"NEWS.md"}).
+#' @param file  Path to a markdown file containing the NEWS (default: `"NEWS.md"`).
 #' @template status
 #'
 #' @export

@@ -6,7 +6,7 @@
 #' @template id
 #'
 #' @param ... Additional UI parameters passed to \code{link[shiny]{plotOutput}},
-#'            or additional server arguments passed to \code{\link[graphics]{barplot}}.
+#'            or additional server arguments passed to [graphics::barplot()].
 #'
 #' @return None. Invoked for the side-effect of rendering bar plot.
 #'
@@ -29,17 +29,17 @@ histogramUI <- function(id, ...) {
 #' @template session
 #'
 #' @param histdata  Reactive value containing a numeric vector of proportions corresponding
-#'                  to each histogram bin (i.e., the output of \code{hist(..., plot = FALSE)}
+#'                  to each histogram bin (i.e., the output of `hist(..., plot = FALSE)`
 #'                  represented as a proportion).
-#'                  Desired subtables can be retrieved using \code{chosenCategories}
-#'                  and \code{chosenValues} parameters.
+#'                  Desired subtables can be retrieved using `chosenCategories`
+#'                  and `chosenValues` parameters.
 #'
-#' @param addAxisParams Reactive value with parameters to \code{\link[graphics]{axis}}.
-#'                      If \code{NULL} (default) then no axis is drawn.
+#' @param addAxisParams Reactive value with parameters to [graphics::axis()].
+#'                      If `NULL` (default) then no axis is drawn.
 #'
-#' @param verticalBar  Numeric value at which to add an \code{abline} to the histogram.
+#' @param verticalBar  Numeric value at which to add an `abline` to the histogram.
 #'
-#' @param fname optional filepath to save \code{.png} outputs
+#' @param fname optional filepath to save `.png` outputs
 #'
 #' @export
 #' @importFrom assertthat assert_that

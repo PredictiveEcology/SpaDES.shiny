@@ -74,7 +74,7 @@ E.g., \code{shiny::addResourcePath("tiles", "www/All/FULL/map-tiles")}
 None. Invoked for the side-effect of creating a shiny UI.
 
 Reactive polygon selected by the user with the \code{polygonChooser} module.
-        Invoked for the side-effect of creating shiny server and UI components.
+Invoked for the side-effect of creating shiny server and UI components.
 }
 \description{
 A shiny module showing the values from a raster in time on a predefined map.

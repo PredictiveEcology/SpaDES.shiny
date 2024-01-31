@@ -19,14 +19,14 @@ polygonsUpdater(input, output, session, proxy, poly, group = "group", ...)
 
 \item{group}{Group of polygons we want to update.}
 
-\item{...}{Additional parameters of \code{\link[leaflet]{addPolygons}} function.}
+\item{...}{Additional parameters of \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} function.}
 }
 \value{
 None. Invoked for the side-effect of creating an observer, which
-        manages current set of polygons on a leaflet map using leaflet proxy.
+manages current set of polygons on a leaflet map using leaflet proxy.
 }
 \description{
-Update polygons displayed on a leaflet map using \code{\link[leaflet]{leafletProxy}}.
+Update polygons displayed on a leaflet map using \code{\link[leaflet:leafletProxy]{leaflet::leafletProxy()}}.
 }
 \note{
 This is a server-only module with no UI component.

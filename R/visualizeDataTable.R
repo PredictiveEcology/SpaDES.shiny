@@ -1,7 +1,7 @@
 #' Display data.table (shiny module)
 #'
 #' Display tabular data.
-#' Both \code{data.table} and \code{data.frame} can be used as arguments.
+#' Both `data.table` and `data.frame` can be used as arguments.
 #'
 #' @template id
 #'

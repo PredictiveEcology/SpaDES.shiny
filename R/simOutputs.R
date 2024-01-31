@@ -56,7 +56,7 @@ initialMapUI <- function(id) {
 #' @template output
 #' @template session
 #' @template sim
-#' @param mapID    Character string indicating the name of the map in the \code{simList} object.
+#' @param mapID    Character string indicating the name of the map in the `simList` object.
 #'
 #' @export
 #' @importFrom quickPlot clearPlot Plot setColors<-

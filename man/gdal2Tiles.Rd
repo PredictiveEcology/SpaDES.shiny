@@ -20,7 +20,7 @@ Leaflet map url template path. # TODO: improve description
 }
 \description{
 Important: \code{gdalUtils_gdalPath} environment variable must point to
-             path where GDAL is installed.
+path where GDAL is installed.
 }
 \note{
 Requires GDAL (>=2) and python are found on the system \code{PATH}.

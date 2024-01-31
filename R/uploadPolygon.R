@@ -17,9 +17,9 @@ uploadPolygonUI <- function(id) {
 #' @template session
 #' @param authStatus     Logical indicating whether a user can upload files.
 #' @param userDir        User-specific directory in which to store uploaded files.
-#' @param studyArea      A \code{Spatial} object used as a template for postprocessing
+#' @param studyArea      A `Spatial` object used as a template for postprocessing
 #'                       the uploaded polygon, which is cropped, reprojected, etc.
-#'                       to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.
+#'                       to match `studyArea`. See [reproducible::postProcess()].
 #'
 #' @return               Reactive object containing the uploaded polygon.
 #'

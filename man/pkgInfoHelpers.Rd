@@ -39,8 +39,4 @@ when a package is not installed; and 3) return versions as character strings.
 }
 \author{
 Alex Chubaty
-
-Alex Chubaty
-
-Alex Chubaty
 }

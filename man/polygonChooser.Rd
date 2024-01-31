@@ -39,11 +39,11 @@ The default for all options is \code{NULL}, which means do not use.}
 
 \item{studyArea}{A \code{Spatial} object used as a template for post-processing
 the uploaded polygon, which is cropped, reprojected, etc.
-to match \code{studyArea}. See \code{\link[reproducible]{postProcess}}.}
+to match \code{studyArea}. See \code{\link[reproducible:postProcess]{reproducible::postProcess()}}.}
 }
 \value{
 A reactive list with elements \code{polygons} (a list of polygons) and
-        \code{selected} (the name of the selected polygon).
+\code{selected} (the name of the selected polygon).
 }
 \description{
 Provides a dropdown list of polygons available for mapping, sorted alphabetically.
