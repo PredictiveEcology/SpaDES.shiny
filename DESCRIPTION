@@ -5,19 +5,20 @@ Description: Create 'shiny' app interfaces for 'SpaDES' models.
 URL:
     http://spades-shiny.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2020-08-31
+Date: 2024-01-31
 Version: 0.2.0.9000
 Authors@R: c(
       person("Alex M", "Chubaty", email = "achubaty@for-cast.ca",
              role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
-      person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
+      person("Eliot J B", "McIntire", email = "eliot.mcintire@NRCan-RNCan.gc.ca",
              role = c("aut"), comment = c(ORCID = "https://orcid.org/0000-0002-6914-8316")),
       person("Damian", "Rodziewicz", role = c("aut")),
       person("Mateusz", "Wyszynski", role = c("aut")),
       person("Olivia", "Sung", role = c("ctb")),
       person("Alex", "Tso", role = c("ctb")),
       person("Greyson", "Wang", role = c("ctb")),
-      person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
+      person(paste("His Majesty the Queen in Right of Canada,",
+                   "as represented by the Minister of Natural Resources Canada"),
              role = "cph")
    )
 Depends:
