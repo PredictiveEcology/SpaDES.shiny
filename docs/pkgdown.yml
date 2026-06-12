@@ -1,8 +1,0 @@
-urls:
-  reference: http://spades-shiny.predictiveecology.org/reference
-  article: http://spades-shiny.predictiveecology.org/articles
-articles:
-  01-create-an-app: 01-create-an-app.html
-  02-authentication: 02-authentication.html
-  03-package-devel: 03-package-devel.html
-

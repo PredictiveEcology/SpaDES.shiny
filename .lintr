@@ -1,2 +1,0 @@
-linters: with_defaults(line_length_linter(100), object_name_linter("camelCase"), default = default_linters[-which(names(default_linters) == "object_usage_linter")])
-exclusions: list("R/simInfo.R")

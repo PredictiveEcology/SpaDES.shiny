@@ -1,1 +1,0 @@
-menuItem("{{{menuItemName}}}", tabName = "{{{tabName}}}", icon = icon("{{{icon}}}"))

@@ -2,67 +2,55 @@
 % Please edit documentation in R/shine.R
 \name{shine}
 \alias{shine}
-\alias{shine,simList-method}
-\title{Display a simple, interactive shiny app of the \code{simList}}
+\title{Interactive Shiny visualizer for SpaDES outputs}
 \usage{
-shine(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE, ...)
-
-\S4method{shine}{simList}(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE, ...)
+shine(
+  path = "outputs",
+  timePattern = "[0-9]+",
+  maxCells = NULL,
+  launch = TRUE,
+  ...
+)
 }
 \arguments{
-\item{sim}{A \code{simList} object}
+\item{path}{Folder to scan recursively. Default \code{"outputs"}.}
 
-\item{title}{character string. The title of the shiny page.}
+\item{timePattern}{Regex matching the timestamp token in a file name. The
+\strong{last} match in the (extension-stripped) base name is used as the numeric
+time. Default \code{"[0-9]+"}.}
 
-\item{debug}{Logical. If \code{TRUE}, then will show \code{spades} event debugger
-in the console.}
+\item{maxCells}{Optional cap on pixels per side; if set, rasters larger than
+this are aggregated down before rendering. Default \code{NULL} (full resolution).}
 
-\item{filesOnly}{Logical. If \code{TRUE}, then the \file{server.R}, \file{ui.R} files
-will be written to a temporary location, with a message indicating
-where they are.
-Publishing this to \url{https://shinyapps.io} is currently very buggy,
-and will likely not work as desired.}
+\item{launch}{If \code{TRUE} (default), run the app with \code{\link[shiny:runApp]{shiny::runApp()}}. If
+\code{FALSE}, return the \code{\link[shiny:shinyApp]{shiny::shinyApp()}} object (useful for testing/embedding).}
 
-\item{...}{additional arguments. Currently not used}
+\item{...}{Passed to \code{\link[shiny:runApp]{shiny::runApp()}} (e.g. \code{port}, \code{launch.browser}).}
+}
+\value{
+Invisibly, the \code{shinyApp} object (also when \code{launch = TRUE}).
 }
 \description{
-Currently, this is quite simple. It creates a side bar with the simulation
-times, plus a set of tabs, one for each module, with numeric sliders.
-Currently, this does not treat \code{NA} correctly.
-Also, it is slow (shiny is not built to be fast out of the box).
-There are two buttons, one to run the entire \code{spades} call, the other to
-do just one time step at a time. It can be repeatedly pressed.
+Recursively scans a folder for raster (\code{.tif}) and image (\code{.png}) outputs,
+groups files that share a base name but differ by an embedded timestamp into
+time-series "objects", and launches a Shiny app to explore them. Maps (\code{.tif})
+are drawn on a chooseable web basemap; figures (\code{.png}) are shown as images.
+Two further tabs show precomputed (\code{last - first}) and user-defined differences
+between map snapshots.
 }
-\note{
-Many module parameters are only accessed by modules at the start of a
-model run. So, even if the user changes them mid run, there won't be an
-effect on the model runs until \code{Reset} is pressed, and one of the Run
-buttons is pressed.
+\details{
+Rasters are rendered with \code{\link[leafem:addGeotiff]{leafem::addGeotiff()}}, which draws them through the
+tiled \verb{georaster-layer-for-leaflet} canvas layer: pan/zoom redraw per-tile on
+the client at native resolution (fast, no server round-trip per interaction).
+Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
+overviews), cached on disk, and served same-origin via \code{\link[shiny:addResourcePath]{shiny::addResourcePath()}}.
 
-\code{.plotInterval} changes will only affect plots that are the base
-layer of a given plot image. If there are layers on top of a base layer
-(e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
-overlaid layers is ignored.
+Multi-band rasters contribute one object per band. Files whose name contains no
+digit run are treated as static (always-shown) layers with no position on the
+time slider.
 }
 \examples{
 \dontrun{
- library(SpaDES)
- library(SpaDES.shiny)
- mySim <- simInit(
-   times <- list(start = 0.0, end = 20.0),
-   params = list(
-     .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
-   ),
-   modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-   paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
- )
-
-shine(mySim)
-
-# To publish to shinyapps.io, need files. This is not reliable yet.
-shine(mySim, filesOnly = TRUE)
-
-# if the user wants to see the events go by, which can help with debugging:
-shine(mySim, debug = TRUE)
+shine("outputs")
 }
 }
