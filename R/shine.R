@@ -181,7 +181,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   if (length(labs) < 2L) return(FALSE)
   num <- "-?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?"
   # a numeric range, optionally bracketed with [ ( on the left and ] ) on the right
-  pat <- paste0("^\\s*[\\[(]?\\s*", num, "\\s*[-–—]\\s*", num, "\\s*[\\])]?\\s*$")
+  pat <- paste0("^\\s*[\\[(]?\\s*", num, "\\s*-\\s*", num, "\\s*[\\])]?\\s*$")
   all(grepl(pat, labs, perl = TRUE))
 }
 
