@@ -370,7 +370,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     ),
 
     # ---- Differences tab ----
-    shiny::tabPanel("Differences",
+    shiny::tabPanel("Change from start to end",
       shiny::div(style = "position: relative;",
         leaflet::leafletOutput("diff_map", width = "100%", height = "92vh"),
         legendPanel(shiny::tagList(
@@ -393,10 +393,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
           shiny::tags$hr(),
           shiny::helpText("Pick one A and one B -> B - A"),
           shiny::fluidRow(
-            shiny::column(6, shiny::checkboxGroupInput("cust_a", "A", choices = snapChoices,
-              selected = if (length(snapChoices) >= 1) snapChoices[[1]] else NULL)),
-            shiny::column(6, shiny::checkboxGroupInput("cust_b", "B", choices = snapChoices,
-              selected = if (length(snapChoices) >= 2) snapChoices[[2]] else NULL))
+            shiny::column(6, shiny::radioButtons("cust_a", "A", choices = snapChoices,
+              selected = if (length(snapChoices) >= 1) snapChoices[[1]] else character(0))),
+            shiny::column(6, shiny::radioButtons("cust_b", "B", choices = snapChoices,
+              selected = if (length(snapChoices) >= 2) snapChoices[[2]] else character(0)))
           )
         ))
       )
@@ -540,7 +540,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         leaflet::clearTiles() |> leaflet::addProviderTiles(input$diff_basemap)
     })
     shiny::observe({
-      if (!identical(input$tabs, "Differences")) return()   # only when the map exists
+      if (!identical(input$tabs, "Change from start to end")) return()  # only when map exists
       sel <- input$diff_objs
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("diff_map")))
       for (id in sel) {
