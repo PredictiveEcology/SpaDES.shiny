@@ -526,10 +526,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   root <- normalizePath(path)
   shiny::addResourcePath("shineimg", root)
   shiny::addResourcePath("shinecog", .shineCogDir())
-  figUrl <- function(f) {
-    rel <- sub("^[/\\\\]", "", sub(root, "", normalizePath(f), fixed = TRUE))
-    paste0("shineimg/", gsub("\\\\", "/", rel))
+  relPath <- function(f) {   # path relative to the user-supplied scan root
+    gsub("\\\\", "/", sub("^[/\\\\]", "", sub(root, "", normalizePath(f), fixed = TRUE)))
   }
+  figUrl <- function(f) paste0("shineimg/", relPath(f))
   cogUrl <- function(file) paste0("shinecog/", file)
 
   function(input, output, session) {
@@ -623,7 +623,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       sel <- input$map_objs
       if (length(sel) == 0L) return(NULL)
       t <- curMapTime()
-      shiny::HTML(paste(vapply(mapObjs[sel], function(o) basename(.shineFileAt(o, t)),
+      shiny::HTML(paste(vapply(mapObjs[sel], function(o) relPath(.shineFileAt(o, t)),
                                character(1)), collapse = "<br>"))
     })
 
@@ -662,7 +662,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       if (is.null(id) || !nzchar(id)) return(NULL)
       times <- figSelTimes()
       t <- if (length(times) >= 2L) { v <- input$fig_time; if (is.null(v)) times[1] else v } else NA_real_
-      shiny::HTML(basename(.shineFileAt(figObjs[[id]], t)))
+      shiny::HTML(relPath(.shineFileAt(figObjs[[id]], t)))
     })
     figPlaying <- shiny::reactiveVal(TRUE)
     shiny::observeEvent(input$fig_play, {
