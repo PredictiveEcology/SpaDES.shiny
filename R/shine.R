@@ -164,6 +164,19 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   ok$file[which.min(abs(ok$time - t))]
 }
 
+# Flat list of (object @ time) snapshots for the custom-differences pickers. Each
+# element is list(o, t, label). UI and server build this identically (same object
+# order), so a snapshot's 1-based index is a stable, HTML-safe radio-button value.
+.shineSnapshots <- function(contMaps) {
+  snaps <- list()
+  for (o in contMaps) {
+    for (t in sort(o$times$time[!is.na(o$times$time)])) {
+      snaps[[length(snaps) + 1L]] <- list(o = o, t = t, label = paste0(o$id, " @ ", t))
+    }
+  }
+  snaps
+}
+
 # ---- COG cache (served same-origin for addGeotiff) ------------------------
 
 .shineCogDir <- function() {
@@ -293,13 +306,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
   mapTimes <- .shineTimes(mapObjs)
 
-  # (object @ year) snapshot choices for custom differences (continuous maps only)
-  snapChoices <- list()
-  for (o in contMaps) {
-    tt <- sort(o$times$time[!is.na(o$times$time)])
-    for (t in tt) snapChoices[[paste0(o$id, " @ ", t)]] <- paste0(o$id, "\r", t)
-  }
-  snapChoices <- unlist(snapChoices)
+  # (object @ year) snapshot choices for custom differences; value = snapshot index
+  snaps <- .shineSnapshots(contMaps)
+  snapChoices <- as.character(seq_along(snaps))
+  names(snapChoices) <- vapply(snaps, `[[`, character(1), "label")
 
   timeSliderUI <- function(id, times) {
     if (length(times) < 2L) return(NULL)
@@ -556,9 +566,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     })
 
     # --- Custom differences (B - A) ---
+    snaps <- .shineSnapshots(contMaps)            # same order/indices as the UI radios
     parseSnap <- function(val) {
-      parts <- strsplit(val, "\r", fixed = TRUE)[[1]]
-      list(o = contMaps[[parts[1]]], t = as.numeric(parts[2]))
+      if (length(val) != 1L) return(NULL)
+      i <- suppressWarnings(as.integer(val))
+      if (is.na(i) || i < 1L || i > length(snaps)) return(NULL)
+      snaps[[i]]
     }
     output$cust_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
     shiny::observeEvent(input$cust_basemap, {
@@ -569,8 +582,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       if (!identical(input$tabs, "Custom differences")) return()   # only when map exists
       a <- input$cust_a; b <- input$cust_b
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("cust_map")))
-      if (length(a) == 1L && length(b) == 1L) {
-        sa <- parseSnap(a); sb <- parseSnap(b)
+      sa <- parseSnap(a); sb <- parseSnap(b)
+      if (!is.null(sa) && !is.null(sb)) {
         ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = sa$o$band)
         rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)

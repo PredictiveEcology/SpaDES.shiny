@@ -126,6 +126,19 @@ test_that("static continuous maps have < 2 timesteps (excluded from Differences)
   expect_false(has2(objs[["speciesLayers_static"]]))
 })
 
+test_that(".shineSnapshots enumerates (object @ time) snapshots for custom diffs", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  contMaps <- Filter(function(o) o$kind == "map" && !o$categorical, .shineScan(d))
+  snaps <- .shineSnapshots(contMaps)
+  expect_equal(length(snaps), 7L)            # rsf(3) + multi bandA(2) + bandB(2)
+  s <- snaps[[1]]
+  expect_true(all(c("o", "t", "label") %in% names(s)))
+  expect_true(file.exists(.shineFileAt(s$o, s$t)))
+  expect_match(s$label, " @ ")
+})
+
 test_that(".shineResolvePath dispatches on path string, NULL and bad input", {
   # a length-1 path string passes through
   expect_equal(.shineResolvePath("some/dir"), "some/dir")
