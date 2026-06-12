@@ -387,9 +387,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
           shiny::selectInput("diff_basemap", "Basemap", choices = .basemaps),
           shiny::tags$hr(),
           shiny::helpText("last - first (continuous time-series maps)"),
-          shiny::checkboxGroupInput("diff_objs", "Differences",
-                                    choices = vapply(diffMaps, `[[`, character(1), "id"),
-                                    selected = if (length(diffMaps)) diffMaps[[1]]$id else NULL)
+          shiny::radioButtons("diff_objs", "Map",
+                              choices = vapply(diffMaps, `[[`, character(1), "id"),
+                              selected = if (length(diffMaps)) diffMaps[[1]]$id else character(0))
         ))
       )
     ),
@@ -461,15 +461,14 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     advancer("map", mapTimes, "map_objs")
 
     # --- Maps tab ---
-    # Time steps update each layer in place via two alternating buffer layerIds:
-    # re-adding the same id makes georaster swap that layer once its new tile has
-    # loaded, so there is no flash and at most two frames per object exist (no
-    # build-up). Adding/removing layers or changing basemap rebuilds the map (the
-    # only reliable way to remove a georaster layer), preserving the current view.
+    # One stable layerId per object: re-adding it makes georaster replace that
+    # single layer in place (LayerManager.addLayer removes the old same-id layer
+    # first), so exactly one frame exists per object -- no build-up or ghosting.
+    # Adding/removing layers or changing basemap rebuilds the map (the reliable
+    # way to drop a georaster layer), preserving the current view.
     mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
     shiny::observeEvent(input$map_map_center, mapView$center <- input$map_map_center)
     shiny::observeEvent(input$map_map_zoom,   mapView$zoom   <- input$map_map_zoom)
-    buf <- new.env(parent = emptyenv())   # object id -> current buffer letter ("A"/"B")
     curMapTime <- function() if (length(mapTimes)) {
       v <- input$map_time; if (is.null(v)) mapTimes[1] else v
     } else NA_real_
@@ -489,13 +488,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       } else {
         m <- leaflet::setView(m, lng = -123, lat = 62, zoom = 5)
       }
-      rm(list = ls(buf), envir = buf)                            # reset buffer state
       for (o in mapObjs[sel]) {
         if (is.null(o)) next
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             paste0(.san(o$id), "_A"), replaceLegend = FALSE)
-        buf[[o$id]] <- "A"
+                             .san(o$id), replaceLegend = FALSE)
       }
       m
     })
@@ -507,11 +504,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       m <- leaflet::leafletProxy("map_map")
       for (o in mapObjs[sel]) {
         if (is.null(o)) next
-        nxt <- if (identical(buf[[o$id]], "A")) "B" else "A"    # flip buffer
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             paste0(.san(o$id), "_", nxt), replaceLegend = TRUE)
-        buf[[o$id]] <- nxt
+                             .san(o$id), replaceLegend = TRUE)
       }
     })
 
