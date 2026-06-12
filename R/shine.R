@@ -230,14 +230,14 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # reversed so the low end (negative) is red and the high end (positive) is blue
 .diverging <- function() rev(grDevices::hcl.colors(64, "Blue-Red 3"))
 
-# Stream COG `info` (from .shineMakeCog) onto a leaflet proxy/map at `url`,
-# rendered tiled by addGeotiff, with a matching legend.
-.shineAddRaster <- function(map, info, id, categorical, url, layerId) {
+# Stream COG `info` (from .shineMakeCog) onto a leaflet proxy/map at `url` with a
+# matching legend. Re-adding the same `layerId` replaces that layer once the new
+# tile has loaded (georaster swaps it in place). `replaceLegend` removes the prior
+# legend first (proxy updates); set FALSE when drawing into a fresh map.
+.shineAddRaster <- function(map, info, id, categorical, url, layerId, replaceLegend = TRUE) {
   rng <- info$range
   if (!all(is.finite(rng))) return(map)
   if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
-  # each frame gets a unique group/layerId; the caller keeps the previous frame
-  # on the map until this one loads (double-buffer), so time steps don't flash.
   map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
     opacity = 0.8, autozoom = FALSE, imagequery = FALSE,
     colorOptions = leafem::colorOptions(palette = .viridis(), domain = rng,
@@ -249,7 +249,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     vals <- rng; pal <- leaflet::colorNumeric(.viridis(), domain = rng, na.color = "transparent")
   }
   lgd <- paste0("lgd_", .san(id))
-  map <- leaflet::removeControl(map, lgd)        # one legend per object, replaced
+  if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   leaflet::addLegend(map, position = "bottomleft", pal = pal, values = vals,
                      title = id, group = id, layerId = lgd)
 }
@@ -460,39 +460,58 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     }
     advancer("map", mapTimes, "map_objs")
 
-    # --- Maps tab (smooth: replace layers in place, no clearImages flash) ---
-    output$map_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
-    shiny::observeEvent(input$map_basemap, {
-      leaflet::leafletProxy("map_map") |>
-        leaflet::clearTiles() |>
-        leaflet::addProviderTiles(input$map_basemap)
-    })
-    # Double-buffer: each update adds the new frame as its own layer on top of the
-    # still-visible previous frame, and only drops frames that are >= 2 behind (so
-    # they have been covered for a full tick). The new frame is never removed
-    # before it has painted -> no flash between time steps.
-    lq <- new.env(parent = emptyenv())   # object id -> active frame layerIds (old..new)
-    frameN <- 0L
-    shiny::observe({
+    # --- Maps tab ---
+    # Time steps update each layer in place via two alternating buffer layerIds:
+    # re-adding the same id makes georaster swap that layer once its new tile has
+    # loaded, so there is no flash and at most two frames per object exist (no
+    # build-up). Adding/removing layers or changing basemap rebuilds the map (the
+    # only reliable way to remove a georaster layer), preserving the current view.
+    mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
+    shiny::observeEvent(input$map_map_center, mapView$center <- input$map_map_center)
+    shiny::observeEvent(input$map_map_zoom,   mapView$zoom   <- input$map_map_zoom)
+    buf <- new.env(parent = emptyenv())   # object id -> current buffer letter ("A"/"B")
+    curMapTime <- function() if (length(mapTimes)) {
+      v <- input$map_time; if (is.null(v)) mapTimes[1] else v
+    } else NA_real_
+
+    output$map_map <- leaflet::renderLeaflet({
       sel <- input$map_objs
-      t <- if (length(mapTimes)) {
-        v <- input$map_time; if (is.null(v)) mapTimes[1] else v
-      } else NA_real_
-      m <- leaflet::leafletProxy("map_map")
-      for (id in ls(lq)) if (!(id %in% sel)) {                 # drop deselected objects
-        for (lid in lq[[id]]) m <- leaflet::clearGroup(m, lid)
-        m <- leaflet::removeControl(m, paste0("lgd_", .san(id)))
-        rm(list = id, envir = lq)
+      bm <- if (is.null(input$map_basemap)) .basemaps[[1]] else input$map_basemap
+      t <- shiny::isolate(curMapTime())
+      m <- leaflet::addProviderTiles(
+        leaflet::leaflet(options = leaflet::leafletOptions(zoomSnap = 0.25, zoomDelta = 0.25)), bm)
+      cv <- shiny::isolate(mapView$center); zm <- shiny::isolate(mapView$zoom)
+      if (!is.null(cv) && !is.null(zm)) {
+        m <- leaflet::setView(m, cv$lng, cv$lat, zm)              # keep the user's view
+      } else if (!is.null(bounds)) {
+        dx <- (bounds[3] - bounds[1]) * 0.06; dy <- (bounds[4] - bounds[2]) * 0.06
+        m <- leaflet::fitBounds(m, bounds[1] + dx, bounds[2] + dy, bounds[3] - dx, bounds[4] - dy)
+      } else {
+        m <- leaflet::setView(m, lng = -123, lat = 62, zoom = 5)
       }
-      for (o in mapObjs[sel]) {                                # add / advance selected
+      rm(list = ls(buf), envir = buf)                            # reset buffer state
+      for (o in mapObjs[sel]) {
         if (is.null(o)) next
         info <- .shineCogForObject(o, t, maxCells)
-        frameN <<- frameN + 1L
-        lid <- paste0(.san(o$id), "__f", frameN)
-        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file), lid)
-        q <- c(lq[[o$id]], lid)
-        while (length(q) > 2L) { m <- leaflet::clearGroup(m, q[1]); q <- q[-1] }
-        lq[[o$id]] <- q
+        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
+                             paste0(.san(o$id), "_A"), replaceLegend = FALSE)
+        buf[[o$id]] <- "A"
+      }
+      m
+    })
+
+    shiny::observeEvent(input$map_time, {                        # animate selected layers
+      sel <- input$map_objs
+      if (length(sel) == 0L) return()
+      t <- input$map_time
+      m <- leaflet::leafletProxy("map_map")
+      for (o in mapObjs[sel]) {
+        if (is.null(o)) next
+        nxt <- if (identical(buf[[o$id]], "A")) "B" else "A"    # flip buffer
+        info <- .shineCogForObject(o, t, maxCells)
+        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
+                             paste0(.san(o$id), "_", nxt), replaceLegend = TRUE)
+        buf[[o$id]] <- nxt
       }
     })
 
