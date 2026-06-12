@@ -213,7 +213,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
 # ---- rendering helpers ----------------------------------------------------
 
 .viridis <- function() grDevices::hcl.colors(64, "viridis")
-.diverging <- function() grDevices::hcl.colors(64, "Blue-Red 3")
+# reversed so the low end (negative) is red and the high end (positive) is blue
+.diverging <- function() rev(grDevices::hcl.colors(64, "Blue-Red 3"))
 
 # Stream COG `info` (from .shineMakeCog) onto a leaflet proxy/map at `url`,
 # rendered tiled by addGeotiff, with a matching legend.
@@ -286,6 +287,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
   mapObjs <- Filter(function(o) o$kind == "map", objects)
   figObjs <- Filter(function(o) o$kind == "figure", objects)
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
+  # last - first only makes sense for continuous maps with >= 2 timestamps
+  diffMaps <- Filter(function(o) sum(!is.na(o$times$time)) >= 2L, contMaps)
 
   mapTimes <- .shineTimes(mapObjs)
 
@@ -322,8 +325,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
 
   ui <- shiny::navbarPage(
     "shine", id = "tabs", collapsible = TRUE,
-    header = shiny::tags$head(shiny::tags$style(shiny::HTML(
-      ".leaflet-container { background: #ddd; }"))),
+    header = shiny::tags$head(shiny::tags$style(shiny::HTML(paste(
+      ".leaflet-container { background: #ddd; }",
+      # lift the bottom-left color legend up so the time slider doesn't cover it
+      ".leaflet-bottom.leaflet-left { margin-bottom: 72px; }")))),
 
     # ---- Maps tab ----
     shiny::tabPanel("Maps",
@@ -361,10 +366,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
         legendPanel(shiny::tagList(
           shiny::selectInput("diff_basemap", "Basemap", choices = .basemaps),
           shiny::tags$hr(),
-          shiny::helpText("last - first (continuous maps only)"),
+          shiny::helpText("last - first (continuous time-series maps)"),
           shiny::checkboxGroupInput("diff_objs", "Differences",
-                                    choices = vapply(contMaps, `[[`, character(1), "id"),
-                                    selected = if (length(contMaps)) contMaps[[1]]$id else NULL)
+                                    choices = vapply(diffMaps, `[[`, character(1), "id"),
+                                    selected = if (length(diffMaps)) diffMaps[[1]]$id else NULL)
         ))
       )
     ),

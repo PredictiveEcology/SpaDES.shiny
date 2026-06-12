@@ -112,6 +112,20 @@ test_that(".shineMakeCog writes a web-mercator COG and reports its value range",
   expect_lt(info$range[1], info$range[2])
 })
 
+test_that("static continuous maps have < 2 timesteps (excluded from Differences)", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  tmpl <- terra::rast(nrows = 6, ncols = 6, xmin = 0, xmax = 60, ymin = 0, ymax = 60,
+                      crs = "EPSG:3857")
+  terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "rsf_a_year2000.tif"))
+  terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "rsf_a_year2010.tif"))
+  terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "speciesLayers_static.tif"))
+  objs <- .shineScan(d)
+  has2 <- function(o) sum(!is.na(o$times$time)) >= 2L   # the Differences-tab predicate
+  expect_true(has2(objs[["rsf_a"]]))
+  expect_false(has2(objs[["speciesLayers_static"]]))
+})
+
 test_that(".shineResolvePath dispatches on path string, NULL and bad input", {
   # a length-1 path string passes through
   expect_equal(.shineResolvePath("some/dir"), "some/dir")
