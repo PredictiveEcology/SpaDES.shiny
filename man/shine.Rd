@@ -8,7 +8,7 @@ shine(
   x,
   timePattern = "[0-9]+",
   maxCells = NULL,
-  interval = 5,
+  interval = 2,
   launch = TRUE,
   ...
 )
@@ -25,7 +25,8 @@ time. Default \code{"[0-9]+"}.}
 \item{maxCells}{Optional cap on pixels per side; if set, rasters larger than
 this are aggregated down before rendering. Default \code{NULL} (full resolution).}
 
-\item{interval}{Seconds between automatic time-slider steps. Default \code{5}.}
+\item{interval}{Initial seconds between automatic time-slider steps; also the
+starting value of the in-app "seconds per step" slider. Default \code{2}.}
 
 \item{launch}{If \code{TRUE} (default), run the app with \code{\link[shiny:runApp]{shiny::runApp()}}. If
 \code{FALSE}, return the \code{\link[shiny:shinyApp]{shiny::shinyApp()}} object (useful for testing/embedding).}

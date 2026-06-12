@@ -25,7 +25,8 @@
 #'   time. Default `"[0-9]+"`.
 #' @param maxCells Optional cap on pixels per side; if set, rasters larger than
 #'   this are aggregated down before rendering. Default `NULL` (full resolution).
-#' @param interval Seconds between automatic time-slider steps. Default `5`.
+#' @param interval Initial seconds between automatic time-slider steps; also the
+#'   starting value of the in-app "seconds per step" slider. Default `2`.
 #' @param launch If `TRUE` (default), run the app with [shiny::runApp()]. If
 #'   `FALSE`, return the [shiny::shinyApp()] object (useful for testing/embedding).
 #' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
@@ -38,7 +39,7 @@
 #' shine()                 # uses getOption("spades.outputPath")
 #' }
 #' @export
-shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
+shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                   launch = TRUE, ...) {
   for (p in c("shiny", "leaflet", "leafem", "terra")) {
     if (!requireNamespace(p, quietly = TRUE)) {
@@ -51,7 +52,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
   objects <- .shineScan(path, timePattern)
   if (length(objects) == 0L) stop("No .tif or .png files found under: ", path, call. = FALSE)
 
-  app <- shiny::shinyApp(ui = .shineUI(objects),
+  app <- shiny::shinyApp(ui = .shineUI(objects, interval),
                          server = .shineServer(objects, path, maxCells, interval))
   if (isTRUE(launch)) shiny::runApp(app, ...)
   invisible(app)
@@ -283,7 +284,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
 
 # ---- UI -------------------------------------------------------------------
 
-.shineUI <- function(objects) {
+.shineUI <- function(objects, interval = 2) {
   mapObjs <- Filter(function(o) o$kind == "map", objects)
   figObjs <- Filter(function(o) o$kind == "figure", objects)
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
@@ -315,6 +316,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
     )
   }
 
+  speedSlider <- function(id) {
+    shiny::sliderInput(id, "Seconds per step", min = 0.5, max = 10,
+                       value = interval, step = 0.5, width = "100%")
+  }
+
   legendPanel <- function(content) {
     shiny::absolutePanel(
       top = 70, right = 10, width = 280, fixed = TRUE, draggable = TRUE,
@@ -339,7 +345,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
           shiny::tags$hr(),
           shiny::checkboxGroupInput("map_objs", "Layers",
                                     choices = vapply(mapObjs, `[[`, character(1), "id"),
-                                    selected = if (length(mapObjs)) mapObjs[[1]]$id else NULL)
+                                    selected = if (length(mapObjs)) mapObjs[[1]]$id else NULL),
+          if (length(mapTimes) >= 2L) shiny::tagList(shiny::tags$hr(), speedSlider("map_speed"))
         )),
         timeSliderUI("map", mapTimes)
       )
@@ -348,13 +355,16 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
     # ---- Figures tab ----
     shiny::tabPanel("Figures",
       shiny::div(style = "position: relative; min-height: 92vh;",
-        shiny::div(style = "height: 92vh; overflow-y: auto; text-align: center;",
+        # reserve the legend's width on the right so figures scale to fit beside it
+        shiny::div(style = paste("height: 92vh; overflow-y: auto; text-align: center;",
+                                 "padding-right: 300px; box-sizing: border-box;"),
                    shiny::uiOutput("fig_ui")),
-        legendPanel(
+        legendPanel(shiny::tagList(
           shiny::radioButtons("fig_objs", "Figure",
                               choices = vapply(figObjs, `[[`, character(1), "id"),
-                              selected = if (length(figObjs)) figObjs[[1]]$id else character(0))
-        ),
+                              selected = if (length(figObjs)) figObjs[[1]]$id else character(0)),
+          shiny::tags$hr(), speedSlider("fig_speed")
+        )),
         shiny::uiOutput("fig_slider")   # only shown for time-series figures
       )
     ),
@@ -429,7 +439,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
       shiny::observe({
         if (!isTRUE(playing[[tab]]())) return()
         if (length(input[[selId]]) == 0L) return()  # nothing shown -> don't advance
-        shiny::invalidateLater(interval * 1000, session)
+        secs <- input[[paste0(tab, "_speed")]]; if (is.null(secs)) secs <- interval
+        shiny::invalidateLater(secs * 1000, session)
         cur <- shiny::isolate(input[[paste0(tab, "_time")]])
         if (is.null(cur)) cur <- times[1]
         idx <- which.min(abs(times - cur))          # snap to nearest listed time
@@ -515,7 +526,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 5,
       if (!isTRUE(figPlaying())) return()
       times <- figSelTimes()
       if (length(times) < 2L) return()
-      shiny::invalidateLater(interval * 1000, session)
+      secs <- input$fig_speed; if (is.null(secs)) secs <- interval
+      shiny::invalidateLater(secs * 1000, session)
       cur <- shiny::isolate(input$fig_time); if (is.null(cur)) cur <- times[1]
       idx <- which.min(abs(times - cur))
       shiny::updateSliderInput(session, "fig_time", value = times[(idx %% length(times)) + 1L])
