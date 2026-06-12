@@ -152,6 +152,37 @@ test_that("static continuous maps have < 2 timesteps (excluded from Differences)
   expect_false(has2(maps[["speciesLayers_static"]]))
 })
 
+test_that(".shineIsOrdinal detects numeric-range (binned) factor labels", {
+  expect_true(.shineIsOrdinal(c("[0.02 - 0.08]", "(0.08 - 0.20]", "(0.20 - 0.38]")))
+  expect_true(.shineIsOrdinal(c("-1.5 - 0", "0 - 1.5")))      # unbracketed, negative
+  expect_false(.shineIsOrdinal(c("forest", "water", "urban"))) # nominal
+  expect_false(.shineIsOrdinal("[0 - 1]"))                     # single level
+})
+
+test_that(".shineScan flags an ordinal factor map (binned raster)", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  tmpl <- terra::rast(nrows = 6, ncols = 6, xmin = 0, xmax = 60, ymin = 0, ymax = 60,
+                      crs = "EPSG:3857")
+  mk <- function(yr) {
+    r <- terra::setValues(tmpl, rep(0:3, length.out = 36))
+    levels(r) <- data.frame(id = 0:3,
+      lab = c("[0 - 0.25]", "(0.25 - 0.5]", "(0.5 - 0.75]", "(0.75 - 1]"))
+    terra::writeRaster(r, file.path(d, sprintf("binMap_year%d.tif", yr)), overwrite = TRUE)
+  }
+  mk(2000); mk(2010)
+  o <- .shineById(Filter(function(x) x$kind == "map", .shineScan(d)))[["binMap"]]
+  expect_true(o$categorical)
+  expect_true(o$ordinal)
+
+  # level-index difference is plain integers (codes), not the factor values
+  rb <- terra::rast(.shineFileAt(o, 2010), lyrs = o$band)
+  ra <- terra::rast(.shineFileAt(o, 2000), lyrs = o$band)
+  levels(rb) <- NULL; levels(ra) <- NULL
+  d2 <- rb - ra
+  expect_false(terra::is.factor(d2)[1])
+})
+
 test_that(".shineSnapshots enumerates (object @ time) snapshots for custom diffs", {
   skip_if_not_installed("terra")
   d <- withr::local_tempdir()

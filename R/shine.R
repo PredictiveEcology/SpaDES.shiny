@@ -149,16 +149,40 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     r <- terra::rast(df$file[1])
     nb <- terra::nlyr(r)
     bnames <- names(r)
+    isFac <- terra::is.factor(r)
     for (b in seq_len(nb)) {
       id <- if (nb > 1L) paste0(key, ": ", bnames[b]) else key
+      cat_b <- isTRUE(isFac[b])
       objects[[paste("map", id, sep = "\r")]] <- list(
         id = id, kind = "map", band = b,
-        categorical = isTRUE(terra::is.factor(r)[b]),
+        categorical = cat_b,
+        ordinal = cat_b && .shineIsOrdinal(.shineFactorLabels(r, b)),
         folder = folder, times = df
       )
     }
   }
   objects
+}
+
+# The category labels of band `b` of factor SpatRaster `r` (the active label col).
+.shineFactorLabels <- function(r, b) {
+  ct <- terra::cats(r)[[b]]
+  if (is.null(ct) || ncol(ct) < 2L) return(character(0))
+  ac <- tryCatch(terra::activeCat(r, layer = b), error = function(e) 1L)
+  col <- if (length(ac) == 1L && !is.na(ac)) ac + 1L else 2L   # +1: skip the id column
+  if (col > ncol(ct)) col <- ncol(ct)
+  as.character(ct[[col]])
+}
+
+# An "ordinal" factor is one whose every label is a numeric range, e.g.
+# "[0.023542 - 0.082522]" -- a binned continuous variable. Such factors can be
+# differenced on their (ordered) level index.
+.shineIsOrdinal <- function(labs) {
+  if (length(labs) < 2L) return(FALSE)
+  num <- "-?[0-9]+(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?"
+  # a numeric range, optionally bracketed with [ ( on the left and ] ) on the right
+  pat <- paste0("^\\s*[\\[(]?\\s*", num, "\\s*[-–—]\\s*", num, "\\s*[\\])]?\\s*$")
+  all(grepl(pat, labs, perl = TRUE))
 }
 
 # Re-key a (kind-filtered) object list by id, for name-based lookup within a kind.
@@ -335,8 +359,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   mapObjs <- .shineById(Filter(function(o) o$kind == "map", objects))
   figObjs <- .shineById(Filter(function(o) o$kind == "figure", objects))
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
-  # last - first only makes sense for continuous maps with >= 2 timestamps
-  diffMaps <- Filter(function(o) sum(!is.na(o$times$time)) >= 2L, contMaps)
+  # last - first works for continuous maps and ordinal factors (>= 2 timestamps)
+  diffMaps <- Filter(function(o) (!o$categorical || isTRUE(o$ordinal)) &&
+                       sum(!is.na(o$times$time)) >= 2L, mapObjs)
 
   mapTimes <- .shineTimes(mapObjs)
 
@@ -368,7 +393,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   # small bottom-right caption showing the source file(s) of what's displayed
   fileInfoPanel <- function(id) {
     shiny::absolutePanel(
-      bottom = 78, right = 10, fixed = TRUE,
+      bottom = 96, right = 10, fixed = TRUE,   # clear the time slider at the bottom
       style = paste("background: rgba(255,255,255,0.8); padding: 3px 8px;",
                     "border-radius: 4px; z-index: 1000; font-size: 11px;",
                     "max-width: 45vw; word-break: break-all; text-align: right;"),
@@ -414,9 +439,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         legendPanel(shiny::tagList(
           shiny::selectInput("map_basemap", "Basemap", choices = .basemaps),
           shiny::tags$hr(),
-          shiny::checkboxGroupInput("map_objs", "Layers",
-                                    choices = vapply(mapObjs, `[[`, character(1), "id"),
-                                    selected = if (length(mapObjs)) mapObjs[[1]]$id else NULL),
+          shiny::radioButtons("map_objs", "Layer",
+                              choices = vapply(mapObjs, `[[`, character(1), "id"),
+                              selected = if (length(mapObjs)) mapObjs[[1]]$id else character(0)),
           if (length(mapTimes) >= 2L) shiny::tagList(shiny::tags$hr(), speedSlider("map_speed"))
         )),
         fileInfoPanel("map_fileinfo"),
@@ -664,11 +689,16 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("diff_map")))
       diffDL(NULL)
       for (id in sel) {
-        o <- contMaps[[id]]
+        o <- mapObjs[[id]]
+        if (is.null(o)) next
         tt <- sort(o$times$time[!is.na(o$times$time)])
         if (length(tt) < 2L) next
-        r <- terra::rast(.shineFileAt(o, max(tt)), lyrs = o$band) -
-             terra::rast(.shineFileAt(o, min(tt)), lyrs = o$band)
+        rLast  <- terra::rast(.shineFileAt(o, max(tt)), lyrs = o$band)
+        rFirst <- terra::rast(.shineFileAt(o, min(tt)), lyrs = o$band)
+        if (isTRUE(o$ordinal)) {                       # difference the level index
+          levels(rLast) <- NULL; levels(rFirst) <- NULL   # terra S4 method, gives codes
+        }
+        r <- rLast - rFirst
         info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), ".tif"),
                               maxCells = maxCells)
         m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file), opacity)
