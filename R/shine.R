@@ -17,7 +17,9 @@
 #' digit run are treated as static (always-shown) layers with no position on the
 #' time slider.
 #'
-#' @param path Folder to scan recursively. Default `"outputs"`.
+#' @param x What to visualize, resolved to a folder to scan recursively:
+#'   a `simList` (its [SpaDES.core::outputPath()] is used), a single path string,
+#'   or missing (uses `getOption("spades.outputPath")`).
 #' @param timePattern Regex matching the timestamp token in a file name. The
 #'   **last** match in the (extension-stripped) base name is used as the numeric
 #'   time. Default `"[0-9]+"`.
@@ -30,16 +32,19 @@
 #' @return Invisibly, the `shinyApp` object (also when `launch = TRUE`).
 #' @examples
 #' \dontrun{
-#' shine("outputs")
+#' shine("outputs")        # a path
+#' shine(mySim)            # a simList -> uses outputPath(mySim)
+#' shine()                 # uses getOption("spades.outputPath")
 #' }
 #' @export
-shine <- function(path = "outputs", timePattern = "[0-9]+", maxCells = NULL,
+shine <- function(x, timePattern = "[0-9]+", maxCells = NULL,
                   launch = TRUE, ...) {
   for (p in c("shiny", "leaflet", "leafem", "terra")) {
     if (!requireNamespace(p, quietly = TRUE)) {
       stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
     }
   }
+  path <- .shineResolvePath(if (missing(x)) NULL else x)
   if (!dir.exists(path)) stop("Folder not found: ", path, call. = FALSE)
 
   objects <- .shineScan(path, timePattern)
@@ -49,6 +54,26 @@ shine <- function(path = "outputs", timePattern = "[0-9]+", maxCells = NULL,
                          server = .shineServer(objects, path, maxCells))
   if (isTRUE(launch)) shiny::runApp(app, ...)
   invisible(app)
+}
+
+# Resolve shine()'s first argument to a directory: a simList -> its outputPath(),
+# a length-1 character -> itself, NULL/missing -> getOption("spades.outputPath").
+.shineResolvePath <- function(x) {
+  if (is.null(x)) {
+    path <- getOption("spades.outputPath")
+    if (is.null(path) || !nzchar(path)) {
+      stop("No `x` supplied and getOption('spades.outputPath') is not set.", call. = FALSE)
+    }
+    return(path)
+  }
+  if (inherits(x, "simList")) {
+    if (!requireNamespace("SpaDES.core", quietly = TRUE)) {
+      stop("A simList was supplied but 'SpaDES.core' is not installed.", call. = FALSE)
+    }
+    return(SpaDES.core::outputPath(x))
+  }
+  if (is.character(x) && length(x) == 1L) return(x)
+  stop("`x` must be a simList, a single path string, or missing.", call. = FALSE)
 }
 
 # ---- discovery / grouping -------------------------------------------------

@@ -112,6 +112,29 @@ test_that(".shineMakeCog writes a web-mercator COG and reports its value range",
   expect_lt(info$range[1], info$range[2])
 })
 
+test_that(".shineResolvePath dispatches on path string, NULL and bad input", {
+  # a length-1 path string passes through
+  expect_equal(.shineResolvePath("some/dir"), "some/dir")
+
+  # NULL/missing falls back to the spades.outputPath option
+  withr::local_options(spades.outputPath = "/opt/out")
+  expect_equal(.shineResolvePath(NULL), "/opt/out")
+
+  # NULL with no option set is an error
+  withr::local_options(spades.outputPath = NULL)
+  expect_error(.shineResolvePath(NULL), "spades.outputPath")
+
+  # an unsupported type is an error
+  expect_error(.shineResolvePath(1:3), "simList")
+})
+
+test_that(".shineResolvePath uses outputPath() for a simList", {
+  skip_if_not_installed("SpaDES.core")
+  local_mocked_bindings(outputPath = function(sim) "/sim/outputs", .package = "SpaDES.core")
+  fake <- structure(list(), class = "simList")
+  expect_equal(.shineResolvePath(fake), "/sim/outputs")
+})
+
 test_that(".shineMakeCog downsamples when maxCells is set", {
   skip_if_not_installed("terra")
   r <- terra::rast(nrows = 200, ncols = 200, xmin = 0, xmax = 100, ymin = 0, ymax = 100,

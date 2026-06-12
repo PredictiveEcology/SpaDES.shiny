@@ -4,16 +4,12 @@
 \alias{shine}
 \title{Interactive Shiny visualizer for SpaDES outputs}
 \usage{
-shine(
-  path = "outputs",
-  timePattern = "[0-9]+",
-  maxCells = NULL,
-  launch = TRUE,
-  ...
-)
+shine(x, timePattern = "[0-9]+", maxCells = NULL, launch = TRUE, ...)
 }
 \arguments{
-\item{path}{Folder to scan recursively. Default \code{"outputs"}.}
+\item{x}{What to visualize, resolved to a folder to scan recursively:
+a \code{simList} (its \code{\link[SpaDES.core:outputPath]{SpaDES.core::outputPath()}} is used), a single path string,
+or missing (uses \code{getOption("spades.outputPath")}).}
 
 \item{timePattern}{Regex matching the timestamp token in a file name. The
 \strong{last} match in the (extension-stripped) base name is used as the numeric
@@ -51,6 +47,8 @@ time slider.
 }
 \examples{
 \dontrun{
-shine("outputs")
+shine("outputs")        # a path
+shine(mySim)            # a simList -> uses outputPath(mySim)
+shine()                 # uses getOption("spades.outputPath")
 }
 }
