@@ -9,6 +9,7 @@ shine(
   timePattern = "[0-9]+",
   maxCells = NULL,
   interval = 2,
+  opacity = 1,
   launch = TRUE,
   ...
 )
@@ -27,6 +28,11 @@ this are aggregated down before rendering. Default \code{NULL} (full resolution)
 
 \item{interval}{Initial seconds between automatic time-slider steps; also the
 starting value of the in-app "seconds per step" slider. Default \code{2}.}
+
+\item{opacity}{Opacity of the raster layers (NoData stays transparent so the
+basemap shows through). Default \code{1}. Opaque layers animate seamlessly
+(double-buffered); values \verb{< 1} use a single layer (a brief redraw per step,
+but no ghosting between semi-transparent frames).}
 
 \item{launch}{If \code{TRUE} (default), run the app with \code{\link[shiny:runApp]{shiny::runApp()}}. If
 \code{FALSE}, return the \code{\link[shiny:shinyApp]{shiny::shinyApp()}} object (useful for testing/embedding).}

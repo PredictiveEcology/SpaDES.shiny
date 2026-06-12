@@ -27,6 +27,10 @@
 #'   this are aggregated down before rendering. Default `NULL` (full resolution).
 #' @param interval Initial seconds between automatic time-slider steps; also the
 #'   starting value of the in-app "seconds per step" slider. Default `2`.
+#' @param opacity Opacity of the raster layers (NoData stays transparent so the
+#'   basemap shows through). Default `1`. Opaque layers animate seamlessly
+#'   (double-buffered); values `< 1` use a single layer (a brief redraw per step,
+#'   but no ghosting between semi-transparent frames).
 #' @param launch If `TRUE` (default), run the app with [shiny::runApp()]. If
 #'   `FALSE`, return the [shiny::shinyApp()] object (useful for testing/embedding).
 #' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
@@ -40,7 +44,7 @@
 #' }
 #' @export
 shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
-                  launch = TRUE, ...) {
+                  opacity = 1, launch = TRUE, ...) {
   for (p in c("shiny", "leaflet", "leafem", "terra")) {
     if (!requireNamespace(p, quietly = TRUE)) {
       stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
@@ -53,7 +57,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   if (length(objects) == 0L) stop("No .tif or .png files found under: ", path, call. = FALSE)
 
   app <- shiny::shinyApp(ui = .shineUI(objects, interval),
-                         server = .shineServer(objects, path, maxCells, interval))
+                         server = .shineServer(objects, path, maxCells, interval, opacity))
   if (isTRUE(launch)) shiny::runApp(app, ...)
   invisible(app)
 }
@@ -234,12 +238,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # matching legend. Re-adding the same `layerId` replaces that layer once the new
 # tile has loaded (georaster swaps it in place). `replaceLegend` removes the prior
 # legend first (proxy updates); set FALSE when drawing into a fresh map.
-.shineAddRaster <- function(map, info, id, categorical, url, layerId, replaceLegend = TRUE) {
+.shineAddRaster <- function(map, info, id, categorical, url, layerId,
+                            replaceLegend = TRUE, opacity = 1) {
   rng <- info$range
   if (!all(is.finite(rng))) return(map)
   if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
   map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
-    opacity = 0.8, autozoom = FALSE, imagequery = FALSE,
+    opacity = opacity, autozoom = FALSE, imagequery = FALSE,
     colorOptions = leafem::colorOptions(palette = .viridis(), domain = rng,
                                         na.color = "transparent"))
   if (categorical) {
@@ -255,12 +260,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 }
 
 # Stream a difference COG (diverging palette centered at 0) onto a leaflet proxy.
-.shineAddDiff <- function(map, info, id, url) {
+.shineAddDiff <- function(map, info, id, url, opacity = 1) {
   rng <- info$range
   lim <- max(abs(rng)); if (!is.finite(lim) || lim == 0) lim <- 1
   dom <- c(-lim, lim)
   map <- leafem::addGeotiff(map, url = url, group = id, layerId = .san(id),
-    opacity = 0.85, autozoom = FALSE, imagequery = FALSE,
+    opacity = opacity, autozoom = FALSE, imagequery = FALSE,
     colorOptions = leafem::colorOptions(palette = .diverging(), domain = dom,
                                         na.color = "transparent"))
   pal <- leaflet::colorNumeric(.diverging(), domain = dom, na.color = "transparent")
@@ -418,7 +423,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
 # ---- Server ---------------------------------------------------------------
 
-.shineServer <- function(objects, path, maxCells, interval = 5) {
+.shineServer <- function(objects, path, maxCells, interval = 2, opacity = 1) {
   mapObjs  <- Filter(function(o) o$kind == "map", objects)
   figObjs  <- Filter(function(o) o$kind == "figure", objects)
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
@@ -461,14 +466,25 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     advancer("map", mapTimes, "map_objs")
 
     # --- Maps tab ---
-    # One stable layerId per object: re-adding it makes georaster replace that
-    # single layer in place (LayerManager.addLayer removes the old same-id layer
-    # first), so exactly one frame exists per object -- no build-up or ghosting.
+    # Each object animates by re-adding a layerId, which makes georaster replace
+    # that layer in place (LayerManager.addLayer removes the old same-id layer).
+    # Opaque layers (opacity >= 1) double-buffer with two alternating ids so the
+    # previous frame stays visible until the new one paints (seamless, and the
+    # opaque new frame fully covers the old -> no ghosting). Semi-transparent
+    # layers use one id (a brief redraw per step, but stacking two would ghost).
     # Adding/removing layers or changing basemap rebuilds the map (the reliable
     # way to drop a georaster layer), preserving the current view.
     mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
     shiny::observeEvent(input$map_map_center, mapView$center <- input$map_map_center)
     shiny::observeEvent(input$map_map_zoom,   mapView$zoom   <- input$map_map_zoom)
+    buf <- new.env(parent = emptyenv())   # object id -> current buffer letter (opaque only)
+    animLayerId <- function(id, init = FALSE) {
+      if (opacity < 1) return(.san(id))            # single layer
+      if (init) { buf[[id]] <- "A"; return(paste0(.san(id), "_A")) }
+      nxt <- if (identical(buf[[id]], "A")) "B" else "A"
+      buf[[id]] <- nxt
+      paste0(.san(id), "_", nxt)
+    }
     curMapTime <- function() if (length(mapTimes)) {
       v <- input$map_time; if (is.null(v)) mapTimes[1] else v
     } else NA_real_
@@ -488,11 +504,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       } else {
         m <- leaflet::setView(m, lng = -123, lat = 62, zoom = 5)
       }
+      rm(list = ls(buf), envir = buf)                            # reset buffer state
       for (o in mapObjs[sel]) {
         if (is.null(o)) next
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             .san(o$id), replaceLegend = FALSE)
+                             animLayerId(o$id, init = TRUE), replaceLegend = FALSE,
+                             opacity = opacity)
       }
       m
     })
@@ -506,7 +524,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         if (is.null(o)) next
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             .san(o$id), replaceLegend = TRUE)
+                             animLayerId(o$id), replaceLegend = TRUE, opacity = opacity)
       }
     })
 
@@ -575,7 +593,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
              terra::rast(.shineFileAt(o, min(tt)), lyrs = o$band)
         info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), ".tif"),
                               maxCells = maxCells)
-        m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file))
+        m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file), opacity)
       }
     })
 
@@ -602,7 +620,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
         info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), ".tif"), maxCells = maxCells)
-        m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file))
+        m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file), opacity)
       }
     })
   }
