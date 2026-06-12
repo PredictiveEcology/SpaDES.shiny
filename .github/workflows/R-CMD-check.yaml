@@ -1,0 +1,107 @@
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+      - development
+
+name: R-CMD-check
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,  r: 'release'}
+          - {os: ubuntu-latest,  r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      R_VERSION_LABEL: ${{ matrix.config.r }}
+      R_PKG_INSTALL_RETRIES: 3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: pandoc1
+        continue-on-error: true
+        uses: r-lib/actions/setup-pandoc@v2
+      - if: steps.pandoc1.outcome == 'failure'
+        uses: r-lib/actions/setup-pandoc@v2
+
+      # terra needs GDAL/PROJ/GEOS. On the Ubuntu 24.04 (Noble) runner these are
+      # preinstalled; install the canonical names directly (immune to PPA outages).
+      - if: runner.os != 'Linux'
+        uses: PredictiveEcology/actions/install-spatial-deps@v0.2
+
+      - if: runner.os == 'Linux'
+        name: Install spatial deps (Linux, stock Noble)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -f -y || true
+          sudo apt-get install -y --fix-missing \
+            libudunits2-dev libgdal-dev libgeos-dev libproj-dev libsqlite3-dev
+
+      # Homebrew's PROJ does not always leave proj.db on the default search path,
+      # which breaks terra::project()/crs(). Point PROJ at Homebrew's data dir.
+      - name: Configure PROJ data path (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          PROJ_PREFIX="$(brew --prefix proj 2>/dev/null || true)"
+          PROJ_DATA="$PROJ_PREFIX/share/proj"
+          if [ ! -d "$PROJ_DATA" ]; then PROJ_DATA="/opt/homebrew/share/proj"; fi
+          if [ ! -d "$PROJ_DATA" ]; then PROJ_DATA="/usr/local/share/proj"; fi
+          echo "PROJ_DATA=$PROJ_DATA" >> "$GITHUB_ENV"
+          echo "PROJ_LIB=$PROJ_DATA"  >> "$GITHUB_ENV"
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          Ncpus: 2
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      - id: deps
+        continue-on-error: true
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          pak-version: stable
+          extra-packages: any::rcmdcheck
+
+      # Retry the dependency install on transient binary-fetch failures.
+      - name: Install R deps (retry fallback)
+        if: steps.deps.outcome == 'failure'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_wait_seconds: 60
+          retry_on: error
+          shell: bash
+          command: |
+            Rscript --no-save <<'EOF'
+            install.packages("pak", repos = "https://r-lib.github.io/p/pak/stable/")
+            pak::local_install_dev_deps(ask = FALSE, dependencies = TRUE)
+            pak::pkg_install("any::rcmdcheck", ask = FALSE)
+            EOF
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          upload-snapshots: true

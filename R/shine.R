@@ -1,425 +1,539 @@
-if (getRversion() >= "3.1.0") {
-  utils::globalVariables(c("."))
-}
-
-#' Display a simple, interactive shiny app of the \code{simList}
+#' Interactive Shiny visualizer for SpaDES outputs
 #'
-#' Currently, this is quite simple. It creates a side bar with the simulation
-#' times, plus a set of tabs, one for each module, with numeric sliders.
-#' Currently, this does not treat \code{NA} correctly.
-#' Also, it is slow (shiny is not built to be fast out of the box).
-#' There are two buttons, one to run the entire \code{spades} call, the other to
-#' do just one time step at a time. It can be repeatedly pressed.
+#' Recursively scans a folder for raster (`.tif`) and image (`.png`) outputs,
+#' groups files that share a base name but differ by an embedded timestamp into
+#' time-series "objects", and launches a Shiny app to explore them. Maps (`.tif`)
+#' are drawn on a chooseable web basemap; figures (`.png`) are shown as images.
+#' Two further tabs show precomputed (`last - first`) and user-defined differences
+#' between map snapshots.
 #'
-#' @note Many module parameters are only accessed by modules at the start of a
-#'   model run. So, even if the user changes them mid run, there won't be an
-#'   effect on the model runs until \code{Reset} is pressed, and one of the Run
-#'   buttons is pressed.
+#' Rasters are rendered with [leafem::addGeotiff()], which draws them through the
+#' tiled `georaster-layer-for-leaflet` canvas layer: pan/zoom redraw per-tile on
+#' the client at native resolution (fast, no server round-trip per interaction).
+#' Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
+#' overviews), cached on disk, and served same-origin via [shiny::addResourcePath()].
 #'
-#' @note \code{.plotInterval} changes will only affect plots that are the base
-#'   layer of a given plot image. If there are layers on top of a base layer
-#'   (e.g., an agent on top of a raster layer), the \code{.plotInterval} of the
-#'   overlaid layers is ignored.
+#' Multi-band rasters contribute one object per band. Files whose name contains no
+#' digit run are treated as static (always-shown) layers with no position on the
+#' time slider.
 #'
-#' @template sim
+#' @param path Folder to scan recursively. Default `"outputs"`.
+#' @param timePattern Regex matching the timestamp token in a file name. The
+#'   **last** match in the (extension-stripped) base name is used as the numeric
+#'   time. Default `"[0-9]+"`.
+#' @param maxCells Optional cap on pixels per side; if set, rasters larger than
+#'   this are aggregated down before rendering. Default `NULL` (full resolution).
+#' @param launch If `TRUE` (default), run the app with [shiny::runApp()]. If
+#'   `FALSE`, return the [shiny::shinyApp()] object (useful for testing/embedding).
+#' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
 #'
-#' @param title character string. The title of the shiny page.
-#'
-#' @param debug Logical. If \code{TRUE}, then will show \code{spades} event debugger
-#'              in the console.
-#'
-#' @param filesOnly Logical. If \code{TRUE}, then the \file{server.R}, \file{ui.R} files
-#'                  will be written to a temporary location, with a message indicating
-#'                  where they are.
-#'                  Publishing this to \url{https://shinyapps.io} is currently very buggy,
-#'                  and will likely not work as desired.
-#'
-#' @param ... additional arguments. Currently not used
-#'
-#' @export
-#' @include environment.R
-#'
+#' @return Invisibly, the `shinyApp` object (also when `launch = TRUE`).
 #' @examples
 #' \dontrun{
-#'  library(SpaDES)
-#'  library(SpaDES.shiny)
-#'  mySim <- simInit(
-#'    times <- list(start = 0.0, end = 20.0),
-#'    params = list(
-#'      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned")
-#'    ),
-#'    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-#'    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"))
-#'  )
-#'
-#' shine(mySim)
-#'
-#' # To publish to shinyapps.io, need files. This is not reliable yet.
-#' shine(mySim, filesOnly = TRUE)
-#'
-#' # if the user wants to see the events go by, which can help with debugging:
-#' shine(mySim, debug = TRUE)
+#' shine("outputs")
 #' }
-setGeneric("shine", function(sim, title = "SpaDES App", debug = FALSE, filesOnly = FALSE, ...) {
-  standardGeneric("shine")
-})
-
 #' @export
-#' @importFrom DiagrammeR DiagrammeROutput renderDiagrammeR
-#' @importFrom DT renderDataTable dataTableOutput
-#' @importFrom grDevices dev.cur
-#' @importFrom magrittr %>%
-#' @importFrom reproducible checkPath
-#' @importFrom quickPlot clearPlot rePlot
-#' @importFrom shiny actionButton checkboxInput downloadButton downloadHandler
-#' @importFrom shiny eventReactive fluidPage h3 h4 invalidateLater
-#' @importFrom shiny mainPanel numericInput observe observeEvent plotOutput
-#' @importFrom shiny reactiveValues renderPlot renderPrint renderUI runApp
-#' @importFrom shiny selectInput sidebarLayout sidebarPanel sliderInput
-#' @importFrom shiny tabPanel tabsetPanel textOutput titlePanel
-#' @importFrom shiny uiOutput updateSliderInput updateTabsetPanel
-#' @importFrom SpaDES.core completed end end<- eventDiagram inputs
-#' @importFrom SpaDES.core moduleDiagram modules objectDiagram objs params params<-
-#' @importFrom SpaDES.core spades start time<-
-#' @importFrom stats time
-#' @importFrom utils browseURL getFromNamespace
-#' @rdname shine
-setMethod(
-  "shine",
-  signature = signature(sim = "simList"),
-  definition = function(sim, title, debug, filesOnly, ...) {
+shine <- function(path = "outputs", timePattern = "[0-9]+", maxCells = NULL,
+                  launch = TRUE, ...) {
+  for (p in c("shiny", "leaflet", "leafem", "terra")) {
+    if (!requireNamespace(p, quietly = TRUE)) {
+      stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
+    }
+  }
+  if (!dir.exists(path)) stop("Folder not found: ", path, call. = FALSE)
 
-  # Keep a copy of input simList so Reset button works
-  simOrig1 <- as(sim, "simList_") # convert objects first
-  simOrig <- sim # Not enough because objects are in an environment, so they both change
+  objects <- .shineScan(path, timePattern)
+  if (length(objects) == 0L) stop("No .tif or .png files found under: ", path, call. = FALSE)
 
-  endTime <- end(sim)
-  startTime <- start(sim)
-  fluidPageArgs <-     list(
-    titlePanel(title),
-    sidebarLayout(
-      sidebarPanel(
-        actionButton("fullSpaDESButton", "Run model"),
-        actionButton("stopButton", "Stop"),
-        actionButton("oneTimestepSpaDESButton", label = textOutput("stepActionButton")),
-        numericInput("Steps", "Step size", 1, width = "100px"),
-        actionButton("resetSimInit", "Reset"),
-        downloadButton("downloadData", "Download"),
-        sliderInput("simTimes", paste0("Simulated ", sim@simtimes[["timeunit"]]), sep = "",
-                    start(sim), end(sim), start(sim)),
-        h3("Modules"),
-        uiOutput("moduleTabs")
-      ),
-      mainPanel(
-        tabsetPanel(id = "topTabsetPanel",
-          tabPanel("Preview", plotOutput("quickPlot", height = "800px")),
-          tabPanel("Module diagram", uiOutput("moduleDiagramUI")),
-          tabPanel("Object diagram", uiOutput("objectDiagramUI")),
-          tabPanel("Event diagram", uiOutput("eventDiagramUI")),
-          tabPanel("Object browser", uiOutput("objectBrowserUI")),
-          tabPanel("Inputs loaded", uiOutput("inputObjectsUI"))
-        )
+  app <- shiny::shinyApp(ui = .shineUI(objects),
+                         server = .shineServer(objects, path, maxCells))
+  if (isTRUE(launch)) shiny::runApp(app, ...)
+  invisible(app)
+}
+
+# ---- discovery / grouping -------------------------------------------------
+
+# Scan `path` and return a named list of "objects". Each object is a list:
+#   id          character, unique label shown in the legend
+#   kind        "map" (.tif) or "figure" (.png)
+#   band        integer band index within `file` (1 for png / single-band)
+#   categorical logical, TRUE for factor rasters (maps only)
+#   times       data.frame(time = numeric, file = character), sorted by time;
+#               a single row with time = NA means a static layer
+.shineScan <- function(path, timePattern = "[0-9]+") {
+  files <- list.files(path, recursive = TRUE, full.names = TRUE,
+                      pattern = "\\.(tif|png)$", ignore.case = TRUE)
+  files <- files[!grepl("\\.aux\\.xml$", files, ignore.case = TRUE)]
+  if (length(files) == 0L) return(list())
+
+  # Parse each file into (key, time, kind)
+  parsed <- lapply(files, function(f) {
+    stem <- tools::file_path_sans_ext(basename(f))
+    m <- gregexpr(timePattern, stem)[[1]]
+    if (m[1] == -1L) {
+      key <- stem
+      time <- NA_real_
+    } else {
+      i <- length(m)                       # last match = the timestamp
+      start <- m[i]; len <- attr(m, "match.length")[i]
+      time <- as.numeric(substr(stem, start, start + len - 1L))
+      key <- paste0(substr(stem, 1L, start - 1L),
+                    substr(stem, start + len, nchar(stem)))
+      key <- sub("(?i)[ _-]*year[ _-]*$", "", key, perl = TRUE)  # drop trailing "year"
+      key <- gsub("(^[ _-]+)|([ _-]+$)", "", key)                # trim separators
+    }
+    kind <- if (grepl("\\.tif$", f, ignore.case = TRUE)) "map" else "figure"
+    list(key = key, time = time, file = f, kind = kind)
+  })
+
+  # Group by (key, kind); one band per map object is expanded below
+  groupKey <- vapply(parsed, function(p) paste(p$kind, p$key, sep = "\r"), character(1))
+  objects <- list()
+  for (gk in unique(groupKey)) {
+    members <- parsed[groupKey == gk]
+    kind <- members[[1]]$kind
+    key  <- members[[1]]$key
+    df <- data.frame(
+      time = vapply(members, `[[`, numeric(1), "time"),
+      file = vapply(members, `[[`, character(1), "file"),
+      stringsAsFactors = FALSE
+    )
+    df <- df[order(df$time, na.last = TRUE), , drop = FALSE]
+
+    if (kind == "figure") {
+      objects[[key]] <- list(id = key, kind = "figure", band = 1L,
+                             categorical = FALSE, times = df)
+      next
+    }
+
+    # map: inspect the first raster for band count / band names / factor-ness
+    r <- terra::rast(df$file[1])
+    nb <- terra::nlyr(r)
+    bnames <- names(r)
+    for (b in seq_len(nb)) {
+      id <- if (nb > 1L) paste0(key, ": ", bnames[b]) else key
+      objects[[id]] <- list(
+        id = id, kind = "map", band = b,
+        categorical = isTRUE(terra::is.factor(r)[b]),
+        times = df
+      )
+    }
+  }
+  objects
+}
+
+# Sorted union of real timestamps across the given objects.
+.shineTimes <- function(objects) {
+  ts <- unlist(lapply(objects, function(o) o$times$time), use.names = FALSE)
+  sort(unique(ts[!is.na(ts)]))
+}
+
+# The single file for object `o` at (nearest to) time `t`. Static layers
+# (only NA time) always return their single file.
+.shineFileAt <- function(o, t) {
+  df <- o$times
+  if (all(is.na(df$time))) return(df$file[1])
+  ok <- df[!is.na(df$time), , drop = FALSE]
+  ok$file[which.min(abs(ok$time - t))]
+}
+
+# ---- COG cache (served same-origin for addGeotiff) ------------------------
+
+.shineCogDir <- function() {
+  d <- file.path(tempdir(), "shine_cog")
+  dir.create(d, showWarnings = FALSE, recursive = TRUE)
+  d
+}
+
+.shineCogRange <- new.env(parent = emptyenv())   # cog basename -> c(lo, hi)
+.san <- function(x) gsub("[^A-Za-z0-9]+", "_", x)
+
+# Write (once) a web-mercator COG named `key` from SpatRaster `r`; return
+# list(file = key, range = c(lo, hi)). Range via terra::minmax (block-wise).
+.shineMakeCog <- function(r, key, categorical = FALSE, maxCells = NULL) {
+  out <- file.path(.shineCogDir(), key)
+  if (!file.exists(out)) {
+    if (!is.null(maxCells)) {
+      fact <- floor(max(dim(r)[1:2]) / maxCells)
+      if (fact > 1L) r <- terra::aggregate(r, fact = fact,
+                          fun = if (categorical) "modal" else "mean", na.rm = TRUE)
+    }
+    r <- terra::project(r, "EPSG:3857", method = if (categorical) "near" else "bilinear")
+    suppressWarnings(
+      terra::writeRaster(r, out, filetype = "COG", gdal = c("COMPRESS=DEFLATE"),
+                         overwrite = TRUE))
+  }
+  if (is.null(.shineCogRange[[key]])) {
+    .shineCogRange[[key]] <- as.vector(terra::minmax(terra::rast(out), compute = TRUE))
+  }
+  list(file = key, range = .shineCogRange[[key]])
+}
+
+# COG for object `o`'s band at time `t` (cache key includes mtime so edits bust it).
+.shineCogForObject <- function(o, t, maxCells = NULL) {
+  f <- .shineFileAt(o, t)
+  key <- paste0(.san(f), "_b", o$band, "_", as.integer(file.mtime(f)), ".tif")
+  .shineMakeCog(terra::rast(f, lyrs = o$band), key, o$categorical, maxCells)
+}
+
+# georaster-layer-for-leaflet JS, primed on the UI so leafletProxy addGeotiff()
+# calls have a client handler to invoke (addGeotiff only attaches deps to the map
+# object it is called on, which via proxy would never reach the page).
+.shineCogDeps <- function() {
+  c(utils::getFromNamespace("leafletGeoRasterDependencies", "leafem")(),
+    utils::getFromNamespace("chromaJsDependencies", "leafem")())
+}
+
+# ---- rendering helpers ----------------------------------------------------
+
+.viridis <- function() grDevices::hcl.colors(64, "viridis")
+.diverging <- function() grDevices::hcl.colors(64, "Blue-Red 3")
+
+# Stream COG `info` (from .shineMakeCog) onto a leaflet proxy/map at `url`,
+# rendered tiled by addGeotiff, with a matching legend.
+.shineAddRaster <- function(map, info, id, categorical, url, layerId) {
+  rng <- info$range
+  if (!all(is.finite(rng))) return(map)
+  if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
+  # each frame gets a unique group/layerId; the caller keeps the previous frame
+  # on the map until this one loads (double-buffer), so time steps don't flash.
+  map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
+    opacity = 0.8, autozoom = FALSE, imagequery = FALSE,
+    colorOptions = leafem::colorOptions(palette = .viridis(), domain = rng,
+                                        na.color = "transparent"))
+  if (categorical) {
+    vals <- seq(floor(rng[1]), ceiling(rng[2]))
+    pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
+  } else {
+    vals <- rng; pal <- leaflet::colorNumeric(.viridis(), domain = rng, na.color = "transparent")
+  }
+  lgd <- paste0("lgd_", .san(id))
+  map <- leaflet::removeControl(map, lgd)        # one legend per object, replaced
+  leaflet::addLegend(map, position = "bottomleft", pal = pal, values = vals,
+                     title = id, group = id, layerId = lgd)
+}
+
+# Stream a difference COG (diverging palette centered at 0) onto a leaflet proxy.
+.shineAddDiff <- function(map, info, id, url) {
+  rng <- info$range
+  lim <- max(abs(rng)); if (!is.finite(lim) || lim == 0) lim <- 1
+  dom <- c(-lim, lim)
+  map <- leafem::addGeotiff(map, url = url, group = id, layerId = .san(id),
+    opacity = 0.85, autozoom = FALSE, imagequery = FALSE,
+    colorOptions = leafem::colorOptions(palette = .diverging(), domain = dom,
+                                        na.color = "transparent"))
+  pal <- leaflet::colorNumeric(.diverging(), domain = dom, na.color = "transparent")
+  leaflet::addLegend(map, position = "bottomleft", pal = pal, values = dom,
+                     title = id, group = id)
+}
+
+.basemaps <- c("OpenStreetMap" = "OpenStreetMap",
+               "CartoDB Positron" = "CartoDB.Positron",
+               "Esri World Imagery" = "Esri.WorldImagery")
+
+# Lon/lat bounding box (c(lng1, lat1, lng2, lat2)) of the first map object, used
+# to fit the initial leaflet view. NULL if there are no map objects.
+.shineBounds <- function(objects) {
+  mapObjs <- Filter(function(o) o$kind == "map", objects)
+  if (length(mapObjs) == 0L) return(NULL)
+  e <- try(terra::ext(terra::project(terra::rast(mapObjs[[1]]$times$file[1]),
+                                      "EPSG:4326")), silent = TRUE)
+  if (inherits(e, "try-error")) return(NULL)
+  as.numeric(c(e[1], e[3], e[2], e[4]))
+}
+
+# A base leaflet map fit to `bounds` (or a default Canada view). zoomSnap < 1 lets
+# fitBounds pick a fractional zoom that hugs the extent instead of a farther one.
+.shineBaseMap <- function(bounds) {
+  m <- leaflet::addProviderTiles(
+    leaflet::leaflet(options = leaflet::leafletOptions(zoomSnap = 0.25, zoomDelta = 0.25)),
+    .basemaps[[1]])
+  if (is.null(bounds)) return(leaflet::setView(m, lng = -123, lat = 62, zoom = 5))
+  dx <- (bounds[3] - bounds[1]) * 0.06   # inset a little so the view sits closer
+  dy <- (bounds[4] - bounds[2]) * 0.06
+  leaflet::fitBounds(m, bounds[1] + dx, bounds[2] + dy, bounds[3] - dx, bounds[4] - dy)
+}
+
+# ---- UI -------------------------------------------------------------------
+
+.shineUI <- function(objects) {
+  mapObjs <- Filter(function(o) o$kind == "map", objects)
+  figObjs <- Filter(function(o) o$kind == "figure", objects)
+  contMaps <- Filter(function(o) !o$categorical, mapObjs)
+
+  mapTimes <- .shineTimes(mapObjs)
+
+  # (object @ year) snapshot choices for custom differences (continuous maps only)
+  snapChoices <- list()
+  for (o in contMaps) {
+    tt <- sort(o$times$time[!is.na(o$times$time)])
+    for (t in tt) snapChoices[[paste0(o$id, " @ ", t)]] <- paste0(o$id, "\r", t)
+  }
+  snapChoices <- unlist(snapChoices)
+
+  timeSliderUI <- function(id, times) {
+    if (length(times) < 2L) return(NULL)
+    shiny::absolutePanel(
+      bottom = 10, left = 10, right = 10, fixed = TRUE,
+      style = "background: rgba(255,255,255,0.85); padding: 8px; border-radius: 6px; z-index: 1000;",
+      shiny::fluidRow(
+        shiny::column(2, shiny::actionButton(paste0(id, "_play"), "Pause")),
+        shiny::column(10,
+          shiny::sliderInput(paste0(id, "_time"), NULL, min = min(times), max = max(times),
+                             value = min(times), step = NULL, sep = "", width = "100%",
+                             ticks = TRUE))
+      )
+    )
+  }
+
+  legendPanel <- function(content) {
+    shiny::absolutePanel(
+      top = 70, right = 10, width = 280, fixed = TRUE, draggable = TRUE,
+      style = "background: rgba(255,255,255,0.9); padding: 10px; border-radius: 6px; z-index: 1000; max-height: 70vh; overflow-y: auto;",
+      content
+    )
+  }
+
+  ui <- shiny::navbarPage(
+    "shine", id = "tabs", collapsible = TRUE,
+    header = shiny::tags$head(shiny::tags$style(shiny::HTML(
+      ".leaflet-container { background: #ddd; }"))),
+
+    # ---- Maps tab ----
+    shiny::tabPanel("Maps",
+      shiny::div(style = "position: relative;",
+        leaflet::leafletOutput("map_map", width = "100%", height = "92vh"),
+        legendPanel(shiny::tagList(
+          shiny::selectInput("map_basemap", "Basemap", choices = .basemaps),
+          shiny::tags$hr(),
+          shiny::checkboxGroupInput("map_objs", "Layers",
+                                    choices = vapply(mapObjs, `[[`, character(1), "id"),
+                                    selected = if (length(mapObjs)) mapObjs[[1]]$id else NULL)
+        )),
+        timeSliderUI("map", mapTimes)
+      )
+    ),
+
+    # ---- Figures tab ----
+    shiny::tabPanel("Figures",
+      shiny::div(style = "position: relative; min-height: 92vh;",
+        shiny::div(style = "height: 92vh; overflow-y: auto; text-align: center;",
+                   shiny::uiOutput("fig_ui")),
+        legendPanel(
+          shiny::radioButtons("fig_objs", "Figure",
+                              choices = vapply(figObjs, `[[`, character(1), "id"),
+                              selected = if (length(figObjs)) figObjs[[1]]$id else character(0))
+        ),
+        shiny::uiOutput("fig_slider")   # only shown for time-series figures
+      )
+    ),
+
+    # ---- Differences tab ----
+    shiny::tabPanel("Differences",
+      shiny::div(style = "position: relative;",
+        leaflet::leafletOutput("diff_map", width = "100%", height = "92vh"),
+        legendPanel(shiny::tagList(
+          shiny::selectInput("diff_basemap", "Basemap", choices = .basemaps),
+          shiny::tags$hr(),
+          shiny::helpText("last - first (continuous maps only)"),
+          shiny::checkboxGroupInput("diff_objs", "Differences",
+                                    choices = vapply(contMaps, `[[`, character(1), "id"),
+                                    selected = if (length(contMaps)) contMaps[[1]]$id else NULL)
+        ))
+      )
+    ),
+
+    # ---- Custom differences tab ----
+    shiny::tabPanel("Custom differences",
+      shiny::div(style = "position: relative;",
+        leaflet::leafletOutput("cust_map", width = "100%", height = "92vh"),
+        legendPanel(shiny::tagList(
+          shiny::selectInput("cust_basemap", "Basemap", choices = .basemaps),
+          shiny::tags$hr(),
+          shiny::helpText("Pick one A and one B -> B - A"),
+          shiny::fluidRow(
+            shiny::column(6, shiny::checkboxGroupInput("cust_a", "A", choices = snapChoices,
+              selected = if (length(snapChoices) >= 1) snapChoices[[1]] else NULL)),
+            shiny::column(6, shiny::checkboxGroupInput("cust_b", "B", choices = snapChoices,
+              selected = if (length(snapChoices) >= 2) snapChoices[[2]] else NULL))
+          )
+        ))
       )
     )
   )
+  # load the tiled raster renderer's JS at page start so proxy addGeotiff() works
+  htmltools::attachDependencies(ui, .shineCogDeps(), append = TRUE)
+}
 
-  server <- function(input, output, session) {
-    # Some cases there may be an error due to a previous plot still existing - this should clear
-    curDev <- dev.cur()
-    if (exists(".pkgEnv"))
-      alreadyPlotted <- grepl(ls(.pkgEnv), pattern = paste0("quickPlot", curDev))
-    else
-      alreadyPlotted <- FALSE
+# ---- Server ---------------------------------------------------------------
 
-    if (any(alreadyPlotted)) {
-      clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
-    }
+.shineServer <- function(objects, path, maxCells) {
+  mapObjs  <- Filter(function(o) o$kind == "map", objects)
+  figObjs  <- Filter(function(o) o$kind == "figure", objects)
+  contMaps <- Filter(function(o) !o$categorical, mapObjs)
+  mapTimes <- .shineTimes(mapObjs)
+  bounds <- .shineBounds(objects)
 
-    # Left side module tabs
-    output$moduleTabs <- renderUI({
-      mods <- unname(unlist(modules(sim)))
-      nTabs <- length(mods)
-      myTabs <- lapply(mods, function(x) {
-        tabPanel(x, h4("Parameters"), uiOutput(outputId = x))
+  # serve figure PNGs and the COG cache to the browser (same-origin)
+  root <- normalizePath(path)
+  shiny::addResourcePath("shineimg", root)
+  shiny::addResourcePath("shinecog", .shineCogDir())
+  figUrl <- function(f) {
+    rel <- sub("^[/\\\\]", "", sub(root, "", normalizePath(f), fixed = TRUE))
+    paste0("shineimg/", gsub("\\\\", "/", rel))
+  }
+  cogUrl <- function(file) paste0("shinecog/", file)
+
+  function(input, output, session) {
+
+    # --- auto-advancing time sliders (default playing, only when a layer is on) ---
+    playing <- list(map = shiny::reactiveVal(TRUE))
+    advancer <- function(tab, times, selId) {
+      if (length(times) < 2L) return()
+      shiny::observeEvent(input[[paste0(tab, "_play")]], {
+        playing[[tab]](!playing[[tab]]())
+        shiny::updateActionButton(session, paste0(tab, "_play"),
+                                  label = if (playing[[tab]]()) "Pause" else "Play")
       })
-      do.call(tabsetPanel, myTabs)
-    })
-
-    # Sliders in module tabs
-    for (k in unname(unlist(modules(sim)))) {
-      local({
-        # local is needed because it must force evaluation, avoid lazy evaluation
-        kLocal <- k
-        output[[kLocal]] <- renderUI({
-          params1 <- params(sim)[[kLocal]]
-          lapply(names(params1), function(i) {
-            moduleParams <- sim@depends@dependencies[[kLocal]]@parameters[
-              sim@depends@dependencies[[kLocal]]@parameters[, "paramName"] == i, ]
-            if (i %in% c(".plotInitialTime", ".saveInitialTime",
-                         ".plotInterval", ".saveInterval")) {
-              if (!is.na(params(sim)[[kLocal]][[i]])) {
-                sliderInput(
-                  inputId = paste0(kLocal, "$", i),
-                  label = i,
-                  min = min(start(sim), params(sim)[[kLocal]][[i]]),
-                  max = min(endTime, end(sim)) -
-                    ifelse(i %in% c(".plotInterval", ".saveInterval"), start(sim), 0),
-                  value = params(sim)[[kLocal]][[i]],
-                  step = ((min(endTime, end(sim)) - start(sim)) / 10) %>% as.numeric(), # nolint
-                  sep = "")
-              }
-            } else if (is.numeric(params1[[i]])) {
-              sliderInput(
-                inputId = paste0(kLocal, "$", i),
-                label = i,
-                min = moduleParams[["min"]][[1]],
-                max = moduleParams[["max"]][[1]],
-                value = params(sim)[[kLocal]][[i]],
-                step = (moduleParams[["max"]][[1]] - moduleParams[["min"]][[1]]) / 10,
-                sep = "")
-            } else if (is.logical(params1[[i]])) {
-              checkboxInput(
-                inputId = paste0(kLocal, "$", i),
-                label = i,
-                value = params(sim)[[kLocal]][[i]])
-            } else if (is.character(params1[[i]])) {
-              selectInput(
-                inputId = paste0(kLocal, "$", i),
-                label = i,
-                multiple = FALSE,
-                choices = moduleParams[["default"]][[1]]
-              )
-            }
-            # To do make ones for logical, character, functions, text etc.
-          })
-        })
+      shiny::observe({
+        if (!isTRUE(playing[[tab]]())) return()
+        if (length(input[[selId]]) == 0L) return()  # nothing shown -> don't advance
+        shiny::invalidateLater(1000, session)
+        cur <- shiny::isolate(input[[paste0(tab, "_time")]])
+        if (is.null(cur)) cur <- times[1]
+        idx <- which.min(abs(times - cur))          # snap to nearest listed time
+        nxt <- times[(idx %% length(times)) + 1L]   # advance, looping
+        shiny::updateSliderInput(session, paste0(tab, "_time"), value = nxt)
       })
     }
+    advancer("map", mapTimes, "map_objs")
 
-    spadesCallFull <- function() {
-      # Update simInit with values obtained from UI
-      mods <- unname(unlist(modules(sim)))
-      for (m in mods) {
-        for (i in names(params(sim)[[m]])) {
-          if (!is.null(input[[paste0(m, "$", i)]])) # only if it is not null
-            params(sim)[[m]][[i]] <- input[[paste0(m, "$", i)]]
-        }
+    # --- Maps tab (smooth: replace layers in place, no clearImages flash) ---
+    output$map_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
+    shiny::observeEvent(input$map_basemap, {
+      leaflet::leafletProxy("map_map") |>
+        leaflet::clearTiles() |>
+        leaflet::addProviderTiles(input$map_basemap)
+    })
+    # Double-buffer: each update adds the new frame as its own layer on top of the
+    # still-visible previous frame, and only drops frames that are >= 2 behind (so
+    # they have been covered for a full tick). The new frame is never removed
+    # before it has painted -> no flash between time steps.
+    lq <- new.env(parent = emptyenv())   # object id -> active frame layerIds (old..new)
+    frameN <- 0L
+    shiny::observe({
+      sel <- input$map_objs
+      t <- if (length(mapTimes)) {
+        v <- input$map_time; if (is.null(v)) mapTimes[1] else v
+      } else NA_real_
+      m <- leaflet::leafletProxy("map_map")
+      for (id in ls(lq)) if (!(id %in% sel)) {                 # drop deselected objects
+        for (lid in lq[[id]]) m <- leaflet::clearGroup(m, lid)
+        m <- leaflet::removeControl(m, paste0("lgd_", .san(id)))
+        rm(list = id, envir = lq)
       }
-      end(sim) <- pmin(endTime, time(sim, sim@simtimes[["timeunit"]]) + 1)
-      if (is.null(v$stop)) v$stop <- "go"
-      if ((time(sim, sim@simtimes[["timeunit"]]) < endTime) & (v$stop != "stop")) { # nolint
-        invalidateLater(0)
+      for (o in mapObjs[sel]) {                                # add / advance selected
+        if (is.null(o)) next
+        info <- .shineCogForObject(o, t, maxCells)
+        frameN <<- frameN + 1L
+        lid <- paste0(.san(o$id), "__f", frameN)
+        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file), lid)
+        q <- c(lq[[o$id]], lid)
+        while (length(q) > 2L) { m <- leaflet::clearGroup(m, q[1]); q <- q[-1] }
+        lq[[o$id]] <- q
       }
-      sim <<- spades(sim, debug = debug) # Run spades
+    })
+
+    # --- Figures tab (one figure via radio; slider only for time-series figures) ---
+    figSelTimes <- shiny::reactive({
+      id <- input$fig_objs
+      if (is.null(id) || !nzchar(id)) return(numeric(0))
+      tt <- figObjs[[id]]$times$time
+      sort(unique(tt[!is.na(tt)]))
+    })
+    output$fig_slider <- shiny::renderUI({
+      times <- figSelTimes()
+      if (length(times) < 2L) return(NULL)        # single image -> no slider
+      shiny::absolutePanel(
+        bottom = 10, left = 10, right = 10, fixed = TRUE,
+        style = "background: rgba(255,255,255,0.85); padding: 8px; border-radius: 6px; z-index: 1000;",
+        shiny::fluidRow(
+          shiny::column(2, shiny::actionButton("fig_play", "Pause")),
+          shiny::column(10, shiny::sliderInput("fig_time", NULL, min = min(times),
+            max = max(times), value = min(times), step = NULL, sep = "", width = "100%",
+            ticks = TRUE))))
+    })
+    output$fig_ui <- shiny::renderUI({
+      id <- input$fig_objs
+      if (is.null(id) || !nzchar(id)) return(shiny::helpText("Select a figure."))
+      o <- figObjs[[id]]
+      times <- figSelTimes()
+      t <- if (length(times) >= 2L) { v <- input$fig_time; if (is.null(v)) times[1] else v } else NA_real_
+      # bound by both width and height so tall figures fit fully (no cut-off bottom)
+      shiny::tags$img(src = figUrl(.shineFileAt(o, t)),
+                      style = paste("max-width: 98%; max-height: 90vh;",
+                                    "width: auto; height: auto; margin: 8px auto; display: block;"))
+    })
+    figPlaying <- shiny::reactiveVal(TRUE)
+    shiny::observeEvent(input$fig_play, {
+      figPlaying(!figPlaying())
+      shiny::updateActionButton(session, "fig_play",
+                                label = if (figPlaying()) "Pause" else "Play")
+    })
+    shiny::observe({                              # animate only when >1 image
+      if (!isTRUE(figPlaying())) return()
+      times <- figSelTimes()
+      if (length(times) < 2L) return()
+      shiny::invalidateLater(1000, session)
+      cur <- shiny::isolate(input$fig_time); if (is.null(cur)) cur <- times[1]
+      idx <- which.min(abs(times - cur))
+      shiny::updateSliderInput(session, "fig_time", value = times[(idx %% length(times)) + 1L])
+    })
+
+    # --- Differences tab (last - first) ---
+    output$diff_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
+    shiny::observeEvent(input$diff_basemap, {
+      leaflet::leafletProxy("diff_map") |>
+        leaflet::clearTiles() |> leaflet::addProviderTiles(input$diff_basemap)
+    })
+    shiny::observe({
+      if (!identical(input$tabs, "Differences")) return()   # only when the map exists
+      sel <- input$diff_objs
+      m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("diff_map")))
+      for (id in sel) {
+        o <- contMaps[[id]]
+        tt <- sort(o$times$time[!is.na(o$times$time)])
+        if (length(tt) < 2L) next
+        r <- terra::rast(.shineFileAt(o, max(tt)), lyrs = o$band) -
+             terra::rast(.shineFileAt(o, min(tt)), lyrs = o$band)
+        info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), ".tif"),
+                              maxCells = maxCells)
+        m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file))
+      }
+    })
+
+    # --- Custom differences (B - A) ---
+    parseSnap <- function(val) {
+      parts <- strsplit(val, "\r", fixed = TRUE)[[1]]
+      list(o = contMaps[[parts[1]]], t = as.numeric(parts[2]))
     }
-
-    # Needs cleaning up - This should just be a subset of above
-    spadesCall <- eventReactive(input$oneTimestepSpaDESButton, {
-      # Update simInit with values obtained from UI
-      mods <- unname(unlist(modules(sim)))
-      for (m in mods) {
-        for (i in names(params(sim)[[m]])) {
-          if (!is.null(input[[paste0(m, "$", i)]])) {
-            params(sim)[[m]][[i]] <- input[[paste0(m, "$", i)]]
-          }
-        }
-      }
-      end(sim) <- time(sim, sim@simtimes[["timeunit"]]) + input$Steps
-      sim <<- spades(sim, debug = debug)
+    output$cust_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
+    shiny::observeEvent(input$cust_basemap, {
+      leaflet::leafletProxy("cust_map") |>
+        leaflet::clearTiles() |> leaflet::addProviderTiles(input$cust_basemap)
     })
-
-    simReset <- eventReactive(input$resetSimInit, {
-      ## Update simInit with values obtained from UI
-      clearPlot() # Don't want to use this, but it seems that renderPlot will not allow overplotting
-
-      rm(list = ls(sim), envir = sim@.envir)
-      sim <<- simOrig
-      for (i in names(simOrig1@.list)) {
-        sim[[i]]  <<- simOrig1@.list[[i]]
+    shiny::observe({
+      if (!identical(input$tabs, "Custom differences")) return()   # only when map exists
+      a <- input$cust_a; b <- input$cust_b
+      m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("cust_map")))
+      if (length(a) == 1L && length(b) == 1L) {
+        sa <- parseSnap(a); sb <- parseSnap(b)
+        ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = sa$o$band)
+        rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
+        if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
+        info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), ".tif"), maxCells = maxCells)
+        m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file))
       }
     })
-
-    v <- reactiveValues(data = NULL, time = time(sim, sim@simtimes[["timeunit"]]),
-                        end = end(sim, sim@simtimes[["timeunit"]]), sliderUsed = FALSE)
-
-    # Button clicks
-    observeEvent(input$oneTimestepSpaDESButton, {
-      v$data <- "oneTime"
-      v$stop <- "go"
-      updateTabsetPanel(session, "topTabsetPanel", selected = "Preview")
-    })
-
-    observeEvent(input$stopButton, {
-      v$stop <- "stop"
-    })
-
-    observeEvent(input$resetSimInit, {
-      v$data <- "reset"
-      v$time <- start(sim)
-      v$end <- endTime
-    })
-
-    observeEvent(input$fullSpaDESButton, {
-      v$data <- "full"
-      v$stop <- "go"
-      updateTabsetPanel(session, "topTabsetPanel", selected = "Preview")
-    })
-
-    # Main plot
-    output$quickPlot <- renderPlot({
-      curDev <- dev.cur()
-      alreadyPlotted <- if (exists(".pkgEnv")) {
-        grepl(ls(getFromNamespace(".quickPlotEnv", "quickPlot")),
-                 pattern = paste0("quickPlot", curDev))
-      } else {
-        FALSE
-      }
-
-      if (any(alreadyPlotted)) {
-        rePlot()
-      } else {
-        clearPlot() # Don't want to use this, but renderPlot will not allow overplotting
-      }
-      if (is.null(v$data)) return() # catch if no data yet
-      if (v$data == "oneTime") {
-        spadesCall()
-      } else if (v$data == "full") {
-        spadesCallFull()
-      } else if (v$data == "reset") {
-        simReset()
-      }
-      v$time <- time(sim, sim@simtimes[["timeunit"]])
-      if (time(sim, sim@simtimes[["timeunit"]]) >= endTime) {
-        v$end <- end(sim)
-      }
-      v$sliderUsed <- FALSE
-    })
-
-    output$moduleDiagram <- renderPlot({
-      moduleDiagram(sim)
-    })
-
-    output$moduleDiagramUI <- renderUI({
-      plotOutput("moduleDiagram", height = max(600, length(modules(sim)) * 100))
-    })
-
-    output$objectDiagram <- renderDiagrammeR({
-      if (v$time <= start(sim)) {
-        return()
-      } else {
-        objectDiagram(sim)
-      }
-    })
-
-    output$objectDiagramUI <- renderUI({
-      if (v$time <= start(sim)) {
-        return()
-      } else {
-        DiagrammeROutput("objectDiagram", height = max(600, length(ls(sim)) * 30))
-      }
-    })
-
-    output$eventDiagram <- renderDiagrammeR({
-      if (v$time <= start(sim)) {
-        return()
-      } else {
-        eventDiagram(sim)
-      }
-    })
-
-    output$eventDiagramUI <- renderUI({
-      if (v$time <= start(sim)) {
-        return()
-      } else {
-        DiagrammeROutput("eventDiagram", height = max(800, NROW(completed(sim)) * 25))
-      }
-    })
-
-    output$objectBrowser <- renderDataTable({
-      v$time
-      dt <- lapply(names(objs(sim)), function(x) {
-            data.frame(Name = x, Class = is(objs(sim)[[x]])[1])
-      }) %>%
-        do.call(args = ., rbind)
-    })
-
-    output$objectBrowserUI <- renderUI({
-      v$time
-      dataTableOutput("objectBrowser")
-    })
-
-    output$inputObjects <- renderDataTable({
-      dt <- inputs(sim)
-    })
-
-    output$inputObjectsUI <- renderUI({
-      dataTableOutput("inputObjects")
-    })
-
-    observeEvent(input$simTimes, {
-      time(sim) <<- input$simTimes
-    })
-
-    # the time slider must update if stepping through with buttons
-    observe({
-      updateSliderInput(session, "simTimes", value = v$time, max = v$end)
-    })
-
-    output$stepActionButton <- renderPrint({
-      cat("Step ", input$Steps, " timestep", "s"[input$Steps != 1], sep = "")
-    })
-
-    output$downloadData <- downloadHandler(
-      filename = function() paste("simObj.rds", sep = ""),
-      content = function(file) saveRDS(sim, file = file)
-    )
   }
-
-  if (filesOnly) {
-    shinyAppDir <- file.path(tempdir(), "shinyApp")
-    checkPath(shinyAppDir, create = TRUE)
-    globalFile <- file.path(shinyAppDir, "global.R", fsep = "/")
-    saveRDS(sim, file = file.path(shinyAppDir, "sim.Rdata"))
-    con <- file(globalFile, open = "w+b");
-    writeLines(paste("debug <-", debug), con = con)
-    writeLines("library(DiagrammeR)", con = con)
-    writeLines("library(DT)", con = con)
-    writeLines("library(SpaDES)", con = con)
-    pkgs <- unique(unlist(lapply(sim@depends@dependencies,
-                         function(x) x@reqdPkgs)))
-    writeLines(paste0(paste0("library(", pkgs, ")"), collapse = "\n"),
-               con = con)
-    writeLines("sim <- readRDS(file = \"sim.Rdata\")", con = con)
-    writeLines("simOrig1 <- as(sim, \"simList_\")", con = con) # convert objects first
-
-    # Not enough because objects are in an environment, so they both change
-    writeLines("simOrig <- sim", con = con)
-
-    writeLines("endTime <- end(sim)", con = con)
-    writeLines("startTime <- start(sim)", con = con)
-
-    close(con)
-
-    serverFile <- file.path(shinyAppDir, "server.R", fsep = "/")
-    con <- file(serverFile, open = "w+b");
-    writeLines("shinyServer(", con = con);
-    writeLines(deparse(dput(server)), con = con, sep = "\n");
-    writeLines(")", con = con);
-    close(con)
-    serverFile <- gsub(x = serverFile, pattern = "\\\\", "/")
-
-    uiFile <- file.path(shinyAppDir, "ui.R", fsep = "/")
-    con <- file(uiFile, open = "w+b");
-    writeLines("fluidPage(", con = con);
-    writeLines(deparse(dput(fluidPageArgs)), con = con, sep = "\n");
-    writeLines(")", con = con);
-    close(con)
-
-    message("server.R file is saved. Type: file.edit(\"", serverFile, "\")",
-            " to edit the file, or runApp(\"", dirname(serverFile), "\") to run it,",
-            " or, rsconnect::deployApp(\"", dirname(serverFile), "\")")
-  } else {
-    runApp(list(ui = fluidPage(fluidPageArgs), server = server),
-           launch.browser = getOption("viewer", browseURL), quiet = TRUE)
-  }
-})
+}

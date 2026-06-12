@@ -1,124 +1,38 @@
 Package: SpaDES.shiny
 Type: Package
-Title: Utilities for building 'shiny' apps for 'SpaDES' simulations
-Description: Create 'shiny' app interfaces for 'SpaDES' models.
-URL:
-    http://spades-shiny.predictiveecology.org/,
-    https://github.com/PredictiveEcology/SpaDES.shiny
-Date: 2019-10-02
-Version: 0.2.0
-Authors@R: c(
-      person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
-             role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0001-7146-8135")),
-      person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
-             role = c("aut"), comment = c(ORCID = "https://orcid.org/0000-0002-6914-8316")),
-      person("Damian", "Rodziewicz", role = c("aut")),
-      person("Mateusz", "Wyszynski", role = c("aut")),
-      person("Olivia", "Sung", role = c("ctb")),
-      person("Alex", "Tso", role = c("ctb")),
-      person("Greyson", "Wang", role = c("ctb")),
-      person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
-             role = "cph")
-   )
+Title: Shiny Apps for Visualizing 'SpaDES' Simulation Outputs
+Description: Tools to build 'shiny' applications for exploring outputs from
+    'SpaDES' (Spatial Discrete Event Simulation) projects. Includes 'shine()',
+    an interactive viewer that recursively discovers raster ('.tif') and image
+    ('.png') outputs, groups time-series of the same object, and presents them
+    on web maps (with difference layers) and as figures.
+Version: 0.1.0
+Date: 2026-06-12
+Authors@R:
+    person(given = "Eliot J B",
+           family = "McIntire",
+           role = c("aut", "cre"),
+           email = "eliot.mcintire@canada.ca",
+           comment = c(ORCID = "0000-0002-6914-8316"))
 Depends:
-    R (>= 3.5)
+    R (>= 4.1)
 Imports:
-    assertthat,
-    data.table,
-    DiagrammeR (>= 0.8.2),
-    dplyr,
-    DT (>= 0.2),
-    future,
-    gdalUtils,
-    ggplot2,
-    googleAuthR,
-    googledrive,
-    googleID,
-    graphics,
     grDevices,
-    igraph,
+    htmltools,
+    leafem,
     leaflet,
-    leaflet.extras,
-    magrittr,
-    memoise,
-    methods,
-    packrat,
-    promises,
-    purrr,
-    quickPlot,
-    R.utils,
-    RColorBrewer,
-    raster,
-    rasterVis,
-    reproducible (>= 0.2.9),
-    rgeos,
-    rmapshaper,
-    shiny (>= 0.13),
-    R.devices,
-    shinyBS,
-    shinycssloaders,
-    shinydashboard,
-    shinyjs,
-    shinyWidgets,
-    sp,
-    SpaDES.core (>= 0.2.0),
-    SpaDES.tools (>= 0.2.0),
-    stats,
-    stringr,
+    shiny,
+    terra,
     tools,
-    utils,
-    whisker,
-    xlsx,
-    yaml
+    utils
 Suggests:
-    knitr,
-    rmarkdown,
-    Rserve,
-    testthat (>= 1.0.2),
-    spelling
-Remotes:
-    MarkEdmondson1234/googleID
-Encoding: UTF-8
+    testthat (>= 3.0.0)
 License: GPL-3
-VignetteBuilder: knitr, rmarkdown
+Encoding: UTF-8
+Language: en-CA
+URL: https://github.com/PredictiveEcology/SpaDES.shiny
 BugReports: https://github.com/PredictiveEcology/SpaDES.shiny/issues
 ByteCompile: yes
-Collate: 
-    'adminLogs.R'
-    'authGoogle.R'
-    'config.R'
-    'copyrightAuthors.R'
-    'debugging.R'
-    'environment.R'
-    'export.R'
-    'footers.R'
-    'generator.R'
-    'histogram.R'
-    'histogramForRaster.R'
-    'leaflet.R'
-    'libInit.R'
-    'news.R'
-    'pkgInfo.R'
-    'polygonList.R'
-    'uploadPolygon.R'
-    'polygonChooser.R'
-    'polygonsUpdater.R'
-    'privacyToS.R'
-    'rastersOverTime.R'
-    'shine.R'
-    'simInfo.R'
-    'simOutputs.R'
-    'slicer.R'
-    'slider.R'
-    'spades-shiny-package.R'
-    'spades.R'
-    'summaryPopups.R'
-    'tilesUpdater.R'
-    'timeSeriesofRasters.R'
-    'unsuspendModule.R'
-    'visualizeDataTable.R'
-    'visualizePolygons.R'
-    'visualizeRaster.R'
-    'zzz.R'
-RoxygenNote: 6.1.1
-Language: en-CA
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
