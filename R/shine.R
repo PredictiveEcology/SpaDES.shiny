@@ -84,20 +84,25 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
 # ---- discovery / grouping -------------------------------------------------
 
-# Scan `path` and return a named list of "objects". Each object is a list:
-#   id          character, unique label shown in the legend
+# Scan `path` and return a list of "objects". Each object is a list:
+#   id          character, label shown in the legend (unique within a kind)
 #   kind        "map" (.tif) or "figure" (.png)
 #   band        integer band index within `file` (1 for png / single-band)
 #   categorical logical, TRUE for factor rasters (maps only)
+#   folder      relative subfolder under `path` ("" if in the root)
 #   times       data.frame(time = numeric, file = character), sorted by time;
 #               a single row with time = NA means a static layer
+# The list is keyed by "<kind>\r<id>" so a map and a figure that share a name
+# (e.g. foo.tif and foo.png) do not collide; use .shineById() to re-key by id
+# within a single kind.
 .shineScan <- function(path, timePattern = "[0-9]+") {
   files <- list.files(path, recursive = TRUE, full.names = TRUE,
                       pattern = "\\.(tif|png)$", ignore.case = TRUE)
   files <- files[!grepl("\\.aux\\.xml$", files, ignore.case = TRUE)]
   if (length(files) == 0L) return(list())
+  root <- normalizePath(path, mustWork = FALSE)
 
-  # Parse each file into (key, time, kind)
+  # Parse each file into (key, time, kind, folder)
   parsed <- lapply(files, function(f) {
     stem <- tools::file_path_sans_ext(basename(f))
     m <- gregexpr(timePattern, stem)[[1]]
@@ -114,16 +119,19 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       key <- gsub("(^[ _-]+)|([ _-]+$)", "", key)                # trim separators
     }
     kind <- if (grepl("\\.tif$", f, ignore.case = TRUE)) "map" else "figure"
-    list(key = key, time = time, file = f, kind = kind)
+    reldir <- sub(root, "", normalizePath(dirname(f), mustWork = FALSE), fixed = TRUE)
+    folder <- gsub("\\\\", "/", sub("^[/\\\\]+", "", reldir))    # "" if file is in root
+    list(key = key, time = time, file = f, kind = kind, folder = folder)
   })
 
-  # Group by (key, kind); one band per map object is expanded below
+  # Group by (kind, key); one band per map object is expanded below
   groupKey <- vapply(parsed, function(p) paste(p$kind, p$key, sep = "\r"), character(1))
   objects <- list()
   for (gk in unique(groupKey)) {
     members <- parsed[groupKey == gk]
     kind <- members[[1]]$kind
     key  <- members[[1]]$key
+    folder <- members[[1]]$folder
     df <- data.frame(
       time = vapply(members, `[[`, numeric(1), "time"),
       file = vapply(members, `[[`, character(1), "file"),
@@ -132,8 +140,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     df <- df[order(df$time, na.last = TRUE), , drop = FALSE]
 
     if (kind == "figure") {
-      objects[[key]] <- list(id = key, kind = "figure", band = 1L,
-                             categorical = FALSE, times = df)
+      objects[[paste("figure", key, sep = "\r")]] <- list(id = key, kind = "figure",
+        band = 1L, categorical = FALSE, folder = folder, times = df)
       next
     }
 
@@ -143,14 +151,35 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     bnames <- names(r)
     for (b in seq_len(nb)) {
       id <- if (nb > 1L) paste0(key, ": ", bnames[b]) else key
-      objects[[id]] <- list(
+      objects[[paste("map", id, sep = "\r")]] <- list(
         id = id, kind = "map", band = b,
         categorical = isTRUE(terra::is.factor(r)[b]),
-        times = df
+        folder = folder, times = df
       )
     }
   }
   objects
+}
+
+# Re-key a (kind-filtered) object list by id, for name-based lookup within a kind.
+.shineById <- function(objs) {
+  if (length(objs)) names(objs) <- vapply(objs, `[[`, character(1), "id")
+  objs
+}
+
+# A downloadHandler that serves the file referenced by reactiveVal `rv`, which
+# holds list(path, name) for the difference raster currently shown (or NULL).
+.shineDownload <- function(rv) {
+  shiny::downloadHandler(
+    filename = function() { d <- rv(); if (is.null(d)) "shine_difference.tif" else d$name },
+    content = function(file) {
+      d <- rv()
+      if (is.null(d) || !file.exists(d$path)) {
+        stop("Select a difference to display before downloading.", call. = FALSE)
+      }
+      file.copy(d$path, file, overwrite = TRUE)
+    }
+  )
 }
 
 # Sorted union of real timestamps across the given objects.
@@ -303,8 +332,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # ---- UI -------------------------------------------------------------------
 
 .shineUI <- function(objects, interval = 2) {
-  mapObjs <- Filter(function(o) o$kind == "map", objects)
-  figObjs <- Filter(function(o) o$kind == "figure", objects)
+  mapObjs <- .shineById(Filter(function(o) o$kind == "map", objects))
+  figObjs <- .shineById(Filter(function(o) o$kind == "figure", objects))
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
   # last - first only makes sense for continuous maps with >= 2 timestamps
   diffMaps <- Filter(function(o) sum(!is.na(o$times$time)) >= 2L, contMaps)
@@ -336,6 +365,33 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                        value = interval, step = 0.5, width = "100%")
   }
 
+  # small bottom-right caption showing the source file(s) of what's displayed
+  fileInfoPanel <- function(id) {
+    shiny::absolutePanel(
+      bottom = 78, right = 10, fixed = TRUE,
+      style = paste("background: rgba(255,255,255,0.8); padding: 3px 8px;",
+                    "border-radius: 4px; z-index: 1000; font-size: 11px;",
+                    "max-width: 45vw; word-break: break-all; text-align: right;"),
+      shiny::uiOutput(id))
+  }
+
+  # A single radio-button group whose items are grouped under bold folder headers
+  # (folder = subfolder under the scanned path; items with no folder get no header).
+  groupedRadios <- function(inputId, objs, selectedId) {
+    item <- function(o) shiny::tags$div(class = "radio", style = "margin: 1px 0;",
+      shiny::tags$label(
+        shiny::tags$input(type = "radio", name = inputId, value = o$id,
+          checked = if (identical(o$id, selectedId)) "checked"),
+        shiny::tags$span(style = "margin-left: 4px;", o$id)))
+    folders <- vapply(objs, function(o) if (is.null(o$folder)) "" else o$folder, character(1))
+    blocks <- lapply(unique(folders), function(fld) {
+      items <- lapply(objs[folders == fld], item)
+      if (nzchar(fld)) c(list(shiny::tags$div(style = "font-weight: bold; margin-top: 8px;", fld)), items)
+      else items
+    })
+    shiny::tags$div(id = inputId, class = "shiny-input-radiogroup", do.call(c, blocks))
+  }
+
   legendPanel <- function(content) {
     shiny::absolutePanel(
       top = 70, right = 10, width = 280, fixed = TRUE, draggable = TRUE,
@@ -363,6 +419,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                                     selected = if (length(mapObjs)) mapObjs[[1]]$id else NULL),
           if (length(mapTimes) >= 2L) shiny::tagList(shiny::tags$hr(), speedSlider("map_speed"))
         )),
+        fileInfoPanel("map_fileinfo"),
         timeSliderUI("map", mapTimes)
       )
     ),
@@ -375,11 +432,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                                  "padding-right: 300px; box-sizing: border-box;"),
                    shiny::uiOutput("fig_ui")),
         legendPanel(shiny::tagList(
-          shiny::radioButtons("fig_objs", "Figure",
-                              choices = vapply(figObjs, `[[`, character(1), "id"),
-                              selected = if (length(figObjs)) figObjs[[1]]$id else character(0)),
+          shiny::tags$label("Figure"),
+          groupedRadios("fig_objs", figObjs,
+                        if (length(figObjs)) figObjs[[1]]$id else character(0)),
           shiny::tags$hr(), speedSlider("fig_speed")
         )),
+        fileInfoPanel("fig_fileinfo"),
         shiny::uiOutput("fig_slider")   # only shown for time-series figures
       )
     ),
@@ -394,7 +452,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
           shiny::helpText("last - first (continuous time-series maps)"),
           shiny::radioButtons("diff_objs", "Map",
                               choices = vapply(diffMaps, `[[`, character(1), "id"),
-                              selected = if (length(diffMaps)) diffMaps[[1]]$id else character(0))
+                              selected = if (length(diffMaps)) diffMaps[[1]]$id else character(0)),
+          shiny::tags$hr(),
+          shiny::downloadButton("diff_dl", "Download GeoTIFF")
         ))
       )
     ),
@@ -412,7 +472,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
               selected = if (length(snapChoices) >= 1) snapChoices[[1]] else character(0))),
             shiny::column(6, shiny::radioButtons("cust_b", "B", choices = snapChoices,
               selected = if (length(snapChoices) >= 2) snapChoices[[2]] else character(0)))
-          )
+          ),
+          shiny::tags$hr(),
+          shiny::downloadButton("cust_dl", "Download GeoTIFF")
         ))
       )
     )
@@ -424,8 +486,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # ---- Server ---------------------------------------------------------------
 
 .shineServer <- function(objects, path, maxCells, interval = 2, opacity = 1) {
-  mapObjs  <- Filter(function(o) o$kind == "map", objects)
-  figObjs  <- Filter(function(o) o$kind == "figure", objects)
+  mapObjs  <- .shineById(Filter(function(o) o$kind == "map", objects))
+  figObjs  <- .shineById(Filter(function(o) o$kind == "figure", objects))
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
   mapTimes <- .shineTimes(mapObjs)
   bounds <- .shineBounds(objects)
@@ -527,6 +589,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                              animLayerId(o$id), replaceLegend = TRUE, opacity = opacity)
       }
     })
+    output$map_fileinfo <- shiny::renderUI({               # source file(s) on display
+      sel <- input$map_objs
+      if (length(sel) == 0L) return(NULL)
+      t <- curMapTime()
+      shiny::HTML(paste(vapply(mapObjs[sel], function(o) basename(.shineFileAt(o, t)),
+                               character(1)), collapse = "<br>"))
+    })
 
     # --- Figures tab (one figure via radio; slider only for time-series figures) ---
     figSelTimes <- shiny::reactive({
@@ -558,6 +627,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                       style = paste("max-width: 98%; max-height: 90vh;",
                                     "width: auto; height: auto; margin: 8px auto; display: block;"))
     })
+    output$fig_fileinfo <- shiny::renderUI({
+      id <- input$fig_objs
+      if (is.null(id) || !nzchar(id)) return(NULL)
+      times <- figSelTimes()
+      t <- if (length(times) >= 2L) { v <- input$fig_time; if (is.null(v)) times[1] else v } else NA_real_
+      shiny::HTML(basename(.shineFileAt(figObjs[[id]], t)))
+    })
     figPlaying <- shiny::reactiveVal(TRUE)
     shiny::observeEvent(input$fig_play, {
       figPlaying(!figPlaying())
@@ -581,10 +657,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       leaflet::leafletProxy("diff_map") |>
         leaflet::clearTiles() |> leaflet::addProviderTiles(input$diff_basemap)
     })
+    diffDL <- shiny::reactiveVal(NULL)            # list(path, name) of the on-the-fly COG
     shiny::observe({
       if (!identical(input$tabs, "Change from start to end")) return()  # only when map exists
       sel <- input$diff_objs
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("diff_map")))
+      diffDL(NULL)
       for (id in sel) {
         o <- contMaps[[id]]
         tt <- sort(o$times$time[!is.na(o$times$time)])
@@ -594,8 +672,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), ".tif"),
                               maxCells = maxCells)
         m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file), opacity)
+        diffDL(list(path = file.path(.shineCogDir(), info$file),
+                    name = paste0(.san(id), "_change_", min(tt), "-", max(tt), ".tif")))
       }
     })
+    output$diff_dl <- .shineDownload(diffDL)
 
     # --- Custom differences (B - A) ---
     snaps <- .shineSnapshots(contMaps)            # same order/indices as the UI radios
@@ -605,6 +686,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       if (is.na(i) || i < 1L || i > length(snaps)) return(NULL)
       snaps[[i]]
     }
+    custDL <- shiny::reactiveVal(NULL)            # list(path, name) of the on-the-fly COG
     output$cust_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
     shiny::observeEvent(input$cust_basemap, {
       leaflet::leafletProxy("cust_map") |>
@@ -615,13 +697,17 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       a <- input$cust_a; b <- input$cust_b
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("cust_map")))
       sa <- parseSnap(a); sb <- parseSnap(b)
+      custDL(NULL)
       if (!is.null(sa) && !is.null(sb)) {
         ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = sa$o$band)
         rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
         info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), ".tif"), maxCells = maxCells)
         m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file), opacity)
+        custDL(list(path = file.path(.shineCogDir(), info$file),
+                    name = paste0(.san(sb$label), "_minus_", .san(sa$label), ".tif")))
       }
     })
+    output$cust_dl <- .shineDownload(custDL)
   }
 }

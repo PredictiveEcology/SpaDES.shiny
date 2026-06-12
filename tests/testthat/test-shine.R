@@ -45,30 +45,54 @@ test_that(".shineScan groups files into time-series objects and ignores sidecars
   objs <- .shineScan(d)
 
   # 1 continuous map (rsf) + 2 bands (multi) + 1 categorical = 4 map objects
-  maps <- Filter(function(o) o$kind == "map", objs)
-  figs <- Filter(function(o) o$kind == "figure", objs)
-  expect_setequal(vapply(maps, `[[`, character(1), "id"),
+  maps <- .shineById(Filter(function(o) o$kind == "map", objs))
+  figs <- .shineById(Filter(function(o) o$kind == "figure", objs))
+  expect_setequal(names(maps),
                   c("rsf_areaX", "multi_areaX: bandA", "multi_areaX: bandB", "classMap_areaX"))
-  expect_setequal(vapply(figs, `[[`, character(1), "id"), c("summary_static", "burn_areaX"))
+  expect_setequal(names(figs), c("summary_static", "burn_areaX"))
 
   # rsf is a 3-step continuous series, sorted, with no NA times
-  rsf <- objs[["rsf_areaX"]]
-  expect_false(rsf$categorical)
-  expect_equal(rsf$times$time, c(2000, 2010, 2020))
+  expect_false(maps[["rsf_areaX"]]$categorical)
+  expect_equal(maps[["rsf_areaX"]]$times$time, c(2000, 2010, 2020))
 
   # multi-band -> one object per band, both pointing at the same files
-  expect_equal(objs[["multi_areaX: bandA"]]$band, 1L)
-  expect_equal(objs[["multi_areaX: bandB"]]$band, 2L)
+  expect_equal(maps[["multi_areaX: bandA"]]$band, 1L)
+  expect_equal(maps[["multi_areaX: bandB"]]$band, 2L)
 
   # categorical detected
-  expect_true(objs[["classMap_areaX"]]$categorical)
+  expect_true(maps[["classMap_areaX"]]$categorical)
 
   # figures: static has NA time, burn is a series
-  expect_true(all(is.na(objs[["summary_static"]]$times$time)))
-  expect_equal(objs[["burn_areaX"]]$times$time, c(2000, 2010))
+  expect_true(all(is.na(figs[["summary_static"]]$times$time)))
+  expect_equal(figs[["burn_areaX"]]$times$time, c(2000, 2010))
 
   # the .aux.xml sidecar is not its own object
-  expect_false(any(grepl("aux", names(objs))))
+  expect_false(any(grepl("aux", vapply(objs, `[[`, character(1), "id"))))
+})
+
+test_that("a name shared by a .tif and a .png yields BOTH a map and a figure", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  tmpl <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                      crs = "EPSG:3857")
+  terra::writeRaster(terra::setValues(tmpl, runif(16)), file.path(d, "rsfBinMap_year2030.tif"))
+  writeLines("x", file.path(d, "rsfBinMap_year2030.png"))
+  objs <- .shineScan(d)
+  kinds <- vapply(objs, `[[`, character(1), "kind")
+  ids <- vapply(objs, `[[`, character(1), "id")
+  expect_true("map" %in% kinds && "figure" %in% kinds)   # neither overwrote the other
+  expect_equal(sum(ids == "rsfBinMap"), 2L)
+})
+
+test_that(".shineScan records the subfolder (module) of each object", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  dir.create(file.path(d, "moduleA"))
+  writeLines("x", file.path(d, "moduleA", "fig_one.png"))
+  writeLines("x", file.path(d, "fig_root.png"))
+  figs <- .shineById(Filter(function(o) o$kind == "figure", .shineScan(d)))
+  expect_equal(figs[["fig_one"]]$folder, "moduleA")
+  expect_equal(figs[["fig_root"]]$folder, "")
 })
 
 test_that(".shineTimes returns the sorted union of real timestamps", {
@@ -84,13 +108,15 @@ test_that(".shineFileAt picks the nearest timestep and handles static layers", {
   d <- withr::local_tempdir()
   make_outputs(d)
   objs <- .shineScan(d)
+  maps <- .shineById(Filter(function(o) o$kind == "map", objs))
+  figs <- .shineById(Filter(function(o) o$kind == "figure", objs))
 
-  rsf <- objs[["rsf_areaX"]]
+  rsf <- maps[["rsf_areaX"]]
   expect_match(.shineFileAt(rsf, 2010), "year2010")
   expect_match(.shineFileAt(rsf, 2008), "year2010")   # nearest
   expect_match(.shineFileAt(rsf, 1900), "year2000")   # clamped to nearest
 
-  stat <- objs[["summary_static"]]
+  stat <- figs[["summary_static"]]
   expect_equal(.shineFileAt(stat, NA), stat$times$file[1])  # always the one file
 })
 
@@ -120,10 +146,10 @@ test_that("static continuous maps have < 2 timesteps (excluded from Differences)
   terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "rsf_a_year2000.tif"))
   terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "rsf_a_year2010.tif"))
   terra::writeRaster(terra::setValues(tmpl, runif(36)), file.path(d, "speciesLayers_static.tif"))
-  objs <- .shineScan(d)
+  maps <- .shineById(Filter(function(o) o$kind == "map", .shineScan(d)))
   has2 <- function(o) sum(!is.na(o$times$time)) >= 2L   # the Differences-tab predicate
-  expect_true(has2(objs[["rsf_a"]]))
-  expect_false(has2(objs[["speciesLayers_static"]]))
+  expect_true(has2(maps[["rsf_a"]]))
+  expect_false(has2(maps[["speciesLayers_static"]]))
 })
 
 test_that(".shineSnapshots enumerates (object @ time) snapshots for custom diffs", {
