@@ -300,16 +300,19 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     opacity = opacity, autozoom = FALSE, imagequery = FALSE,
     colorOptions = leafem::colorOptions(palette = .viridis(), domain = rng,
                                         na.color = "transparent"))
-  if (categorical) {
-    vals <- seq(floor(rng[1]), ceiling(rng[2]))
-    pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
-  } else {
-    vals <- rng; pal <- leaflet::colorNumeric(.viridis(), domain = rng, na.color = "transparent")
-  }
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
-  leaflet::addLegend(map, position = "bottomleft", pal = pal, values = vals,
-                     title = id, group = id, layerId = lgd, decreasing = TRUE)
+  if (categorical) {                                           # discrete, highest on top
+    vals <- rev(seq(floor(rng[1]), ceiling(rng[2])))
+    pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
+    leaflet::addLegend(map, position = "bottomleft", colors = pal(vals), labels = vals,
+                       title = id, group = id, layerId = lgd)
+  } else {                                                     # gradient, highest on top
+    leaflet::addLegend(map, position = "bottomleft",
+      pal = leaflet::colorNumeric(rev(.viridis()), domain = rng, na.color = "transparent"),
+      values = rng, title = id, group = id, layerId = lgd,
+      labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
+  }
 }
 
 # Stream a difference COG (diverging palette centered at 0) onto a leaflet proxy.
@@ -321,9 +324,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     opacity = opacity, autozoom = FALSE, imagequery = FALSE,
     colorOptions = leafem::colorOptions(palette = .diverging(), domain = dom,
                                         na.color = "transparent"))
-  pal <- leaflet::colorNumeric(.diverging(), domain = dom, na.color = "transparent")
-  leaflet::addLegend(map, position = "bottomleft", pal = pal, values = dom,
-                     title = id, group = id, decreasing = TRUE)   # most positive on top
+  # legend reversed (palette + labels) so the most positive value is on top
+  leaflet::addLegend(map, position = "bottomleft",
+    pal = leaflet::colorNumeric(rev(.diverging()), domain = dom, na.color = "transparent"),
+    values = dom, title = id, group = id,
+    labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 }
 
 .basemaps <- c("OpenStreetMap" = "OpenStreetMap",
