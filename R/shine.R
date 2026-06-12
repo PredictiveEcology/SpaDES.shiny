@@ -309,7 +309,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   leaflet::addLegend(map, position = "bottomleft", pal = pal, values = vals,
-                     title = id, group = id, layerId = lgd)
+                     title = id, group = id, layerId = lgd, decreasing = TRUE)
 }
 
 # Stream a difference COG (diverging palette centered at 0) onto a leaflet proxy.
@@ -323,7 +323,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                                         na.color = "transparent"))
   pal <- leaflet::colorNumeric(.diverging(), domain = dom, na.color = "transparent")
   leaflet::addLegend(map, position = "bottomleft", pal = pal, values = dom,
-                     title = id, group = id)
+                     title = id, group = id, decreasing = TRUE)   # most positive on top
 }
 
 .basemaps <- c("OpenStreetMap" = "OpenStreetMap",
