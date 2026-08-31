@@ -48,7 +48,7 @@ jobs:
       # terra needs GDAL/PROJ/GEOS. On the Ubuntu 24.04 (Noble) runner these are
       # preinstalled; install the canonical names directly (immune to PPA outages).
       - if: runner.os != 'Linux'
-        uses: PredictiveEcology/actions/install-spatial-deps@v0.2
+        uses: PredictiveEcology/actions/install-spatial-deps@main
 
       - if: runner.os == 'Linux'
         name: Install spatial deps (Linux, stock Noble)
