@@ -1,5 +1,6 @@
 # SpaDES.shiny (development version)
 
+* `shine()`: `transparent` now defaults to `0`, so "none" (never harvested, never burned) shows the basemap. Use `transparent = NULL` to draw 0 values.
 * `shine()`: the legend of a categorical map shows its category names instead of their numeric codes.
 * `shine()` gains `transparent`, values drawn transparent like NoData (e.g. `0` in a count map), and `exclude`, regular expressions for files not to show.
 * `shine()`: in the two difference tabs, "no change" (0) is transparent instead of white.
