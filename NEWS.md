@@ -1,3 +1,7 @@
+# SpaDES.shiny (development version)
+
+* `shine()`: the legend of a categorical map shows its category names instead of their numeric codes.
+
 # SpaDES.shiny 0.1.0
 
 * Package restarted from scratch (the previous deprecated contents were removed).

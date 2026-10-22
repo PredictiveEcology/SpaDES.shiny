@@ -228,3 +228,17 @@ test_that(".shineMakeCog downsamples when maxCells is set", {
   out <- terra::rast(file.path(.shineCogDir(), info$file))
   expect_lte(max(dim(out)[1:2]), 60L)   # ~50, allowing for aggregation rounding
 })
+
+test_that("a categorical map's legend shows its category names, not codes", {
+  skip_if_not_installed("terra")
+  skip_if_not_installed("leafem")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  o <- .shineById(Filter(function(x) x$kind == "map", .shineScan(d)))[["classMap_areaX"]]
+  expect_equal(o$labels, data.frame(value = 0:3, label = c("a", "b", "c", "d")))
+
+  m <- .shineAddRaster(leaflet::leaflet(), list(range = c(0, 3)), o$id, TRUE, "x.tif", "l1",
+                       replaceLegend = FALSE, labels = o$labels)
+  lgd <- Filter(function(cl) cl$method == "addLegend", m$x$calls)[[1]]$args[[1]]
+  expect_equal(as.character(lgd$labels), c("d", "c", "b", "a"))
+})

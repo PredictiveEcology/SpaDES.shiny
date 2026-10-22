@@ -157,6 +157,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         id = id, kind = "map", band = b,
         categorical = cat_b,
         ordinal = cat_b && .shineIsOrdinal(.shineFactorLabels(r, b)),
+        labels = if (cat_b) .shineFactorTable(r, b),
         folder = folder, times = df
       )
     }
@@ -172,6 +173,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   col <- if (length(ac) == 1L && !is.na(ac)) ac + 1L else 2L   # +1: skip the id column
   if (col > ncol(ct)) col <- ncol(ct)
   as.character(ct[[col]])
+}
+
+# The categories of band `b` of factor SpatRaster `r`: data.frame(value, label).
+.shineFactorTable <- function(r, b) {
+  labs <- .shineFactorLabels(r, b)
+  if (length(labs) == 0L) return(NULL)
+  data.frame(value = terra::cats(r)[[b]][[1]], label = labs)
 }
 
 # An "ordinal" factor is one whose every label is a numeric range, e.g.
@@ -292,7 +300,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # tile has loaded (georaster swaps it in place). `replaceLegend` removes the prior
 # legend first (proxy updates); set FALSE when drawing into a fresh map.
 .shineAddRaster <- function(map, info, id, categorical, url, layerId,
-                            replaceLegend = TRUE, opacity = 1) {
+                            replaceLegend = TRUE, opacity = 1, labels = NULL) {
   rng <- info$range
   if (!all(is.finite(rng))) return(map)
   if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
@@ -303,9 +311,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   if (categorical) {                                           # discrete, highest on top
-    vals <- rev(seq(floor(rng[1]), ceiling(rng[2])))
+    vals <- if (is.null(labels)) seq(floor(rng[1]), ceiling(rng[2])) else  # names, not codes
+      labels$value[labels$value >= rng[1] & labels$value <= rng[2]]
+    vals <- rev(vals)
     pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
-    leaflet::addLegend(map, position = "bottomleft", colors = pal(vals), labels = vals,
+    labs <- if (is.null(labels)) vals else labels$label[match(vals, labels$value)]
+    leaflet::addLegend(map, position = "bottomleft", colors = pal(vals), labels = labs,
                        title = id, group = id, layerId = lgd)
   } else {                                                     # gradient, highest on top
     leaflet::addLegend(map, position = "bottomleft",
@@ -602,7 +613,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
                              animLayerId(o$id, init = TRUE), replaceLegend = FALSE,
-                             opacity = opacity)
+                             opacity = opacity, labels = o$labels)
       }
       m
     })
@@ -616,7 +627,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         if (is.null(o)) next
         info <- .shineCogForObject(o, t, maxCells)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             animLayerId(o$id), replaceLegend = TRUE, opacity = opacity)
+                             animLayerId(o$id), replaceLegend = TRUE, opacity = opacity,
+                             labels = o$labels)
       }
     })
     output$map_fileinfo <- shiny::renderUI({               # source file(s) on display
