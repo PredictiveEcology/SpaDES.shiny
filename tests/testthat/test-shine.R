@@ -265,3 +265,17 @@ test_that("transparent values become NoData in the map's COG", {
   expect_equal(plain$range, c(0, 3))
   expect_equal(clear$range, c(1, 3))
 })
+
+test_that("a single file is static even if its name has digits, so the slider spans real series", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40, crs = "EPSG:3857", vals = 1)
+  terra::writeRaster(r, file.path(d, "SCANFI_2020_v2_647220px.tif"))
+  maps <- .shineById(Filter(function(o) o$kind == "map", .shineScan(d)))
+  o <- maps[["SCANFI_2020_v2_647220px"]]
+  expect_false(is.null(o))
+  expect_true(is.na(o$times$time))
+  times <- unlist(lapply(maps, function(m) m$times$time))
+  expect_equal(range(times, na.rm = TRUE), c(2000, 2020))   # rsf/multi series only
+})
