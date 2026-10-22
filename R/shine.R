@@ -726,8 +726,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
           levels(rLast) <- NULL; levels(rFirst) <- NULL   # terra S4 method, gives codes
         }
         r <- rLast - rFirst
-        info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), ".tif"),
-                              maxCells = maxCells)
+        info <- .shineMakeCog(r, paste0(.san(id), "_diff_", min(tt), "_", max(tt), "_t0.tif"),
+                              maxCells = maxCells, transparent = 0)  # no change: transparent
         m <- .shineAddDiff(m, info, paste0(id, " (last-first)"), cogUrl(info$file), opacity)
         diffDL(list(path = file.path(.shineCogDir(), info$file),
                     name = paste0(.san(id), "_change_", min(tt), "-", max(tt), ".tif")))
@@ -759,7 +759,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = sa$o$band)
         rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
-        info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), ".tif"), maxCells = maxCells)
+        info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), "_t0.tif"), maxCells = maxCells,
+                              transparent = 0)  # no change: transparent
         m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file), opacity)
         custDL(list(path = file.path(.shineCogDir(), info$file),
                     name = paste0(.san(sb$label), "_minus_", .san(sa$label), ".tif")))

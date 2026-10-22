@@ -6,7 +6,7 @@ Description: Tools to build 'shiny' applications for exploring outputs from
     an interactive viewer that recursively discovers raster ('.tif') and image
     ('.png') outputs, groups time-series of the same object, and presents them
     on web maps (with difference layers) and as figures.
-Version: 0.1.0.9001
+Version: 0.1.0.9002
 Date: 2026-06-12
 Authors@R:
     person(given = "Eliot J B",
