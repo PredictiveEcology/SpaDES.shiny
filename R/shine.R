@@ -33,8 +33,8 @@
 #'   but no ghosting between semi-transparent frames).
 #' @param launch If `TRUE` (default), run the app with [shiny::runApp()]. If
 #'   `FALSE`, return the [shiny::shinyApp()] object (useful for testing/embedding).
-#' @param transparent Optional numeric values drawn transparent on the maps, like NoData
-#'   (e.g. `0` for "none" in a count map). Default `NULL` (only NoData is transparent).
+#' @param transparent Numeric values drawn transparent on the maps, like NoData. Default `0`,
+#'   "none" in most SpaDES maps (e.g. never harvested, never burned); `NULL` for NoData only.
 #' @param exclude Optional regular expressions; files whose path matches any of them are
 #'   not shown (e.g. `"_year_.*png$"` to drop per-year map images from the figures).
 #' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
@@ -45,11 +45,12 @@
 #' shine("outputs")        # a path
 #' shine(mySim)            # a simList -> uses outputPath(mySim)
 #' shine()                 # uses getOption("spades.outputPath")
-#' shine("outputs", transparent = 0, exclude = "_year_.*png$")
+#' shine("outputs", exclude = "_year_.*png$")
+#' shine("outputs", transparent = NULL)   # draw 0 values too
 #' }
 #' @export
 shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
-                  opacity = 1, launch = TRUE, transparent = NULL, exclude = NULL, ...) {
+                  opacity = 1, launch = TRUE, transparent = 0, exclude = NULL, ...) {
   for (p in c("shiny", "leaflet", "leafem", "terra")) {
     if (!requireNamespace(p, quietly = TRUE)) {
       stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
