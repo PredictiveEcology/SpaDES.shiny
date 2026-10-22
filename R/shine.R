@@ -710,8 +710,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         leaflet::clearTiles() |> leaflet::addProviderTiles(input$diff_basemap)
     })
     diffDL <- shiny::reactiveVal(NULL)            # list(path, name) of the on-the-fly COG
+    # The map is built in the browser only when its tab is first shown; layers sent before it
+    # reports its zoom are lost, so the tab stayed empty until it was shown a second time.
+    diffReady <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$diff_map_zoom, diffReady(TRUE), once = TRUE)
     shiny::observe({
-      if (!identical(input$tabs, "Change from start to end")) return()  # only when map exists
+      if (!identical(input$tabs, "Change from start to end") || !diffReady()) return()
       sel <- input$diff_objs
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("diff_map")))
       diffDL(NULL)
@@ -745,12 +749,14 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     }
     custDL <- shiny::reactiveVal(NULL)            # list(path, name) of the on-the-fly COG
     output$cust_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
+    custReady <- shiny::reactiveVal(FALSE)        # as diffReady: wait for the map to exist
+    shiny::observeEvent(input$cust_map_zoom, custReady(TRUE), once = TRUE)
     shiny::observeEvent(input$cust_basemap, {
       leaflet::leafletProxy("cust_map") |>
         leaflet::clearTiles() |> leaflet::addProviderTiles(input$cust_basemap)
     })
     shiny::observe({
-      if (!identical(input$tabs, "Custom differences")) return()   # only when map exists
+      if (!identical(input$tabs, "Custom differences") || !custReady()) return()
       a <- input$cust_a; b <- input$cust_b
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("cust_map")))
       sa <- parseSnap(a); sb <- parseSnap(b)
