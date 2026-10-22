@@ -13,9 +13,11 @@
 #' Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
 #' overviews), cached on disk, and served same-origin via [shiny::addResourcePath()].
 #'
-#' Multi-band rasters contribute one object per band. Files whose name contains no
-#' digit run are treated as static (always-shown) layers with no position on the
-#' time slider.
+#' Multi-band rasters contribute one object per band. Digits after "year" (as SpaDES names
+#' saved outputs, e.g. `_year2030`) are always a time. Other digits are a time only when
+#' several files share the rest of the name; a single file such as
+#' `speciesLayers_2020_647220px.tif` is a static (always-shown) layer with no position on the
+#' time slider, as is a name with no digits.
 #'
 #' @param x What to visualize, resolved to a folder to scan recursively:
 #'   a `simList` (its [SpaDES.core::outputPath()] is used), a single path string,
@@ -146,6 +148,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       stringsAsFactors = FALSE
     )
     df <- df[order(df$time, na.last = TRUE), , drop = FALSE]
+    stem1 <- tools::file_path_sans_ext(basename(df$file[1]))
+    if (nrow(df) == 1L && !is.na(df$time) &&       # one file, and its digits do not follow
+        !grepl("(?i)year[ _-]*[0-9]+[^0-9]*$", stem1, perl = TRUE)) {  # "year" as SpaDES names
+      df$time <- NA_real_                          # outputs: a pixel count or version, not a time
+      key <- stem1
+    }
 
     if (kind == "figure") {
       objects[[paste("figure", key, sep = "\r")]] <- list(id = key, kind = "figure",

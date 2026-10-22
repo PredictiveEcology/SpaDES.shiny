@@ -65,9 +65,11 @@ the client at native resolution (fast, no server round-trip per interaction).
 Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
 overviews), cached on disk, and served same-origin via \code{\link[shiny:addResourcePath]{shiny::addResourcePath()}}.
 
-Multi-band rasters contribute one object per band. Files whose name contains no
-digit run are treated as static (always-shown) layers with no position on the
-time slider.
+Multi-band rasters contribute one object per band. Digits after "year" (as SpaDES names
+saved outputs, e.g. \verb{_year2030}) are always a time. Other digits are a time only when
+several files share the rest of the name; a single file such as
+\code{speciesLayers_2020_647220px.tif} is a static (always-shown) layer with no position on the
+time slider, as is a name with no digits.
 }
 \examples{
 \dontrun{
