@@ -311,13 +311,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   if (categorical) {                                           # discrete, highest on top
-    vals <- rev(seq(floor(rng[1]), ceiling(rng[2])))
+    vals <- if (is.null(labels)) seq(floor(rng[1]), ceiling(rng[2])) else  # names, not codes
+      labels$value[labels$value >= rng[1] & labels$value <= rng[2]]
+    vals <- rev(vals)
     pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
-    labs <- vals
-    if (!is.null(labels)) {                                    # category names, not codes
-      vals <- vals[vals %in% labels$value]
-      labs <- labels$label[match(vals, labels$value)]
-    }
+    labs <- if (is.null(labels)) vals else labels$label[match(vals, labels$value)]
     leaflet::addLegend(map, position = "bottomleft", colors = pal(vals), labels = labs,
                        title = id, group = id, layerId = lgd)
   } else {                                                     # gradient, highest on top
