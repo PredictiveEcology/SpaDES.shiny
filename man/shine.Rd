@@ -11,6 +11,8 @@ shine(
   interval = 2,
   opacity = 1,
   launch = TRUE,
+  transparent = NULL,
+  exclude = NULL,
   ...
 )
 }
@@ -36,6 +38,12 @@ but no ghosting between semi-transparent frames).}
 
 \item{launch}{If \code{TRUE} (default), run the app with \code{\link[shiny:runApp]{shiny::runApp()}}. If
 \code{FALSE}, return the \code{\link[shiny:shinyApp]{shiny::shinyApp()}} object (useful for testing/embedding).}
+
+\item{transparent}{Optional numeric values drawn transparent on the maps, like NoData
+(e.g. \code{0} for "none" in a count map). Default \code{NULL} (only NoData is transparent).}
+
+\item{exclude}{Optional regular expressions; files whose path matches any of them are
+not shown (e.g. \code{"_year_.*png$"} to drop per-year map images from the figures).}
 
 \item{...}{Passed to \code{\link[shiny:runApp]{shiny::runApp()}} (e.g. \code{port}, \code{launch.browser}).}
 }
@@ -66,5 +74,6 @@ time slider.
 shine("outputs")        # a path
 shine(mySim)            # a simList -> uses outputPath(mySim)
 shine()                 # uses getOption("spades.outputPath")
+shine("outputs", transparent = 0, exclude = "_year_.*png$")
 }
 }

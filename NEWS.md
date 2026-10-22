@@ -1,6 +1,7 @@
 # SpaDES.shiny (development version)
 
 * `shine()`: the legend of a categorical map shows its category names instead of their numeric codes.
+* `shine()` gains `transparent`, values drawn transparent like NoData (e.g. `0` in a count map), and `exclude`, regular expressions for files not to show.
 
 # SpaDES.shiny 0.1.0
 

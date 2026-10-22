@@ -33,6 +33,10 @@
 #'   but no ghosting between semi-transparent frames).
 #' @param launch If `TRUE` (default), run the app with [shiny::runApp()]. If
 #'   `FALSE`, return the [shiny::shinyApp()] object (useful for testing/embedding).
+#' @param transparent Optional numeric values drawn transparent on the maps, like NoData
+#'   (e.g. `0` for "none" in a count map). Default `NULL` (only NoData is transparent).
+#' @param exclude Optional regular expressions; files whose path matches any of them are
+#'   not shown (e.g. `"_year_.*png$"` to drop per-year map images from the figures).
 #' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
 #'
 #' @return Invisibly, the `shinyApp` object (also when `launch = TRUE`).
@@ -41,10 +45,11 @@
 #' shine("outputs")        # a path
 #' shine(mySim)            # a simList -> uses outputPath(mySim)
 #' shine()                 # uses getOption("spades.outputPath")
+#' shine("outputs", transparent = 0, exclude = "_year_.*png$")
 #' }
 #' @export
 shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
-                  opacity = 1, launch = TRUE, ...) {
+                  opacity = 1, launch = TRUE, transparent = NULL, exclude = NULL, ...) {
   for (p in c("shiny", "leaflet", "leafem", "terra")) {
     if (!requireNamespace(p, quietly = TRUE)) {
       stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
@@ -53,11 +58,12 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   path <- .shineResolvePath(if (missing(x)) NULL else x)
   if (!dir.exists(path)) stop("Folder not found: ", path, call. = FALSE)
 
-  objects <- .shineScan(path, timePattern)
+  objects <- .shineScan(path, timePattern, exclude)
   if (length(objects) == 0L) stop("No .tif or .png files found under: ", path, call. = FALSE)
 
   app <- shiny::shinyApp(ui = .shineUI(objects, interval),
-                         server = .shineServer(objects, path, maxCells, interval, opacity))
+                         server = .shineServer(objects, path, maxCells, interval, opacity,
+                                               transparent))
   if (isTRUE(launch)) shiny::runApp(app, ...)
   invisible(app)
 }
@@ -95,10 +101,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # The list is keyed by "<kind>\r<id>" so a map and a figure that share a name
 # (e.g. foo.tif and foo.png) do not collide; use .shineById() to re-key by id
 # within a single kind.
-.shineScan <- function(path, timePattern = "[0-9]+") {
+.shineScan <- function(path, timePattern = "[0-9]+", exclude = NULL) {
   files <- list.files(path, recursive = TRUE, full.names = TRUE,
                       pattern = "\\.(tif|png)$", ignore.case = TRUE)
   files <- files[!grepl("\\.aux\\.xml$", files, ignore.case = TRUE)]
+  if (length(exclude)) files <- files[!grepl(paste(exclude, collapse = "|"), files)]
   if (length(files) == 0L) return(list())
   root <- normalizePath(path, mustWork = FALSE)
 
@@ -255,9 +262,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
 # Write (once) a web-mercator COG named `key` from SpatRaster `r`; return
 # list(file = key, range = c(lo, hi)). Range via terra::minmax (block-wise).
-.shineMakeCog <- function(r, key, categorical = FALSE, maxCells = NULL) {
+.shineMakeCog <- function(r, key, categorical = FALSE, maxCells = NULL, transparent = NULL) {
   out <- file.path(.shineCogDir(), key)
   if (!file.exists(out)) {
+    if (length(transparent)) r <- terra::classify(r, cbind(transparent, NA))
     if (!is.null(maxCells)) {
       fact <- floor(max(dim(r)[1:2]) / maxCells)
       if (fact > 1L) r <- terra::aggregate(r, fact = fact,
@@ -275,10 +283,11 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 }
 
 # COG for object `o`'s band at time `t` (cache key includes mtime so edits bust it).
-.shineCogForObject <- function(o, t, maxCells = NULL) {
+.shineCogForObject <- function(o, t, maxCells = NULL, transparent = NULL) {
   f <- .shineFileAt(o, t)
-  key <- paste0(.san(f), "_b", o$band, "_", as.integer(file.mtime(f)), ".tif")
-  .shineMakeCog(terra::rast(f, lyrs = o$band), key, o$categorical, maxCells)
+  key <- paste0(.san(f), "_b", o$band, "_", as.integer(file.mtime(f)),
+                if (length(transparent)) paste0("_t", .san(paste(transparent, collapse = "_"))), ".tif")
+  .shineMakeCog(terra::rast(f, lyrs = o$band), key, o$categorical, maxCells, transparent)
 }
 
 # georaster-layer-for-leaflet JS, primed on the UI so leafletProxy addGeotiff()
@@ -526,7 +535,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
 # ---- Server ---------------------------------------------------------------
 
-.shineServer <- function(objects, path, maxCells, interval = 2, opacity = 1) {
+.shineServer <- function(objects, path, maxCells, interval = 2, opacity = 1,
+                         transparent = NULL) {
   mapObjs  <- .shineById(Filter(function(o) o$kind == "map", objects))
   figObjs  <- .shineById(Filter(function(o) o$kind == "figure", objects))
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
@@ -610,7 +620,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       rm(list = ls(buf), envir = buf)                            # reset buffer state
       for (o in mapObjs[sel]) {
         if (is.null(o)) next
-        info <- .shineCogForObject(o, t, maxCells)
+        info <- .shineCogForObject(o, t, maxCells, transparent)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
                              animLayerId(o$id, init = TRUE), replaceLegend = FALSE,
                              opacity = opacity, labels = o$labels)
@@ -625,7 +635,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       m <- leaflet::leafletProxy("map_map")
       for (o in mapObjs[sel]) {
         if (is.null(o)) next
-        info <- .shineCogForObject(o, t, maxCells)
+        info <- .shineCogForObject(o, t, maxCells, transparent)
         m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
                              animLayerId(o$id), replaceLegend = TRUE, opacity = opacity,
                              labels = o$labels)

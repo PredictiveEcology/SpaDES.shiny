@@ -242,3 +242,26 @@ test_that("a categorical map's legend shows its category names, not codes", {
   lgd <- Filter(function(cl) cl$method == "addLegend", m$x$calls)[[1]]$args[[1]]
   expect_equal(as.character(lgd$labels), c("d", "c", "b", "a"))
 })
+
+test_that("exclude drops matching files from the scan", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  ids <- vapply(.shineScan(d, exclude = c("burn_.*png$", "^.*multi_")), `[[`, character(1), "id")
+  expect_false(any(grepl("burn|multi", ids)))
+  expect_true("rsf_areaX" %in% ids)
+})
+
+test_that("transparent values become NoData in the map's COG", {
+  skip_if_not_installed("terra")
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = rep(0:3, 4))
+  o <- list(times = data.frame(time = 1, file = tempfile(fileext = ".tif")), band = 1L,
+            categorical = FALSE)
+  terra::writeRaster(r, o$times$file)
+  plain <- .shineCogForObject(o, 1)
+  clear <- .shineCogForObject(o, 1, transparent = 0)
+  expect_false(identical(plain$file, clear$file))   # cached separately
+  expect_equal(plain$range, c(0, 3))
+  expect_equal(clear$range, c(1, 3))
+})
