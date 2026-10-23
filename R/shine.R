@@ -329,6 +329,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # ---- rendering helpers ----------------------------------------------------
 
 .viridis <- function() grDevices::hcl.colors(64, "viridis")
+.shineOneColour <- function() .viridis()[32]  # a map with a single value, and its legend
 # reversed so the low end (negative) is red and the high end (positive) is blue
 .diverging <- function() rev(grDevices::hcl.colors(64, "Blue-Red 3"))
 
@@ -341,10 +342,16 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   rng <- info$range
   if (!all(is.finite(rng))) return(map)
   if (isTRUE(info$whole) && diff(rng) == 0) categorical <- TRUE  # one value: one legend entry
-  if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
+  palette <- .viridis()
+  if (diff(rng) == 0) {
+    rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
+    ## one value: paint it the legend's colour; placing it in that tiny domain
+    ## gave a different colour in the browser
+    palette <- rep(.shineOneColour(), 2)
+  }
   map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
     opacity = opacity, autozoom = FALSE, imagequery = FALSE,
-    colorOptions = leafem::colorOptions(palette = .viridis(), domain = rng,
+    colorOptions = leafem::colorOptions(palette = palette, domain = rng,
                                         na.color = "transparent"))
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
@@ -353,8 +360,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       labels$value[labels$value >= info$range[1] & labels$value <= info$range[2]]
     vals <- rev(vals)
     pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
+    cols <- if (length(vals) == 1L) .shineOneColour() else pal(vals)
     labs <- if (is.null(labels)) vals else labels$label[match(vals, labels$value)]
-    leaflet::addLegend(map, position = "bottomleft", colors = pal(vals), labels = labs,
+    leaflet::addLegend(map, position = "bottomleft", colors = cols, labels = labs,
                        title = id, group = id, layerId = lgd)
   } else {                                                     # gradient, highest on top
     leaflet::addLegend(map, position = "bottomleft",
