@@ -306,3 +306,15 @@ test_that("a map of whole numbers stays whole, with whole-number legend ticks", 
   f <- terra::setValues(r, seq_len(1600) / 1600)
   expect_false(.shineMakeCog(f, "test_fraction.tif")$whole)
 })
+
+test_that("a single-value map is painted the colour its legend shows", {
+  skip_if_not_installed("leafem")
+  m <- .shineAddRaster(leaflet::leaflet(), list(range = c(1, 1), whole = TRUE), "count", FALSE,
+                       "x.tif", "l1", replaceLegend = FALSE)
+  calls <- m$x$calls
+  lgd <- Filter(function(cl) cl$method == "addLegend", calls)[[1]]$args[[1]]
+  geo <- unlist(Filter(function(cl) cl$method == "addGeotiff", calls)[[1]]$args)
+  mapCols <- unname(unique(toupper(geo[grepl("^#[0-9A-Fa-f]{6}", geo)])))
+  expect_length(mapCols, 1L)
+  expect_identical(mapCols, toupper(substr(as.character(lgd$colors), 1, 7)))
+})
