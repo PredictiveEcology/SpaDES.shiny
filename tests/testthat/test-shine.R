@@ -279,3 +279,30 @@ test_that("a single file is static even if its name has digits, so the slider sp
   times <- unlist(lapply(maps, function(m) m$times$time))
   expect_equal(range(times, na.rm = TRUE), c(2000, 2020))   # rsf/multi series only
 })
+
+test_that("a map of whole numbers stays whole, with whole-number legend ticks", {
+  skip_if_not_installed("terra")
+  skip_if_not_installed("leafem")
+  ## a count (times harvested): bilinear reprojection made values like 3.2
+  r <- terra::rast(nrows = 40, ncols = 40, xmin = 0, xmax = 4000, ymin = 0, ymax = 4000,
+                   crs = "EPSG:3005")
+  r <- terra::setValues(r, rep(0:5, length.out = 1600))
+  info <- .shineMakeCog(r, "test_whole.tif", transparent = 0)
+  expect_true(info$whole)
+  v <- terra::values(terra::rast(file.path(.shineCogDir(), info$file)))[, 1]
+  expect_true(all(v[!is.na(v)] %in% 1:5))
+
+  legendLabels <- function(info) {
+    m <- .shineAddRaster(leaflet::leaflet(), info, "count", FALSE, "x.tif", "l1",
+                         replaceLegend = FALSE)
+    lgd <- Filter(function(cl) cl$method == "addLegend", m$x$calls)[[1]]$args[[1]]
+    as.numeric(gsub("[^0-9.-]", "", lgd$labels))
+  }
+  labs <- legendLabels(list(range = c(1, 5), whole = TRUE))
+  expect_true(all(labs == round(labs)))
+  expect_setequal(labs, 1:5)
+  expect_identical(legendLabels(list(range = c(1, 1), whole = TRUE)), 1)  # one value, one entry
+
+  f <- terra::setValues(r, seq_len(1600) / 1600)
+  expect_false(.shineMakeCog(f, "test_fraction.tif")$whole)
+})

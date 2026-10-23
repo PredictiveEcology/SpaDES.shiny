@@ -267,20 +267,26 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 }
 
 .shineCogRange <- new.env(parent = emptyenv())   # cog basename -> c(lo, hi)
+.shineCogWhole <- new.env(parent = emptyenv())   # cog basename -> only whole numbers?
 .san <- function(x) gsub("[^A-Za-z0-9]+", "_", x)
 
 # Write (once) a web-mercator COG named `key` from SpatRaster `r`; return
-# list(file = key, range = c(lo, hi)). Range via terra::minmax (block-wise).
+# list(file = key, range = c(lo, hi), whole). Range via terra::minmax (block-wise).
+# A map of whole numbers (e.g. counts) is resampled like a categorical one, so it
+# stays whole: bilinear or mean would show 3.2 harvests.
 .shineMakeCog <- function(r, key, categorical = FALSE, maxCells = NULL, transparent = NULL) {
   out <- file.path(.shineCogDir(), key)
+  if (is.null(.shineCogWhole[[key]]))
+    .shineCogWhole[[key]] <- categorical || .shineIsWhole(r)
+  whole <- .shineCogWhole[[key]]
   if (!file.exists(out)) {
     if (length(transparent)) r <- terra::classify(r, cbind(transparent, NA))
     if (!is.null(maxCells)) {
       fact <- floor(max(dim(r)[1:2]) / maxCells)
       if (fact > 1L) r <- terra::aggregate(r, fact = fact,
-                          fun = if (categorical) "modal" else "mean", na.rm = TRUE)
+                          fun = if (whole) "modal" else "mean", na.rm = TRUE)
     }
-    r <- terra::project(r, "EPSG:3857", method = if (categorical) "near" else "bilinear")
+    r <- terra::project(r, "EPSG:3857", method = if (whole) "near" else "bilinear")
     suppressWarnings(
       terra::writeRaster(r, out, filetype = "COG", gdal = c("COMPRESS=DEFLATE"),
                          overwrite = TRUE))
@@ -288,7 +294,20 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   if (is.null(.shineCogRange[[key]])) {
     .shineCogRange[[key]] <- as.vector(terra::minmax(terra::rast(out), compute = TRUE))
   }
-  list(file = key, range = .shineCogRange[[key]])
+  list(file = key, range = .shineCogRange[[key]], whole = whole)
+}
+
+.shineIsWhole <- function(r) {
+  isFrac <- terra::global(r != round(r), "max", na.rm = TRUE)[[1]]
+  isTRUE(isFrac == 0)
+}
+
+# Legend ticks for a gradient: whole numbers only when the map has only whole numbers
+.shineBins <- function(rng, whole) {
+  if (!isTRUE(whole)) return(7)
+  ticks <- unique(round(pretty(rng)))
+  ticks <- ticks[ticks >= floor(rng[1]) & ticks <= ceiling(rng[2])]
+  if (length(ticks) < 2L) c(floor(rng[1]), ceiling(rng[2])) else ticks
 }
 
 # COG for object `o`'s band at time `t` (cache key includes mtime so edits bust it).
@@ -321,6 +340,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
                             replaceLegend = TRUE, opacity = 1, labels = NULL) {
   rng <- info$range
   if (!all(is.finite(rng))) return(map)
+  if (isTRUE(info$whole) && diff(rng) == 0) categorical <- TRUE  # one value: one legend entry
   if (diff(rng) == 0) rng <- rng + c(-1, 1) * (abs(rng[1]) + 1) * 1e-6
   map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
     opacity = opacity, autozoom = FALSE, imagequery = FALSE,
@@ -329,8 +349,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   if (categorical) {                                           # discrete, highest on top
-    vals <- if (is.null(labels)) seq(floor(rng[1]), ceiling(rng[2])) else  # names, not codes
-      labels$value[labels$value >= rng[1] & labels$value <= rng[2]]
+    vals <- if (is.null(labels)) seq(floor(info$range[1]), ceiling(info$range[2])) else  # names, not codes
+      labels$value[labels$value >= info$range[1] & labels$value <= info$range[2]]
     vals <- rev(vals)
     pal <- leaflet::colorFactor(.viridis(), domain = vals, na.color = "transparent")
     labs <- if (is.null(labels)) vals else labels$label[match(vals, labels$value)]
@@ -339,7 +359,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   } else {                                                     # gradient, highest on top
     leaflet::addLegend(map, position = "bottomleft",
       pal = leaflet::colorNumeric(rev(.viridis()), domain = rng, na.color = "transparent"),
-      values = rng, title = id, group = id, layerId = lgd,
+      values = rng, title = id, group = id, layerId = lgd, bins = .shineBins(rng, info$whole),
       labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
   }
 }
@@ -356,7 +376,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   # legend reversed (palette + labels) so the most positive value is on top
   leaflet::addLegend(map, position = "bottomleft",
     pal = leaflet::colorNumeric(rev(.diverging()), domain = dom, na.color = "transparent"),
-    values = dom, title = id, group = id,
+    values = dom, title = id, group = id, bins = .shineBins(dom, info$whole),
     labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 }
 
