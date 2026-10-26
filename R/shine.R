@@ -492,7 +492,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     header = shiny::tags$head(shiny::tags$style(shiny::HTML(paste(
       ".leaflet-container { background: #ddd; }",
       # lift the bottom-left color legend up so the time slider doesn't cover it
-      ".leaflet-bottom.leaflet-left { margin-bottom: 72px; }")))),
+      ".leaflet-bottom.leaflet-left { margin-bottom: 72px; }"))),
+      shiny::tags$script(shiny::HTML(.shineMemoryCheckJs))),
 
     # ---- Maps tab ----
     shiny::tabPanel("Maps",
@@ -570,6 +571,30 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   htmltools::attachDependencies(ui, .shineCogDeps(), append = TRUE)
 }
 
+# The browser reads each map into memory blocks (ArrayBuffers). A browser process that can no
+# longer hand them out (seen in an RStudio Server tab left open for days) leaves every map
+# blank with no message, so the page asks for one block on load and every minute, and says so.
+.shineMemoryMessage <- paste(
+  "This browser tab can't get the memory it needs to draw maps, so maps will stay blank.",
+  "Close every tab of this server (including RStudio) and open it again.")
+
+.shineMemoryCheckJs <- paste0('
+(function () {
+  var msg = "', .shineMemoryMessage, '";
+  function check() {
+    try { new ArrayBuffer(64 * 1024 * 1024); return; } catch (e) {}
+    if (document.getElementById("shine-memory")) return;
+    var d = document.createElement("div");
+    d.id = "shine-memory"; d.textContent = msg;
+    d.style.cssText = "position: fixed; top: 0; left: 0; right: 0; z-index: 10000; padding: 10px;" +
+      "background: #b71c1c; color: #fff; font-weight: bold; text-align: center;";
+    document.body.appendChild(d);
+    if (window.Shiny && Shiny.setInputValue) Shiny.setInputValue("shine_memory", true);
+  }
+  $(document).on("shiny:connected", check);
+  setInterval(check, 60000);
+})();')
+
 # ---- Server ---------------------------------------------------------------
 
 .shineServer <- function(objects, path, maxCells, interval = 2, opacity = 1,
@@ -591,6 +616,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   cogUrl <- function(file) paste0("shinecog/", file)
 
   function(input, output, session) {
+    shiny::observeEvent(input$shine_memory, message(.shineMemoryMessage), once = TRUE)
 
     # --- auto-advancing time sliders (default playing, only when a layer is on) ---
     playing <- list(map = shiny::reactiveVal(TRUE))

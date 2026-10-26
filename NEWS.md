@@ -1,5 +1,6 @@
 # SpaDES.shiny (development version)
 
+* `shine()`: when the browser tab can no longer get the memory it needs to draw maps, the page says so in a red banner, and the R console prints the same message, instead of leaving every map blank. Seen in an RStudio Server tab left open for days; closing every tab of the server and opening it again fixes it.
 * `shine()`: a map with a single value (e.g. the first harvest year, every pixel cut once) is drawn in the colour its legend shows. It was drawn dark purple next to a teal legend entry.
 * `shine()`: maps of whole numbers, such as how many times a pixel was harvested, now show only whole numbers, on the map and in the legend. They were reprojected and shrunk by averaging, which made values such as 3.2, and the legend placed its ticks between whole numbers. A map with a single value gets a single legend entry.
 * `shine()`: a single file whose name has digits but no "year" (e.g. a pixel count) is a static layer, not a time; the time slider spans only real time series.
