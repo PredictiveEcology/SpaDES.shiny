@@ -318,3 +318,22 @@ test_that("a single-value map is painted the colour its legend shows", {
   expect_length(mapCols, 1L)
   expect_identical(mapCols, toupper(substr(as.character(lgd$colors), 1, 7)))
 })
+
+test_that("on RStudio Server, shine() prints the address instead of opening it", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  terra::writeRaster(terra::rast(nrows = 4, ncols = 4, vals = 1:16), file.path(d, "a.tif"))
+  got <- NULL
+  local_mocked_bindings(runApp = function(appDir, ...) got <<- list(...), .package = "shiny")
+
+  local_mocked_bindings(.shineOnRStudioServer = function() TRUE)
+  shine(d, port = 1)
+  expect_identical(got$launch.browser, .shinePrintUrl)
+  expect_identical(got$port, 1)
+  shine(d, launch.browser = FALSE)   # the caller's choice wins
+  expect_false(got$launch.browser)
+
+  local_mocked_bindings(.shineOnRStudioServer = function() FALSE)
+  shine(d)
+  expect_null(got$launch.browser)    # elsewhere, runApp's default
+})

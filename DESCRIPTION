@@ -26,6 +26,7 @@ Imports:
     tools,
     utils
 Suggests:
+    rstudioapi,
     SpaDES.core,
     testthat (>= 3.0.0),
     withr

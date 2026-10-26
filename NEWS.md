@@ -1,5 +1,6 @@
 # SpaDES.shiny (development version)
 
+* `shine()` on RStudio Server prints the app's address, to open in a new browser window, instead of opening it. In a tab that RStudio opened, the maps never drew. Passing `launch.browser` still overrides this.
 * `shine()`: a map with a single value (e.g. the first harvest year, every pixel cut once) is drawn in the colour its legend shows. It was drawn dark purple next to a teal legend entry.
 * `shine()`: maps of whole numbers, such as how many times a pixel was harvested, now show only whole numbers, on the map and in the legend. They were reprojected and shrunk by averaging, which made values such as 3.2, and the legend placed its ticks between whole numbers. A map with a single value gets a single legend entry.
 * `shine()`: a single file whose name has digits but no "year" (e.g. a pixel count) is a static layer, not a time; the time slider spans only real time series.

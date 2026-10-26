@@ -39,7 +39,9 @@
 #'   "none" in most SpaDES maps (e.g. never harvested, never burned); `NULL` for NoData only.
 #' @param exclude Optional regular expressions; files whose path matches any of them are
 #'   not shown (e.g. `"_year_.*png$"` to drop per-year map images from the figures).
-#' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`).
+#' @param ... Passed to [shiny::runApp()] (e.g. `port`, `launch.browser`). On RStudio Server,
+#'   unless `launch.browser` is given, the app's address is printed instead of opened: maps do
+#'   not draw in a tab that RStudio opens, so open it in a new browser window.
 #'
 #' @return Invisibly, the `shinyApp` object (also when `launch = TRUE`).
 #' @examples
@@ -67,8 +69,26 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   app <- shiny::shinyApp(ui = .shineUI(objects, interval),
                          server = .shineServer(objects, path, maxCells, interval, opacity,
                                                transparent))
-  if (isTRUE(launch)) shiny::runApp(app, ...)
+  if (isTRUE(launch)) {
+    args <- list(...)
+    if (is.null(args$launch.browser) && .shineOnRStudioServer())
+      args$launch.browser <- .shinePrintUrl
+    do.call(shiny::runApp, c(list(app), args))
+  }
   invisible(app)
+}
+
+# On RStudio Server, a tab that RStudio opens (Viewer or "Open in Browser") shares the
+# RStudio tab's browser process, and the maps in it never draw. Every address R opens
+# there goes through RStudio, so print it for the user to open in a new window instead.
+.shineOnRStudioServer <- function() {
+  requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable() &&
+    identical(rstudioapi::versionInfo()$mode, "server")
+}
+
+.shinePrintUrl <- function(url) {
+  message("Open this address in a new browser window (on RStudio Server, maps do not draw ",
+          "in a tab that RStudio opens):\n  ", rstudioapi::translateLocalUrl(url, absolute = TRUE))
 }
 
 # Resolve shine()'s first argument to a directory: a simList -> its outputPath(),

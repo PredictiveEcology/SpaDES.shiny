@@ -45,7 +45,9 @@ but no ghosting between semi-transparent frames).}
 \item{exclude}{Optional regular expressions; files whose path matches any of them are
 not shown (e.g. \code{"_year_.*png$"} to drop per-year map images from the figures).}
 
-\item{...}{Passed to \code{\link[shiny:runApp]{shiny::runApp()}} (e.g. \code{port}, \code{launch.browser}).}
+\item{...}{Passed to \code{\link[shiny:runApp]{shiny::runApp()}} (e.g. \code{port}, \code{launch.browser}). On RStudio Server,
+unless \code{launch.browser} is given, the app's address is printed instead of opened: maps do
+not draw in a tab that RStudio opens, so open it in a new browser window.}
 }
 \value{
 Invisibly, the \code{shinyApp} object (also when \code{launch = TRUE}).
