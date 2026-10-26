@@ -318,3 +318,13 @@ test_that("a single-value map is painted the colour its legend shows", {
   expect_length(mapCols, 1L)
   expect_identical(mapCols, toupper(substr(as.character(lgd$colors), 1, 7)))
 })
+
+test_that("the page checks that the browser can still get memory for maps", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  terra::writeRaster(terra::rast(nrows = 4, ncols = 4, vals = 1:16), file.path(d, "a.tif"))
+  page <- htmltools::renderTags(.shineUI(.shineScan(d, "[0-9]+")))
+  html <- paste(page$head, page$html)
+  expect_match(html, "new ArrayBuffer(64 * 1024 * 1024)", fixed = TRUE)
+  expect_match(html, "Close every tab of this server", fixed = TRUE)
+})
