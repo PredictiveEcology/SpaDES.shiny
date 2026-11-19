@@ -397,6 +397,30 @@ test_that("maps not in outputs(sim) get their own Input maps tab", {
   expect_equal(vapply(tabs, `[[`, character(1), "title"), "Maps")
 })
 
+test_that("the Output maps slider plays while Output maps is shown", {
+  ## Both map tabs were set up in a loop and each read its tab title only when its
+  ## slider first tried to step. By then the loop had ended, so both read
+  ## "Input maps" and the Output maps slider never moved.
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  dir.create(file.path(d, "climate"))
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = 1)
+  for (yr in 2011:2012) terra::writeRaster(r, file.path(d, "climate", sprintf("CMD_%d.tif", yr)))
+  outs <- list.files(d, "^(rsf|multi|classMap).*tif$", full.names = TRUE)
+  objects <- .shineScan(d, outputFiles = outs)
+
+  moved <- character(0)
+  local_mocked_bindings(updateSliderInput = function(session, inputId, ...)
+    moved <<- c(moved, inputId), .package = "shiny")
+  shiny::testServer(.shineServer(objects, d, maxCells = NULL), {
+    session$setInputs(tabs = "Output maps", map_objs = "rsf_areaX", inmap_objs = "CMD")
+  })
+  expect_true("map_time" %in% moved)
+  expect_false("inmap_time" %in% moved)
+})
+
 test_that("rasters are drawn without map handlers that would keep every frame in memory", {
   ## leafem::addGeotiff() adds click + mousemove handlers holding the raster on every call
   m <- .shineAddRaster(leaflet::leaflet(), list(range = c(0, 1), whole = FALSE), "x", FALSE,

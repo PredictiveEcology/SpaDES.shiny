@@ -765,6 +765,7 @@ LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, 
     # Adding/removing layers or changing basemap rebuilds the map (the reliable
     # way to drop a georaster layer), preserving the current view.
     mapTabServer <- function(tab, title, objs) {
+      force(title)  # read later by the advancer, after the loop below has moved on
       times <- .shineTimes(objs)
       advancer(tab, times, paste0(tab, "_objs"), title)
       mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
