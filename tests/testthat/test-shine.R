@@ -183,17 +183,25 @@ test_that(".shineScan flags an ordinal factor map (binned raster)", {
   expect_false(terra::is.factor(d2)[1])
 })
 
-test_that(".shineSnapshots enumerates (object @ time) snapshots for custom diffs", {
+test_that("custom differences pick a map, then one of its years", {
   skip_if_not_installed("terra")
   d <- withr::local_tempdir()
   make_outputs(d)
   contMaps <- Filter(function(o) o$kind == "map" && !o$categorical, .shineScan(d))
-  snaps <- .shineSnapshots(contMaps)
-  expect_equal(length(snaps), 7L)            # rsf(3) + multi bandA(2) + bandB(2)
-  s <- snaps[[1]]
-  expect_true(all(c("o", "t", "label") %in% names(s)))
+  cm <- .shineCustMaps(.shineById(contMaps))
+  expect_setequal(names(cm), c("rsf_areaX", "multi_areaX: bandA", "multi_areaX: bandB"))
+  expect_equal(.shineYears(cm[["rsf_areaX"]]), c(2000, 2010, 2020))
+  s <- .shineSnapAt(cm, "rsf_areaX", "2010")
+  expect_equal(s$label, "rsf_areaX @ 2010")
   expect_true(file.exists(.shineFileAt(s$o, s$t)))
-  expect_match(s$label, " @ ")
+  expect_null(.shineSnapAt(cm, "multi_areaX: bandA", "2020"))  # not one of its years
+  expect_null(.shineSnapAt(cm, NULL, "2010"))
+
+  ## two dropdowns each for A and B, not a radio button per (map, year)
+  html <- as.character(htmltools::renderTags(.shineUI(.shineScan(d)))$html)
+  for (id in c("cust_a_map", "cust_a_year", "cust_b_map", "cust_b_year"))
+    expect_match(html, paste0('id="', id, '"'), fixed = TRUE)
+  expect_false(grepl('name="cust_a"', html, fixed = TRUE))
 })
 
 test_that(".shineResolvePath dispatches on path string, NULL and bad input", {
@@ -348,8 +356,7 @@ test_that("the year is found among other digits in a name (hashes, months, versi
   for (o in maps) expect_equal(o$times$time, 2000:2002)
   expect_equal(figs[["IgnitionProbability"]]$times$time, 2000:2002)
   ## the custom-differences choices are labelled with the year
-  labs <- vapply(.shineSnapshots(maps["1838902"]), `[[`, character(1), "label")
-  expect_equal(labs, paste0("1838902 @ ", 2000:2002))
+  expect_equal(.shineSnapAt(.shineCustMaps(maps), "1838902", 2001)$label, "1838902 @ 2001")
 })
 
 test_that("layers of one file whose names differ by a year are one series", {

@@ -297,17 +297,17 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   ok[which.min(abs(tt[ok] - t))]
 }
 
-# Flat list of (object @ time) snapshots for the custom-differences pickers. Each
-# element is list(o, t, label). UI and server build this identically (same object
-# order), so a snapshot's 1-based index is a stable, HTML-safe radio-button value.
-.shineSnapshots <- function(contMaps) {
-  snaps <- list()
-  for (o in contMaps) {
-    for (t in sort(o$times$time[!is.na(o$times$time)])) {
-      snaps[[length(snaps) + 1L]] <- list(o = o, t = t, label = paste0(o$id, " @ ", t))
-    }
-  }
-  snaps
+# Custom differences: maps the A and B pickers offer (continuous, with a time), the
+# years each offers, and the snapshot a (map, year) pick names: list(o, t, label), or
+# NULL when the year is not one of that map's (e.g. mid-way through switching maps).
+.shineCustMaps <- function(contMaps) Filter(function(o) any(!is.na(o$times$time)), contMaps)
+.shineYears <- function(o) sort(o$times$time[!is.na(o$times$time)])
+.shineSnapAt <- function(custMaps, id, year) {
+  if (length(id) != 1L || !id %in% names(custMaps)) return(NULL)
+  o <- custMaps[[id]]
+  t <- suppressWarnings(as.numeric(year))
+  if (length(t) != 1L || !t %in% .shineYears(o)) return(NULL)
+  list(o = o, t = t, label = paste0(o$id, " @ ", t))
 }
 
 # ---- COG cache (served same-origin for addGeotiff) ------------------------
@@ -513,10 +513,15 @@ LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, 
   diffMaps <- Filter(function(o) (!o$categorical || isTRUE(o$ordinal)) &&
                        sum(!is.na(o$times$time)) >= 2L, mapObjs)
 
-  # (object @ year) snapshot choices for custom differences; value = snapshot index
-  snaps <- .shineSnapshots(contMaps)
-  snapChoices <- as.character(seq_along(snaps))
-  names(snapChoices) <- vapply(snaps, `[[`, character(1), "label")
+  # custom differences: a map and a year for each of A and B; B starts one year after A
+  custMaps <- .shineCustMaps(contMaps)
+  custPick <- function(ab, yearIdx) {
+    yrs <- if (length(custMaps)) .shineYears(custMaps[[1]]) else numeric(0)
+    shiny::tagList(
+      shiny::selectInput(paste0("cust_", ab, "_map"), toupper(ab), names(custMaps)),
+      shiny::selectInput(paste0("cust_", ab, "_year"), NULL, yrs,
+                         selected = if (length(yrs)) yrs[min(yearIdx, length(yrs))]))
+  }
 
   timeSliderUI <- function(id, times) {
     if (length(times) < 2L) return(NULL)
@@ -648,12 +653,7 @@ LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, 
           shiny::selectInput("cust_basemap", "Basemap", choices = .basemaps),
           shiny::tags$hr(),
           shiny::helpText("Pick one A and one B -> B - A"),
-          shiny::fluidRow(
-            shiny::column(6, shiny::radioButtons("cust_a", "A", choices = snapChoices,
-              selected = if (length(snapChoices) >= 1) snapChoices[[1]] else character(0))),
-            shiny::column(6, shiny::radioButtons("cust_b", "B", choices = snapChoices,
-              selected = if (length(snapChoices) >= 2) snapChoices[[2]] else character(0)))
-          ),
+          custPick("a", 1L), custPick("b", 2L),
           shiny::tags$hr(),
           shiny::downloadButton("cust_dl", "Download GeoTIFF")
         ))
@@ -938,13 +938,16 @@ LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, 
     output$diff_dl <- .shineDownload(diffDL)
 
     # --- Custom differences (B - A) ---
-    snaps <- .shineSnapshots(contMaps)            # same order/indices as the UI radios
-    parseSnap <- function(val) {
-      if (length(val) != 1L) return(NULL)
-      i <- suppressWarnings(as.integer(val))
-      if (is.na(i) || i < 1L || i > length(snaps)) return(NULL)
-      snaps[[i]]
-    }
+    custMaps <- .shineCustMaps(contMaps)
+    for (ab in c("a", "b")) local({                 # a new map offers its own years
+      yearId <- paste0("cust_", ab, "_year")
+      shiny::observeEvent(input[[paste0("cust_", ab, "_map")]], {
+        yrs <- .shineYears(custMaps[[input[[paste0("cust_", ab, "_map")]]]])
+        cur <- shiny::isolate(input[[yearId]])
+        shiny::updateSelectInput(session, yearId, choices = yrs,
+                                 selected = if (!is.null(cur) && cur %in% yrs) cur else yrs[1])
+      }, ignoreInit = TRUE)
+    })
     custDL <- shiny::reactiveVal(NULL)            # list(path, name) of the on-the-fly COG
     output$cust_map <- leaflet::renderLeaflet(.shineBaseMap(bounds))
     custReady <- shiny::reactiveVal(FALSE)        # as diffReady: wait for the map to exist
@@ -955,15 +958,15 @@ LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, 
     })
     shiny::observe({
       if (!identical(input$tabs, "Custom differences") || !custReady()) return()
-      a <- input$cust_a; b <- input$cust_b
+      sa <- .shineSnapAt(custMaps, input$cust_a_map, input$cust_a_year)
+      sb <- .shineSnapAt(custMaps, input$cust_b_map, input$cust_b_year)
       m <- leaflet::clearControls(leaflet::clearImages(leaflet::leafletProxy("cust_map")))
-      sa <- parseSnap(a); sb <- parseSnap(b)
       custDL(NULL)
       if (!is.null(sa) && !is.null(sb)) {
         ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = .shineBandAt(sa$o, sa$t))
         rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = .shineBandAt(sb$o, sb$t))
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
-        info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), "_t0.tif"), maxCells = maxCells,
+        info <- .shineMakeCog(rb - ra, paste0(.san(sa$label), "__", .san(sb$label), "_t0.tif"), maxCells = maxCells,
                               transparent = 0)  # no change: transparent
         m <- .shineAddDiff(m, info, "B - A", cogUrl(info$file), opacity)
         custDL(list(path = file.path(.shineCogDir(), info$file),
