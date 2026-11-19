@@ -313,7 +313,7 @@ test_that("a single-value map is painted the colour its legend shows", {
                        "x.tif", "l1", replaceLegend = FALSE)
   calls <- m$x$calls
   lgd <- Filter(function(cl) cl$method == "addLegend", calls)[[1]]$args[[1]]
-  geo <- unlist(Filter(function(cl) cl$method == "addGeotiff", calls)[[1]]$args)
+  geo <- unlist(Filter(function(cl) cl$method == "shineAddGeotiff", calls)[[1]]$args)
   mapCols <- unname(unique(toupper(geo[grepl("^#[0-9A-Fa-f]{6}", geo)])))
   expect_length(mapCols, 1L)
   expect_identical(mapCols, toupper(substr(as.character(lgd$colors), 1, 7)))
@@ -326,5 +326,83 @@ test_that("the page checks that the browser can still get memory for maps", {
   page <- htmltools::renderTags(.shineUI(.shineScan(d, "[0-9]+")))
   html <- paste(page$head, page$html)
   expect_match(html, "new ArrayBuffer(64 * 1024 * 1024)", fixed = TRUE)
-  expect_match(html, "Close every tab of this server", fixed = TRUE)
+  expect_match(html, "Reload this page.", fixed = TRUE)
+})
+
+test_that("the year is found among other digits in a name (hashes, months, versions)", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = 1)
+  for (yr in 2000:2002) {
+    terra::writeRaster(r, file.path(d, sprintf("year%d__1838902.tif", yr)))      # hash after year
+    terra::writeRaster(r, file.path(d, sprintf("Tmax04_future_%d_t_25-26.tif", yr)))
+    terra::writeRaster(r, file.path(d, sprintf("speciesLayers_%d_054bb70ccd4f20e0.tif", yr)))
+    writeLines("x", file.path(d, sprintf("IgnitionProbability_yr%d.png", yr)))
+  }
+  objs <- .shineScan(d)
+  maps <- .shineById(Filter(function(o) o$kind == "map", objs))
+  figs <- .shineById(Filter(function(o) o$kind == "figure", objs))
+  expect_setequal(names(maps), c("1838902", "Tmax04_future_t_25-26",
+                                 "speciesLayers_054bb70ccd4f20e0"))
+  for (o in maps) expect_equal(o$times$time, 2000:2002)
+  expect_equal(figs[["IgnitionProbability"]]$times$time, 2000:2002)
+  ## the custom-differences choices are labelled with the year
+  labs <- vapply(.shineSnapshots(maps["1838902"]), `[[`, character(1), "label")
+  expect_equal(labs, paste0("1838902 @ ", 2000:2002))
+})
+
+test_that("layers of one file whose names differ by a year are one series", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  r <- terra::rast(nrows = 4, ncols = 4, nlyrs = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = rep(1:4, each = 16))
+  names(r) <- c("Tmax_sm_future_2013", "Tmax_sm_future_2011", "Tmax_sm_future_2012", "elev")
+  terra::writeRaster(r, file.path(d, "Tmaxsm_projected_774928pix.tif"))
+  maps <- .shineById(Filter(function(o) o$kind == "map", .shineScan(d)))
+  expect_setequal(names(maps), c("Tmaxsm_projected_774928pix: Tmax_sm_future",
+                                 "Tmaxsm_projected_774928pix: elev"))
+  o <- maps[["Tmaxsm_projected_774928pix: Tmax_sm_future"]]
+  expect_equal(o$times$time, 2011:2013)
+  expect_equal(.shineBandAt(o, 2011), 2L)
+  expect_equal(.shineBandAt(o, 2013), 1L)
+  expect_equal(.shineBandAt(maps[["Tmaxsm_projected_774928pix: elev"]], NA), 4L)
+  info <- .shineCogForObject(o, 2012)
+  expect_equal(info$range, c(3, 3))
+})
+
+test_that("maps not in outputs(sim) get their own Input maps tab", {
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  dir.create(file.path(d, "climate"))
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = 1)
+  for (yr in 2011:2012) terra::writeRaster(r, file.path(d, "climate", sprintf("CMD_%d.tif", yr)))
+  outs <- list.files(d, "^(rsf|multi|classMap).*tif$", full.names = TRUE)
+
+  maps <- .shineById(Filter(function(o) o$kind == "map", .shineScan(d, outputFiles = outs)))
+  expect_true(maps[["CMD"]]$input)
+  expect_false(maps[["rsf_areaX"]]$input)
+  tabs <- .shineMapTabs(maps)
+  expect_equal(vapply(tabs, `[[`, character(1), "title"), c("Output maps", "Input maps"))
+  expect_equal(names(tabs[[2]]$objs), "CMD")
+
+  html <- as.character(htmltools::renderTags(.shineUI(.shineScan(d, outputFiles = outs)))$html)
+  expect_match(html, "Input maps", fixed = TRUE)
+  expect_match(html, "inmap_objs", fixed = TRUE)
+
+  ## without outputs(sim) there is one Maps tab, as before
+  tabs <- .shineMapTabs(.shineById(Filter(function(o) o$kind == "map", .shineScan(d))))
+  expect_equal(vapply(tabs, `[[`, character(1), "title"), "Maps")
+})
+
+test_that("rasters are drawn without map handlers that would keep every frame in memory", {
+  ## leafem::addGeotiff() adds click + mousemove handlers holding the raster on every call
+  m <- .shineAddRaster(leaflet::leaflet(), list(range = c(0, 1), whole = FALSE), "x", FALSE,
+                       "x.tif", "l1", replaceLegend = FALSE)
+  methods <- vapply(m$x$calls, `[[`, character(1), "method")
+  expect_true("shineAddGeotiff" %in% methods)
+  expect_false("addGeotiff" %in% methods)
+  expect_false(grepl("map.on(", .shineGeotiffJs, fixed = TRUE))
 })

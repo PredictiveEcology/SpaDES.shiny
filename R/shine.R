@@ -7,17 +7,23 @@
 #' Two further tabs show precomputed (`last - first`) and user-defined differences
 #' between map snapshots.
 #'
-#' Rasters are rendered with [leafem::addGeotiff()], which draws them through the
+#' Rasters are rendered as leafem's [leafem::addGeotiff()] does, through the
 #' tiled `georaster-layer-for-leaflet` canvas layer: pan/zoom redraw per-tile on
 #' the client at native resolution (fast, no server round-trip per interaction).
 #' Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
 #' overviews), cached on disk, and served same-origin via [shiny::addResourcePath()].
 #'
-#' Multi-band rasters contribute one object per band. Digits after "year" (as SpaDES names
-#' saved outputs, e.g. `_year2030`) are always a time. Other digits are a time only when
-#' several files share the rest of the name; a single file such as
-#' `speciesLayers_2020_647220px.tif` is a static (always-shown) layer with no position on the
-#' time slider, as is a name with no digits.
+#' Multi-band rasters contribute one object per band, except that layers whose names differ
+#' only by a year (e.g. `Tmax_sm_future_2011` ... `Tmax_sm_future_2100`) are one time series.
+#' Digits after "year" or "yr" (as SpaDES names saved outputs, e.g. `_year2030`) are always a
+#' time. Otherwise the time is the run of digits that, once removed, leaves a name shared by
+#' the most files (so `Tmax04_future_2031_t_25-26.tif` is 2031, not 04 or 26). A file whose
+#' name no other file shares, such as `speciesLayers_2020_647220px.tif`, is a static
+#' (always-shown) layer with no position on the time slider, as is a name with no digits.
+#'
+#' When `x` is a `simList`, maps listed in `outputs(x)` are shown in an "Output maps" tab and
+#' all other maps (e.g. climate or species layers a module prepared) in an "Input maps" tab,
+#' each with its own time slider.
 #'
 #' @param x What to visualize, resolved to a folder to scan recursively:
 #'   a `simList` (its [SpaDES.core::outputPath()] is used), a single path string,
@@ -58,10 +64,13 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       stop("Package '", p, "' is required by shine(). Please install it.", call. = FALSE)
     }
   }
-  path <- .shineResolvePath(if (missing(x)) NULL else x)
+  if (missing(x)) x <- NULL
+  path <- .shineResolvePath(x)
   if (!dir.exists(path)) stop("Folder not found: ", path, call. = FALSE)
 
-  objects <- .shineScan(path, timePattern, exclude)
+  # with a simList, maps not in outputs(sim) go to an "Input maps" tab
+  outputFiles <- if (inherits(x, "simList")) SpaDES.core::outputs(x)$file
+  objects <- .shineScan(path, timePattern, exclude, outputFiles)
   if (length(objects) == 0L) stop("No .tif or .png files found under: ", path, call. = FALSE)
 
   app <- shiny::shinyApp(ui = .shineUI(objects, interval),
@@ -100,39 +109,29 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 #   categorical logical, TRUE for factor rasters (maps only)
 #   folder      relative subfolder under `path` ("" if in the root)
 #   times       data.frame(time = numeric, file = character), sorted by time;
-#               a single row with time = NA means a static layer
+#               a single row with time = NA means a static layer. A series of layers
+#               in one file also has `band`, the layer to read at each time.
+#   input       maps only: TRUE when `outputFiles` is given and none of the object's
+#               files is in it (e.g. climate or species layers a module prepared)
 # The list is keyed by "<kind>\r<id>" so a map and a figure that share a name
 # (e.g. foo.tif and foo.png) do not collide; use .shineById() to re-key by id
 # within a single kind.
-.shineScan <- function(path, timePattern = "[0-9]+", exclude = NULL) {
+.shineScan <- function(path, timePattern = "[0-9]+", exclude = NULL, outputFiles = NULL) {
   files <- list.files(path, recursive = TRUE, full.names = TRUE,
                       pattern = "\\.(tif|png)$", ignore.case = TRUE)
   files <- files[!grepl("\\.aux\\.xml$", files, ignore.case = TRUE)]
   if (length(exclude)) files <- files[!grepl(paste(exclude, collapse = "|"), files)]
   if (length(files) == 0L) return(list())
   root <- normalizePath(path, mustWork = FALSE)
+  if (length(outputFiles)) outputFiles <- normalizePath(outputFiles, mustWork = FALSE)
 
-  # Parse each file into (key, time, kind, folder)
-  parsed <- lapply(files, function(f) {
-    stem <- tools::file_path_sans_ext(basename(f))
-    m <- gregexpr(timePattern, stem)[[1]]
-    if (m[1] == -1L) {
-      key <- stem
-      time <- NA_real_
-    } else {
-      i <- length(m)                       # last match = the timestamp
-      start <- m[i]; len <- attr(m, "match.length")[i]
-      time <- as.numeric(substr(stem, start, start + len - 1L))
-      key <- paste0(substr(stem, 1L, start - 1L),
-                    substr(stem, start + len, nchar(stem)))
-      key <- sub("(?i)[ _-]*year[ _-]*$", "", key, perl = TRUE)  # drop trailing "year"
-      key <- gsub("(^[ _-]+)|([ _-]+$)", "", key)                # trim separators
-    }
-    kind <- if (grepl("\\.tif$", f, ignore.case = TRUE)) "map" else "figure"
+  kinds <- ifelse(grepl("\\.tif$", files, ignore.case = TRUE), "map", "figure")
+  tk <- .shineTimeKeys(tools::file_path_sans_ext(basename(files)), kinds, timePattern)
+  parsed <- Map(function(f, kind, key, time) {
     reldir <- sub(root, "", normalizePath(dirname(f), mustWork = FALSE), fixed = TRUE)
     folder <- gsub("\\\\", "/", sub("^[/\\\\]+", "", reldir))    # "" if file is in root
     list(key = key, time = time, file = f, kind = kind, folder = folder)
-  })
+  }, files, kinds, tk$key, tk$time, USE.NAMES = FALSE)
 
   # Group by (kind, key); one band per map object is expanded below
   groupKey <- vapply(parsed, function(p) paste(p$kind, p$key, sep = "\r"), character(1))
@@ -148,12 +147,6 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       stringsAsFactors = FALSE
     )
     df <- df[order(df$time, na.last = TRUE), , drop = FALSE]
-    stem1 <- tools::file_path_sans_ext(basename(df$file[1]))
-    if (nrow(df) == 1L && !is.na(df$time) &&       # one file, and its digits do not follow
-        !grepl("(?i)year[ _-]*[0-9]+[^0-9]*$", stem1, perl = TRUE)) {  # "year" as SpaDES names
-      df$time <- NA_real_                          # outputs: a pixel count or version, not a time
-      key <- stem1
-    }
 
     if (kind == "figure") {
       objects[[paste("figure", key, sep = "\r")]] <- list(id = key, kind = "figure",
@@ -163,22 +156,73 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
     # map: inspect the first raster for band count / band names / factor-ness
     r <- terra::rast(df$file[1])
+    isInput <- length(outputFiles) > 0L &&
+      !any(normalizePath(df$file, mustWork = FALSE) %in% outputFiles)
     nb <- terra::nlyr(r)
     bnames <- names(r)
     isFac <- terra::is.factor(r)
+    # In a single file, layers whose names differ by a time (e.g. Tmax_sm_future_2011 ...
+    # Tmax_sm_future_2100) are one series, stepping through the layers.
+    bk <- if (nb > 1L && nrow(df) == 1L) .shineTimeKeys(bnames, timePattern = timePattern)
+          else list(key = bnames, time = rep(NA_real_, nb))
     for (b in seq_len(nb)) {
-      id <- if (nb > 1L) paste0(key, ": ", bnames[b]) else key
+      bSeries <- !is.na(bk$time[b])
+      if (bSeries && b != match(bk$key[b], bk$key)) next   # added with its series' 1st layer
+      id <- if (nb > 1L) paste0(key, ": ", bk$key[b]) else key
       cat_b <- isTRUE(isFac[b])
+      times <- df
+      if (bSeries) {
+        bs <- which(bk$key == bk$key[b])
+        times <- data.frame(time = bk$time[bs], file = df$file[1], band = bs)
+        times <- times[order(times$time), , drop = FALSE]
+      }
       objects[[paste("map", id, sep = "\r")]] <- list(
         id = id, kind = "map", band = b,
         categorical = cat_b,
         ordinal = cat_b && .shineIsOrdinal(.shineFactorLabels(r, b)),
         labels = if (cat_b) .shineFactorTable(r, b),
-        folder = folder, times = df
+        folder = folder, times = times, input = isInput
       )
     }
   }
   objects
+}
+
+# Split each name into a series key and a time. Each run of digits is a candidate time.
+# Digits after "year" or "yr" (as SpaDES names saved outputs) are the time. Otherwise the
+# time is the run whose removal leaves a key shared by the most names of the same group
+# (ties: the last run): in Tmax04_future_2031_t_25-26 that is 2031, in
+# speciesLayers_1985_054bb70ccd4f20e0 it is 1985. A name whose key no other name shares has
+# no time (key = the whole name, time = NA): a pixel count or a version, not a time.
+.shineTimeKeys <- function(stems, groups = "", timePattern = "[0-9]+") {
+  groups <- rep_len(groups, length(stems))
+  yrRe <- "(?i)(year|yr)[ _-]*$"
+  cands <- lapply(stems, function(stem) {
+    m <- gregexpr(timePattern, stem)[[1]]
+    if (m[1] == -1L) return(NULL)
+    lapply(seq_along(m), function(i) {
+      start <- m[i]; len <- attr(m, "match.length")[i]
+      left <- substr(stem, 1L, start - 1L)
+      isYear <- grepl(yrRe, left, perl = TRUE)
+      left <- sub("[ _-]+$", "", sub(yrRe, "", left, perl = TRUE))
+      right <- sub("^[ _-]+", "", substr(stem, start + len, nchar(stem)))
+      list(key = paste(c(left[nzchar(left)], right[nzchar(right)]), collapse = "_"),
+           time = as.numeric(substr(stem, start, start + len - 1L)), isYear = isYear)
+    })
+  })
+  ck <- function(cc, g) paste(g, vapply(cc, `[[`, character(1), "key"), sep = "\r")
+  nShared <- table(unlist(Map(function(cc, g) if (length(cc)) unique(ck(cc, g)), cands, groups)))
+  key <- stems
+  time <- rep(NA_real_, length(stems))
+  for (j in seq_along(stems)) {
+    cc <- cands[[j]]
+    if (!length(cc)) next
+    yr <- which(vapply(cc, `[[`, logical(1), "isYear"))
+    n <- as.integer(nShared[ck(cc, groups[j])])
+    i <- if (length(yr)) yr[length(yr)] else if (max(n) > 1L) max(which(n == max(n)))
+    if (length(i)) { key[j] <- cc[[i]]$key; time[j] <- cc[[i]]$time }
+  }
+  list(key = key, time = time)
 }
 
 # The category labels of band `b` of factor SpatRaster `r` (the active label col).
@@ -238,11 +282,19 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 
 # The single file for object `o` at (nearest to) time `t`. Static layers
 # (only NA time) always return their single file.
-.shineFileAt <- function(o, t) {
-  df <- o$times
-  if (all(is.na(df$time))) return(df$file[1])
-  ok <- df[!is.na(df$time), , drop = FALSE]
-  ok$file[which.min(abs(ok$time - t))]
+.shineFileAt <- function(o, t) o$times$file[.shineRowAt(o, t)]
+
+# The band of object `o` to read at time `t`: a series of layers in one file has a band
+# per time; otherwise it is the object's band.
+.shineBandAt <- function(o, t) {
+  if (is.null(o$times$band)) o$band else o$times$band[.shineRowAt(o, t)]
+}
+
+.shineRowAt <- function(o, t) {
+  tt <- o$times$time
+  if (all(is.na(tt))) return(1L)
+  ok <- which(!is.na(tt))
+  ok[which.min(abs(tt[ok] - t))]
 }
 
 # Flat list of (object @ time) snapshots for the custom-differences pickers. Each
@@ -313,9 +365,10 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
 # COG for object `o`'s band at time `t` (cache key includes mtime so edits bust it).
 .shineCogForObject <- function(o, t, maxCells = NULL, transparent = NULL) {
   f <- .shineFileAt(o, t)
-  key <- paste0(.san(f), "_b", o$band, "_", as.integer(file.mtime(f)),
+  b <- .shineBandAt(o, t)
+  key <- paste0(.san(f), "_b", b, "_", as.integer(file.mtime(f)),
                 if (length(transparent)) paste0("_t", .san(paste(transparent, collapse = "_"))), ".tif")
-  .shineMakeCog(terra::rast(f, lyrs = o$band), key, o$categorical, maxCells, transparent)
+  .shineMakeCog(terra::rast(f, lyrs = b), key, o$categorical, maxCells, transparent)
 }
 
 # georaster-layer-for-leaflet JS, primed on the UI so leafletProxy addGeotiff()
@@ -349,10 +402,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     ## gave a different colour in the browser
     palette <- rep(.shineOneColour(), 2)
   }
-  map <- leafem::addGeotiff(map, url = url, group = layerId, layerId = layerId,
-    opacity = opacity, autozoom = FALSE, imagequery = FALSE,
-    colorOptions = leafem::colorOptions(palette = palette, domain = rng,
-                                        na.color = "transparent"))
+  map <- .shineGeotiff(map, url, layerId, layerId, opacity, palette, rng)
   lgd <- paste0("lgd_", .san(id))
   if (replaceLegend) map <- leaflet::removeControl(map, lgd)   # one legend per object
   if (categorical) {                                           # discrete, highest on top
@@ -372,15 +422,43 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   }
 }
 
+# Draw the COG at `url` as layer `layerId`, replacing any layer with that id. This is what
+# leafem::addGeotiff() does in the browser, without the click and mousemove handlers it adds
+# on every call and never removes: each held the whole decoded raster, so a playing time
+# slider kept every map it showed and the tab ran out of memory after a few hours
+# (leafem 0.2.5, georaster-binding.js; fix proposed in r-spatial/leafem#111). shine() never
+# used those handlers (imagequery = FALSE).
+.shineGeotiff <- function(map, url, layerId, group, opacity, palette, domain) {
+  leaflet::invokeMethod(map, leaflet::getMapData(map), "shineAddGeotiff", url, group,
+                        layerId, opacity, list(palette = palette, domain = domain))
+}
+
+.shineGeotiffJs <- '
+LeafletWidget.methods.shineAddGeotiff = function (url, group, layerId, opacity, colorOptions) {
+  var map = this;
+  fetch(url)
+    .then(function (response) { return response.arrayBuffer(); })
+    .then(parseGeoraster)
+    .then(function (georaster) {
+      var scale = chroma.scale(colorOptions.palette).domain(colorOptions.domain);
+      var layer = new GeoRasterLayer({
+        georaster: georaster, resolution: 96, opacity: opacity, pane: "tilePane",
+        pixelValuesToColorFn: function (values) {
+          var v = values[0];
+          if (isNaN(v) || v === georaster.noDataValue) return "transparent";
+          return scale(v).hex();
+        }
+      });
+      map.layerManager.addLayer(layer, "image", layerId, group);
+    });
+};'
+
 # Stream a difference COG (diverging palette centered at 0) onto a leaflet proxy.
 .shineAddDiff <- function(map, info, id, url, opacity = 1) {
   rng <- info$range
   lim <- max(abs(rng)); if (!is.finite(lim) || lim == 0) lim <- 1
   dom <- c(-lim, lim)
-  map <- leafem::addGeotiff(map, url = url, group = id, layerId = .san(id),
-    opacity = opacity, autozoom = FALSE, imagequery = FALSE,
-    colorOptions = leafem::colorOptions(palette = .diverging(), domain = dom,
-                                        na.color = "transparent"))
+  map <- .shineGeotiff(map, url, .san(id), id, opacity, .diverging(), dom)
   # legend reversed (palette + labels) so the most positive value is on top
   leaflet::addLegend(map, position = "bottomleft",
     pal = leaflet::colorNumeric(rev(.diverging()), domain = dom, na.color = "transparent"),
@@ -415,6 +493,16 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   leaflet::fitBounds(m, bounds[1] + dx, bounds[2] + dy, bounds[3] - dx, bounds[4] - dy)
 }
 
+# The map tabs: list(tab = input-id prefix, title, objs). Maps that are inputs (not listed in
+# outputs(sim)) get their own tab; with no inputs flagged there is a single "Maps" tab.
+.shineMapTabs <- function(mapObjs) {
+  isIn <- vapply(mapObjs, function(o) isTRUE(o$input), logical(1))
+  if (!any(isIn)) return(list(list(tab = "map", title = "Maps", objs = mapObjs)))
+  Filter(function(x) length(x$objs) > 0L, list(
+    list(tab = "map", title = "Output maps", objs = mapObjs[!isIn]),
+    list(tab = "inmap", title = "Input maps", objs = mapObjs[isIn])))
+}
+
 # ---- UI -------------------------------------------------------------------
 
 .shineUI <- function(objects, interval = 2) {
@@ -424,8 +512,6 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   # last - first works for continuous maps and ordinal factors (>= 2 timestamps)
   diffMaps <- Filter(function(o) (!o$categorical || isTRUE(o$ordinal)) &&
                        sum(!is.na(o$times$time)) >= 2L, mapObjs)
-
-  mapTimes <- .shineTimes(mapObjs)
 
   # (object @ year) snapshot choices for custom differences; value = snapshot index
   snaps <- .shineSnapshots(contMaps)
@@ -487,31 +573,38 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     )
   }
 
-  ui <- shiny::navbarPage(
+  mapTab <- function(tab, title, objs) {
+    times <- .shineTimes(objs)
+    shiny::tabPanel(title,
+      shiny::div(style = "position: relative;",
+        leaflet::leafletOutput(paste0(tab, "_map"), width = "100%", height = "92vh"),
+        legendPanel(shiny::tagList(
+          shiny::selectInput(paste0(tab, "_basemap"), "Basemap", choices = .basemaps),
+          shiny::tags$hr(),
+          shiny::radioButtons(paste0(tab, "_objs"), "Layer",
+                              choices = vapply(objs, `[[`, character(1), "id"),
+                              selected = if (length(objs)) objs[[1]]$id else character(0)),
+          if (length(times) >= 2L) shiny::tagList(shiny::tags$hr(), speedSlider(paste0(tab, "_speed")))
+        )),
+        fileInfoPanel(paste0(tab, "_fileinfo")),
+        timeSliderUI(tab, times)
+      )
+    )
+  }
+  mapTabs <- lapply(.shineMapTabs(mapObjs), function(x) mapTab(x$tab, x$title, x$objs))
+
+  ui <- do.call(shiny::navbarPage, c(list(
     "shine", id = "tabs", collapsible = TRUE,
     header = shiny::tags$head(shiny::tags$style(shiny::HTML(paste(
       ".leaflet-container { background: #ddd; }",
       # lift the bottom-left color legend up so the time slider doesn't cover it
       ".leaflet-bottom.leaflet-left { margin-bottom: 72px; }"))),
-      shiny::tags$script(shiny::HTML(.shineMemoryCheckJs))),
+      shiny::tags$script(shiny::HTML(.shineMemoryCheckJs)),
+      shiny::tags$script(shiny::HTML(.shineFigJs)),
+      shiny::tags$script(shiny::HTML(.shineGeotiffJs)))),
+    mapTabs, list(
 
-    # ---- Maps tab ----
-    shiny::tabPanel("Maps",
-      shiny::div(style = "position: relative;",
-        leaflet::leafletOutput("map_map", width = "100%", height = "92vh"),
-        legendPanel(shiny::tagList(
-          shiny::selectInput("map_basemap", "Basemap", choices = .basemaps),
-          shiny::tags$hr(),
-          shiny::radioButtons("map_objs", "Layer",
-                              choices = vapply(mapObjs, `[[`, character(1), "id"),
-                              selected = if (length(mapObjs)) mapObjs[[1]]$id else character(0)),
-          if (length(mapTimes) >= 2L) shiny::tagList(shiny::tags$hr(), speedSlider("map_speed"))
-        )),
-        fileInfoPanel("map_fileinfo"),
-        timeSliderUI("map", mapTimes)
-      )
-    ),
-
+    # ---- Map tabs (outputs, and inputs when outputs(sim) told them apart) ----
     # ---- Figures tab ----
     shiny::tabPanel("Figures",
       shiny::div(style = "position: relative; min-height: 92vh;",
@@ -566,17 +659,39 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         ))
       )
     )
-  )
+  )))
   # load the tiled raster renderer's JS at page start so proxy addGeotiff() works
   htmltools::attachDependencies(ui, .shineCogDeps(), append = TRUE)
 }
 
-# The browser reads each map into memory blocks (ArrayBuffers). A browser process that can no
-# longer hand them out (seen in an RStudio Server tab left open for days) leaves every map
-# blank with no message, so the page asks for one block on load and every minute, and says so.
+# Figure frames: keep the preloaded images referenced so the browser holds them, and show
+# a frame only once it has loaded (the latest request wins if steps outpace loading).
+.shineFigJs <- '
+(function () {
+  var held = [], want = null;
+  Shiny.addCustomMessageHandler("shine_fig_preload", function (srcs) {
+    held = srcs.map(function (s) { var im = new Image(); im.src = s; return im; });
+  });
+  Shiny.addCustomMessageHandler("shine_fig_src", function (src) {
+    want = src;
+    var im = new Image();
+    im.onload = function () {
+      var el = document.getElementById("shine_fig_img");
+      if (el && want === src) el.src = src;
+    };
+    im.src = src;
+  });
+})();'
+
+# The browser reads each map into memory blocks (ArrayBuffers). A tab that can no longer get
+# them leaves every map blank with no message, so the page asks for one block on load and
+# every minute, and says so. The cause seen was shine's own leak through leafem::addGeotiff()
+# (see .shineGeotiff()). Tabs of one server can share a browser process, and shine may run in
+# RStudio's Viewer, so the memory may be held by another tab: hence the second step.
 .shineMemoryMessage <- paste(
   "This browser tab can't get the memory it needs to draw maps, so maps will stay blank.",
-  "Close every tab of this server (including RStudio) and open it again.")
+  "Reload this page. If the maps are still blank, close every tab of this server",
+  "(including RStudio) and open it again.")
 
 .shineMemoryCheckJs <- paste0('
 (function () {
@@ -602,7 +717,6 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
   mapObjs  <- .shineById(Filter(function(o) o$kind == "map", objects))
   figObjs  <- .shineById(Filter(function(o) o$kind == "figure", objects))
   contMaps <- Filter(function(o) !o$categorical, mapObjs)
-  mapTimes <- .shineTimes(mapObjs)
   bounds <- .shineBounds(objects)
 
   # serve figure PNGs and the COG cache to the browser (same-origin)
@@ -619,8 +733,9 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     shiny::observeEvent(input$shine_memory, message(.shineMemoryMessage), once = TRUE)
 
     # --- auto-advancing time sliders (default playing, only when a layer is on) ---
-    playing <- list(map = shiny::reactiveVal(TRUE))
-    advancer <- function(tab, times, selId) {
+    # A tab's slider advances only while that tab is shown.
+    playing <- list(map = shiny::reactiveVal(TRUE), inmap = shiny::reactiveVal(TRUE))
+    advancer <- function(tab, times, selId, title) {
       if (length(times) < 2L) return()
       shiny::observeEvent(input[[paste0(tab, "_play")]], {
         playing[[tab]](!playing[[tab]]())
@@ -629,6 +744,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       })
       shiny::observe({
         if (!isTRUE(playing[[tab]]())) return()
+        if (!identical(input$tabs, title)) return()
         if (length(input[[selId]]) == 0L) return()  # nothing shown -> don't advance
         secs <- input[[paste0(tab, "_speed")]]; if (is.null(secs)) secs <- interval
         shiny::invalidateLater(secs * 1000, session)
@@ -639,9 +755,7 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         shiny::updateSliderInput(session, paste0(tab, "_time"), value = nxt)
       })
     }
-    advancer("map", mapTimes, "map_objs")
-
-    # --- Maps tab ---
+    # --- Map tabs ---
     # Each object animates by re-adding a layerId, which makes georaster replace
     # that layer in place (LayerManager.addLayer removes the old same-id layer).
     # Opaque layers (opacity >= 1) double-buffer with two alternating ids so the
@@ -650,67 +764,74 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
     # layers use one id (a brief redraw per step, but stacking two would ghost).
     # Adding/removing layers or changing basemap rebuilds the map (the reliable
     # way to drop a georaster layer), preserving the current view.
-    mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
-    shiny::observeEvent(input$map_map_center, mapView$center <- input$map_map_center)
-    shiny::observeEvent(input$map_map_zoom,   mapView$zoom   <- input$map_map_zoom)
-    buf <- new.env(parent = emptyenv())   # object id -> current buffer letter (opaque only)
-    animLayerId <- function(id, init = FALSE) {
-      if (opacity < 1) return(.san(id))            # single layer
-      if (init) { buf[[id]] <- "A"; return(paste0(.san(id), "_A")) }
-      nxt <- if (identical(buf[[id]], "A")) "B" else "A"
-      buf[[id]] <- nxt
-      paste0(.san(id), "_", nxt)
+    mapTabServer <- function(tab, title, objs) {
+      times <- .shineTimes(objs)
+      advancer(tab, times, paste0(tab, "_objs"), title)
+      mapView <- shiny::reactiveValues(center = NULL, zoom = NULL)
+      shiny::observeEvent(input[[paste0(tab, "_map_center")]],
+                          mapView$center <- input[[paste0(tab, "_map_center")]])
+      shiny::observeEvent(input[[paste0(tab, "_map_zoom")]],
+                          mapView$zoom <- input[[paste0(tab, "_map_zoom")]])
+      buf <- new.env(parent = emptyenv())   # object id -> current buffer letter (opaque only)
+      animLayerId <- function(id, init = FALSE) {
+        if (opacity < 1) return(.san(id))            # single layer
+        if (init) { buf[[id]] <- "A"; return(paste0(.san(id), "_A")) }
+        nxt <- if (identical(buf[[id]], "A")) "B" else "A"
+        buf[[id]] <- nxt
+        paste0(.san(id), "_", nxt)
+      }
+      curMapTime <- function() if (length(times)) {
+        v <- input[[paste0(tab, "_time")]]; if (is.null(v)) times[1] else v
+      } else NA_real_
+
+      output[[paste0(tab, "_map")]] <- leaflet::renderLeaflet({
+        sel <- input[[paste0(tab, "_objs")]]
+        bm <- if (is.null(input[[paste0(tab, "_basemap")]])) .basemaps[[1]] else input[[paste0(tab, "_basemap")]]
+        t <- shiny::isolate(curMapTime())
+        m <- leaflet::addProviderTiles(
+          leaflet::leaflet(options = leaflet::leafletOptions(zoomSnap = 0.25, zoomDelta = 0.25)), bm)
+        cv <- shiny::isolate(mapView$center); zm <- shiny::isolate(mapView$zoom)
+        if (!is.null(cv) && !is.null(zm)) {
+          m <- leaflet::setView(m, cv$lng, cv$lat, zm)              # keep the user's view
+        } else if (!is.null(bounds)) {
+          dx <- (bounds[3] - bounds[1]) * 0.06; dy <- (bounds[4] - bounds[2]) * 0.06
+          m <- leaflet::fitBounds(m, bounds[1] + dx, bounds[2] + dy, bounds[3] - dx, bounds[4] - dy)
+        } else {
+          m <- leaflet::setView(m, lng = -123, lat = 62, zoom = 5)
+        }
+        rm(list = ls(buf), envir = buf)                            # reset buffer state
+        for (o in objs[sel]) {
+          if (is.null(o)) next
+          info <- .shineCogForObject(o, t, maxCells, transparent)
+          m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
+                               animLayerId(o$id, init = TRUE), replaceLegend = FALSE,
+                               opacity = opacity, labels = o$labels)
+        }
+        m
+      })
+
+      shiny::observeEvent(input[[paste0(tab, "_time")]], {                        # animate selected layers
+        sel <- input[[paste0(tab, "_objs")]]
+        if (length(sel) == 0L) return()
+        t <- input[[paste0(tab, "_time")]]
+        m <- leaflet::leafletProxy(paste0(tab, "_map"))
+        for (o in objs[sel]) {
+          if (is.null(o)) next
+          info <- .shineCogForObject(o, t, maxCells, transparent)
+          m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
+                               animLayerId(o$id), replaceLegend = TRUE, opacity = opacity,
+                               labels = o$labels)
+        }
+      })
+      output[[paste0(tab, "_fileinfo")]] <- shiny::renderUI({               # source file(s) on display
+        sel <- input[[paste0(tab, "_objs")]]
+        if (length(sel) == 0L) return(NULL)
+        t <- curMapTime()
+        shiny::HTML(paste(vapply(objs[sel], function(o) relPath(.shineFileAt(o, t)),
+                                 character(1)), collapse = "<br>"))
+      })
     }
-    curMapTime <- function() if (length(mapTimes)) {
-      v <- input$map_time; if (is.null(v)) mapTimes[1] else v
-    } else NA_real_
-
-    output$map_map <- leaflet::renderLeaflet({
-      sel <- input$map_objs
-      bm <- if (is.null(input$map_basemap)) .basemaps[[1]] else input$map_basemap
-      t <- shiny::isolate(curMapTime())
-      m <- leaflet::addProviderTiles(
-        leaflet::leaflet(options = leaflet::leafletOptions(zoomSnap = 0.25, zoomDelta = 0.25)), bm)
-      cv <- shiny::isolate(mapView$center); zm <- shiny::isolate(mapView$zoom)
-      if (!is.null(cv) && !is.null(zm)) {
-        m <- leaflet::setView(m, cv$lng, cv$lat, zm)              # keep the user's view
-      } else if (!is.null(bounds)) {
-        dx <- (bounds[3] - bounds[1]) * 0.06; dy <- (bounds[4] - bounds[2]) * 0.06
-        m <- leaflet::fitBounds(m, bounds[1] + dx, bounds[2] + dy, bounds[3] - dx, bounds[4] - dy)
-      } else {
-        m <- leaflet::setView(m, lng = -123, lat = 62, zoom = 5)
-      }
-      rm(list = ls(buf), envir = buf)                            # reset buffer state
-      for (o in mapObjs[sel]) {
-        if (is.null(o)) next
-        info <- .shineCogForObject(o, t, maxCells, transparent)
-        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             animLayerId(o$id, init = TRUE), replaceLegend = FALSE,
-                             opacity = opacity, labels = o$labels)
-      }
-      m
-    })
-
-    shiny::observeEvent(input$map_time, {                        # animate selected layers
-      sel <- input$map_objs
-      if (length(sel) == 0L) return()
-      t <- input$map_time
-      m <- leaflet::leafletProxy("map_map")
-      for (o in mapObjs[sel]) {
-        if (is.null(o)) next
-        info <- .shineCogForObject(o, t, maxCells, transparent)
-        m <- .shineAddRaster(m, info, o$id, o$categorical, cogUrl(info$file),
-                             animLayerId(o$id), replaceLegend = TRUE, opacity = opacity,
-                             labels = o$labels)
-      }
-    })
-    output$map_fileinfo <- shiny::renderUI({               # source file(s) on display
-      sel <- input$map_objs
-      if (length(sel) == 0L) return(NULL)
-      t <- curMapTime()
-      shiny::HTML(paste(vapply(mapObjs[sel], function(o) relPath(.shineFileAt(o, t)),
-                               character(1)), collapse = "<br>"))
-    })
+    for (x in .shineMapTabs(mapObjs)) mapTabServer(x$tab, x$title, x$objs)
 
     # --- Figures tab (one figure via radio; slider only for time-series figures) ---
     figSelTimes <- shiny::reactive({
@@ -731,16 +852,29 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
             max = max(times), value = min(times), step = NULL, sep = "", width = "100%",
             ticks = TRUE))))
     })
+    # The <img> is drawn once per figure; each time step swaps its src only after the next
+    # image has loaded (see .shineFigJs), and every frame is fetched up front, so the figure
+    # does not flash blank between steps, even on the first pass.
     output$fig_ui <- shiny::renderUI({
       id <- input$fig_objs
       if (is.null(id) || !nzchar(id)) return(shiny::helpText("Select a figure."))
       o <- figObjs[[id]]
       times <- figSelTimes()
-      t <- if (length(times) >= 2L) { v <- input$fig_time; if (is.null(v)) times[1] else v } else NA_real_
+      t <- if (length(times) >= 2L) {
+        v <- shiny::isolate(input$fig_time); if (is.null(v)) times[1] else v
+      } else NA_real_
+      if (length(times) >= 2L) {
+        session$sendCustomMessage("shine_fig_preload", as.list(figUrl(o$times$file)))
+      }
       # bound by both width and height so tall figures fit fully (no cut-off bottom)
-      shiny::tags$img(src = figUrl(.shineFileAt(o, t)),
+      shiny::tags$img(id = "shine_fig_img", src = figUrl(.shineFileAt(o, t)),
                       style = paste("max-width: 98%; max-height: 90vh;",
                                     "width: auto; height: auto; margin: 8px auto; display: block;"))
+    })
+    shiny::observeEvent(input$fig_time, {
+      id <- input$fig_objs
+      if (is.null(id) || !nzchar(id)) return()
+      session$sendCustomMessage("shine_fig_src", figUrl(.shineFileAt(figObjs[[id]], input$fig_time)))
     })
     output$fig_fileinfo <- shiny::renderUI({
       id <- input$fig_objs
@@ -787,8 +921,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
         if (is.null(o)) next
         tt <- sort(o$times$time[!is.na(o$times$time)])
         if (length(tt) < 2L) next
-        rLast  <- terra::rast(.shineFileAt(o, max(tt)), lyrs = o$band)
-        rFirst <- terra::rast(.shineFileAt(o, min(tt)), lyrs = o$band)
+        rLast  <- terra::rast(.shineFileAt(o, max(tt)), lyrs = .shineBandAt(o, max(tt)))
+        rFirst <- terra::rast(.shineFileAt(o, min(tt)), lyrs = .shineBandAt(o, min(tt)))
         if (isTRUE(o$ordinal)) {                       # difference the level index
           levels(rLast) <- NULL; levels(rFirst) <- NULL   # terra S4 method, gives codes
         }
@@ -825,8 +959,8 @@ shine <- function(x, timePattern = "[0-9]+", maxCells = NULL, interval = 2,
       sa <- parseSnap(a); sb <- parseSnap(b)
       custDL(NULL)
       if (!is.null(sa) && !is.null(sb)) {
-        ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = sa$o$band)
-        rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = sb$o$band)
+        ra <- terra::rast(.shineFileAt(sa$o, sa$t), lyrs = .shineBandAt(sa$o, sa$t))
+        rb <- terra::rast(.shineFileAt(sb$o, sb$t), lyrs = .shineBandAt(sb$o, sb$t))
         if (!terra::compareGeom(ra, rb, stopOnError = FALSE)) ra <- terra::resample(ra, rb)
         info <- .shineMakeCog(rb - ra, paste0(.san(a), "__", .san(b), "_t0.tif"), maxCells = maxCells,
                               transparent = 0)  # no change: transparent
