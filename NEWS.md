@@ -1,6 +1,12 @@
 # SpaDES.shiny (development version)
 
-* `shine()`: when the browser tab can no longer get the memory it needs to draw maps, the page says so in a red banner, and the R console prints the same message, instead of leaving every map blank. Seen in an RStudio Server tab left open for days; closing every tab of the server and opening it again fixes it.
+* `shine()`: a page left open no longer runs out of memory. Each time step kept the previous map in the browser for good (leafem's `addGeotiff()` adds two mouse handlers per call that hold the whole raster and are never removed), so a playing slider used about 10 MB more per step until the "can't get the memory" banner appeared after a few hours. `shine()` now draws rasters without those handlers; memory stays flat.
+
+* `shine()`: years are found in more file names. A hash after the year (`year2000__1838902.tif`) put times of about two million on the map slider and in the Custom differences choices; now the year is the time. Files such as `Tmax04_future_2031_t_25-26.tif`, one per year, were each a separate map; they are now one map with a slider. `yr2000` counts as a year, and the layers of one file named by year (`Tmax_sm_future_2011` ... `2100`) are one map with a slider.
+* `shine(sim)`: maps listed in `outputs(sim)` are in an "Output maps" tab and all other maps in an "Input maps" tab, each with its own slider. A slider only moves while its tab is shown. With a folder path there is one "Maps" tab, as before.
+* `shine()`: time-series figures no longer flash blank between steps on the first pass; every frame is loaded ahead and each step shows only once its image is ready.
+
+* `shine()`: when the browser tab can no longer get the memory it needs to draw maps, the page says so in a red banner, and the R console prints the same message, instead of leaving every map blank. Reload the page, or if that does not help, close every tab of the server and open it again.
 * `shine()`: a map with a single value (e.g. the first harvest year, every pixel cut once) is drawn in the colour its legend shows. It was drawn dark purple next to a teal legend entry.
 * `shine()`: maps of whole numbers, such as how many times a pixel was harvested, now show only whole numbers, on the map and in the legend. They were reprojected and shrunk by averaging, which made values such as 3.2, and the legend placed its ticks between whole numbers. A map with a single value gets a single legend entry.
 * `shine()`: a single file whose name has digits but no "year" (e.g. a pixel count) is a static layer, not a time; the time slider spans only real time series.

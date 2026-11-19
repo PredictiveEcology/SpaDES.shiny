@@ -59,17 +59,23 @@ Two further tabs show precomputed (\code{last - first}) and user-defined differe
 between map snapshots.
 }
 \details{
-Rasters are rendered with \code{\link[leafem:addGeotiff]{leafem::addGeotiff()}}, which draws them through the
+Rasters are rendered as leafem's \code{\link[leafem:addGeotiff]{leafem::addGeotiff()}} does, through the
 tiled \verb{georaster-layer-for-leaflet} canvas layer: pan/zoom redraw per-tile on
 the client at native resolution (fast, no server round-trip per interaction).
 Each raster is reprojected once to a web-mercator Cloud-Optimized GeoTIFF (with
 overviews), cached on disk, and served same-origin via \code{\link[shiny:addResourcePath]{shiny::addResourcePath()}}.
 
-Multi-band rasters contribute one object per band. Digits after "year" (as SpaDES names
-saved outputs, e.g. \verb{_year2030}) are always a time. Other digits are a time only when
-several files share the rest of the name; a single file such as
-\code{speciesLayers_2020_647220px.tif} is a static (always-shown) layer with no position on the
-time slider, as is a name with no digits.
+Multi-band rasters contribute one object per band, except that layers whose names differ
+only by a year (e.g. \code{Tmax_sm_future_2011} ... \code{Tmax_sm_future_2100}) are one time series.
+Digits after "year" or "yr" (as SpaDES names saved outputs, e.g. \verb{_year2030}) are always a
+time. Otherwise the time is the run of digits that, once removed, leaves a name shared by
+the most files (so \verb{Tmax04_future_2031_t_25-26.tif} is 2031, not 04 or 26). A file whose
+name no other file shares, such as \code{speciesLayers_2020_647220px.tif}, is a static
+(always-shown) layer with no position on the time slider, as is a name with no digits.
+
+When \code{x} is a \code{simList}, maps listed in \code{outputs(x)} are shown in an "Output maps" tab and
+all other maps (e.g. climate or species layers a module prepared) in an "Input maps" tab,
+each with its own time slider.
 }
 \examples{
 \dontrun{
