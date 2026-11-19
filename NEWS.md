@@ -1,5 +1,8 @@
 # SpaDES.shiny (development version)
 
+* `shine(sim)`: the Output maps slider plays again. With both an Output and an Input maps tab, it never moved, so the first map stayed on its first year (often blank, e.g. a burn map with no fires yet).
+* `shine()`: Custom differences picks A and B with two dropdowns each, a map and then one of its years, instead of a radio button for every map and year. With many maps the page had thousands of them; the LandRCBM outputs took 14 s to show the first map, now 3 s.
+
 * `shine()`: a page left open no longer runs out of memory. Each time step kept the previous map in the browser for good (leafem's `addGeotiff()` adds two mouse handlers per call that hold the whole raster and are never removed), so a playing slider used about 10 MB more per step until the "can't get the memory" banner appeared after a few hours. `shine()` now draws rasters without those handlers; memory stays flat.
 
 * `shine()`: years are found in more file names. A hash after the year (`year2000__1838902.tif`) put times of about two million on the map slider and in the Custom differences choices; now the year is the time. Files such as `Tmax04_future_2031_t_25-26.tif`, one per year, were each a separate map; they are now one map with a slider. `yr2000` counts as a year, and the layers of one file named by year (`Tmax_sm_future_2011` ... `2100`) are one map with a slider.

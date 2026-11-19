@@ -183,17 +183,25 @@ test_that(".shineScan flags an ordinal factor map (binned raster)", {
   expect_false(terra::is.factor(d2)[1])
 })
 
-test_that(".shineSnapshots enumerates (object @ time) snapshots for custom diffs", {
+test_that("custom differences pick a map, then one of its years", {
   skip_if_not_installed("terra")
   d <- withr::local_tempdir()
   make_outputs(d)
   contMaps <- Filter(function(o) o$kind == "map" && !o$categorical, .shineScan(d))
-  snaps <- .shineSnapshots(contMaps)
-  expect_equal(length(snaps), 7L)            # rsf(3) + multi bandA(2) + bandB(2)
-  s <- snaps[[1]]
-  expect_true(all(c("o", "t", "label") %in% names(s)))
+  cm <- .shineCustMaps(.shineById(contMaps))
+  expect_setequal(names(cm), c("rsf_areaX", "multi_areaX: bandA", "multi_areaX: bandB"))
+  expect_equal(.shineYears(cm[["rsf_areaX"]]), c(2000, 2010, 2020))
+  s <- .shineSnapAt(cm, "rsf_areaX", "2010")
+  expect_equal(s$label, "rsf_areaX @ 2010")
   expect_true(file.exists(.shineFileAt(s$o, s$t)))
-  expect_match(s$label, " @ ")
+  expect_null(.shineSnapAt(cm, "multi_areaX: bandA", "2020"))  # not one of its years
+  expect_null(.shineSnapAt(cm, NULL, "2010"))
+
+  ## two dropdowns each for A and B, not a radio button per (map, year)
+  html <- as.character(htmltools::renderTags(.shineUI(.shineScan(d)))$html)
+  for (id in c("cust_a_map", "cust_a_year", "cust_b_map", "cust_b_year"))
+    expect_match(html, paste0('id="', id, '"'), fixed = TRUE)
+  expect_false(grepl('name="cust_a"', html, fixed = TRUE))
 })
 
 test_that(".shineResolvePath dispatches on path string, NULL and bad input", {
@@ -348,8 +356,7 @@ test_that("the year is found among other digits in a name (hashes, months, versi
   for (o in maps) expect_equal(o$times$time, 2000:2002)
   expect_equal(figs[["IgnitionProbability"]]$times$time, 2000:2002)
   ## the custom-differences choices are labelled with the year
-  labs <- vapply(.shineSnapshots(maps["1838902"]), `[[`, character(1), "label")
-  expect_equal(labs, paste0("1838902 @ ", 2000:2002))
+  expect_equal(.shineSnapAt(.shineCustMaps(maps), "1838902", 2001)$label, "1838902 @ 2001")
 })
 
 test_that("layers of one file whose names differ by a year are one series", {
@@ -395,6 +402,30 @@ test_that("maps not in outputs(sim) get their own Input maps tab", {
   ## without outputs(sim) there is one Maps tab, as before
   tabs <- .shineMapTabs(.shineById(Filter(function(o) o$kind == "map", .shineScan(d))))
   expect_equal(vapply(tabs, `[[`, character(1), "title"), "Maps")
+})
+
+test_that("the Output maps slider plays while Output maps is shown", {
+  ## Both map tabs were set up in a loop and each read its tab title only when its
+  ## slider first tried to step. By then the loop had ended, so both read
+  ## "Input maps" and the Output maps slider never moved.
+  skip_if_not_installed("terra")
+  d <- withr::local_tempdir()
+  make_outputs(d)
+  dir.create(file.path(d, "climate"))
+  r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 40, ymin = 0, ymax = 40,
+                   crs = "EPSG:3857", vals = 1)
+  for (yr in 2011:2012) terra::writeRaster(r, file.path(d, "climate", sprintf("CMD_%d.tif", yr)))
+  outs <- list.files(d, "^(rsf|multi|classMap).*tif$", full.names = TRUE)
+  objects <- .shineScan(d, outputFiles = outs)
+
+  moved <- character(0)
+  local_mocked_bindings(updateSliderInput = function(session, inputId, ...)
+    moved <<- c(moved, inputId), .package = "shiny")
+  shiny::testServer(.shineServer(objects, d, maxCells = NULL), {
+    session$setInputs(tabs = "Output maps", map_objs = "rsf_areaX", inmap_objs = "CMD")
+  })
+  expect_true("map_time" %in% moved)
+  expect_false("inmap_time" %in% moved)
 })
 
 test_that("rasters are drawn without map handlers that would keep every frame in memory", {
